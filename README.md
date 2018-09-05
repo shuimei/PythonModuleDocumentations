@@ -8,7 +8,8 @@ collection of Python Model Documentations for data scientists.
 + scikit-learn
 + seaborn
 + LightGBM
-...
++ statsmodel
++ ...
 
 ## usage
 ```
