@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+    <title>Downloading datasets from the openml.org repository &#8212; scikit-learn 0.21.dev0 documentation</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../_static/css/bootstrap-responsive.css"/>
+
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/js/extra.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_SVG"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
+  <script>
+     VERSION_SUBDIR = (function(groups) {
+         return groups ? groups[1] : null;
+     })(location.href.match(/^https?:\/\/scikit-learn.org\/([^\/]+)/));
+  </script>
+  <link rel="canonical" href="http://scikit-learn.org/stable/datasets/openml.html" />
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    function showMenu() {
+      var topNav = document.getElementById("scikit-navbar");
+      if (topNav.className === "navbar") {
+          topNav.className += " responsive";
+      } else {
+          topNav.className = "navbar";
+      }
+    };
+  </script>
+
+  </head><body>
+
+<div class="header-wrapper">
+    <div class="header">
+        <p class="logo"><a href="../index.html">
+            <img src="../_static/scikit-learn-logo-small.png" alt="Logo"/>
+        </a>
+        </p><div class="navbar" id="scikit-navbar">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../install.html">Installation</a></li>
+                <li class="btn-li"><div class="btn-group">
+              <a href="../documentation.html">Documentation</a>
+              <a class="btn dropdown-toggle" data-toggle="dropdown">
+                 <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+            <li class="link-title">Scikit-learn <script>document.write(DOCUMENTATION_OPTIONS.VERSION + (VERSION_SUBDIR ? " (" + VERSION_SUBDIR + ")" : ""));</script></li>
+            <li><a href="../tutorial/index.html">Tutorials</a></li>
+            <li><a href="../user_guide.html">User guide</a></li>
+            <li><a href="../modules/classes.html">API</a></li>
+            <li><a href="../glossary.html">Glossary</a></li>
+            <li><a href="../faq.html">FAQ</a></li>
+            <li><a href="../developers/contributing.html">Contributing</a></li>
+            <li class="divider"></li>
+                <script>if (VERSION_SUBDIR != "stable") document.write('<li><a href="http://scikit-learn.org/stable/documentation.html">Stable version</a></li>')</script>
+                <script>if (VERSION_SUBDIR != "dev") document.write('<li><a href="http://scikit-learn.org/dev/documentation.html">Development version</a></li>')</script>
+                <li><a href="http://scikit-learn.org/dev/versions.html">All available versions</a></li>
+                <li><a href="../_downloads/scikit-learn-docs.pdf">PDF documentation</a></li>
+              </ul>
+            </div>
+        </li>
+            <li><a href="../auto_examples/index.html">Examples</a></li>
+            </ul>
+            <a href="javascript:void(0);" onclick="showMenu()">
+                <div class="nav-icon">
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                </div>
+            </a>
+            <div class="search_form">
+                <div class="gcse-search" id="cse" style="width: 100%;"></div>
+            </div>
+        </div> <!-- end navbar --></div>
+</div>
+
+
+<!-- GitHub "fork me" ribbon -->
+<a href="https://github.com/scikit-learn/scikit-learn">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../_static/img/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+    <div class="sphinxsidebarwrapper">
+      <p class="doc-version"><b>scikit-learn v0.21.dev0</b><br/>
+      <a href="http://scikit-learn.org/stable/support.html#documentation-resources">Other versions</a></p>
+    <p class="citing">Please <b><a href="../about.html#citing-scikit-learn" style="font-size: 110%;">cite us </a></b>if you use the software.</p>
+    <ul>
+<li><a class="reference internal" href="#">Downloading datasets from the openml.org repository</a><ul>
+<li><a class="reference internal" href="#dataset-versions">Dataset Versions</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</div>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" checked />
+<label for="nav-trigger"></label>
+
+
+
+
+      <div class="content">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="downloading-datasets-from-the-openml-org-repository">
+<span id="openml"></span><h1>Downloading datasets from the openml.org repository<a class="headerlink" href="#downloading-datasets-from-the-openml-org-repository" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://openml.org">openml.org</a> is a public repository for machine learning
+data and experiments, that allows everybody to upload open datasets.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">sklearn.datasets</span></code> package is able to download datasets
+from the repository using the function
+<a class="reference internal" href="../modules/generated/sklearn.datasets.fetch_openml.html#sklearn.datasets.fetch_openml" title="sklearn.datasets.fetch_openml"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.datasets.fetch_openml</span></code></a>.</p>
+<p>For example, to download a dataset of gene expressions in mice brains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="k">import</span> <span class="n">fetch_openml</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;miceprotein&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To fully specify a dataset, you need to provide a name and a version, though
+the version is optional, see <a class="reference internal" href="#openml-versions"><span class="std std-ref">Dataset Versions</span></a> below.
+The dataset contains a total of 1080 examples belonging to 8 different
+classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(1080, 77)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(1080,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">mice</span><span class="o">.</span><span class="n">target</span><span class="p">)</span> 
+<span class="go">array([&#39;c-CS-m&#39;, &#39;c-CS-s&#39;, &#39;c-SC-m&#39;, &#39;c-SC-s&#39;, &#39;t-CS-m&#39;, &#39;t-CS-s&#39;, &#39;t-SC-m&#39;, &#39;t-SC-s&#39;], dtype=object)</span>
+</pre></div>
+</div>
+<p>You can get more information on the dataset by looking at the <code class="docutils literal notranslate"><span class="pre">DESCR</span></code>
+and <code class="docutils literal notranslate"><span class="pre">details</span></code> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mice</span><span class="o">.</span><span class="n">DESCR</span><span class="p">)</span> 
+<span class="go">**Author**: Clara Higuera, Katheleen J. Gardiner, Krzysztof J. Cios</span>
+<span class="go">**Source**: [UCI](https://archive.ics.uci.edu/ml/datasets/Mice+Protein+Expression) - 2015</span>
+<span class="go">**Please cite**: Higuera C, Gardiner KJ, Cios KJ (2015) Self-Organizing</span>
+<span class="go">Feature Maps Identify Proteins Critical to Learning in a Mouse Model of Down</span>
+<span class="go">Syndrome. PLoS ONE 10(6): e0129126...</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">details</span> 
+<span class="go">{&#39;id&#39;: &#39;40966&#39;, &#39;name&#39;: &#39;MiceProtein&#39;, &#39;version&#39;: &#39;4&#39;, &#39;format&#39;: &#39;ARFF&#39;,</span>
+<span class="go">&#39;upload_date&#39;: &#39;2017-11-08T16:00:15&#39;, &#39;licence&#39;: &#39;Public&#39;,</span>
+<span class="go">&#39;url&#39;: &#39;https://www.openml.org/data/v1/download/17928620/MiceProtein.arff&#39;,</span>
+<span class="go">&#39;file_id&#39;: &#39;17928620&#39;, &#39;default_target_attribute&#39;: &#39;class&#39;,</span>
+<span class="go">&#39;row_id_attribute&#39;: &#39;MouseID&#39;,</span>
+<span class="go">&#39;ignore_attribute&#39;: [&#39;Genotype&#39;, &#39;Treatment&#39;, &#39;Behavior&#39;],</span>
+<span class="go">&#39;tag&#39;: [&#39;OpenML-CC18&#39;, &#39;study_135&#39;, &#39;study_98&#39;, &#39;study_99&#39;],</span>
+<span class="go">&#39;visibility&#39;: &#39;public&#39;, &#39;status&#39;: &#39;active&#39;,</span>
+<span class="go">&#39;md5_checksum&#39;: &#39;3c479a6885bfa0438971388283a1ce32&#39;}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">DESCR</span></code> contains a free-text description of the data, while <code class="docutils literal notranslate"><span class="pre">details</span></code>
+contains a dictionary of meta-data stored by openml, like the dataset id.
+For more details, see the <a class="reference external" href="https://docs.openml.org/#data">OpenML documentation</a> The <code class="docutils literal notranslate"><span class="pre">data_id</span></code> of the mice protein dataset
+is 40966, and you can use this (or the name) to get more information on the
+dataset on the openml website:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">url</span>
+<span class="go">&#39;https://www.openml.org/d/40966&#39;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">data_id</span></code> also uniquely identifies a dataset from OpenML:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">40966</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">details</span> 
+<span class="go">{&#39;id&#39;: &#39;4550&#39;, &#39;name&#39;: &#39;MiceProtein&#39;, &#39;version&#39;: &#39;1&#39;, &#39;format&#39;: &#39;ARFF&#39;,</span>
+<span class="go">&#39;creator&#39;: ...,</span>
+<span class="go">&#39;upload_date&#39;: &#39;2016-02-17T14:32:49&#39;, &#39;licence&#39;: &#39;Public&#39;, &#39;url&#39;:</span>
+<span class="go">&#39;https://www.openml.org/data/v1/download/1804243/MiceProtein.ARFF&#39;, &#39;file_id&#39;:</span>
+<span class="go">&#39;1804243&#39;, &#39;default_target_attribute&#39;: &#39;class&#39;, &#39;citation&#39;: &#39;Higuera C,</span>
+<span class="go">Gardiner KJ, Cios KJ (2015) Self-Organizing Feature Maps Identify Proteins</span>
+<span class="go">Critical to Learning in a Mouse Model of Down Syndrome. PLoS ONE 10(6):</span>
+<span class="go">e0129126. [Web Link] journal.pone.0129126&#39;, &#39;tag&#39;: [&#39;OpenML100&#39;, &#39;study_14&#39;,</span>
+<span class="go">&#39;study_34&#39;], &#39;visibility&#39;: &#39;public&#39;, &#39;status&#39;: &#39;active&#39;, &#39;md5_checksum&#39;:</span>
+<span class="go">&#39;3c479a6885bfa0438971388283a1ce32&#39;}</span>
+</pre></div>
+</div>
+<div class="section" id="dataset-versions">
+<span id="openml-versions"></span><h2>Dataset Versions<a class="headerlink" href="#dataset-versions" title="Permalink to this headline">¶</a></h2>
+<p>A dataset is uniquely specified by its <code class="docutils literal notranslate"><span class="pre">data_id</span></code>, but not necessarily by its
+name. Several different “versions” of a dataset with the same name can exist
+which can contain entirely different datasets.
+If a particular version of a dataset has been found to contain significant
+issues, it might be deactivated. Using a name to specify a dataset will yield
+the earliest version of a dataset that is still active. That means that
+<code class="docutils literal notranslate"><span class="pre">fetch_openml(name=&quot;miceprotein&quot;)</span></code> can yield different results at different
+times if earlier versions become inactive.
+You can see that the dataset with <code class="docutils literal notranslate"><span class="pre">data_id</span></code> 40966 that we fetched above is
+the version 1 of the “miceprotein” dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mice</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>  
+<span class="go">&#39;1&#39;</span>
+</pre></div>
+</div>
+<p>In fact, this dataset only has one version. The iris dataset on the other hand
+has multiple versions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;iris&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>  
+<span class="go">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>  
+<span class="go">&#39;61&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_61</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">61</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_61</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="go">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_61</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+<span class="go">&#39;61&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_969</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">data_id</span><span class="o">=</span><span class="mi">969</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_969</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="go">&#39;3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_969</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+<span class="go">&#39;969&#39;</span>
+</pre></div>
+</div>
+<p>Specifying the dataset by the name “iris” yields the lowest version, version 1,
+with the <code class="docutils literal notranslate"><span class="pre">data_id</span></code> 61. To make sure you always get this exact dataset, it is
+safest to specify it by the dataset <code class="docutils literal notranslate"><span class="pre">data_id</span></code>. The other dataset, with
+<code class="docutils literal notranslate"><span class="pre">data_id</span></code> 969, is version 3 (version 2 has become inactive), and contains a
+binarized version of the data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">iris_969</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="go">array([&#39;N&#39;, &#39;P&#39;], dtype=object)</span>
+</pre></div>
+</div>
+<p>You can also specify both the name and the version, which also uniquely
+identifies the dataset:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">iris_version_3</span> <span class="o">=</span> <span class="n">fetch_openml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;iris&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_version_3</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="go">&#39;3&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iris_version_3</span><span class="o">.</span><span class="n">details</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+<span class="go">&#39;969&#39;</span>
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">References:</p>
+<ul class="simple">
+<li>Vanschoren, van Rijn, Bischl and Torgo
+<a class="reference external" href="https://arxiv.org/pdf/1407.7722.pdf">“OpenML: networked science in machine learning”</a>,
+ACM SIGKDD Explorations Newsletter, 15(2), 49-60, 2014.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2007 - 2018, scikit-learn developers (BSD License).
+      <a href="../_sources/datasets/openml.rst.txt" rel="nofollow">Show this page source</a>
+    </div>
+     <div class="rel rellarge">
+    
+    
+     </div>
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22606712-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+    <script>
+      (function() {
+        var cx = '016639176250731907682:tjtqbvtvij0';
+        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+        gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,595 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GPU Tuning Guide and Performance Comparison &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="GPU SDK Correspondence and Device Targeting Table" href="GPU-Targets.html" />
+    <link rel="prev" title="Development Guide" href="Development-Guide.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>GPU Tuning Guide and Performance Comparison</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/GPU-Performance.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gpu-tuning-guide-and-performance-comparison">
+<h1>GPU Tuning Guide and Performance Comparison<a class="headerlink" href="#gpu-tuning-guide-and-performance-comparison" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="how-it-works">
+<h2>How It Works?<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<p>In LightGBM, the main computation cost during training is building the feature histograms. We use an efficient algorithm on GPU to accelerate this process.
+The implementation is highly modular, and works for all learning tasks (classification, ranking, regression, etc). GPU acceleration also works in distributed learning settings.
+GPU algorithm implementation is based on OpenCL and can work with a wide range of GPUs.</p>
+</div>
+<div class="section" id="supported-hardware">
+<h2>Supported Hardware<a class="headerlink" href="#supported-hardware" title="Permalink to this headline">¶</a></h2>
+<p>We target AMD Graphics Core Next (GCN) architecture and NVIDIA Maxwell and Pascal architectures.
+Most AMD GPUs released after 2012 and NVIDIA GPUs released after 2014 should be supported. We have tested the GPU implementation on the following GPUs:</p>
+<ul class="simple">
+<li>AMD RX 480 with AMDGPU-pro driver 16.60 on Ubuntu 16.10</li>
+<li>AMD R9 280X (aka Radeon HD 7970) with fglrx driver 15.302.2301 on Ubuntu 16.10</li>
+<li>NVIDIA GTX 1080 with driver 375.39 and CUDA 8.0 on Ubuntu 16.10</li>
+<li>NVIDIA Titan X (Pascal) with driver 367.48 and CUDA 8.0 on Ubuntu 16.04</li>
+<li>NVIDIA Tesla M40 with driver 375.39 and CUDA 7.5 on Ubuntu 16.04</li>
+</ul>
+<p>Using the following hardware is discouraged:</p>
+<ul class="simple">
+<li>NVIDIA Kepler (K80, K40, K20, most GeForce GTX 700 series GPUs) or earlier NVIDIA GPUs. They don’t support hardware atomic operations in local memory space and thus histogram construction will be slow.</li>
+<li>AMD VLIW4-based GPUs, including Radeon HD 6xxx series and earlier GPUs. These GPUs have been discontinued for years and are rarely seen nowadays.</li>
+</ul>
+</div>
+<div class="section" id="how-to-achieve-good-speedup-on-gpu">
+<h2>How to Achieve Good Speedup on GPU<a class="headerlink" href="#how-to-achieve-good-speedup-on-gpu" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>You want to run a few datasets that we have verified with good speedup (including Higgs, epsilon, Bosch, etc) to ensure your setup is correct.
+If you have multiple GPUs, make sure to set <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span></code> and <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span></code> to use the desired GPU.
+Also make sure your system is idle (especially when using a shared computer) to get accuracy performance measurements.</li>
+<li>GPU works best on large scale and dense datasets. If dataset is too small, computing it on GPU is inefficient as the data transfer overhead can be significant.
+For dataset with a mixture of sparse and dense features, you can control the <code class="docutils literal notranslate"><span class="pre">sparse_threshold</span></code> parameter to make sure there are enough dense features to process on the GPU.
+If you have categorical features, use the <code class="docutils literal notranslate"><span class="pre">categorical_column</span></code> option and input them into LightGBM directly; do not convert them into one-hot variables.
+Make sure to check the run log and look at the reported number of sparse and dense features.</li>
+<li>To get good speedup with GPU, it is suggested to use a smaller number of bins.
+Setting <code class="docutils literal notranslate"><span class="pre">max_bin=63</span></code> is recommended, as it usually does not noticeably affect training accuracy on large datasets, but GPU training can be significantly faster than using the default bin size of 255.
+For some dataset, even using 15 bins is enough (<code class="docutils literal notranslate"><span class="pre">max_bin=15</span></code>); using 15 bins will maximize GPU performance. Make sure to check the run log and verify that the desired number of bins is used.</li>
+<li>Try to use single precision training (<code class="docutils literal notranslate"><span class="pre">gpu_use_dp=false</span></code>) when possible, because most GPUs (especially NVIDIA consumer GPUs) have poor double-precision performance.</li>
+</ol>
+</div>
+<div class="section" id="performance-comparison">
+<h2>Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permalink to this headline">¶</a></h2>
+<p>We evaluate the training performance of GPU acceleration on the following datasets:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="22%" />
+<col width="14%" />
+<col width="17%" />
+<col width="15%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data</th>
+<th class="head">Task</th>
+<th class="head">Link</th>
+<th class="head">#Examples</th>
+<th class="head">#Features</th>
+<th class="head">Comments</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Higgs</td>
+<td>Binary
+classification</td>
+<td><a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/HIGGS">link1</a></td>
+<td>10,500,000</td>
+<td>28</td>
+<td>use last
+500,000
+samples
+as test
+set</td>
+</tr>
+<tr class="row-odd"><td>Epsilon</td>
+<td>Binary
+classification</td>
+<td><a class="reference external" href="http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html">link2</a></td>
+<td>400,000</td>
+<td>2,000</td>
+<td>use the
+provided
+test set</td>
+</tr>
+<tr class="row-even"><td>Bosch</td>
+<td>Binary
+classification</td>
+<td><a class="reference external" href="https://www.kaggle.com/c/bosch-production-line-performance/data">link3</a></td>
+<td>1,000,000</td>
+<td>968</td>
+<td>use the
+provided
+test set</td>
+</tr>
+<tr class="row-odd"><td>Yahoo LTR</td>
+<td>Learning to
+rank</td>
+<td><a class="reference external" href="https://webscope.sandbox.yahoo.com/catalog.php?datatype=c">link4</a></td>
+<td>473,134</td>
+<td>700</td>
+<td>set1.train
+as train,
+set1.test
+as test</td>
+</tr>
+<tr class="row-even"><td>MS LTR</td>
+<td>Learning to
+rank</td>
+<td><a class="reference external" href="http://research.microsoft.com/en-us/projects/mslr/">link5</a></td>
+<td>2,270,296</td>
+<td>137</td>
+<td>{S1,S2,S3}
+as train
+set, {S5}
+as test
+set</td>
+</tr>
+<tr class="row-odd"><td>Expo</td>
+<td>Binary
+classification
+(Categorical)</td>
+<td><a class="reference external" href="http://stat-computing.org/dataexpo/2009/">link6</a></td>
+<td>11,000,000</td>
+<td>700</td>
+<td>use last
+1,000,000
+as test
+set</td>
+</tr>
+</tbody>
+</table>
+<p>We used the following hardware to evaluate the performance of LightGBM GPU training.
+Our CPU reference is <strong>a high-end dual socket Haswell-EP Xeon server with 28 cores</strong>;
+GPUs include a budget GPU (RX 480) and a mainstream (GTX 1080) GPU installed on the same server.
+It is worth mentioning that <strong>the GPUs used are not the best GPUs in the market</strong>;
+if you are using a better GPU (like AMD RX 580, NVIDIA GTX 1080 Ti, Titan X Pascal, Titan Xp, Tesla P100, etc), you are likely to get a better speedup.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="20%" />
+<col width="22%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Hardware</th>
+<th class="head">Peak FLOPS</th>
+<th class="head">Peak Memory BW</th>
+<th class="head">Cost (MSRP)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>AMD Radeon RX 480</td>
+<td>5,161 GFLOPS</td>
+<td>256 GB/s</td>
+<td>$199</td>
+</tr>
+<tr class="row-odd"><td>NVIDIA GTX 1080</td>
+<td>8,228 GFLOPS</td>
+<td>320 GB/s</td>
+<td>$499</td>
+</tr>
+<tr class="row-even"><td>2x Xeon E5-2683v3 (28 cores)</td>
+<td>1,792 GFLOPS</td>
+<td>133 GB/s</td>
+<td>$3,692</td>
+</tr>
+</tbody>
+</table>
+<p>During benchmarking on CPU we used only 28 physical cores of the CPU, and did not use hyper-threading cores,
+because we found that using too many threads actually makes performance worse.
+The following shows the training configuration we used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">max_bin</span> <span class="o">=</span> <span class="mi">63</span>
+<span class="n">num_leaves</span> <span class="o">=</span> <span class="mi">255</span>
+<span class="n">num_iterations</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">tree_learner</span> <span class="o">=</span> <span class="n">serial</span>
+<span class="n">task</span> <span class="o">=</span> <span class="n">train</span>
+<span class="n">is_training_metric</span> <span class="o">=</span> <span class="n">false</span>
+<span class="n">min_data_in_leaf</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">min_sum_hessian_in_leaf</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ndcg_eval_at</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span>
+<span class="n">sparse_threshold</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">gpu</span>
+<span class="n">gpu_platform_id</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">gpu_device_id</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">num_thread</span> <span class="o">=</span> <span class="mi">28</span>
+</pre></div>
+</div>
+<p>We use the configuration shown above, except for the Bosch dataset, we use a smaller <code class="docutils literal notranslate"><span class="pre">learning_rate=0.015</span></code> and set <code class="docutils literal notranslate"><span class="pre">min_sum_hessian_in_leaf=5</span></code>.
+For all GPU training we set <code class="docutils literal notranslate"><span class="pre">sparse_threshold=1</span></code>, and vary the max number of bins (255, 63 and 15).
+The GPU implementation is from commit <a class="reference external" href="https://github.com/Microsoft/LightGBM/commit/0bb4a82">0bb4a82</a> of LightGBM, when the GPU support was just merged in.</p>
+<p>The following table lists the accuracy on test set that CPU and GPU learner can achieve after 500 iterations.
+GPU with the same number of bins can achieve a similar level of accuracy as on the CPU, despite using single precision arithmetic.
+For most datasets, using 63 bins is sufficient.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">CPU 255 bins</th>
+<th class="head">CPU 63 bins</th>
+<th class="head">CPU 15 bins</th>
+<th class="head">GPU 255 bins</th>
+<th class="head">GPU 63 bins</th>
+<th class="head">GPU 15 bins</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Higgs AUC</td>
+<td>0.845612</td>
+<td>0.845239</td>
+<td>0.841066</td>
+<td>0.845612</td>
+<td>0.845209</td>
+<td>0.840748</td>
+</tr>
+<tr class="row-odd"><td>Epsilon AUC</td>
+<td>0.950243</td>
+<td>0.949952</td>
+<td>0.948365</td>
+<td>0.950057</td>
+<td>0.949876</td>
+<td>0.948365</td>
+</tr>
+<tr class="row-even"><td>Yahoo-LTR NDCG<sub>1</sub></td>
+<td>0.730824</td>
+<td>0.730165</td>
+<td>0.729647</td>
+<td>0.730936</td>
+<td>0.732257</td>
+<td>0.73114</td>
+</tr>
+<tr class="row-odd"><td>Yahoo-LTR NDCG<sub>3</sub></td>
+<td>0.738687</td>
+<td>0.737243</td>
+<td>0.736445</td>
+<td>0.73698</td>
+<td>0.739474</td>
+<td>0.735868</td>
+</tr>
+<tr class="row-even"><td>Yahoo-LTR NDCG<sub>5</sub></td>
+<td>0.756609</td>
+<td>0.755729</td>
+<td>0.754607</td>
+<td>0.756206</td>
+<td>0.757007</td>
+<td>0.754203</td>
+</tr>
+<tr class="row-odd"><td>Yahoo-LTR NDCG<sub>10</sub></td>
+<td>0.79655</td>
+<td>0.795827</td>
+<td>0.795273</td>
+<td>0.795894</td>
+<td>0.797302</td>
+<td>0.795584</td>
+</tr>
+<tr class="row-even"><td>Expo AUC</td>
+<td>0.776217</td>
+<td>0.771566</td>
+<td>0.743329</td>
+<td>0.776285</td>
+<td>0.77098</td>
+<td>0.744078</td>
+</tr>
+<tr class="row-odd"><td>MS-LTR NDCG<sub>1</sub></td>
+<td>0.521265</td>
+<td>0.521392</td>
+<td>0.518653</td>
+<td>0.521789</td>
+<td>0.522163</td>
+<td>0.516388</td>
+</tr>
+<tr class="row-even"><td>MS-LTR NDCG<sub>3</sub></td>
+<td>0.503153</td>
+<td>0.505753</td>
+<td>0.501697</td>
+<td>0.503886</td>
+<td>0.504089</td>
+<td>0.501691</td>
+</tr>
+<tr class="row-odd"><td>MS-LTR NDCG<sub>5</sub></td>
+<td>0.509236</td>
+<td>0.510391</td>
+<td>0.507193</td>
+<td>0.509861</td>
+<td>0.510095</td>
+<td>0.50663</td>
+</tr>
+<tr class="row-even"><td>MS-LTR NDCG<sub>10</sub></td>
+<td>0.527835</td>
+<td>0.527304</td>
+<td>0.524603</td>
+<td>0.528009</td>
+<td>0.527059</td>
+<td>0.524722</td>
+</tr>
+<tr class="row-odd"><td>Bosch AUC</td>
+<td>0.718115</td>
+<td>0.721791</td>
+<td>0.716677</td>
+<td>0.717184</td>
+<td>0.724761</td>
+<td>0.717005</td>
+</tr>
+</tbody>
+</table>
+<p>We record the wall clock time after 500 iterations, as shown in the figure below:</p>
+<a class="reference external image-reference" href="./_static/images/gpu-performance-comparison.png"><img alt="_images/gpu-performance-comparison.png" class="align-center" src="_images/gpu-performance-comparison.png" /></a>
+<p>When using a GPU, it is advisable to use a bin size of 63 rather than 255, because it can speed up training significantly without noticeably affecting accuracy.
+On CPU, using a smaller bin size only marginally improves performance, sometimes even slows down training,
+like in Higgs (we can reproduce the same slowdown on two different machines, with different GCC versions).
+We found that GPU can achieve impressive acceleration on large and dense datasets like Higgs and Epsilon.
+Even on smaller and sparse datasets, a <em>budget</em> GPU can still compete and be faster than a 28-core Haswell server.</p>
+</div>
+<div class="section" id="memory-usage">
+<h2>Memory Usage<a class="headerlink" href="#memory-usage" title="Permalink to this headline">¶</a></h2>
+<p>The next table shows GPU memory usage reported by <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> during training with 63 bins.
+We can see that even the largest dataset just uses about 1 GB of GPU memory,
+indicating that our GPU implementation can scale to huge datasets over 10x larger than Bosch or Epsilon.
+Also, we can observe that generally a larger dataset (using more GPU memory, like Epsilon or Bosch) has better speedup,
+because the overhead of invoking GPU functions becomes significant when the dataset is small.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="11%" />
+<col width="13%" />
+<col width="11%" />
+<col width="12%" />
+<col width="9%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Datasets</th>
+<th class="head">Higgs</th>
+<th class="head">Epsilon</th>
+<th class="head">Bosch</th>
+<th class="head">MS-LTR</th>
+<th class="head">Expo</th>
+<th class="head">Yahoo-LTR</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GPU Memory Usage (MB)</td>
+<td>611</td>
+<td>901</td>
+<td>1067</td>
+<td>413</td>
+<td>405</td>
+<td>291</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
+<p>You can find more details about the GPU algorithm and benchmarks in the
+following article:</p>
+<p>Huan Zhang, Si Si and Cho-Jui Hsieh. <a class="reference external" href="https://arxiv.org/abs/1706.08359">GPU Acceleration for Large-scale Tree Boosting</a>. arXiv:1706.08359, 2017.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="GPU-Targets.html" class="btn btn-neutral float-right" title="GPU SDK Correspondence and Device Targeting Table" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Development-Guide.html" class="btn btn-neutral" title="Development Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

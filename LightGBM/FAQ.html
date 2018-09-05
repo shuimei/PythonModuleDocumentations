@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>LightGBM FAQ &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development Guide" href="Development-Guide.html" />
+    <link rel="prev" title="Advanced Topics" href="Advanced-Topics.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#critical">Critical</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lightgbm">LightGBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#r-package">R-package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python-package">Python-package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>LightGBM FAQ</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/FAQ.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lightgbm-faq">
+<h1>LightGBM FAQ<a class="headerlink" href="#lightgbm-faq" title="Permalink to this headline">¶</a></h1>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="#critical">Critical</a></li>
+<li><a class="reference external" href="#lightgbm">LightGBM</a></li>
+<li><a class="reference external" href="#r-package">R-package</a></li>
+<li><a class="reference external" href="#python-package">Python-package</a></li>
+</ul>
+<hr class="docutils" />
+<div class="section" id="critical">
+<h2>Critical<a class="headerlink" href="#critical" title="Permalink to this headline">¶</a></h2>
+<p>Please post an issue in <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues">Microsoft/LightGBM repository</a> for any
+LightGBM issues you encounter. For critical issues (crash, prediction error, nonsense outputs…), you may also ping a
+member of the core team according the relevant area of expertise by mentioning them with the arobase (&#64;) symbol:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/guolinke">&#64;guolinke</a> (C++ code / R-package / Python-package)</li>
+<li><a class="reference external" href="https://github.com/chivee">&#64;chivee</a> (C++ code / Python-package)</li>
+<li><a class="reference external" href="https://github.com/Laurae2">&#64;Laurae2</a> (R-package)</li>
+<li><a class="reference external" href="https://github.com/jameslamb">&#64;jameslamb</a> (R-package)</li>
+<li><a class="reference external" href="https://github.com/wxchan">&#64;wxchan</a> (Python-package)</li>
+<li><a class="reference external" href="https://github.com/henry0312">&#64;henry0312</a> (Python-package)</li>
+<li><a class="reference external" href="https://github.com/StrikerRUS">&#64;StrikerRUS</a> (Python-package)</li>
+<li><a class="reference external" href="https://github.com/huanzhang12">&#64;huanzhang12</a> (GPU support)</li>
+</ul>
+<p>Please include as much of the following information as possible when submitting a critical issue:</p>
+<ul class="simple">
+<li>Is it reproducible on CLI (command line interface), R, and/or Python?</li>
+<li>Is it specific to a wrapper? (R or Python?)</li>
+<li>Is it specific to the compiler? (gcc or Clang version? MinGW or Visual Studio version?)</li>
+<li>Is it specific to your Operating System? (Windows? Linux? macOS?)</li>
+<li>Are you able to reproduce this issue with a simple case?</li>
+<li>Does the issue persist after removing all optimization flags and compiling LightGBM in debug mode?</li>
+</ul>
+<p>When submitting issues, please keep in mind that this is largely a volunteer effort, and we may not be available 24/7 to provide support.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="lightgbm">
+<h2>LightGBM<a class="headerlink" href="#lightgbm" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Question 1</strong>: Where do I find more details about LightGBM parameters?</li>
+<li><strong>Solution 1</strong>: Take a look at <a class="reference external" href="./Parameters.rst">Parameters</a> and the <a class="reference external" href="https://sites.google.com/view/lauraepp/parameters">Laurae++/Parameters</a> website.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 2</strong>: On datasets with million of features, training does not start (or starts after a very long time).</li>
+<li><strong>Solution 2</strong>: Use a smaller value for <code class="docutils literal notranslate"><span class="pre">bin_construct_sample_cnt</span></code> and a larger value for <code class="docutils literal notranslate"><span class="pre">min_data</span></code>.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 3</strong>: When running LightGBM on a large dataset, my computer runs out of RAM.</li>
+<li><strong>Solution 3</strong>: Multiple solutions: set the <code class="docutils literal notranslate"><span class="pre">histogram_pool_size</span></code> parameter to the MB you want to use for LightGBM (histogram_pool_size + dataset size = approximately RAM used),
+lower <code class="docutils literal notranslate"><span class="pre">num_leaves</span></code> or lower <code class="docutils literal notranslate"><span class="pre">max_bin</span></code> (see <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/562">Microsoft/LightGBM#562</a>).</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 4</strong>: I am using Windows. Should I use Visual Studio or MinGW for compiling LightGBM?</li>
+<li><strong>Solution 4</strong>: Visual Studio <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/542">performs best for LightGBM</a>.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 5</strong>: When using LightGBM GPU, I cannot reproduce results over several runs.</li>
+<li><strong>Solution 5</strong>: This is normal and expected behaviour, but you may try to use <code class="docutils literal notranslate"><span class="pre">gpu_use_dp</span> <span class="pre">=</span> <span class="pre">true</span></code> for reproducibility
+(see <a class="reference external" href="https://github.com/Microsoft/LightGBM/pull/560#issuecomment-304561654">Microsoft/LightGBM#560</a>).
+You may also use the CPU version.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 6</strong>: Bagging is not reproducible when changing the number of threads.</li>
+<li><strong>Solution 6</strong>: LightGBM bagging is multithreaded, so its output depends on the number of threads used.
+There is <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/632">no workaround currently</a>.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 7</strong>: I tried to use Random Forest mode, and LightGBM crashes!</li>
+<li><strong>Solution 7</strong>: This is expected behaviour for arbitrary parameters. To enable Random Forest,
+you must use <code class="docutils literal notranslate"><span class="pre">bagging_fraction</span></code> and <code class="docutils literal notranslate"><span class="pre">feature_fraction</span></code> different from 1, along with a <code class="docutils literal notranslate"><span class="pre">bagging_freq</span></code>.
+<a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/691">This thread</a> includes an example.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 8</strong>: CPU usage is low (like 10%) in Windows when using LightGBM on very large datasets with many-core systems.</li>
+<li><strong>Solution 8</strong>: Please use <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">Visual Studio</a>
+as it may be <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/749">10x faster than MinGW</a> especially for very large trees.</li>
+</ul>
+<hr class="docutils" />
+<ul>
+<li><p class="first"><strong>Question 9</strong>: When I’m trying to specify a categorical column with the <code class="docutils literal notranslate"><span class="pre">categorical_feature</span></code> parameter,
+I get the following sequence of errors, but there are no negative values in the column.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">LightGBM</span><span class="p">]</span> <span class="p">[</span><span class="ne">Warning</span><span class="p">]</span> <span class="n">Met</span> <span class="n">negative</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">categorical</span> <span class="n">features</span><span class="p">,</span> <span class="n">will</span> <span class="n">convert</span> <span class="n">it</span> <span class="n">to</span> <span class="n">NaN</span>
+<span class="p">[</span><span class="n">LightGBM</span><span class="p">]</span> <span class="p">[</span><span class="n">Fatal</span><span class="p">]</span> <span class="n">Cannot</span> <span class="n">construct</span> <span class="n">Dataset</span> <span class="n">since</span> <span class="n">there</span> <span class="n">are</span> <span class="n">no</span> <span class="n">useful</span> <span class="n">features</span><span class="o">.</span>
+<span class="n">It</span> <span class="n">should</span> <span class="n">be</span> <span class="n">at</span> <span class="n">least</span> <span class="n">two</span> <span class="n">unique</span> <span class="n">rows</span><span class="o">.</span>
+<span class="n">If</span> <span class="n">the</span> <span class="n">num_row</span> <span class="p">(</span><span class="n">num_data</span><span class="p">)</span> <span class="ow">is</span> <span class="n">small</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="nb">set</span> <span class="n">min_data</span><span class="o">=</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">min_data_in_bin</span><span class="o">=</span><span class="mi">1</span> <span class="n">to</span> <span class="n">fix</span> <span class="n">this</span><span class="o">.</span>
+<span class="n">Otherwise</span><span class="p">,</span> <span class="n">please</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">are</span> <span class="n">using</span> <span class="n">the</span> <span class="n">right</span> <span class="n">dataset</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Solution 9</strong>: The column you’re trying to pass via <code class="docutils literal notranslate"><span class="pre">categorical_feature</span></code> likely contains very large values.
+Categorical features in LightGBM are limited by int32 range,
+so you cannot pass values that are greater than <code class="docutils literal notranslate"><span class="pre">Int32.MaxValue</span></code> (2147483647) as categorical features (see <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/1359">Microsoft/LightGBM#1359</a>).
+You should convert them to integers ranging from zero to the number of categories first.</p>
+</li>
+</ul>
+<hr class="docutils" />
+<ul>
+<li><p class="first"><strong>Question 10</strong>: LightGBM crashes randomly with the error like this.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OMP</span><span class="p">:</span> <span class="n">Error</span> <span class="c1">#15: Initializing libiomp5.dylib, but found libomp.dylib already initialized.</span>
+<span class="n">OMP</span><span class="p">:</span> <span class="n">Hint</span><span class="p">:</span> <span class="n">This</span> <span class="n">means</span> <span class="n">that</span> <span class="n">multiple</span> <span class="n">copies</span> <span class="n">of</span> <span class="n">the</span> <span class="n">OpenMP</span> <span class="n">runtime</span> <span class="n">have</span> <span class="n">been</span> <span class="n">linked</span> <span class="n">into</span> <span class="n">the</span> <span class="n">program</span><span class="o">.</span> <span class="n">That</span> <span class="ow">is</span> <span class="n">dangerous</span><span class="p">,</span> <span class="n">since</span> <span class="n">it</span> <span class="n">can</span> <span class="n">degrade</span> <span class="n">performance</span> <span class="ow">or</span> <span class="n">cause</span> <span class="n">incorrect</span> <span class="n">results</span><span class="o">.</span> <span class="n">The</span> <span class="n">best</span> <span class="n">thing</span> <span class="n">to</span> <span class="n">do</span> <span class="ow">is</span> <span class="n">to</span> <span class="n">ensure</span> <span class="n">that</span> <span class="n">only</span> <span class="n">a</span> <span class="n">single</span> <span class="n">OpenMP</span> <span class="n">runtime</span> <span class="ow">is</span> <span class="n">linked</span> <span class="n">into</span> <span class="n">the</span> <span class="n">process</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">by</span> <span class="n">avoiding</span> <span class="n">static</span> <span class="n">linking</span> <span class="n">of</span> <span class="n">the</span> <span class="n">OpenMP</span> <span class="n">runtime</span> <span class="ow">in</span> <span class="nb">any</span> <span class="n">library</span><span class="o">.</span> <span class="n">As</span> <span class="n">an</span> <span class="n">unsafe</span><span class="p">,</span> <span class="n">unsupported</span><span class="p">,</span> <span class="n">undocumented</span> <span class="n">workaround</span> <span class="n">you</span> <span class="n">can</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">environment</span> <span class="n">variable</span> <span class="n">KMP_DUPLICATE_LIB_OK</span><span class="o">=</span><span class="n">TRUE</span> <span class="n">to</span> <span class="n">allow</span> <span class="n">the</span> <span class="n">program</span> <span class="n">to</span> <span class="k">continue</span> <span class="n">to</span> <span class="n">execute</span><span class="p">,</span> <span class="n">but</span> <span class="n">that</span> <span class="n">may</span> <span class="n">cause</span> <span class="n">crashes</span> <span class="ow">or</span> <span class="n">silently</span> <span class="n">produce</span> <span class="n">incorrect</span> <span class="n">results</span><span class="o">.</span> <span class="n">For</span> <span class="n">more</span> <span class="n">information</span><span class="p">,</span> <span class="n">please</span> <span class="n">see</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">intel</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">products</span><span class="o">/</span><span class="n">support</span><span class="o">/.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Solution 10</strong>: File extensions in the error message may differ depending on the operating system.
+This error means that you have multiple OpenMP libraries installed on your machine and they conflict with each other.</p>
+<p>If you are using Python distributed by Conda, then it is highly likely that the error is caused by the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> package from Conda which includes the <code class="docutils literal notranslate"><span class="pre">mkl</span></code> package which in turn conflicts with the system-wide library.
+In this case you can update the <code class="docutils literal notranslate"><span class="pre">numpy</span></code> package in Conda or replace the Conda’s OpenMP library instance with system-wide one by creating a symlink to it in Conda environment folder <code class="docutils literal notranslate"><span class="pre">$CONDA_PREFIX/lib</span></code>.</p>
+<p>Assuming you are using macOS with Homebrew, the command which overwrites OpenMP library files in the current active Conda environment with symlinks to the system-wide library ones installed by Homebrew:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ln -sf `ls -d &quot;$(brew --cellar libomp)&quot;/*/lib`/* $CONDA_PREFIX/lib
+</pre></div>
+</div>
+<p>If this is not your case, then you should find conflicting OpenMP library installations on your own and leave only one of them.</p>
+</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="r-package">
+<h2>R-package<a class="headerlink" href="#r-package" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Question 1</strong>: Any training command using LightGBM does not work after an error occurred during the training of a previous LightGBM model.</li>
+<li><strong>Solution 1</strong>: Run <code class="docutils literal notranslate"><span class="pre">lgb.unloader(wipe</span> <span class="pre">=</span> <span class="pre">TRUE)</span></code> in the R console, and recreate the LightGBM datasets (this will wipe all LightGBM-related variables).
+Due to the pointers, choosing to not wipe variables will not fix the error.
+This is a known issue: <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/698">Microsoft/LightGBM#698</a>.</li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><strong>Question 2</strong>: I used <code class="docutils literal notranslate"><span class="pre">setinfo</span></code>, tried to print my <code class="docutils literal notranslate"><span class="pre">lgb.Dataset</span></code>, and now the R console froze!</li>
+<li><strong>Solution 2</strong>: Avoid printing the <code class="docutils literal notranslate"><span class="pre">lgb.Dataset</span></code> after using <code class="docutils literal notranslate"><span class="pre">setinfo</span></code>.
+This is a known bug: <a class="reference external" href="https://github.com/Microsoft/LightGBM/issues/539">Microsoft/LightGBM#539</a>.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="python-package">
+<h2>Python-package<a class="headerlink" href="#python-package" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><strong>Question 1</strong>: I see error messages like this when install from GitHub using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">error</span><span class="p">:</span> <span class="n">Error</span><span class="p">:</span> <span class="n">setup</span> <span class="n">script</span> <span class="n">specifies</span> <span class="n">an</span> <span class="n">absolute</span> <span class="n">path</span><span class="p">:</span>
+<span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">package</span><span class="o">/</span><span class="n">lightgbm</span><span class="o">/../../</span><span class="n">lib_lightgbm</span><span class="o">.</span><span class="n">so</span>
+<span class="n">setup</span><span class="p">()</span> <span class="n">arguments</span> <span class="n">must</span> <span class="o">*</span><span class="n">always</span><span class="o">*</span> <span class="n">be</span> <span class="o">/-</span><span class="n">separated</span> <span class="n">paths</span> <span class="n">relative</span> <span class="n">to</span> <span class="n">the</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">directory</span><span class="p">,</span> <span class="o">*</span><span class="n">never</span><span class="o">*</span> <span class="n">absolute</span> <span class="n">paths</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Solution 1</strong>: This error should be solved in latest version.
+If you still meet this error, try to remove <code class="docutils literal notranslate"><span class="pre">lightgbm.egg-info</span></code> folder in your Python-package and reinstall,
+or check <a class="reference external" href="http://stackoverflow.com/questions/18085571/pip-install-error-setup-script-specifies-an-absolute-path">this thread on stackoverflow</a>.</p>
+</li>
+</ul>
+<hr class="docutils" />
+<ul>
+<li><p class="first"><strong>Question 2</strong>: I see error messages like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cannot</span> <span class="n">get</span><span class="o">/</span><span class="nb">set</span> <span class="n">label</span><span class="o">/</span><span class="n">weight</span><span class="o">/</span><span class="n">init_score</span><span class="o">/</span><span class="n">group</span><span class="o">/</span><span class="n">num_data</span><span class="o">/</span><span class="n">num_feature</span> <span class="n">before</span> <span class="n">construct</span> <span class="n">dataset</span>
+</pre></div>
+</div>
+<p>but I’ve already constructed a dataset by some code like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">lightgbm</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or error messages like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cannot</span> <span class="nb">set</span> <span class="n">predictor</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">categorical</span> <span class="n">feature</span> <span class="n">after</span> <span class="n">freed</span> <span class="n">raw</span> <span class="n">data</span><span class="p">,</span> <span class="nb">set</span> <span class="n">free_raw_data</span><span class="o">=</span><span class="kc">False</span> <span class="n">when</span> <span class="n">construct</span> <span class="n">Dataset</span> <span class="n">to</span> <span class="n">avoid</span> <span class="n">this</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><strong>Solution 2</strong>: Because LightGBM constructs bin mappers to build trees, and train and valid Datasets within one Booster share the same bin mappers,
+categorical features and feature names etc., the Dataset objects are constructed when constructing a Booster.
+If you set <code class="docutils literal notranslate"><span class="pre">free_raw_data=True</span></code> (default), the raw data (with Python data struct) will be freed.
+So, if you want to:</p>
+<ul class="simple">
+<li>get label (or weight/init_score/group) before constructing a dataset, it’s same as get <code class="docutils literal notranslate"><span class="pre">self.label</span></code></li>
+<li>set label (or weight/init_score/group) before constructing a dataset, it’s same as <code class="docutils literal notranslate"><span class="pre">self.label=some_label_array</span></code></li>
+<li>get num_data (or num_feature) before constructing a dataset, you can get data with <code class="docutils literal notranslate"><span class="pre">self.data</span></code>.
+Then, if your data is <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, use some code like <code class="docutils literal notranslate"><span class="pre">self.data.shape</span></code></li>
+<li>set predictor (or reference/categorical feature) after constructing a dataset,
+you should set <code class="docutils literal notranslate"><span class="pre">free_raw_data=False</span></code> or init a Dataset object with the same raw data</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Development-Guide.html" class="btn btn-neutral float-right" title="Development Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Advanced-Topics.html" class="btn btn-neutral" title="Advanced Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

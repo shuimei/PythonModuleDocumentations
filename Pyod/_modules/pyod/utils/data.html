@@ -1,0 +1,249 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.utils.data &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.utils.data</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Utility functions for manipulating data</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">column_or_1d</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_random_state</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_auc_score</span>
+
+<span class="kn">from</span> <span class="nn">pyod.utils.utility</span> <span class="k">import</span> <span class="n">precision_n_scores</span>
+
+<span class="n">MAX_INT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_data</span><span class="p">(</span><span class="n">n_inliers</span><span class="p">,</span> <span class="n">n_outliers</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">coef</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                   <span class="n">random_state</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Internal function to generate data samples</span>
+
+<span class="sd">    :param n_inliers: The number of inliers.</span>
+<span class="sd">    :type n_inliers: int</span>
+
+<span class="sd">    :param n_outliers: The number of outliers.</span>
+<span class="sd">    :type n_outliers: int</span>
+
+<span class="sd">    :param n_features: The number of features.</span>
+<span class="sd">    :type n_features: int</span>
+
+<span class="sd">    :param coef: The coefficient of data generation</span>
+<span class="sd">    :type coef: float in range [0,1)+0.001</span>
+
+<span class="sd">    :param offset: The offset of data generation</span>
+<span class="sd">    :type offset: int</span>
+
+<span class="sd">    :param random_state: The random number generator</span>
+<span class="sd">    :type random_state: RandomState instance.</span>
+
+<span class="sd">    :return: X,y</span>
+<span class="sd">    :rtype: numpy array of shape (n_samples, n_features) and (n_features,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">inliers</span> <span class="o">=</span> <span class="n">coef</span> <span class="o">*</span> <span class="n">random_state</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n_inliers</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span>
+    <span class="n">outliers</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">offset</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+                                    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_outliers</span><span class="p">,</span> <span class="n">n_features</span><span class="p">))</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">inliers</span><span class="p">,</span> <span class="n">outliers</span><span class="p">]</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_inliers</span><span class="p">,)),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_outliers</span><span class="p">,))]</span>
+
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+
+
+<div class="viewcode-block" id="generate_data"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.data.generate_data">[docs]</a><span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">n_train</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_test</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                  <span class="n">train_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Utility function to generate synthesized data</span>
+<span class="sd">    normal data is generated by a multivariate Gaussian distribution and</span>
+<span class="sd">    outliers are generated by a uniform distribution.</span>
+
+<span class="sd">    :param n_train: number of training points to generate</span>
+<span class="sd">    :type n_train: int, (default=1000)</span>
+
+<span class="sd">    :param n_test: number of test points to generate</span>
+<span class="sd">    :type n_test: int</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set,</span>
+<span class="sd">        i.e. the proportion of outliers in the data set. Used when fitting to</span>
+<span class="sd">        define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :param n_features: The number of features</span>
+<span class="sd">    :type n_features: int, optional (default=2)</span>
+
+<span class="sd">    :param train_only: If true, generate train data only</span>
+<span class="sd">    :type train_only: bool, optional(default=False)</span>
+
+<span class="sd">    :param offset: Adjust the value range of Gaussian and Uniform</span>
+<span class="sd">    :type offset: int, optional (default=10)</span>
+
+<span class="sd">    :param random_state: If int, random_state is the seed used by the</span>
+<span class="sd">        random number generator; If RandomState instance, random_state is</span>
+<span class="sd">        the random number generator; If None, the random number generator</span>
+<span class="sd">        is the RandomState instance used by `np.random`.</span>
+<span class="sd">    :type random_state: int, RandomState instance or None,</span>
+<span class="sd">        optional (default=None)</span>
+
+<span class="sd">    :return: training data(X_train, y_test) and test data (X_test, y_test)</span>
+<span class="sd">    :rtype: tuple, (ndarry, ndarry, ndarry, ndarry)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># initialize a random state and seeds for the instance</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="n">offset_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">offset</span><span class="p">)</span>
+    <span class="n">coef_</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">random_sample</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.001</span>  <span class="c1"># in case of underflow</span>
+
+    <span class="n">n_outliers_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_train</span> <span class="o">*</span> <span class="n">contamination</span><span class="p">)</span>
+    <span class="n">n_inliers_train</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_train</span> <span class="o">-</span> <span class="n">n_outliers_train</span><span class="p">)</span>
+
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">_generate_data</span><span class="p">(</span><span class="n">n_inliers_train</span><span class="p">,</span> <span class="n">n_outliers_train</span><span class="p">,</span>
+                                      <span class="n">n_features</span><span class="p">,</span> <span class="n">coef_</span><span class="p">,</span> <span class="n">offset_</span><span class="p">,</span> <span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">train_only</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span>
+
+    <span class="n">n_outliers_test</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_test</span> <span class="o">*</span> <span class="n">contamination</span><span class="p">)</span>
+    <span class="n">n_inliers_test</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_test</span> <span class="o">-</span> <span class="n">n_outliers_test</span><span class="p">)</span>
+
+    <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">_generate_data</span><span class="p">(</span><span class="n">n_inliers_test</span><span class="p">,</span> <span class="n">n_outliers_test</span><span class="p">,</span>
+                                    <span class="n">n_features</span><span class="p">,</span> <span class="n">coef_</span><span class="p">,</span> <span class="n">offset_</span><span class="p">,</span> <span class="n">random_state</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span></div>
+
+
+<div class="viewcode-block" id="get_color_codes"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.data.get_color_codes">[docs]</a><span class="k">def</span> <span class="nf">get_color_codes</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal function to generate color codes for inliers and outliers</span>
+<span class="sd">    Inliers (0): blue</span>
+<span class="sd">    Outlier (1): red</span>
+
+<span class="sd">    :param y: The binary labels of the groud truth, where 0 is inlier</span>
+<span class="sd">    :type y: list, array, numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :return: The list of color codes [&#39;r&#39;, &#39;b&#39;, ..., &#39;b&#39;]</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># inliers are assigned blue</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)],</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">outliers_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># outlier are assigned red</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">outliers_ind</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+
+    <span class="k">return</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="evaluate_print"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.data.evaluate_print">[docs]</a><span class="k">def</span> <span class="nf">evaluate_print</span><span class="p">(</span><span class="n">clf_name</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility function for evaluating and printing the results for examples</span>
+<span class="sd">    Internal use only</span>
+
+<span class="sd">    :param clf_name: The name of the detector</span>
+<span class="sd">    :type clf_name: str</span>
+
+<span class="sd">    :param y: The ground truth</span>
+<span class="sd">    :type y: list or array of shape (n_samples,)</span>
+
+<span class="sd">    :param y_pred: The predicted outlier scores</span>
+<span class="sd">    :type y: list or array of shape (n_samples,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">column_or_1d</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{clf_name}</span><span class="s1"> ROC:</span><span class="si">{roc}</span><span class="s1">, precision @ rank n:</span><span class="si">{prn}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">clf_name</span><span class="o">=</span><span class="n">clf_name</span><span class="p">,</span>
+        <span class="n">roc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">),</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+        <span class="n">prn</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">precision_n_scores</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">),</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">4</span><span class="p">)))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

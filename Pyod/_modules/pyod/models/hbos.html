@@ -1,0 +1,256 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.hbos &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.hbos</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Histogram-based Outlier Detection (HBOS)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">check_parameter</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+
+
+<div class="viewcode-block" id="HBOS"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.hbos.HBOS">[docs]</a><span class="k">class</span> <span class="nc">HBOS</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Histogram- based outlier detection (HBOS) is an efficient unsupervised</span>
+<span class="sd">    method [1]. It assumes the feature independence and calculates the degree</span>
+<span class="sd">    of outlyingness by building histograms. See :cite:`goldstein2012histogram`</span>
+<span class="sd">    for details.</span>
+
+<span class="sd">    :param n_bins: The number of bins</span>
+<span class="sd">    :type n_bins: int, optional (default=10)</span>
+
+<span class="sd">    :param alpha: The regularizer for preventing overflow</span>
+<span class="sd">    :type alpha: float in (0, 1), optional (default=0.1)</span>
+
+<span class="sd">    :param tol: The parameter to decide the flexibility while dealing</span>
+<span class="sd">        the samples falling outside the bins.</span>
+<span class="sd">    :type tol: float in (0, 1), optional (default=0.1)</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set, i.e.</span>
+<span class="sd">        the proportion of outliers in the data set. When fitting this is used</span>
+<span class="sd">        to define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :var bin_edges\_: The edges of the bins</span>
+<span class="sd">    :vartype bin_edges\_: numpy array of shape (n_bins + 1, n_features )</span>
+
+<span class="sd">    :var hist\_: The density of each histogram</span>
+<span class="sd">    :vartype hist\_: numpy array of shape (n_bins, n_features)</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">HBOS</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">=</span> <span class="n">n_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+
+        <span class="n">check_parameter</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;alpha&#39;</span><span class="p">)</span>
+        <span class="n">check_parameter</span><span class="p">(</span><span class="n">tol</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">param_name</span><span class="o">=</span><span class="s1">&#39;tol&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HBOS.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.hbos.HBOS.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">n_features</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="p">])</span>
+
+        <span class="c1"># build the histograms for all dimensions</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hist_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># the sum of (width * height) should equal to 1</span>
+            <span class="k">assert</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hist_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">))</span>
+
+        <span class="n">outlier_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_outlier_scores</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># Invert decision_scores_. Outliers comes with higher outlier scores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">outlier_scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="HBOS.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.hbos.HBOS.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;hist_&#39;</span><span class="p">,</span> <span class="s1">&#39;bin_edges_&#39;</span><span class="p">])</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">outlier_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_outlier_scores</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">outlier_scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span></div>
+
+    <span class="k">def</span> <span class="nf">_calculate_outlier_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The internal function to calculate the outlier scores based on</span>
+<span class="sd">        the bins and histograms constructed with the training data</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :return: outlier scores on all features (dimensions)</span>
+<span class="sd">        :rtype: numpy array of shape (n_samples, n_features)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">outlier_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_features</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_features</span><span class="p">):</span>
+
+            <span class="c1"># Find the indices of the bins to which each value belongs.</span>
+            <span class="c1"># See documentation for np.digitize since it is tricky</span>
+            <span class="c1"># &gt;&gt;&gt; x = np.array([0.2, 6.4, 3.0, 1.6, -1, 100, 10])</span>
+            <span class="c1"># &gt;&gt;&gt; bins = np.array([0.0, 1.0, 2.5, 4.0, 10.0])</span>
+            <span class="c1"># &gt;&gt;&gt; np.digitize(x, bins, right=True)</span>
+            <span class="c1"># array([1, 4, 3, 2, 0, 5, 4], dtype=int64)</span>
+
+            <span class="n">bin_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
+                                   <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Calculate the outlying scores on dimension i</span>
+            <span class="c1"># Add a regularizer for preventing overflow</span>
+            <span class="n">out_score_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hist_</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+
+                <span class="c1"># If the sample does not belong to any bins</span>
+                <span class="c1"># bin_ind == 0 (fall outside since it is too small)</span>
+                <span class="k">if</span> <span class="n">bin_inds</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+                    <span class="n">bin_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+
+                    <span class="c1"># If it is only slightly lower than the smallest bin edge</span>
+                    <span class="c1"># assign it to bin 1</span>
+                    <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">bin_width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
+                        <span class="n">outlier_scores</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_score_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">outlier_scores</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">out_score_i</span><span class="p">)</span>
+
+                <span class="c1"># If the sample does not belong to any bins</span>
+                <span class="c1"># bin_ind == n_bins+1 (fall outside since it is too large)</span>
+                <span class="k">elif</span> <span class="n">bin_inds</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">dist</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+                    <span class="n">bin_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_edges_</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+
+                    <span class="c1"># If it is only slightly larger than the largest bin edge</span>
+                    <span class="c1"># assign it to the last bin</span>
+                    <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">bin_width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
+                        <span class="n">outlier_scores</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_score_i</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bins</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">outlier_scores</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">out_score_i</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">outlier_scores</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_score_i</span><span class="p">[</span><span class="n">bin_inds</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">outlier_scores</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

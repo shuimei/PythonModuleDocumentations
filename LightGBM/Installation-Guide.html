@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation Guide &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick Start" href="Quick-Start.html" />
+    <link rel="prev" title="Welcome to LightGBM’s documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#windows">Windows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visual-studio-or-vs-build-tools">Visual Studio (or VS Build Tools)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#with-gui">With GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#from-command-line">From Command Line</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mingw-w64">MinGW-w64</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#linux">Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#macos">macOS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#apple-clang">Apple Clang</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gcc">gcc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-mpi-version">Build MPI Version</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Windows</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">With GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">From Command Line</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">macOS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Apple Clang</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">gcc</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#build-gpu-version">Build GPU Version</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#build-hdfs-version">Build HDFS Version</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#build-java-wrapper">Build Java Wrapper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Windows</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vs-build-tools">VS Build Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">MinGW-w64</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Linux</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Installation-Guide.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation-guide">
+<h1>Installation Guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline">¶</a></h1>
+<p>Here is the guide for the build of LightGBM CLI version.</p>
+<p>For the build of Python-package and R-package, please refer to <a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/python-package">Python-package</a> and <a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/R-package">R-package</a> folders respectively.</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="#windows">Windows</a></li>
+<li><a class="reference external" href="#linux">Linux</a></li>
+<li><a class="reference external" href="#macos">macOS</a></li>
+<li><a class="reference external" href="#docker">Docker</a></li>
+<li><a class="reference external" href="#build-mpi-version">MPI Version</a></li>
+<li><a class="reference external" href="#build-gpu-version">GPU Version</a></li>
+<li><a class="reference external" href="#build-hdfs-version">HDFS Version</a></li>
+<li><a class="reference external" href="#build-java-wrapper">Java Wrapper</a></li>
+</ul>
+<div class="section" id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>On Windows LightGBM can be built using</p>
+<ul class="simple">
+<li><strong>Visual Studio</strong>;</li>
+<li><strong>CMake</strong> and <strong>VS Build Tools</strong>;</li>
+<li><strong>CMake</strong> and <strong>MinGW</strong>.</li>
+</ul>
+<div class="section" id="visual-studio-or-vs-build-tools">
+<h3>Visual Studio (or VS Build Tools)<a class="headerlink" href="#visual-studio-or-vs-build-tools" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="with-gui">
+<h4>With GUI<a class="headerlink" href="#with-gui" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">Visual Studio</a> (2015 or newer).</p>
+</li>
+<li><p class="first">Download <a class="reference external" href="https://github.com/Microsoft/LightGBM/archive/master.zip">zip archive</a> and unzip it.</p>
+</li>
+<li><p class="first">Go to <code class="docutils literal notranslate"><span class="pre">LightGBM-master/windows</span></code> folder.</p>
+</li>
+<li><p class="first">Open <code class="docutils literal notranslate"><span class="pre">LightGBM.sln</span></code> file with <strong>Visual Studio</strong>, choose <code class="docutils literal notranslate"><span class="pre">Release</span></code> configuration and click <code class="docutils literal notranslate"><span class="pre">BUILD</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">Solution</span> <span class="pre">(Ctrl+Shift+B)</span></code>.</p>
+<p>If you have errors about <strong>Platform Toolset</strong>, go to <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Properties</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Configuration</span> <span class="pre">Properties</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">General</span></code> and select the toolset installed on your machine.</p>
+</li>
+</ol>
+<p>The exe file will be in <code class="docutils literal notranslate"><span class="pre">LightGBM-master/windows/x64/Release</span></code> folder.</p>
+</div>
+<div class="section" id="from-command-line">
+<h4>From Command Line<a class="headerlink" href="#from-command-line" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> (3.8 or higher) and <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">VS Build Tools</a> (<strong>VS Build Tools</strong> is not needed if <strong>Visual Studio</strong> (2015 or newer) is already installed).</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_GENERATOR_PLATFORM</span><span class="o">=</span><span class="n">x64</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="o">.</span> <span class="o">--</span><span class="n">target</span> <span class="n">ALL_BUILD</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The exe and dll files will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/Release</span></code> folder.</p>
+</div>
+</div>
+<div class="section" id="mingw-w64">
+<h3>MinGW-w64<a class="headerlink" href="#mingw-w64" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> and <a class="reference external" href="https://mingw-w64.org/doku.php/download">MinGW-w64</a>.</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s2">&quot;MinGW Makefiles&quot;</span> <span class="o">..</span>
+<span class="n">mingw32</span><span class="o">-</span><span class="n">make</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The exe and dll files will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/</span></code> folder.</p>
+<p><strong>Note</strong>: You may need to run the <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-G</span> <span class="pre">&quot;MinGW</span> <span class="pre">Makefiles&quot;</span> <span class="pre">..</span></code> one more time if you encounter the <code class="docutils literal notranslate"><span class="pre">sh.exe</span> <span class="pre">was</span> <span class="pre">found</span> <span class="pre">in</span> <span class="pre">your</span> <span class="pre">PATH</span></code> error.</p>
+<p>It is recommended to use <strong>Visual Studio</strong> for its better multithreading efficiency in <strong>Windows</strong> for many-core systems (see <a class="reference external" href="./FAQ.rst#lightgbm">FAQ</a> Question 4 and Question 8).</p>
+<p>Also, you may want to read <a class="reference external" href="./gcc-Tips.rst">gcc Tips</a>.</p>
+</div>
+</div>
+<div class="section" id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+<p>On Linux LightGBM can be built using <strong>CMake</strong> and <strong>gcc</strong> or <strong>Clang</strong>.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a>.</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Note</strong>: glibc &gt;= 2.14 is required.</p>
+<p>Also, you may want to read <a class="reference external" href="./gcc-Tips.rst">gcc Tips</a>.</p>
+</div>
+<div class="section" id="macos">
+<h2>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h2>
+<p>On macOS LightGBM can be built using <strong>CMake</strong> and <strong>Apple Clang</strong> or <strong>gcc</strong>.</p>
+<div class="section" id="apple-clang">
+<h3>Apple Clang<a class="headerlink" href="#apple-clang" title="Permalink to this headline">¶</a></h3>
+<p>Only <strong>Apple Clang</strong> version 8.1 or higher is supported.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a> (3.12 or higher):</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>OpenMP</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">libomp</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="gcc">
+<h3>gcc<a class="headerlink" href="#gcc" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a> (3.2 or higher):</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>gcc</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">gcc</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">g</span><span class="o">++-</span><span class="mi">7</span> <span class="n">CC</span><span class="o">=</span><span class="n">gcc</span><span class="o">-</span><span class="mi">7</span>  <span class="c1"># replace &quot;7&quot; with version of gcc installed on your machine</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Also, you may want to read <a class="reference external" href="./gcc-Tips.rst">gcc Tips</a>.</p>
+</div>
+</div>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<p>Refer to <a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/docker">Docker folder</a>.</p>
+</div>
+<div class="section" id="build-mpi-version">
+<h2>Build MPI Version<a class="headerlink" href="#build-mpi-version" title="Permalink to this headline">¶</a></h2>
+<p>The default build version of LightGBM is based on socket. LightGBM also supports MPI.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Message_Passing_Interface">MPI</a> is a high performance communication approach with <a class="reference external" href="https://en.wikipedia.org/wiki/Remote_direct_memory_access">RDMA</a> support.</p>
+<p>If you need to run a parallel learning application with high performance communication, you can build the LightGBM with MPI support.</p>
+<div class="section" id="id1">
+<h3>Windows<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>On Windows MPI version of LightGBM can be built using</p>
+<ul class="simple">
+<li><strong>MS MPI</strong> and <strong>Visual Studio</strong>;</li>
+<li><strong>MS MPI</strong>, <strong>CMake</strong> and <strong>VS Build Tools</strong>.</li>
+</ul>
+<div class="section" id="id2">
+<h4>With GUI<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">You need to install <a class="reference external" href="https://www.microsoft.com/en-us/download/details.aspx?id=49926">MS MPI</a> first. Both <code class="docutils literal notranslate"><span class="pre">msmpisdk.msi</span></code> and <code class="docutils literal notranslate"><span class="pre">MSMpiSetup.exe</span></code> are needed.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">Visual Studio</a> (2015 or newer).</p>
+</li>
+<li><p class="first">Download <a class="reference external" href="https://github.com/Microsoft/LightGBM/archive/master.zip">zip archive</a> and unzip it.</p>
+</li>
+<li><p class="first">Go to <code class="docutils literal notranslate"><span class="pre">LightGBM-master/windows</span></code> folder.</p>
+</li>
+<li><p class="first">Open <code class="docutils literal notranslate"><span class="pre">LightGBM.sln</span></code> file with <strong>Visual Studio</strong>, choose <code class="docutils literal notranslate"><span class="pre">Release_mpi</span></code> configuration and click <code class="docutils literal notranslate"><span class="pre">BUILD</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">Solution</span> <span class="pre">(Ctrl+Shift+B)</span></code>.</p>
+<p>If you have errors about <strong>Platform Toolset</strong>, go to <code class="docutils literal notranslate"><span class="pre">PROJECT</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Properties</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">Configuration</span> <span class="pre">Properties</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">General</span></code> and select the toolset installed on your machine.</p>
+</li>
+</ol>
+<p>The exe file will be in <code class="docutils literal notranslate"><span class="pre">LightGBM-master/windows/x64/Release_mpi</span></code> folder.</p>
+</div>
+<div class="section" id="id3">
+<h4>From Command Line<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">You need to install <a class="reference external" href="https://www.microsoft.com/en-us/download/details.aspx?id=49926">MS MPI</a> first. Both <code class="docutils literal notranslate"><span class="pre">msmpisdk.msi</span></code> and <code class="docutils literal notranslate"><span class="pre">MSMpiSetup.exe</span></code> are needed.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> (3.8 or higher) and <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">VS Build Tools</a> (<strong>VS Build Tools</strong> is not needed if <strong>Visual Studio</strong> (2015 or newer) is already installed).</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_GENERATOR_PLATFORM</span><span class="o">=</span><span class="n">x64</span> <span class="o">-</span><span class="n">DUSE_MPI</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="o">.</span> <span class="o">--</span><span class="n">target</span> <span class="n">ALL_BUILD</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The exe and dll files will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/Release</span></code> folder.</p>
+<p><strong>Note</strong>: Building MPI version by <strong>MinGW</strong> is not supported due to the miss of MPI library in it.</p>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Linux<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>On Linux MPI version of LightGBM can be built using <strong>Open MPI</strong>, <strong>CMake</strong> and <strong>gcc</strong> or <strong>Clang</strong>.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://www.open-mpi.org/">Open MPI</a>.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a>.</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_MPI</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><strong>Note</strong>: glibc &gt;= 2.14 is required.</p>
+</div>
+<div class="section" id="id5">
+<h3>macOS<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>On macOS MPI version of LightGBM can be built using <strong>Open MPI</strong>, <strong>CMake</strong> and <strong>Apple Clang</strong> or <strong>gcc</strong>.</p>
+<div class="section" id="id6">
+<h4>Apple Clang<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<p>Only <strong>Apple Clang</strong> version 8.1 or higher is supported.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a> (3.12 or higher):</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>OpenMP</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">libomp</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>Open MPI</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="nb">open</span><span class="o">-</span><span class="n">mpi</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_MPI</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id7">
+<h4>gcc<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a> (3.2 or higher):</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>gcc</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">gcc</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Install <strong>Open MPI</strong>:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="nb">open</span><span class="o">-</span><span class="n">mpi</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">g</span><span class="o">++-</span><span class="mi">7</span> <span class="n">CC</span><span class="o">=</span><span class="n">gcc</span><span class="o">-</span><span class="mi">7</span>  <span class="c1"># replace &quot;7&quot; with version of gcc installed on your machine</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_MPI</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="section" id="build-gpu-version">
+<h2>Build GPU Version<a class="headerlink" href="#build-gpu-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h3>Linux<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>On Linux GPU version of LightGBM can be built using <strong>OpenCL</strong>, <strong>Boost</strong>, <strong>CMake</strong> and <strong>gcc</strong> or <strong>Clang</strong>.</p>
+<p>The following dependencies should be installed before compilation:</p>
+<ul>
+<li><p class="first"><strong>OpenCL</strong> 1.2 headers and libraries, which is usually provided by GPU manufacture.</p>
+<p>The generic OpenCL ICD packages (for example, Debian package <code class="docutils literal notranslate"><span class="pre">cl-icd-libopencl1</span></code> and <code class="docutils literal notranslate"><span class="pre">cl-icd-opencl-dev</span></code>) can also be used.</p>
+</li>
+<li><p class="first"><strong>libboost</strong> 1.56 or later (1.61 or later is recommended).</p>
+<p>We use Boost.Compute as the interface to GPU, which is part of the Boost library since version 1.61. However, since we include the source code of Boost.Compute as a submodule, we only require the host has Boost 1.56 or later installed. We also use Boost.Align for memory allocation. Boost.Compute requires Boost.System and Boost.Filesystem to store offline kernel cache.</p>
+<p>The following Debian packages should provide necessary Boost libraries: <code class="docutils literal notranslate"><span class="pre">libboost-dev</span></code>, <code class="docutils literal notranslate"><span class="pre">libboost-system-dev</span></code>, <code class="docutils literal notranslate"><span class="pre">libboost-filesystem-dev</span></code>.</p>
+</li>
+<li><p class="first"><strong>CMake</strong> 3.2 or later.</p>
+</li>
+</ul>
+<p>To build LightGBM GPU version, run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_GPU</span><span class="o">=</span><span class="mi">1</span> <span class="o">..</span>
+<span class="c1"># if you have installed NVIDIA CUDA to a customized location, you should specify paths to OpenCL headers and library like the following:</span>
+<span class="c1"># cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ ..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>Windows<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>On Windows GPU version of LightGBM can be built using <strong>OpenCL</strong>, <strong>Boost</strong>, <strong>CMake</strong> and <strong>VS Build Tools</strong> or <strong>MinGW</strong>.</p>
+<p>If you use <strong>MinGW</strong>, the build procedure is similar to the build on Linux. Refer to <a class="reference external" href="./GPU-Windows.rst">GPU Windows Compilation</a> to get more details.</p>
+<p>Following procedure is for the <strong>MSVC</strong> (Microsoft Visual C++) build.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> (3.8 or higher) and <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">VS Build Tools</a> (<strong>VS Build Tools</strong> is not needed if <strong>Visual Studio</strong> (2015 or newer) is installed).</p>
+</li>
+<li><p class="first">Install <strong>OpenCL</strong> for Windows. The installation depends on the brand (NVIDIA, AMD, Intel) of your GPU card.</p>
+<ul class="simple">
+<li>For running on Intel, get <a class="reference external" href="https://software.intel.com/en-us/articles/opencl-drivers">Intel SDK for OpenCL</a>.</li>
+<li>For running on AMD, get AMD APP SDK.</li>
+<li>For running on NVIDIA, get <a class="reference external" href="https://developer.nvidia.com/cuda-downloads">CUDA Toolkit</a>.</li>
+</ul>
+<p>Further reading and correspondence table: <a class="reference external" href="./GPU-Targets.rst">GPU SDK Correspondence and Device Targeting Table</a>.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="https://sourceforge.net/projects/boost/files/boost-binaries/1.64.0/">Boost Binary</a>.</p>
+<p><strong>Note</strong>: Match your Visual C++ version:</p>
+<p>Visual Studio 2015 -&gt; <code class="docutils literal notranslate"><span class="pre">msvc-14.0-64.exe</span></code>,</p>
+<p>Visual Studio 2017 -&gt; <code class="docutils literal notranslate"><span class="pre">msvc-14.1-64.exe</span></code>.</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Set</span> <span class="n">BOOST_ROOT</span><span class="o">=</span><span class="n">C</span><span class="p">:</span>\<span class="n">local</span>\<span class="n">boost_1_64_0</span>\
+<span class="n">Set</span> <span class="n">BOOST_LIBRARYDIR</span><span class="o">=</span><span class="n">C</span><span class="p">:</span>\<span class="n">local</span>\<span class="n">boost_1_64_0</span>\<span class="n">lib64</span><span class="o">-</span><span class="n">msvc</span><span class="o">-</span><span class="mf">14.0</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_GENERATOR_PLATFORM</span><span class="o">=</span><span class="n">x64</span> <span class="o">-</span><span class="n">DUSE_GPU</span><span class="o">=</span><span class="mi">1</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="o">.</span> <span class="o">--</span><span class="n">target</span> <span class="n">ALL_BUILD</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">C:\local\boost_1_64_0\</span></code> and <code class="docutils literal notranslate"><span class="pre">C:\local\boost_1_64_0\lib64-msvc-14.0</span></code> are locations of your <strong>Boost</strong> binaries. You also can set them to the environment variable to avoid <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">...</span></code> commands when build.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id10">
+<h3>Docker<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>Refer to <a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/docker/gpu">GPU Docker folder</a>.</p>
+</div>
+</div>
+<div class="section" id="build-hdfs-version">
+<h2>Build HDFS Version<a class="headerlink" href="#build-hdfs-version" title="Permalink to this headline">¶</a></h2>
+<p><strong>Note</strong>: Installation process of HDFS version is untested.</p>
+<div class="section" id="id11">
+<h3>Linux<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>On Linux HDFS version of LightGBM can be built using <strong>CMake</strong> and <strong>gcc</strong> or <strong>Clang</strong>.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a>.</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_HDFS</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="build-java-wrapper">
+<h2>Build Java Wrapper<a class="headerlink" href="#build-java-wrapper" title="Permalink to this headline">¶</a></h2>
+<p>By the following instructions you can generate a JAR file containing the LightGBM <a class="reference external" href="./Development-Guide.rst#c-api">C API</a> wrapped by <strong>SWIG</strong>.</p>
+<div class="section" id="id12">
+<h3>Windows<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>On Windows Java wrapper of LightGBM can be built using <strong>Java</strong>, <strong>SWIG</strong>, <strong>CMake</strong> and <strong>VS Build Tools</strong> or <strong>MinGW</strong>.</p>
+<div class="section" id="vs-build-tools">
+<h4>VS Build Tools<a class="headerlink" href="#vs-build-tools" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> (3.8 or higher) and <a class="reference external" href="https://visualstudio.microsoft.com/downloads/">VS Build Tools</a> (<strong>VS Build Tools</strong> is not needed if <strong>Visual Studio</strong> (2015 or newer) is already installed).</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="http://www.swig.org/download.html">SWIG</a> and <strong>Java</strong> (also make sure that <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> is set properly).</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_GENERATOR_PLATFORM</span><span class="o">=</span><span class="n">x64</span> <span class="o">-</span><span class="n">DUSE_SWIG</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="o">.</span> <span class="o">--</span><span class="n">target</span> <span class="n">ALL_BUILD</span> <span class="o">--</span><span class="n">config</span> <span class="n">Release</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The jar file will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/build</span></code> folder and the dll files will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/Release</span></code> folder.</p>
+</div>
+<div class="section" id="id13">
+<h4>MinGW-w64<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>, <a class="reference external" href="https://cmake.org/">CMake</a> and <a class="reference external" href="https://mingw-w64.org/doku.php/download">MinGW-w64</a>.</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="http://www.swig.org/download.html">SWIG</a> and <strong>Java</strong> (also make sure that <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> is set properly).</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span>
+<span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s2">&quot;MinGW Makefiles&quot;</span> <span class="o">-</span><span class="n">DUSE_SWIG</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">mingw32</span><span class="o">-</span><span class="n">make</span><span class="o">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The jar file will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/build</span></code> folder and the dll files will be in <code class="docutils literal notranslate"><span class="pre">LightGBM/</span></code> folder.</p>
+<p><strong>Note</strong>: You may need to run the <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-G</span> <span class="pre">&quot;MinGW</span> <span class="pre">Makefiles&quot;</span> <span class="pre">-DUSE_SWIG=ON</span> <span class="pre">..</span></code> one more time if you encounter the <code class="docutils literal notranslate"><span class="pre">sh.exe</span> <span class="pre">was</span> <span class="pre">found</span> <span class="pre">in</span> <span class="pre">your</span> <span class="pre">PATH</span></code> error.</p>
+<p>It is recommended to use <strong>VS Build Tools (Visual Studio)</strong> for its better multithreading efficiency in <strong>Windows</strong> for many-core systems (see <a class="reference external" href="./FAQ.rst#lightgbm">FAQ</a> Question 4 and Question 8).</p>
+<p>Also, you may want to read <a class="reference external" href="./gcc-Tips.rst">gcc Tips</a>.</p>
+</div>
+</div>
+<div class="section" id="id14">
+<h3>Linux<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>On Linux Java wrapper of LightGBM can be built using <strong>Java</strong>, <strong>SWIG</strong>, <strong>CMake</strong> and <strong>gcc</strong> or <strong>Clang</strong>.</p>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="https://cmake.org/">CMake</a>, <a class="reference external" href="http://www.swig.org/download.html">SWIG</a> and <strong>Java</strong> (also make sure that <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> is set properly).</p>
+</li>
+<li><p class="first">Run the following commands:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Microsoft</span><span class="o">/</span><span class="n">LightGBM</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">LightGBM</span>
+<span class="n">mkdir</span> <span class="n">build</span> <span class="p">;</span> <span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DUSE_SWIG</span><span class="o">=</span><span class="n">ON</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Quick-Start.html" class="btn btn-neutral float-right" title="Quick Start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to LightGBM’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

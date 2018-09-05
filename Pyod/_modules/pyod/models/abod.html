@@ -1,0 +1,329 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.abod &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.abod</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Angle-based Outlier Detector (ABOD)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">KDTree</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">NearestNeighbors</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">check_parameter</span>
+
+
+<span class="k">def</span> <span class="nf">_calculate_wocs</span><span class="p">(</span><span class="n">curr_pt</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">X_ind</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculated the variance of weighted cosine of a point</span>
+<span class="sd">    wcos = (&lt;a_curr, b_curr&gt;/((|a_curr|*|b_curr|)^2)</span>
+
+<span class="sd">    :param curr_pt: the sample to be calculated</span>
+<span class="sd">    :type curr_pt: array, shape (1, n_features)</span>
+
+<span class="sd">    :param X: the training dataset</span>
+<span class="sd">    :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">    :param X_ind: the valid index of the training data</span>
+<span class="sd">    :type X_ind: list</span>
+
+<span class="sd">    :return: the variance of cosine angle</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wcos_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">curr_pair_inds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">X_ind</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">a_ind</span><span class="p">,</span> <span class="n">b_ind</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">curr_pair_inds</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">a_ind</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">b_ind</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># TODO: implement a faster solution</span>
+        <span class="c1"># curr_pt_mat = np.tile(curr_pt, (n, 1)) # broadcast</span>
+        <span class="c1"># Broadcast and do mat comparison to find the index</span>
+
+        <span class="c1"># skip if no angle can be formed</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">curr_pt</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">curr_pt</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">a_curr</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">curr_pt</span>
+        <span class="n">b_curr</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">curr_pt</span>
+
+        <span class="c1"># wcos = (&lt;a_curr, b_curr&gt;/((|a_curr|*|b_curr|)^2)</span>
+        <span class="n">wcos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a_curr</span><span class="p">,</span> <span class="n">b_curr</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a_curr</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                       <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b_curr</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">wcos_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wcos</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">wcos_list</span><span class="p">)</span>
+
+
+<span class="c1"># noinspection PyPep8Naming</span>
+<div class="viewcode-block" id="ABOD"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.ABOD">[docs]</a><span class="k">class</span> <span class="nc">ABOD</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ABOD class for Angle-base Outlier Detection.</span>
+<span class="sd">    For an observation, the variance of its weighted cosine scores to all</span>
+<span class="sd">    neighbors could be viewed as the outlying score.</span>
+<span class="sd">    See :cite:`kriegel2008angle` for details.</span>
+
+<span class="sd">    Two version of ABOD are supported:</span>
+<span class="sd">    Fast ABOD: use k nearest neighbors to approximate for complexity reduction</span>
+<span class="sd">    Original ABOD: consider all training points with high time complexity at</span>
+<span class="sd">    O(n^3).</span>
+
+<span class="sd">    :param contamination: the amount of contamination of the data set, i.e.</span>
+<span class="sd">        the proportion of outliers in the data set. Used when fitting to</span>
+<span class="sd">        define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0, 0.5], optional (default=0.1)</span>
+
+<span class="sd">    :param n_neighbors: Number of neighbors to use by default</span>
+<span class="sd">        for k neighbors queries.</span>
+<span class="sd">    :type n_neighbors: int, optional (default=10)</span>
+
+<span class="sd">    :param method: {&#39;fast&#39;, &#39;default&#39;}</span>
+
+<span class="sd">            - &#39;fast&#39;: fast ABOD. Only consider n_neighbors of training points</span>
+<span class="sd">            - &#39;default&#39;: original ABOD with all training points, which could be</span>
+<span class="sd">              slow</span>
+<span class="sd">    :type method: str</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;fast&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ABOD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+
+<div class="viewcode-block" id="ABOD.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.ABOD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit_fast</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit_default</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="s2">&quot;is not a valid method&quot;</span><span class="p">)</span>
+
+        <span class="c1"># flip the scores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_fit_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default ABOD method. Use all training points with high complexity</span>
+<span class="sd">        O(n^3). For internal use only</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">):</span>
+            <span class="n">curr_pt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+
+            <span class="c1"># get the index pairs of the neighbors, remove itself from index</span>
+            <span class="n">X_ind</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">))</span>
+            <span class="n">X_ind</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_calculate_wocs</span><span class="p">(</span><span class="n">curr_pt</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span>
+                                                          <span class="n">X_ind</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_fit_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fast ABOD method. Only use n_neighbors for angle calculation</span>
+<span class="sd">        Internal use only</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># make sure the n_neighbors is in the range</span>
+        <span class="n">check_parameter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree_</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">)</span>
+
+        <span class="n">neigh</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">)</span>
+        <span class="n">neigh</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">)</span>
+        <span class="n">ind_arr</span> <span class="o">=</span> <span class="n">neigh</span><span class="o">.</span><span class="n">kneighbors</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+                                   <span class="n">return_distance</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">):</span>
+            <span class="n">curr_pt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">X_ind</span> <span class="o">=</span> <span class="n">ind_arr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_calculate_wocs</span><span class="p">(</span><span class="n">curr_pt</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span>
+                                                          <span class="n">X_ind</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c1"># noinspection PyPep8Naming</span>
+<div class="viewcode-block" id="ABOD.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.ABOD.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s1">&#39;X_train_&#39;</span><span class="p">,</span> <span class="s1">&#39;n_train_&#39;</span><span class="p">,</span> <span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span>  <span class="c1"># fast ABOD</span>
+            <span class="c1"># outliers have higher outlier scores</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decision_function_fast</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># default ABOD</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decision_function_default</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span></div>
+
+    <span class="k">def</span> <span class="nf">_decision_function_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method for predicting outlier scores using default ABOD</span>
+
+<span class="sd">        :param X: The training input samples. Sparse matrices are accepted only</span>
+<span class="sd">            if they are supported by the base estimator.</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+<span class="sd">        :return: The anomaly score of the input samples.</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># initialize the output score</span>
+        <span class="n">pred_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">curr_pt</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="c1"># get the index pairs of the neighbors</span>
+            <span class="n">X_ind</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_train_</span><span class="p">))</span>
+            <span class="n">pred_score</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_calculate_wocs</span><span class="p">(</span><span class="n">curr_pt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="n">X_ind</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pred_score</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_decision_function_fast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal method for predicting outlier scores using Fast ABOD</span>
+
+<span class="sd">        :param X: The training input samples. Sparse matrices are accepted only</span>
+<span class="sd">            if they are supported by the base estimator.</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+<span class="sd">        :return: The anomaly score of the input samples.</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;tree_&#39;</span><span class="p">])</span>
+        <span class="c1"># initialize the output score</span>
+        <span class="n">pred_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># get the indexes of the X&#39;s k nearest training points</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ind_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">curr_pt</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">X_ind</span> <span class="o">=</span> <span class="n">ind_arr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">pred_score</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_calculate_wocs</span><span class="p">(</span><span class="n">curr_pt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train_</span><span class="p">,</span> <span class="n">X_ind</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pred_score</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

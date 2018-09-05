@@ -1,0 +1,275 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.lof &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.lof</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Local Outlier Factor (LOF). Implemented on scikit-learn library.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">LocalOutlierFactor</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_array</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">invert_order</span>
+
+
+<div class="viewcode-block" id="LOF"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.lof.LOF">[docs]</a><span class="k">class</span> <span class="nc">LOF</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="c1"># noinspection PyPep8</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper of scikit-learn LOF Class with more functionalities.</span>
+<span class="sd">    Unsupervised Outlier Detection using Local Outlier Factor (LOF).</span>
+
+<span class="sd">    The anomaly score of each sample is called Local Outlier Factor.</span>
+<span class="sd">    It measures the local deviation of density of a given sample with</span>
+<span class="sd">    respect to its neighbors.</span>
+<span class="sd">    It is local in that the anomaly score depends on how isolated the object</span>
+<span class="sd">    is with respect to the surrounding neighborhood.</span>
+<span class="sd">    More precisely, locality is given by k-nearest neighbors, whose distance</span>
+<span class="sd">    is used to estimate the local density.</span>
+<span class="sd">    By comparing the local density of a sample to the local densities of</span>
+<span class="sd">    its neighbors, one can identify samples that have a substantially lower</span>
+<span class="sd">    density than their neighbors. These are considered outliers.</span>
+<span class="sd">    See :cite:`breunig2000lof` for details.</span>
+
+<span class="sd">    :param n_neighbors: Number of neighbors to use by default for</span>
+<span class="sd">        k neighbors.</span>
+<span class="sd">        If n_neighbors is larger than the number of samples provided,</span>
+<span class="sd">        all samples will be used.</span>
+<span class="sd">    :type n_neighbors: int, optional (default=20)</span>
+
+<span class="sd">    :param algorithm: Algorithm used to compute the nearest neighbors:</span>
+
+<span class="sd">            - &#39;ball_tree&#39; will use BallTree</span>
+<span class="sd">            - &#39;kd_tree&#39; will use KDTree</span>
+<span class="sd">            - &#39;brute&#39; will use a brute-force search.</span>
+<span class="sd">            - &#39;auto&#39; will attempt to decide the most appropriate algorithm</span>
+<span class="sd">              based on the values passed to :meth:`fit` method.</span>
+
+<span class="sd">        Note: fitting on sparse input will override the setting of</span>
+<span class="sd">        this parameter, using brute force.</span>
+
+<span class="sd">    :type algorithm: {&#39;auto&#39;, &#39;ball_tree&#39;, &#39;kd_tree&#39;, &#39;brute&#39;}, optional</span>
+
+<span class="sd">    :param leaf_size: Leaf size passed to BallTree or KDTree. This can</span>
+<span class="sd">        affect the speed of the construction and query, as well as the memory</span>
+<span class="sd">        required to store the tree. The optimal value depends on the</span>
+<span class="sd">        nature of the problem.</span>
+<span class="sd">    :type leaf_size: int, optional (default=30)</span>
+
+<span class="sd">    :param metric: metric used for the distance computation. Any metric from</span>
+<span class="sd">        scikit-learn or scipy.spatial.distance can be used.</span>
+
+<span class="sd">        If &#39;precomputed&#39;, the training input X is expected to be a distance</span>
+<span class="sd">        matrix.</span>
+
+<span class="sd">        If metric is a callable function, it is called on each</span>
+<span class="sd">        pair of instances (rows) and the resulting value recorded. The callable</span>
+<span class="sd">        should take two arrays as input and return one value indicating the</span>
+<span class="sd">        distance between them. This works for Scipy&#39;s metrics, but is less</span>
+<span class="sd">        efficient than passing the metric name as a string.</span>
+
+<span class="sd">        Valid values for metric are:</span>
+
+<span class="sd">        - from scikit-learn: [&#39;cityblock&#39;, &#39;cosine&#39;, &#39;euclidean&#39;, &#39;l1&#39;,</span>
+<span class="sd">          &#39;l2&#39;,&#39;manhattan&#39;]</span>
+<span class="sd">        - from scipy.spatial.distance: [&#39;braycurtis&#39;, &#39;canberra&#39;,</span>
+<span class="sd">          &#39;chebyshev&#39;, &#39;correlation&#39;, &#39;dice&#39;, &#39;hamming&#39;, &#39;jaccard&#39;,</span>
+<span class="sd">          &#39;kulsinski&#39;, &#39;mahalanobis&#39;, &#39;matching&#39;, &#39;minkowski&#39;,</span>
+<span class="sd">          &#39;rogerstanimoto&#39;, &#39;russellrao&#39;, &#39;seuclidean&#39;, &#39;sokalmichener&#39;,</span>
+<span class="sd">          &#39;sokalsneath&#39;, &#39;sqeuclidean&#39;, &#39;yule&#39;]</span>
+
+<span class="sd">        See the documentation for scipy.spatial.distance for details on these</span>
+<span class="sd">        metrics:</span>
+<span class="sd">        http://docs.scipy.org/doc/scipy/reference/spatial.distance.html</span>
+<span class="sd">    :type metric: str or callable, default &#39;minkowski&#39;</span>
+
+<span class="sd">    :param p: Parameter for the Minkowski metric for sklearn.metrics.pairwise.</span>
+<span class="sd">        pairwise_distances.</span>
+<span class="sd">        When p = 1, this is equivalent to using manhattan_distance (l1), and</span>
+<span class="sd">        euclidean_distance (l2) for p = 2. For arbitrary p, minkowski_distance</span>
+<span class="sd">        (l_p) is used.</span>
+<span class="sd">        See http://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.pairwise_distances.html</span>
+<span class="sd">    :type p: int, optional (default=2)</span>
+
+<span class="sd">    :param metric_params: Additional keyword arguments for the metric function.</span>
+<span class="sd">    :type metric_params: dict, optional (default=None)</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set, i.e.</span>
+<span class="sd">        the proportion of outliers in the data set. When fitting this is used</span>
+<span class="sd">        to define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :param n_jobs: The number of parallel jobs to run for neighbors search.</span>
+<span class="sd">        If ``-1``, then the number of jobs is set to the number of CPU cores.</span>
+<span class="sd">        Affects only kneighbors and kneighbors_graph methods.</span>
+<span class="sd">    :type n_jobs: int, optional (default=1)</span>
+
+<span class="sd">    :var n_neighbors\_: The actual number of neighbors used for</span>
+<span class="sd">        kneighbors queries.</span>
+<span class="sd">    :vartype n_neighbors\_: int</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">leaf_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                 <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;minkowski&#39;</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metric_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LOF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">n_neighbors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf_size</span> <span class="o">=</span> <span class="n">leaf_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">metric</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_params</span> <span class="o">=</span> <span class="n">metric_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+
+    <span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="LOF.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.lof.LOF.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the model using X as training data.</span>
+
+<span class="sd">        :param X: Training data. If array or matrix,</span>
+<span class="sd">            shape [n_samples, n_features],</span>
+<span class="sd">            or [n_samples, n_samples] if metric=&#39;precomputed&#39;.</span>
+<span class="sd">        :type X: {array-like, sparse matrix, BallTree, KDTree}</span>
+
+<span class="sd">        :return: self</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span> <span class="o">=</span> <span class="n">LocalOutlierFactor</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+                                            <span class="n">algorithm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span><span class="p">,</span>
+                                            <span class="n">leaf_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">leaf_size</span><span class="p">,</span>
+                                            <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">,</span>
+                                            <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span>
+                                            <span class="n">metric_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_params</span><span class="p">,</span>
+                                            <span class="n">contamination</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contamination</span><span class="p">,</span>
+                                            <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Invert decision_scores_. Outliers comes with higher outlier scores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="n">invert_order</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">negative_outlier_factor_</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="LOF.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.lof.LOF.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Invert outlier scores. Outliers comes with higher outlier scores</span>
+        <span class="c1"># noinspection PyProtectedMember</span>
+        <span class="k">return</span> <span class="n">invert_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">_decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_neighbors_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The actual number of neighbors used for kneighbors queries.</span>
+<span class="sd">        Decorator for scikit-learn LOF attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">n_neighbors_</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

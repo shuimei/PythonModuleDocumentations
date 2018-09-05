@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GPU SDK Correspondence and Device Targeting Table &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="GPU Windows Compilation" href="GPU-Windows.html" />
+    <link rel="prev" title="GPU Tuning Guide and Performance Comparison" href="GPU-Performance.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>GPU SDK Correspondence and Device Targeting Table</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/GPU-Targets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gpu-sdk-correspondence-and-device-targeting-table">
+<h1>GPU SDK Correspondence and Device Targeting Table<a class="headerlink" href="#gpu-sdk-correspondence-and-device-targeting-table" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="gpu-targets-table">
+<h2>GPU Targets Table<a class="headerlink" href="#gpu-targets-table" title="Permalink to this headline">¶</a></h2>
+<p>When using OpenCL SDKs, targeting CPU and GPU at the same time is sometimes possible.
+This is especially true for Intel OpenCL SDK and AMD APP SDK.</p>
+<p>You can find below a table of correspondence:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">SDK</th>
+<th class="head">CPU Intel/AMD</th>
+<th class="head">GPU Intel</th>
+<th class="head">GPU AMD</th>
+<th class="head">GPU NVIDIA</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="https://software.intel.com/en-us/articles/opencl-drivers">Intel SDK for OpenCL</a></td>
+<td>Supported</td>
+<td>Supported *</td>
+<td>Supported</td>
+<td>Untested</td>
+</tr>
+<tr class="row-odd"><td>AMD APP SDK ***</td>
+<td>Supported</td>
+<td>Untested *</td>
+<td>Supported</td>
+<td>Fails</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="https://developer.nvidia.com/cuda-downloads">NVIDIA CUDA Toolkit</a></td>
+<td>Fails    **</td>
+<td>Fails    **</td>
+<td>Fails    **</td>
+<td>Supported</td>
+</tr>
+</tbody>
+</table>
+<p>Legend:</p>
+<ul class="simple">
+<li>* Not usable directly.</li>
+<li>** Reported as unsupported in public forums.</li>
+<li>*** AMD has decided to drop the support for APP SDK and deleted all links to installation packages. You can download the installation package for Linux from <a class="reference external" href="https://github.com/Microsoft/LightGBM/releases/download/v2.0.12/AMD-APP-SDKInstaller-v3.0.130.136-GA-linux64.tar.bz2">our GitHub repo</a>.</li>
+</ul>
+<p>AMD GPUs using Intel SDK for OpenCL is not a typo, nor AMD APP SDK compatibility with CPUs.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="targeting-table">
+<h2>Targeting Table<a class="headerlink" href="#targeting-table" title="Permalink to this headline">¶</a></h2>
+<p>We present the following scenarii:</p>
+<ul class="simple">
+<li>CPU, no GPU</li>
+<li>Single CPU and GPU (even with integrated graphics)</li>
+<li>Multiple CPU/GPU</li>
+</ul>
+<p>We provide test R code below, but you can use the language of your choice with the examples of your choices:</p>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>library(lightgbm)
+data(agaricus.train, package = &quot;lightgbm&quot;)
+train &lt;- agaricus.train
+train$data[, 1] &lt;- 1:6513
+dtrain &lt;- lgb.Dataset(train$data, label = train$label)
+data(agaricus.test, package = &quot;lightgbm&quot;)
+test &lt;- agaricus.test
+dtest &lt;- lgb.Dataset.create.valid(dtrain, test$data, label = test$label)
+valids &lt;- list(test = dtest)
+
+params &lt;- list(objective = &quot;regression&quot;,
+               metric = &quot;rmse&quot;,
+               device = &quot;gpu&quot;,
+               gpu_platform_id = 0,
+               gpu_device_id = 0,
+               nthread = 1,
+               boost_from_average = FALSE,
+               num_tree_per_iteration = 10,
+               max_bin = 32)
+model &lt;- lgb.train(params,
+                   dtrain,
+                   2,
+                   valids,
+                   min_data = 1,
+                   learning_rate = 1,
+                   early_stopping_rounds = 10)
+</pre></div>
+</div>
+<p>Using a bad <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span></code> is not critical, as it will fallback to:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code> if using <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">1</span></code> if using <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">1</span></code></li>
+</ul>
+<p>However, using a bad combination of <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span></code> and <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span></code> will lead to a <strong>crash</strong> (you will lose your entire session content).
+Beware of it.</p>
+<p>Your system might have multiple GPUs from different vendors (“platforms”) installed. You can use the <a class="reference external" href="https://github.com/Oblomov/clinfo">clinfo</a> utility to identify the GPUs on each platform. On Ubuntu, you can install <code class="docutils literal notranslate"><span class="pre">clinfo</span></code> by executing <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">clinfo</span></code>. On Windows, you can find a list of your OpenCL devices using the utility <a class="reference external" href="http://www.ozone3d.net/gpu_caps_viewer/">GPUCapsViewer</a>. If you have a discrete GPU by AMD/NVIDIA and an integrated GPU by Intel, make sure to select the correct <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span></code> to use the discrete GPU.</p>
+<div class="section" id="cpu-only-architectures">
+<h3>CPU Only Architectures<a class="headerlink" href="#cpu-only-architectures" title="Permalink to this headline">¶</a></h3>
+<p>When you have a single device (one CPU), OpenCL usage is straightforward: <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code></p>
+<p>This will use the CPU with OpenCL, even though it says it says GPU.</p>
+<p>Example:</p>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; params &lt;- list(objective = &quot;regression&quot;,
++                metric = &quot;rmse&quot;,
++                device = &quot;gpu&quot;,
++                gpu_platform_id = 0,
++                gpu_device_id = 0,
++                nthread = 1,
++                boost_from_average = FALSE,
++                num_tree_per_iteration = 10,
++                max_bin = 32)
+&gt; model &lt;- lgb.train(params,
++                    dtrain,
++                    2,
++                    valids,
++                    min_data = 1,
++                    learning_rate = 1,
++                    early_stopping_rounds = 10)
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 232
+[LightGBM] [Info] Number of data: 6513, number of used features: 116
+[LightGBM] [Info] Using requested OpenCL platform 0 device 1
+[LightGBM] [Info] Using GPU Device: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz, Vendor: GenuineIntel
+[LightGBM] [Info] Compiling OpenCL Kernel with 16 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 12
+[LightGBM] [Info] 40 dense feature groups (0.12 MB) transfered to GPU in 0.004540 secs. 76 sparse feature groups.
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=16 and max_depth=8
+[1]:    test&#39;s rmse:1.10643e-17
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=7 and max_depth=5
+[2]:    test&#39;s rmse:0
+</pre></div>
+</div>
+</div>
+<div class="section" id="single-cpu-and-gpu-even-with-integrated-graphics">
+<h3>Single CPU and GPU (even with integrated graphics)<a class="headerlink" href="#single-cpu-and-gpu-even-with-integrated-graphics" title="Permalink to this headline">¶</a></h3>
+<p>If you have integrated graphics card (Intel HD Graphics) and a dedicated graphics card (AMD, NVIDIA),
+the dedicated graphics card will automatically override the integrated graphics card.
+The workaround is to disable your dedicated graphics card to be able to use your integrated graphics card.</p>
+<p>When you have multiple devices (one CPU and one GPU), the order is usually the following:</p>
+<ul class="simple">
+<li>GPU: <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code>,
+sometimes it is usable using <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">1</span></code> but at your own risk!</li>
+<li>CPU: <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">1</span></code></li>
+</ul>
+<p>Example of GPU (<code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code>):</p>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; params &lt;- list(objective = &quot;regression&quot;,
++                metric = &quot;rmse&quot;,
++                device = &quot;gpu&quot;,
++                gpu_platform_id = 0,
++                gpu_device_id = 0,
++                nthread = 1,
++                boost_from_average = FALSE,
++                num_tree_per_iteration = 10,
++                max_bin = 32)
+&gt; model &lt;- lgb.train(params,
++                    dtrain,
++                    2,
++                    valids,
++                    min_data = 1,
++                    learning_rate = 1,
++                    early_stopping_rounds = 10)
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 232
+[LightGBM] [Info] Number of data: 6513, number of used features: 116
+[LightGBM] [Info] Using GPU Device: Oland, Vendor: Advanced Micro Devices, Inc.
+[LightGBM] [Info] Compiling OpenCL Kernel with 16 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 12
+[LightGBM] [Info] 40 dense feature groups (0.12 MB) transfered to GPU in 0.004211 secs. 76 sparse feature groups.
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=16 and max_depth=8
+[1]:    test&#39;s rmse:1.10643e-17
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=7 and max_depth=5
+[2]:    test&#39;s rmse:0
+</pre></div>
+</div>
+<p>Example of CPU (<code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">1</span></code>):</p>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; params &lt;- list(objective = &quot;regression&quot;,
++                metric = &quot;rmse&quot;,
++                device = &quot;gpu&quot;,
++                gpu_platform_id = 0,
++                gpu_device_id = 1,
++                nthread = 1,
++                boost_from_average = FALSE,
++                num_tree_per_iteration = 10,
++                max_bin = 32)
+&gt; model &lt;- lgb.train(params,
++                    dtrain,
++                    2,
++                    valids,
++                    min_data = 1,
++                    learning_rate = 1,
++                    early_stopping_rounds = 10)
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 232
+[LightGBM] [Info] Number of data: 6513, number of used features: 116
+[LightGBM] [Info] Using requested OpenCL platform 0 device 1
+[LightGBM] [Info] Using GPU Device: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz, Vendor: GenuineIntel
+[LightGBM] [Info] Compiling OpenCL Kernel with 16 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 12
+[LightGBM] [Info] 40 dense feature groups (0.12 MB) transfered to GPU in 0.004540 secs. 76 sparse feature groups.
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=16 and max_depth=8
+[1]:    test&#39;s rmse:1.10643e-17
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=7 and max_depth=5
+[2]:    test&#39;s rmse:0
+</pre></div>
+</div>
+<p>When using a wrong <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span></code>, it will automatically fallback to <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code>:</p>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; params &lt;- list(objective = &quot;regression&quot;,
++                metric = &quot;rmse&quot;,
++                device = &quot;gpu&quot;,
++                gpu_platform_id = 0,
++                gpu_device_id = 9999,
++                nthread = 1,
++                boost_from_average = FALSE,
++                num_tree_per_iteration = 10,
++                max_bin = 32)
+&gt; model &lt;- lgb.train(params,
++                    dtrain,
++                    2,
++                    valids,
++                    min_data = 1,
++                    learning_rate = 1,
++                    early_stopping_rounds = 10)
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 232
+[LightGBM] [Info] Number of data: 6513, number of used features: 116
+[LightGBM] [Info] Using GPU Device: Oland, Vendor: Advanced Micro Devices, Inc.
+[LightGBM] [Info] Compiling OpenCL Kernel with 16 bins...
+[LightGBM] [Info] GPU programs have been built
+[LightGBM] [Info] Size of histogram bin entry: 12
+[LightGBM] [Info] 40 dense feature groups (0.12 MB) transfered to GPU in 0.004211 secs. 76 sparse feature groups.
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=16 and max_depth=8
+[1]:    test&#39;s rmse:1.10643e-17
+[LightGBM] [Info] No further splits with positive gain, best gain: -inf
+[LightGBM] [Info] Trained a tree with leaves=7 and max_depth=5
+[2]:    test&#39;s rmse:0
+</pre></div>
+</div>
+<p>Do not ever run under the following scenario as it is known to crash even if it says it is using the CPU because it is NOT the case:</p>
+<ul class="simple">
+<li>One CPU and one GPU</li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span> <span class="pre">=</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span> <span class="pre">=</span> <span class="pre">0</span></code></li>
+</ul>
+<div class="code r highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; params &lt;- list(objective = &quot;regression&quot;,
++                metric = &quot;rmse&quot;,
++                device = &quot;gpu&quot;,
++                gpu_platform_id = 1,
++                gpu_device_id = 0,
++                nthread = 1,
++                boost_from_average = FALSE,
++                num_tree_per_iteration = 10,
++                max_bin = 32)
+&gt; model &lt;- lgb.train(params,
++                    dtrain,
++                    2,
++                    valids,
++                    min_data = 1,
++                    learning_rate = 1,
++                    early_stopping_rounds = 10)
+[LightGBM] [Info] This is the GPU trainer!!
+[LightGBM] [Info] Total Bins 232
+[LightGBM] [Info] Number of data: 6513, number of used features: 116
+[LightGBM] [Info] Using requested OpenCL platform 1 device 0
+[LightGBM] [Info] Using GPU Device: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz, Vendor: Intel(R) Corporation
+[LightGBM] [Info] Compiling OpenCL Kernel with 16 bins...
+terminate called after throwing an instance of &#39;boost::exception_detail::clone_impl&lt;boost::exception_detail::error_info_injector&lt;boost::compute::opencl_error&gt; &gt;&#39;
+  what():  Invalid Program
+
+This application has requested the Runtime to terminate it in an unusual way.
+Please contact the application&#39;s support team for more information.
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple-cpu-and-gpu">
+<h3>Multiple CPU and GPU<a class="headerlink" href="#multiple-cpu-and-gpu" title="Permalink to this headline">¶</a></h3>
+<p>If you have multiple devices (multiple CPUs and multiple GPUs),
+you will have to test different <code class="docutils literal notranslate"><span class="pre">gpu_device_id</span></code> and different <code class="docutils literal notranslate"><span class="pre">gpu_platform_id</span></code> values to find out the values which suits the CPU/GPU you want to use.
+Keep in mind that using the integrated graphics card is not directly possible without disabling every dedicated graphics card.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="GPU-Windows.html" class="btn btn-neutral float-right" title="GPU Windows Compilation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="GPU-Performance.html" class="btn btn-neutral" title="GPU Tuning Guide and Performance Comparison" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

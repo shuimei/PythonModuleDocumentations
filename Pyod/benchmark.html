@@ -1,0 +1,1039 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Benchmarks &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API CheatSheet" href="api_cc.html" />
+    <link rel="prev" title="A List of Examples" href="examples.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_cc.html" title="API CheatSheet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="A List of Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="benchmarks">
+<h1>Benchmarks<a class="headerlink" href="#benchmarks" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>To provide an overview and quick guidance of the implemented models, benchmark
+is supplied.</p>
+<p>In total, 17 benchmark data are used for comparision, all datasets could be
+downloaded at <a class="reference external" href="http://odds.cs.stonybrook.edu/#table1">ODDS</a>.</p>
+<p>For each dataset, it is first split into 60% for training and 40% for testing.
+All experiments are repeated 20 times independently with different samplings.
+The mean of 20 trials are taken as the final result. Three evaluation metrics
+are provided:</p>
+<ul class="simple">
+<li>The area under receiver operating characteristic (ROC) curve</li>
+<li>Precision &#64; rank n (P&#64;N)</li>
+<li>Execution time</li>
+</ul>
+<p>You are welcome to replicate this process by running
+<a class="reference external" href="https://github.com/yzhao062/Pyod/blob/master/notebooks/benchmark.py">benchmark.py</a></p>
+</div>
+<div class="section" id="roc-performance">
+<h2>ROC Performance<a class="headerlink" href="#roc-performance" title="Permalink to this headline">¶</a></h2>
+<p><strong>Format is pending to be fixed</strong></p>
+<p>ROC Performances (average of 20 independent trials)</p>
+<table border="1" class="docutils" id="id1">
+<caption><span class="caption-text">ROC Performances (average of 20 independent trials)</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data</th>
+<th class="head">#Samples</th>
+<th class="head"># Dimensions</th>
+<th class="head">Outlier Perc</th>
+<th class="head">ABOD</th>
+<th class="head">CBLOF</th>
+<th class="head">FB</th>
+<th class="head">HBOS</th>
+<th class="head">IForest</th>
+<th class="head">KNN</th>
+<th class="head">LOF</th>
+<th class="head">MCD</th>
+<th class="head">OCSVM</th>
+<th class="head">PCA</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>arrhythmia</td>
+<td>452</td>
+<td>274</td>
+<td>14.6018</td>
+<td>0.76812</td>
+<td>0.7860100000000001</td>
+<td>0.7762649999999999</td>
+<td>0.8211499999999999</td>
+<td>0.813875</td>
+<td>0.785375</td>
+<td>0.777565</td>
+<td>0.7774199999999999</td>
+<td>0.7796249999999999</td>
+<td>0.7806200000000001</td>
+</tr>
+<tr class="row-odd"><td>cardio</td>
+<td>1831</td>
+<td>21</td>
+<td>9.6122</td>
+<td>0.5844750000000001</td>
+<td>0.9202600000000001</td>
+<td>0.603135</td>
+<td>0.8434099999999998</td>
+<td>0.9243349999999999</td>
+<td>0.7368400000000002</td>
+<td>0.5806250000000001</td>
+<td>0.8383299999999998</td>
+<td>0.9381950000000001</td>
+<td>0.952665</td>
+</tr>
+<tr class="row-even"><td>glass</td>
+<td>214</td>
+<td>9</td>
+<td>4.2056</td>
+<td>0.7686749999999999</td>
+<td>0.7667900000000001</td>
+<td>0.8248750000000001</td>
+<td>0.7062899999999999</td>
+<td>0.701575</td>
+<td>0.8260499999999998</td>
+<td>0.8374699999999999</td>
+<td>0.769695</td>
+<td>0.575845</td>
+<td>0.628455</td>
+</tr>
+<tr class="row-odd"><td>ionosphere</td>
+<td>351</td>
+<td>33</td>
+<td>35.8974</td>
+<td>0.9299899999999999</td>
+<td>0.823895</td>
+<td>0.887035</td>
+<td>0.556855</td>
+<td>0.8529449999999998</td>
+<td>0.9350149999999999</td>
+<td>0.8927350000000001</td>
+<td>0.9592149999999998</td>
+<td>0.8596599999999999</td>
+<td>0.8056300000000001</td>
+</tr>
+<tr class="row-even"><td>letter</td>
+<td>1600</td>
+<td>32</td>
+<td>6.25</td>
+<td>0.8814149999999998</td>
+<td>0.52436</td>
+<td>0.8746550000000001</td>
+<td>0.587965</td>
+<td>0.6189700000000001</td>
+<td>0.8747649999999998</td>
+<td>0.866755</td>
+<td>0.8063750000000001</td>
+<td>0.6061049999999999</td>
+<td>0.5241899999999999</td>
+</tr>
+<tr class="row-odd"><td>lympho</td>
+<td>148</td>
+<td>18</td>
+<td>4.0541</td>
+<td>0.91645</td>
+<td>0.9624599999999998</td>
+<td>0.9749550000000001</td>
+<td>0.99642</td>
+<td>0.991325</td>
+<td>0.972345</td>
+<td>0.9762450000000001</td>
+<td>0.9007949999999999</td>
+<td>0.97622</td>
+<td>0.9838199999999999</td>
+</tr>
+<tr class="row-even"><td>mnist</td>
+<td>7603</td>
+<td>100</td>
+<td>9.2069</td>
+<td>0.78203</td>
+<td>0.868595</td>
+<td>0.7188249999999999</td>
+<td>0.577415</td>
+<td>0.802835</td>
+<td>0.8499700000000001</td>
+<td>0.7192949999999998</td>
+<td>0.857855</td>
+<td>0.85206</td>
+<td>0.8519300000000001</td>
+</tr>
+<tr class="row-odd"><td>musk</td>
+<td>3062</td>
+<td>166</td>
+<td>3.1679</td>
+<td>0.19147499999999998</td>
+<td>0.9915</td>
+<td>0.55962</td>
+<td>0.99997</td>
+<td>0.999405</td>
+<td>0.804345</td>
+<td>0.5640799999999999</td>
+<td>0.9998799999999999</td>
+<td>1.0</td>
+<td>0.9999550000000001</td>
+</tr>
+<tr class="row-even"><td>optdigits</td>
+<td>5216</td>
+<td>64</td>
+<td>2.8758</td>
+<td>0.4736600000000001</td>
+<td>0.5001749999999998</td>
+<td>0.46338</td>
+<td>0.8648049999999998</td>
+<td>0.714485</td>
+<td>0.37691500000000006</td>
+<td>0.4642050000000001</td>
+<td>0.388915</td>
+<td>0.494245</td>
+<td>0.5044250000000001</td>
+</tr>
+<tr class="row-odd"><td>pendigits</td>
+<td>6870</td>
+<td>16</td>
+<td>2.2707</td>
+<td>0.6852649999999999</td>
+<td>0.9458549999999999</td>
+<td>0.473435</td>
+<td>0.9247249999999999</td>
+<td>0.9434950000000001</td>
+<td>0.7490049999999999</td>
+<td>0.47497000000000006</td>
+<td>0.8342750000000001</td>
+<td>0.9310449999999999</td>
+<td>0.9356100000000002</td>
+</tr>
+<tr class="row-even"><td>pima</td>
+<td>768</td>
+<td>8</td>
+<td>34.8958</td>
+<td>0.6727900000000001</td>
+<td>0.7219949999999999</td>
+<td>0.621955</td>
+<td>0.698345</td>
+<td>0.668085</td>
+<td>0.7050500000000002</td>
+<td>0.622355</td>
+<td>0.6716200000000001</td>
+<td>0.61507</td>
+<td>0.64127</td>
+</tr>
+<tr class="row-odd"><td>satellite</td>
+<td>6435</td>
+<td>36</td>
+<td>31.6395</td>
+<td>0.57169</td>
+<td>0.6569099999999999</td>
+<td>0.5566549999999999</td>
+<td>0.75422</td>
+<td>0.7012700000000001</td>
+<td>0.6851549999999998</td>
+<td>0.55699</td>
+<td>0.8044350000000001</td>
+<td>0.6602800000000001</td>
+<td>0.5962499999999998</td>
+</tr>
+<tr class="row-even"><td>satimage-2</td>
+<td>5803</td>
+<td>36</td>
+<td>1.2235</td>
+<td>0.820725</td>
+<td>0.9757049999999998</td>
+<td>0.4508249999999999</td>
+<td>0.977135</td>
+<td>0.993355</td>
+<td>0.95455</td>
+<td>0.449015</td>
+<td>0.995415</td>
+<td>0.9968800000000002</td>
+<td>0.978445</td>
+</tr>
+<tr class="row-odd"><td>shuttle</td>
+<td>49097</td>
+<td>9</td>
+<td>7.1511</td>
+<td>0.6215899999999999</td>
+<td>0.9915299999999998</td>
+<td>0.4897099999999999</td>
+<td>0.985895</td>
+<td>0.99674</td>
+<td>0.6518950000000001</td>
+<td>0.5310699999999999</td>
+<td>0.99027</td>
+<td>0.99185</td>
+<td>0.9899450000000002</td>
+</tr>
+<tr class="row-even"><td>vertebral</td>
+<td>240</td>
+<td>6</td>
+<td>12.5</td>
+<td>0.41525000000000006</td>
+<td>0.36115499999999995</td>
+<td>0.40761000000000003</td>
+<td>0.32666</td>
+<td>0.38738000000000006</td>
+<td>0.37793</td>
+<td>0.40926999999999997</td>
+<td>0.39662000000000003</td>
+<td>0.445885</td>
+<td>0.400265</td>
+</tr>
+<tr class="row-odd"><td>vowels</td>
+<td>1456</td>
+<td>12</td>
+<td>3.4341</td>
+<td>0.9564499999999999</td>
+<td>0.5946350000000001</td>
+<td>0.9340149999999998</td>
+<td>0.6704100000000001</td>
+<td>0.7407300000000001</td>
+<td>0.9653649999999999</td>
+<td>0.9350949999999999</td>
+<td>0.7451749999999999</td>
+<td>0.7656449999999999</td>
+<td>0.59494</td>
+</tr>
+<tr class="row-even"><td>wbc</td>
+<td>378</td>
+<td>30</td>
+<td>5.5556</td>
+<td>0.90837</td>
+<td>0.933075</td>
+<td>0.9374899999999998</td>
+<td>0.954035</td>
+<td>0.93248</td>
+<td>0.9397899999999998</td>
+<td>0.93736</td>
+<td>0.9164299999999999</td>
+<td>0.9376450000000001</td>
+<td>0.9239700000000001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="p-n-performance">
+<h2>P&#64;N Performance<a class="headerlink" href="#p-n-performance" title="Permalink to this headline">¶</a></h2>
+<p><strong>Format is pending to be fixed</strong></p>
+<p>Precision &#64; N Performances (average of 20 independent trials)</p>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Precision &#64; N Performances (average of 20 independent trials)</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data</th>
+<th class="head">#Samples</th>
+<th class="head"># Dimensions</th>
+<th class="head">Outlier Perc</th>
+<th class="head">ABOD</th>
+<th class="head">CBLOF</th>
+<th class="head">FB</th>
+<th class="head">HBOS</th>
+<th class="head">IForest</th>
+<th class="head">KNN</th>
+<th class="head">LOF</th>
+<th class="head">MCD</th>
+<th class="head">OCSVM</th>
+<th class="head">PCA</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>arrhythmia</td>
+<td>452</td>
+<td>274</td>
+<td>14.6018</td>
+<td>0.3700850000000001</td>
+<td>0.427475</td>
+<td>0.40224000000000004</td>
+<td>0.50654</td>
+<td>0.5025799999999999</td>
+<td>0.42596999999999996</td>
+<td>0.41533500000000007</td>
+<td>0.38854</td>
+<td>0.436365</td>
+<td>0.43995999999999996</td>
+</tr>
+<tr class="row-odd"><td>cardio</td>
+<td>1831</td>
+<td>21</td>
+<td>9.6122</td>
+<td>0.2429099999999999</td>
+<td>0.5608099999999999</td>
+<td>0.175365</td>
+<td>0.46102499999999996</td>
+<td>0.519885</td>
+<td>0.349525</td>
+<td>0.16191500000000003</td>
+<td>0.4616949999999999</td>
+<td>0.526715</td>
+<td>0.6219000000000001</td>
+</tr>
+<tr class="row-even"><td>glass</td>
+<td>214</td>
+<td>9</td>
+<td>4.2056</td>
+<td>0.13261499999999998</td>
+<td>0.07131</td>
+<td>0.10047500000000001</td>
+<td>0.01</td>
+<td>0.07131</td>
+<td>0.08381</td>
+<td>0.13380999999999998</td>
+<td>0.0</td>
+<td>0.13381</td>
+<td>0.07131</td>
+</tr>
+<tr class="row-odd"><td>ionosphere</td>
+<td>351</td>
+<td>33</td>
+<td>35.8974</td>
+<td>0.846775</td>
+<td>0.6150150000000001</td>
+<td>0.7330400000000001</td>
+<td>0.330515</td>
+<td>0.6627949999999999</td>
+<td>0.867545</td>
+<td>0.7360150000000001</td>
+<td>0.8938499999999999</td>
+<td>0.734385</td>
+<td>0.602275</td>
+</tr>
+<tr class="row-even"><td>letter</td>
+<td>1600</td>
+<td>32</td>
+<td>6.25</td>
+<td>0.38607500000000006</td>
+<td>0.051544999999999994</td>
+<td>0.39827500000000005</td>
+<td>0.07990499999999999</td>
+<td>0.08687</td>
+<td>0.34401500000000007</td>
+<td>0.38144</td>
+<td>0.179625</td>
+<td>0.15102000000000004</td>
+<td>0.08271999999999999</td>
+</tr>
+<tr class="row-odd"><td>lympho</td>
+<td>148</td>
+<td>18</td>
+<td>4.0541</td>
+<td>0.48251</td>
+<td>0.730005</td>
+<td>0.705005</td>
+<td>0.840005</td>
+<td>0.78834</td>
+<td>0.705005</td>
+<td>0.705005</td>
+<td>0.39666000000000007</td>
+<td>0.705005</td>
+<td>0.705005</td>
+</tr>
+<tr class="row-even"><td>mnist</td>
+<td>7603</td>
+<td>100</td>
+<td>9.2069</td>
+<td>0.357475</td>
+<td>0.41678499999999996</td>
+<td>0.33453999999999995</td>
+<td>0.11758000000000002</td>
+<td>0.29637500000000006</td>
+<td>0.42196500000000003</td>
+<td>0.3363400000000001</td>
+<td>0.31638</td>
+<td>0.39238000000000006</td>
+<td>0.38506</td>
+</tr>
+<tr class="row-odd"><td>musk</td>
+<td>3062</td>
+<td>166</td>
+<td>3.1679</td>
+<td>0.06248999999999999</td>
+<td>0.850695</td>
+<td>0.251435</td>
+<td>0.9802149999999997</td>
+<td>0.960765</td>
+<td>0.301775</td>
+<td>0.227845</td>
+<td>0.97692</td>
+<td>1.0</td>
+<td>0.98117</td>
+</tr>
+<tr class="row-even"><td>optdigits</td>
+<td>5216</td>
+<td>64</td>
+<td>2.8758</td>
+<td>0.018585</td>
+<td>0.0</td>
+<td>0.029809999999999996</td>
+<td>0.22359999999999997</td>
+<td>0.01993</td>
+<td>0.0</td>
+<td>0.031380000000000005</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+</tr>
+<tr class="row-odd"><td>pendigits</td>
+<td>6870</td>
+<td>16</td>
+<td>2.2707</td>
+<td>0.07834500000000001</td>
+<td>0.27840499999999996</td>
+<td>0.06634500000000002</td>
+<td>0.3012</td>
+<td>0.3309000000000001</td>
+<td>0.10273500000000002</td>
+<td>0.07140500000000001</td>
+<td>0.07557500000000002</td>
+<td>0.320925</td>
+<td>0.30913</td>
+</tr>
+<tr class="row-even"><td>pima</td>
+<td>768</td>
+<td>8</td>
+<td>34.8958</td>
+<td>0.514525</td>
+<td>0.548995</td>
+<td>0.44837500000000013</td>
+<td>0.5325199999999999</td>
+<td>0.5016849999999999</td>
+<td>0.53823</td>
+<td>0.44899500000000003</td>
+<td>0.49365499999999995</td>
+<td>0.46538</td>
+<td>0.4964199999999999</td>
+</tr>
+<tr class="row-odd"><td>satellite</td>
+<td>6435</td>
+<td>36</td>
+<td>31.6395</td>
+<td>0.38989499999999994</td>
+<td>0.42894</td>
+<td>0.38889500000000005</td>
+<td>0.566815</td>
+<td>0.5647250000000001</td>
+<td>0.49901999999999996</td>
+<td>0.387175</td>
+<td>0.6856250000000002</td>
+<td>0.53178</td>
+<td>0.4760750000000001</td>
+</tr>
+<tr class="row-even"><td>satimage-2</td>
+<td>5803</td>
+<td>36</td>
+<td>1.2235</td>
+<td>0.20890999999999998</td>
+<td>0.746055</td>
+<td>0.06224500000000001</td>
+<td>0.69934</td>
+<td>0.8597549999999998</td>
+<td>0.36836</td>
+<td>0.05597</td>
+<td>0.6204250000000002</td>
+<td>0.9308400000000001</td>
+<td>0.811085</td>
+</tr>
+<tr class="row-odd"><td>shuttle</td>
+<td>49097</td>
+<td>9</td>
+<td>7.1511</td>
+<td>0.19581000000000004</td>
+<td>0.95046</td>
+<td>0.083145</td>
+<td>0.9528950000000002</td>
+<td>0.952005</td>
+<td>0.216085</td>
+<td>0.142315</td>
+<td>0.7458150000000001</td>
+<td>0.9559300000000001</td>
+<td>0.9517550000000001</td>
+</tr>
+<tr class="row-even"><td>vertebral</td>
+<td>240</td>
+<td>6</td>
+<td>12.5</td>
+<td>0.06377</td>
+<td>0.014124999999999999</td>
+<td>0.04399499999999999</td>
+<td>0.018375</td>
+<td>0.03232</td>
+<td>0.031380000000000005</td>
+<td>0.049769999999999995</td>
+<td>0.01531</td>
+<td>0.028750000000000005</td>
+<td>0.016575</td>
+</tr>
+<tr class="row-odd"><td>vowels</td>
+<td>1456</td>
+<td>12</td>
+<td>3.4341</td>
+<td>0.5207999999999999</td>
+<td>0.07377500000000001</td>
+<td>0.324265</td>
+<td>0.14667000000000002</td>
+<td>0.19105999999999998</td>
+<td>0.47875500000000004</td>
+<td>0.3491800000000001</td>
+<td>0.11718000000000002</td>
+<td>0.273685</td>
+<td>0.132725</td>
+</tr>
+<tr class="row-even"><td>wbc</td>
+<td>378</td>
+<td>30</td>
+<td>5.5556</td>
+<td>0.33571999999999996</td>
+<td>0.5069600000000001</td>
+<td>0.533475</td>
+<td>0.6114900000000001</td>
+<td>0.5212800000000001</td>
+<td>0.5094200000000001</td>
+<td>0.5363300000000001</td>
+<td>0.43587</td>
+<td>0.524065</td>
+<td>0.5061850000000001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="execution-time">
+<h2>Execution Time<a class="headerlink" href="#execution-time" title="Permalink to this headline">¶</a></h2>
+<p><strong>Format is pending to be fixed</strong></p>
+<p>Time Complexity (average of 20 independent trials)</p>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Time Complexity (average of 20 independent trials)</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Data</th>
+<th class="head">#Samples</th>
+<th class="head"># Dimensions</th>
+<th class="head">Outlier Perc</th>
+<th class="head">ABOD</th>
+<th class="head">CBLOF</th>
+<th class="head">FB</th>
+<th class="head">HBOS</th>
+<th class="head">IForest</th>
+<th class="head">KNN</th>
+<th class="head">LOF</th>
+<th class="head">MCD</th>
+<th class="head">OCSVM</th>
+<th class="head">PCA</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>arrhythmia</td>
+<td>452</td>
+<td>274</td>
+<td>14.6018</td>
+<td>0.18967499999999995</td>
+<td>0.020790000000000003</td>
+<td>0.49604</td>
+<td>0.17644499999999996</td>
+<td>0.19532500000000003</td>
+<td>0.06933000000000002</td>
+<td>0.06215</td>
+<td>0.45352000000000003</td>
+<td>0.04376499999999999</td>
+<td>0.05002999999999998</td>
+</tr>
+<tr class="row-odd"><td>cardio</td>
+<td>1831</td>
+<td>21</td>
+<td>9.6122</td>
+<td>0.5269400000000001</td>
+<td>0.019065</td>
+<td>0.71376</td>
+<td>0.04766999999999999</td>
+<td>0.217165</td>
+<td>0.12742999999999996</td>
+<td>0.087315</td>
+<td>0.419475</td>
+<td>0.07488500000000001</td>
+<td>0.004960000000000001</td>
+</tr>
+<tr class="row-even"><td>glass</td>
+<td>214</td>
+<td>9</td>
+<td>4.2056</td>
+<td>0.06089</td>
+<td>0.013785</td>
+<td>0.02702</td>
+<td>0.0023399999999999996</td>
+<td>0.14288499999999998</td>
+<td>0.00347</td>
+<td>0.00244</td>
+<td>0.030560000000000004</td>
+<td>0.0008799999999999999</td>
+<td>0.0008799999999999999</td>
+</tr>
+<tr class="row-odd"><td>ionosphere</td>
+<td>351</td>
+<td>33</td>
+<td>35.8974</td>
+<td>0.09516</td>
+<td>0.015215000000000001</td>
+<td>0.06041</td>
+<td>0.019960000000000002</td>
+<td>0.15954</td>
+<td>0.013090000000000001</td>
+<td>0.00663</td>
+<td>0.05088</td>
+<td>0.0060550000000000005</td>
+<td>0.0021600000000000005</td>
+</tr>
+<tr class="row-even"><td>letter</td>
+<td>1600</td>
+<td>32</td>
+<td>6.25</td>
+<td>0.470455</td>
+<td>0.019445000000000004</td>
+<td>0.651045</td>
+<td>0.059375</td>
+<td>0.20698</td>
+<td>0.10931999999999997</td>
+<td>0.07943000000000003</td>
+<td>0.838675</td>
+<td>0.07569000000000001</td>
+<td>0.00515</td>
+</tr>
+<tr class="row-odd"><td>lympho</td>
+<td>148</td>
+<td>18</td>
+<td>4.0541</td>
+<td>0.04583999999999999</td>
+<td>0.015560000000000001</td>
+<td>0.020885</td>
+<td>0.005520000000000001</td>
+<td>0.14232499999999998</td>
+<td>0.00439</td>
+<td>0.0015800000000000005</td>
+<td>0.028745</td>
+<td>0.0019600000000000004</td>
+<td>0.001345</td>
+</tr>
+<tr class="row-even"><td>mnist</td>
+<td>7603</td>
+<td>100</td>
+<td>9.2069</td>
+<td>7.274634999999998</td>
+<td>0.043050000000000005</td>
+<td>43.152334999999994</td>
+<td>0.9435950000000002</td>
+<td>1.5105</td>
+<td>6.192654999999999</td>
+<td>5.926824999999999</td>
+<td>2.1594049999999996</td>
+<td>4.44868</td>
+<td>0.13171499999999997</td>
+</tr>
+<tr class="row-odd"><td>musk</td>
+<td>3062</td>
+<td>166</td>
+<td>3.1679</td>
+<td>2.48261</td>
+<td>0.038255000000000004</td>
+<td>12.46</td>
+<td>0.6278699999999999</td>
+<td>0.9063100000000002</td>
+<td>1.737675</td>
+<td>1.6664349999999999</td>
+<td>8.813715</td>
+<td>1.25429</td>
+<td>0.14173000000000005</td>
+</tr>
+<tr class="row-even"><td>optdigits</td>
+<td>5216</td>
+<td>64</td>
+<td>2.8758</td>
+<td>2.911835</td>
+<td>0.030570000000000007</td>
+<td>12.795749999999998</td>
+<td>0.46836</td>
+<td>0.69699</td>
+<td>1.7735999999999996</td>
+<td>1.62447</td>
+<td>0.96628</td>
+<td>1.44136</td>
+<td>0.043455000000000014</td>
+</tr>
+<tr class="row-odd"><td>pendigits</td>
+<td>6870</td>
+<td>16</td>
+<td>2.2707</td>
+<td>2.0272699999999997</td>
+<td>0.032075000000000006</td>
+<td>3.8060650000000003</td>
+<td>0.132445</td>
+<td>0.5210149999999999</td>
+<td>0.55147</td>
+<td>0.5599550000000001</td>
+<td>1.5071949999999998</td>
+<td>0.8916049999999999</td>
+<td>0.005705000000000002</td>
+</tr>
+<tr class="row-even"><td>pima</td>
+<td>768</td>
+<td>8</td>
+<td>34.8958</td>
+<td>0.21448</td>
+<td>0.015670000000000007</td>
+<td>0.08597999999999999</td>
+<td>0.009415000000000001</td>
+<td>0.175625</td>
+<td>0.027345000000000008</td>
+<td>0.009800000000000001</td>
+<td>0.04435500000000001</td>
+<td>0.008965</td>
+<td>0.0011500000000000004</td>
+</tr>
+<tr class="row-odd"><td>satellite</td>
+<td>6435</td>
+<td>36</td>
+<td>31.6395</td>
+<td>2.3520399999999997</td>
+<td>0.029940000000000005</td>
+<td>7.473954999999999</td>
+<td>0.287505</td>
+<td>0.6105250000000001</td>
+<td>1.00509</td>
+<td>0.9745550000000002</td>
+<td>1.73336</td>
+<td>1.31753</td>
+<td>0.020350000000000004</td>
+</tr>
+<tr class="row-even"><td>satimage-2</td>
+<td>5803</td>
+<td>36</td>
+<td>1.2235</td>
+<td>2.0370850000000003</td>
+<td>0.03022500000000001</td>
+<td>5.488345000000001</td>
+<td>0.25006000000000006</td>
+<td>0.5043849999999999</td>
+<td>0.7780599999999999</td>
+<td>0.718615</td>
+<td>1.518875</td>
+<td>1.0376800000000002</td>
+<td>0.013850000000000006</td>
+</tr>
+<tr class="row-odd"><td>shuttle</td>
+<td>49097</td>
+<td>9</td>
+<td>7.1511</td>
+<td>18.330495</td>
+<td>0.08378</td>
+<td>3057.89304</td>
+<td>0.524475</td>
+<td>3.02541</td>
+<td>8.164864999999999</td>
+<td>10.714839999999999</td>
+<td>10.553069999999998</td>
+<td>42.81946000000001</td>
+<td>0.032650000000000005</td>
+</tr>
+<tr class="row-even"><td>vertebral</td>
+<td>240</td>
+<td>6</td>
+<td>12.5</td>
+<td>0.0666</td>
+<td>0.013765000000000005</td>
+<td>0.025795000000000005</td>
+<td>0.003700000000000002</td>
+<td>0.14825500000000003</td>
+<td>0.007700000000000001</td>
+<td>0.002350000000000001</td>
+<td>0.03800000000000001</td>
+<td>0.0018000000000000008</td>
+<td>0.0011500000000000004</td>
+</tr>
+<tr class="row-odd"><td>vowels</td>
+<td>1456</td>
+<td>12</td>
+<td>3.4341</td>
+<td>0.40175</td>
+<td>0.017175000000000003</td>
+<td>0.268345</td>
+<td>0.023490000000000004</td>
+<td>0.21169499999999997</td>
+<td>0.06270500000000001</td>
+<td>0.03205</td>
+<td>0.62069</td>
+<td>0.0339</td>
+<td>0.0016500000000000009</td>
+</tr>
+<tr class="row-even"><td>wbc</td>
+<td>378</td>
+<td>30</td>
+<td>5.5556</td>
+<td>0.10586999999999998</td>
+<td>0.017920000000000005</td>
+<td>0.06624</td>
+<td>0.020065000000000006</td>
+<td>0.16389999999999996</td>
+<td>0.015985000000000006</td>
+<td>0.006960000000000003</td>
+<td>0.052680000000000005</td>
+<td>0.00493</td>
+<td>0.0018000000000000006</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>TO ADD</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#roc-performance">ROC Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#p-n-performance">P&#64;N Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execution-time">Execution Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyod.html">API Reference</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="previous chapter">A List of Examples</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api_cc.html"
+                        title="next chapter">API CheatSheet</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/benchmark.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_cc.html" title="API CheatSheet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="A List of Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

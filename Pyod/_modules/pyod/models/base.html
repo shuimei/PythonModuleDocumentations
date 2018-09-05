@@ -1,0 +1,584 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.base &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Base class for all outlier detector models</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals.funcsigs</span> <span class="k">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">sklearn.externals</span> <span class="k">import</span> <span class="n">six</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">sparse</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">erf</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">scoreatpercentile</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_auc_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.multiclass</span> <span class="k">import</span> <span class="n">check_classification_targets</span>
+
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">precision_n_scores</span>
+
+
+<span class="k">def</span> <span class="nf">_first_and_last_element</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns first and last element of numpy array or sparse matrix.</span>
+<span class="sd">    See sklearn/base.py for more information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+        <span class="c1"># numpy array or sparse matrix with .data attribute</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="k">else</span> <span class="n">arr</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Sparse matrices without .data attribute. Only dok_matrix at</span>
+        <span class="c1"># the time of writing, in this case indexing is fast</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">arr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">_pprint</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">printer</span><span class="o">=</span><span class="nb">repr</span><span class="p">):</span>
+    <span class="c1"># noinspection PyPep8</span>
+    <span class="sd">&quot;&quot;&quot;Pretty print the dictionary &#39;params&#39;</span>
+
+<span class="sd">    See http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html</span>
+<span class="sd">    and sklearn/base.py for more information.</span>
+
+<span class="sd">    :param params: The dictionary to pretty print</span>
+<span class="sd">    :type params: dict</span>
+
+<span class="sd">    :param offset: The offset in characters to add at the begin of each line.</span>
+<span class="sd">    :type offset: int</span>
+
+<span class="sd">    :param printer: The function to convert entries to strings, typically</span>
+<span class="sd">        the builtin str or repr</span>
+<span class="sd">    :type printer: callable</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Do a multi-line justified repr:</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">get_printoptions</span><span class="p">()</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">edgeitems</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">params_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">this_line_length</span> <span class="o">=</span> <span class="n">offset</span>
+    <span class="n">line_sep</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="s1">&#39; &#39;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">params</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="c1"># use str for representing floating point numbers</span>
+            <span class="c1"># this way we get consistent representation across</span>
+            <span class="c1"># architectures and versions.</span>
+            <span class="n">this_repr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># use repr of the rest</span>
+            <span class="n">this_repr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">printer</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_repr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>
+            <span class="n">this_repr</span> <span class="o">=</span> <span class="n">this_repr</span><span class="p">[:</span><span class="mi">300</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span> <span class="o">+</span> <span class="n">this_repr</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">this_line_length</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_repr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">75</span> <span class="ow">or</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">this_repr</span><span class="p">:</span>
+                <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line_sep</span><span class="p">)</span>
+                <span class="n">this_line_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_sep</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">)</span>
+                <span class="n">this_line_length</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="n">params_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_repr</span><span class="p">)</span>
+        <span class="n">this_line_length</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">this_repr</span><span class="p">)</span>
+
+    <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params_list</span><span class="p">)</span>
+    <span class="c1"># Strip trailing space to avoid nightmare in doctests</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">lines</span>
+
+
+<div class="viewcode-block" id="BaseDetector"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector">[docs]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">BaseDetector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract class for all outlier detection algorithms.</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set,</span>
+<span class="sd">        i.e. the proportion of outliers in the data set. Used when fitting to</span>
+<span class="sd">        define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mf">0.</span> <span class="o">&lt;</span> <span class="n">contamination</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;contamination must be in (0, 0.5], &quot;</span>
+                             <span class="s2">&quot;got: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">contamination</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">contamination</span> <span class="o">=</span> <span class="n">contamination</span>
+
+<div class="viewcode-block" id="BaseDetector.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.decision_function">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict anomaly score of X of the base classifiers.</span>
+
+<span class="sd">        The anomaly score of an input sample is computed based on different</span>
+<span class="sd">        detector algorithms. For consistency, outliers are assigned with</span>
+<span class="sd">        larger anomaly scores.</span>
+
+<span class="sd">        :param X: The training input samples. Sparse matrices are accepted only</span>
+<span class="sd">            if they are supported by the base estimator.</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :return: The anomaly score of the input samples.</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="BaseDetector.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.fit">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit detector.</span>
+
+<span class="sd">        :param X: The training input samples. Sparse matrices are accepted only</span>
+<span class="sd">            if they are supported by the base estimator.</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :return: return self</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="BaseDetector.fit_predict"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.fit_predict">[docs]</a>    <span class="k">def</span> <span class="nf">fit_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit detector and predict if a particular sample is an outlier or</span>
+<span class="sd">        not.</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :return: For each observation, tells whether or not</span>
+<span class="sd">            it should be considered as an outlier according to the</span>
+<span class="sd">            fitted model. 0 stands for inliers and 1 for outliers.</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span></div>
+
+<div class="viewcode-block" id="BaseDetector.predict"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict if a particular sample is an outlier or not.</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :return: For each observation, tells whether or not</span>
+<span class="sd">            it should be considered as an outlier according to the fitted</span>
+<span class="sd">            model. 0 stands for inliers and 1 for outliers.</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+
+        <span class="n">pred_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pred_score</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold_</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BaseDetector.predict_proba"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.predict_proba">[docs]</a>    <span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict the probability of a sample being outlier. Two approaches</span>
+<span class="sd">        are possible:</span>
+
+<span class="sd">        1. simply use Min-max conversion to linearly transform the outlier</span>
+<span class="sd">           scores into the range of [0,1]. The model must be</span>
+<span class="sd">           fitted first.</span>
+<span class="sd">        2. use unifying scores, see :cite:`kriegel2011interpreting`.</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :param method: probability conversion method. It must be one of</span>
+<span class="sd">            &#39;linear&#39; or &#39;unify&#39;.</span>
+<span class="sd">        :type method: str, optional (default=&#39;linear&#39;)</span>
+
+<span class="sd">        :return: For each observation, return the outlier probability, ranging</span>
+<span class="sd">            in [0,1]</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+        <span class="n">train_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span>
+
+        <span class="n">test_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_classes</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
+            <span class="n">scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_scores</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">probs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">test_scores</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">probs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">probs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">probs</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;unify&#39;</span><span class="p">:</span>
+            <span class="c1"># turn output into probability</span>
+            <span class="n">pre_erf_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_scores</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">erf_score</span> <span class="o">=</span> <span class="n">erf</span><span class="p">(</span><span class="n">pre_erf_score</span><span class="p">)</span>
+            <span class="n">probs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">erf_score</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">probs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">probs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">probs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">method</span><span class="p">,</span>
+                             <span class="s1">&#39;is not a valid probability conversion method&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_predict_rank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Predict the outlyingness rank of a sample in a fitted model. The</span>
+<span class="sd">        method is specifically for combining various outlier detectors.</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :param normalized: If set to True, all ranks are normalized to [0,1]</span>
+<span class="sd">        :type normalized: bool, optional (default=False)</span>
+
+<span class="sd">        :return: outlying rank of a sample according to the training data</span>
+<span class="sd">        :rtype: array, shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">])</span>
+
+        <span class="n">test_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">train_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span>
+
+        <span class="n">sorted_train_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">train_scores</span><span class="p">)</span>
+        <span class="n">ranks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">sorted_train_scores</span><span class="p">,</span> <span class="n">test_scores</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="c1"># return normalized ranks</span>
+            <span class="n">ranks</span> <span class="o">=</span> <span class="n">ranks</span> <span class="o">/</span> <span class="n">ranks</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ranks</span>
+
+<div class="viewcode-block" id="BaseDetector.fit_predict_score"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.fit_predict_score">[docs]</a>    <span class="k">def</span> <span class="nf">fit_predict_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;roc_auc_score&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the detector, predict on samples, and evaluate the model by</span>
+<span class="sd">        ROC and Precision @ rank n</span>
+
+<span class="sd">        :param X: The input samples</span>
+<span class="sd">        :type X: numpy array of shape (n_samples, n_features)</span>
+
+<span class="sd">        :param y: Outlier labels of the input samples</span>
+<span class="sd">        :type y: array, shape (n_samples,)</span>
+
+<span class="sd">        :param scoring: Evaluation metric</span>
+
+<span class="sd">                -&#39; roc_auc_score&#39;: ROC score</span>
+<span class="sd">                - &#39;prc_n_score&#39;: Precision @ rank n score</span>
+<span class="sd">        :type scoring: str, optional (default=&#39;roc_auc_score&#39;)</span>
+
+<span class="sd">        :return: Evaluation score</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">scoring</span> <span class="o">==</span> <span class="s1">&#39;roc_auc_score&#39;</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scoring</span> <span class="o">==</span> <span class="s1">&#39;prc_n_score&#39;</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">precision_n_scores</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;PyOD built-in scoring only supports &#39;</span>
+                                      <span class="s1">&#39;ROC and Precision @ rank n&#39;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{metric}</span><span class="s2">: </span><span class="si">{score}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="n">scoring</span><span class="p">,</span> <span class="n">score</span><span class="o">=</span><span class="n">score</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">score</span></div>
+
+    <span class="c1"># def score(self, X, y, scoring=&#39;roc_auc_score&#39;):</span>
+    <span class="c1">#     &quot;&quot;&quot;Returns the evaluation resulted on the given test data and labels.</span>
+    <span class="c1">#     ROC is chosen as the default evaluation metric</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param X: The input samples</span>
+    <span class="c1">#     :type X: numpy array of shape (n_samples, n_features)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param y: Outlier labels of the input samples</span>
+    <span class="c1">#     :type y: array, shape (n_samples,)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :param scoring: Evaluation metric</span>
+    <span class="c1">#</span>
+    <span class="c1">#             -&#39; roc_auc_score&#39;: ROC score</span>
+    <span class="c1">#             - &#39;prc_n_score&#39;: Precision @ rank n score</span>
+    <span class="c1">#     :type scoring: str, optional (default=&#39;roc_auc_score&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     :return: Evaluation score</span>
+    <span class="c1">#     :rtype: float</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     check_is_fitted(self, [&#39;decision_scores_&#39;])</span>
+    <span class="c1">#     if scoring == &#39;roc_auc_score&#39;:</span>
+    <span class="c1">#         score = roc_auc_score(y, self.decision_function(X))</span>
+    <span class="c1">#     elif scoring == &#39;prc_n_score&#39;:</span>
+    <span class="c1">#         score = precision_n_scores(y, self.decision_function(X))</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         raise NotImplementedError(&#39;PyOD built-in scoring only supports &#39;</span>
+    <span class="c1">#                                   &#39;ROC and Precision @ rank n&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     print(&quot;{metric}: {score}&quot;.format(metric=scoring, score=score))</span>
+    <span class="c1">#</span>
+    <span class="c1">#     return score</span>
+
+    <span class="k">def</span> <span class="nf">_set_n_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the number of classes if y is presented, which is not expected.</span>
+<span class="sd">        It could be useful for multi-class outlier detection.</span>
+
+<span class="sd">        :param y: Ground truth</span>
+<span class="sd">        :type y: numpy array of shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_classes</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># default as binary classification</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_classification_targets</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;y should not be presented in unsupervised learning.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process_decision_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Internal function to calculate key attributes:</span>
+
+<span class="sd">        - threshold: used to decide the binary label</span>
+<span class="sd">        - labels_: binary labels of training data</span>
+
+<span class="sd">        :return: self</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold_</span> <span class="o">=</span> <span class="n">scoreatpercentile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">,</span>
+                                            <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">contamination</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">labels_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold_</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+            <span class="s1">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="c1"># calculate for predict_proba()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c1"># noinspection PyMethodParameters</span>
+    <span class="k">def</span> <span class="nf">_get_param_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="c1"># noinspection PyPep8</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter names for the estimator</span>
+
+<span class="sd">        See http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html</span>
+<span class="sd">        and sklearn/base.py for more information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># fetch the constructor or the original constructor before</span>
+        <span class="c1"># deprecation wrapping if any</span>
+        <span class="n">init</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">,</span> <span class="s1">&#39;deprecated_original&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">init</span> <span class="ow">is</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__init__</span><span class="p">:</span>
+            <span class="c1"># No explicit constructor to introspect</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># introspect the constructor arguments to find the model parameters</span>
+        <span class="c1"># to represent</span>
+        <span class="n">init_signature</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
+        <span class="c1"># Consider the constructor parameters excluding &#39;self&#39;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">init_signature</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                      <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span> <span class="ow">and</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="n">p</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;scikit-learn estimators should always &quot;</span>
+                                   <span class="s2">&quot;specify their parameters in the signature&quot;</span>
+                                   <span class="s2">&quot; of their __init__ (no varargs).&quot;</span>
+                                   <span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> with constructor </span><span class="si">%s</span><span class="s2"> doesn&#39;t &quot;</span>
+                                   <span class="s2">&quot; follow this convention.&quot;</span>
+                                   <span class="o">%</span> <span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">init_signature</span><span class="p">))</span>
+        <span class="c1"># Extract and sort argument names excluding &#39;self&#39;</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">])</span>
+
+<div class="viewcode-block" id="BaseDetector.get_params"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.get_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># noinspection PyPep8</span>
+        <span class="sd">&quot;&quot;&quot;Get parameters for this estimator.</span>
+
+<span class="sd">        See http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html</span>
+<span class="sd">        and sklearn/base.py for more information.</span>
+
+<span class="sd">        :param deep: If True, will return the parameters for this estimator and</span>
+<span class="sd">            contained subobjects that are estimators.</span>
+
+<span class="sd">        :return: mapping of string to any</span>
+<span class="sd">            Parameter names mapped to their values.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_param_names</span><span class="p">():</span>
+            <span class="c1"># We need deprecation warnings to always be on in order to</span>
+            <span class="c1"># catch deprecated param values.</span>
+            <span class="c1"># This is set in utils/__init__.py but it gets overwritten</span>
+            <span class="c1"># when running under python3 somehow.</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="ow">and</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="ne">DeprecationWarning</span><span class="p">:</span>
+                    <span class="c1"># if the parameter is deprecated, don&#39;t show it</span>
+                    <span class="k">continue</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># XXX: should we rather test if instance of estimator?</span>
+            <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;get_params&#39;</span><span class="p">):</span>
+                <span class="n">deep_items</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">deep_items</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="BaseDetector.set_params"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.abod.BaseDetector.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="c1"># noinspection PyPep8</span>
+        <span class="sd">&quot;&quot;&quot;Set the parameters of this estimator.</span>
+
+<span class="sd">        See http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html</span>
+<span class="sd">        and sklearn/base.py for more information.</span>
+
+<span class="sd">        The method works on simple estimators as well as on nested objects</span>
+<span class="sd">        (such as pipelines). The latter have parameters of the form</span>
+<span class="sd">        ``&lt;component&gt;__&lt;parameter&gt;`` so that it&#39;s possible to update each</span>
+<span class="sd">        component of a nested object.</span>
+
+<span class="sd">        :return: self</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+            <span class="c1"># Simple optimization to gain speed (inspect is slow)</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="n">valid_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">nested_params</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>  <span class="c1"># grouped by prefix</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">sub_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_params</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid parameter </span><span class="si">%s</span><span class="s1"> for estimator </span><span class="si">%s</span><span class="s1">. &#39;</span>
+                                 <span class="s1">&#39;Check the list of available parameters &#39;</span>
+                                 <span class="s1">&#39;with `estimator.get_params().keys()`.&#39;</span> <span class="o">%</span>
+                                 <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">delim</span><span class="p">:</span>
+                <span class="n">nested_params</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">sub_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">sub_params</span> <span class="ow">in</span> <span class="n">nested_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">valid_params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">sub_params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># noinspection PyPep8</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        See http://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html</span>
+<span class="sd">        and sklearn/base.py for more information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">_pprint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                                               <span class="n">offset</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">class_name</span><span class="p">),</span> <span class="p">),)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

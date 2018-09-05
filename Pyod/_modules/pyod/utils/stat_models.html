@@ -1,0 +1,225 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.utils.stat_models &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.utils.stat_models</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot; A collection of statistical models</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">pearsonr</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_array</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.testing</span> <span class="k">import</span> <span class="n">assert_allclose</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_consistent_length</span>
+
+
+<span class="c1"># TODO: disable p value calculation due to python 2.7 break</span>
+<span class="c1"># from scipy.special import betainc</span>
+
+<div class="viewcode-block" id="pairwise_distances_no_broadcast"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.stat_models.pairwise_distances_no_broadcast">[docs]</a><span class="k">def</span> <span class="nf">pairwise_distances_no_broadcast</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Utility function to calculate row-wise euclidean distance of two matrix.</span>
+<span class="sd">    Different from pair-wise calculation, this function would not broadcast.</span>
+
+<span class="sd">    For instance, X and Y are both (4,3) matrices, the function would return</span>
+<span class="sd">    a distance vector with shape (4,), instead of (4,4)</span>
+
+<span class="sd">    :param X: First input samples</span>
+<span class="sd">    :param X: array of shape (n_samples, n_features)</span>
+
+<span class="sd">    :param Y: Second input samples</span>
+<span class="sd">    :type Y: array of shape (n_samples, n_features)</span>
+
+<span class="sd">    :return: Row-wise euclidean distnace of X and Y</span>
+<span class="sd">    :rtype: array of shape (n_samples,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+    <span class="n">assert_allclose</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">euclidean_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">Y</span> <span class="o">-</span> <span class="n">X</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">euclidean_sq</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="wpearsonr"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.stat_models.wpearsonr">[docs]</a><span class="k">def</span> <span class="nf">wpearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># noinspection PyPep8</span>
+    <span class="sd">&quot;&quot;&quot;Utility function to calculate the weighted Pearson correlation of two</span>
+<span class="sd">    samples.</span>
+
+<span class="sd">    See https://stats.stackexchange.com/questions/221246/such-thing-as-a-weighted-correlation</span>
+<span class="sd">    for more information</span>
+
+<span class="sd">    :param x: Input x</span>
+<span class="sd">    :type x: array, shape (n,)</span>
+
+<span class="sd">    :param y: Input y</span>
+<span class="sd">    :type y: array, shape (n,)</span>
+
+<span class="sd">    :param w: Weights</span>
+<span class="sd">    :type w: array, shape (n,)</span>
+
+<span class="sd">    :return: Weighted Pearson Correlation between x and y</span>
+<span class="sd">    :rtype: float [-1,1]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># unweighted version</span>
+    <span class="c1"># note the return is different</span>
+    <span class="c1"># TODO: fix output differences</span>
+    <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="n">check_consistent_length</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">])</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">w_sum</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">w_sum</span>
+    <span class="n">my</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">w_sum</span>
+
+    <span class="n">xm</span><span class="p">,</span> <span class="n">ym</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mx</span><span class="p">),</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">my</span><span class="p">)</span>
+
+    <span class="n">r_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xm</span> <span class="o">*</span> <span class="n">ym</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">w_sum</span>
+
+    <span class="n">xm2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xm</span> <span class="o">*</span> <span class="n">xm</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">w_sum</span>
+    <span class="n">ym2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ym</span> <span class="o">*</span> <span class="n">ym</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="n">w_sum</span>
+
+    <span class="n">r_den</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xm2</span> <span class="o">*</span> <span class="n">ym2</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r_num</span> <span class="o">/</span> <span class="n">r_den</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="c1"># TODO: disable p value calculation due to python 2.7 break</span>
+    <span class="c1">#    df = n_train_ - 2</span>
+    <span class="c1">#</span>
+    <span class="c1">#    if abs(r) == 1.0:</span>
+    <span class="c1">#        prob = 0.0</span>
+    <span class="c1">#    else:</span>
+    <span class="c1">#        t_squared = r ** 2 * (df / ((1.0 - r) * (1.0 + r)))</span>
+    <span class="c1">#        prob = _betai(0.5 * df, 0.5, df / (df + t_squared))</span>
+    <span class="k">return</span> <span class="n">r</span>  <span class="c1"># , prob</span></div>
+
+
+<span class="c1">#####################################</span>
+<span class="c1">#      PROBABILITY CALCULATIONS     #</span>
+<span class="c1">#####################################</span>
+
+<span class="c1"># TODO: disable p value calculation due to python 2.7 break</span>
+<span class="c1"># def _betai(a, b, x):</span>
+<span class="c1">#     x = np.asarray(x)</span>
+<span class="c1">#     x = np.where(x &lt; 1.0, x, 1.0)  # if x &gt; 1 then return 1.0</span>
+<span class="c1">#     return betainc(a, b, x)</span>
+
+
+<div class="viewcode-block" id="pearsonr_mat"><a class="viewcode-back" href="../../../pyod.utils.html#pyod.utils.stat_models.pearsonr_mat">[docs]</a><span class="k">def</span> <span class="nf">pearsonr_mat</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+    <span class="n">n_row</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_col</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pear_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">([</span><span class="n">n_row</span><span class="p">,</span> <span class="n">n_row</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_row</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">cy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_row</span><span class="p">):</span>
+                <span class="n">curr_pear</span> <span class="o">=</span> <span class="n">wpearsonr</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="n">cx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">mat</span><span class="p">[</span><span class="n">cy</span><span class="p">,</span> <span class="p">:],</span> <span class="n">w</span><span class="p">)</span>
+                <span class="n">pear_mat</span><span class="p">[</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pear</span>
+                <span class="n">pear_mat</span><span class="p">[</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pear</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_col</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">cy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_row</span><span class="p">):</span>
+                <span class="n">curr_pear</span> <span class="o">=</span> <span class="n">pearsonr</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="n">cx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">mat</span><span class="p">[</span><span class="n">cy</span><span class="p">,</span> <span class="p">:])[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">pear_mat</span><span class="p">[</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pear</span>
+                <span class="n">pear_mat</span><span class="p">[</span><span class="n">cy</span><span class="p">,</span> <span class="n">cx</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pear</span>
+
+    <span class="k">return</span> <span class="n">pear_mat</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

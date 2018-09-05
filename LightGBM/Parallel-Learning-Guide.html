@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parallel Learning Guide &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LightGBM GPU Tutorial" href="GPU-Tutorial.html" />
+    <link rel="prev" title="Python API" href="Python-API.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parallel Learning Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#choose-appropriate-parallel-algorithm">Choose Appropriate Parallel Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-parallel-version">Build Parallel Version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparation">Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#socket-version">Socket Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mpi-version">MPI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-parallel-learning">Run Parallel Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Socket Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">MPI Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Parallel Learning Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Parallel-Learning-Guide.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="parallel-learning-guide">
+<h1>Parallel Learning Guide<a class="headerlink" href="#parallel-learning-guide" title="Permalink to this headline">¶</a></h1>
+<p>This is a guide for parallel learning of LightGBM.</p>
+<p>Follow the <a class="reference external" href="./Quick-Start.rst">Quick Start</a> to know how to use LightGBM first.</p>
+<div class="section" id="choose-appropriate-parallel-algorithm">
+<h2>Choose Appropriate Parallel Algorithm<a class="headerlink" href="#choose-appropriate-parallel-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>LightGBM provides 3 parallel learning algorithms now.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parallel Algorithm</th>
+<th class="head">How to Use</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Data parallel</td>
+<td><code class="docutils literal notranslate"><span class="pre">tree_learner=data</span></code></td>
+</tr>
+<tr class="row-odd"><td>Feature parallel</td>
+<td><code class="docutils literal notranslate"><span class="pre">tree_learner=feature</span></code></td>
+</tr>
+<tr class="row-even"><td>Voting parallel</td>
+<td><code class="docutils literal notranslate"><span class="pre">tree_learner=voting</span></code></td>
+</tr>
+</tbody>
+</table>
+<p>These algorithms are suited for different scenarios, which is listed in the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="31%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">&#160;</th>
+<th class="head">#data is small</th>
+<th class="head">#data is large</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>#feature is small</strong></td>
+<td>Feature Parallel</td>
+<td>Data Parallel</td>
+</tr>
+<tr class="row-odd"><td><strong>#feature is large</strong></td>
+<td>Feature Parallel</td>
+<td>Voting Parallel</td>
+</tr>
+</tbody>
+</table>
+<p>More details about these parallel algorithms can be found in <a class="reference external" href="./Features.rst#optimization-in-parallel-learning">optimization in parallel learning</a>.</p>
+</div>
+<div class="section" id="build-parallel-version">
+<h2>Build Parallel Version<a class="headerlink" href="#build-parallel-version" title="Permalink to this headline">¶</a></h2>
+<p>Default build version support parallel learning based on the socket.</p>
+<p>If you need to build parallel version with MPI support, please refer to <a class="reference external" href="./Installation-Guide.rst#build-mpi-version">Installation Guide</a>.</p>
+</div>
+<div class="section" id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="socket-version">
+<h3>Socket Version<a class="headerlink" href="#socket-version" title="Permalink to this headline">¶</a></h3>
+<p>It needs to collect IP of all machines that want to run parallel learning in and allocate one TCP port (assume 12345 here) for all machines,
+and change firewall rules to allow income of this port (12345). Then write these IP and ports in one file (assume <code class="docutils literal notranslate"><span class="pre">mlist.txt</span></code>), like following:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">machine1_ip</span> <span class="mi">12345</span>
+<span class="n">machine2_ip</span> <span class="mi">12345</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mpi-version">
+<h3>MPI Version<a class="headerlink" href="#mpi-version" title="Permalink to this headline">¶</a></h3>
+<p>It needs to collect IP (or hostname) of all machines that want to run parallel learning in.
+Then write these IP in one file (assume <code class="docutils literal notranslate"><span class="pre">mlist.txt</span></code>) like following:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">machine1_ip</span>
+<span class="n">machine2_ip</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: For Windows users, need to start “smpd” to start MPI service. More details can be found <a class="reference external" href="https://blogs.technet.microsoft.com/windowshpc/2015/02/02/how-to-compile-and-run-a-simple-ms-mpi-program/">here</a>.</p>
+</div>
+</div>
+<div class="section" id="run-parallel-learning">
+<h2>Run Parallel Learning<a class="headerlink" href="#run-parallel-learning" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Socket Version<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Edit following parameters in config file:</p>
+<p><code class="docutils literal notranslate"><span class="pre">tree_learner=your_parallel_algorithm</span></code>, edit <code class="docutils literal notranslate"><span class="pre">your_parallel_algorithm</span></code> (e.g. feature/data) here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">num_machines=your_num_machines</span></code>, edit <code class="docutils literal notranslate"><span class="pre">your_num_machines</span></code> (e.g. 4) here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">machine_list_file=mlist.txt</span></code>, <code class="docutils literal notranslate"><span class="pre">mlist.txt</span></code> is created in <a class="reference external" href="#preparation">Preparation section</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">local_listen_port=12345</span></code>, <code class="docutils literal notranslate"><span class="pre">12345</span></code> is allocated in <a class="reference external" href="#preparation">Preparation section</a>.</p>
+</li>
+<li><p class="first">Copy data file, executable file, config file and <code class="docutils literal notranslate"><span class="pre">mlist.txt</span></code> to all machines.</p>
+</li>
+<li><p class="first">Run following command on all machines, you need to change <code class="docutils literal notranslate"><span class="pre">your_config_file</span></code> to real config file.</p>
+<p>For Windows: <code class="docutils literal notranslate"><span class="pre">lightgbm.exe</span> <span class="pre">config=your_config_file</span></code></p>
+<p>For Linux: <code class="docutils literal notranslate"><span class="pre">./lightgbm</span> <span class="pre">config=your_config_file</span></code></p>
+</li>
+</ol>
+</div>
+<div class="section" id="id2">
+<h3>MPI Version<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Edit following parameters in config file:</p>
+<p><code class="docutils literal notranslate"><span class="pre">tree_learner=your_parallel_algorithm</span></code>, edit <code class="docutils literal notranslate"><span class="pre">your_parallel_algorithm</span></code> (e.g. feature/data) here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">num_machines=your_num_machines</span></code>, edit <code class="docutils literal notranslate"><span class="pre">your_num_machines</span></code> (e.g. 4) here.</p>
+</li>
+<li><p class="first">Copy data file, executable file, config file and <code class="docutils literal notranslate"><span class="pre">mlist.txt</span></code> to all machines.</p>
+<p><strong>Note</strong>: MPI needs to be run in the <strong>same path on all machines</strong>.</p>
+</li>
+<li><p class="first">Run following command on one machine (not need to run on all machines), need to change <code class="docutils literal notranslate"><span class="pre">your_config_file</span></code> to real config file.</p>
+<p>For Windows:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpiexec</span><span class="o">.</span><span class="n">exe</span> <span class="o">/</span><span class="n">machinefile</span> <span class="n">mlist</span><span class="o">.</span><span class="n">txt</span> <span class="n">lightgbm</span><span class="o">.</span><span class="n">exe</span> <span class="n">config</span><span class="o">=</span><span class="n">your_config_file</span>
+</pre></div>
+</div>
+<p>For Linux:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpiexec</span> <span class="o">--</span><span class="n">machinefile</span> <span class="n">mlist</span><span class="o">.</span><span class="n">txt</span> <span class="o">./</span><span class="n">lightgbm</span> <span class="n">config</span><span class="o">=</span><span class="n">your_config_file</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/Microsoft/lightgbm/tree/master/examples/parallel_learning">A simple parallel example</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="GPU-Tutorial.html" class="btn btn-neutral float-right" title="LightGBM GPU Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Python-API.html" class="btn btn-neutral" title="Python API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

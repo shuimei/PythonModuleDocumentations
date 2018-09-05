@@ -1,0 +1,303 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.mcd &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.mcd</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Outlier Detection with Minimum Covariance Determinant (MCD)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.covariance</span> <span class="k">import</span> <span class="n">MinCovDet</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_array</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MCD&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="MCD"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.mcd.MCD">[docs]</a><span class="k">class</span> <span class="nc">MCD</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An object for detecting outliers in a Gaussian distributed dataset using</span>
+<span class="sd">    Minimum Covariance Determinant (MCD): robust estimator of covariance.</span>
+
+<span class="sd">    The Minimum Covariance Determinant covariance estimator is to be applied</span>
+<span class="sd">    on Gaussian-distributed data, but could still be relevant on data</span>
+<span class="sd">    drawn from a unimodal, symmetric distribution. It is not meant to be used</span>
+<span class="sd">    with multi-modal data (the algorithm used to fit a MinCovDet object is</span>
+<span class="sd">    likely to fail in such a case).</span>
+<span class="sd">    One should consider projection pursuit methods to deal with multi-modal</span>
+<span class="sd">    datasets.</span>
+
+<span class="sd">    First fit a minimum covariance determinant model and then compute the</span>
+<span class="sd">    Mahalanobis distance as the outlier degree of the data</span>
+
+<span class="sd">    See :cite:`rousseeuw1999fast,hardin2004outlier` for details.</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set,</span>
+<span class="sd">        i.e. the proportion of outliers in the data set. Used when fitting to</span>
+<span class="sd">        define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :param store_precision: Specify if the estimated precision is stored.</span>
+<span class="sd">    :type store_precision: bool, optional (default=True)</span>
+
+<span class="sd">    :param assume_centered:  If True, the support of the robust location and</span>
+<span class="sd">        the covariance estimates is computed, and a covariance estimate is</span>
+<span class="sd">        recomputed from it, without centering the data.</span>
+<span class="sd">        Useful to work with data whose mean is significantly equal to</span>
+<span class="sd">        zero but is not exactly zero.</span>
+<span class="sd">        If False, the robust location and covariance are directly computed</span>
+<span class="sd">        with the FastMCD algorithm without additional treatment.</span>
+<span class="sd">    :type assume_centered: bool, optional (default=False)</span>
+
+<span class="sd">    :param support_fraction: The proportion of points to be included in the</span>
+<span class="sd">        support of the raw MCD estimate. Default is None, which implies that</span>
+<span class="sd">        the minimum value of support_fraction will be used within the</span>
+<span class="sd">        algorithm: [n_sample + n_features + 1] / 2</span>
+<span class="sd">    :type support_fraction: float, optional (default=None)</span>
+
+<span class="sd">    :param random_state: If int, random_state is the seed used by the random</span>
+<span class="sd">        number generator; If RandomState instance, random_state is the random</span>
+<span class="sd">        number generator; If None, the random number generator is the</span>
+<span class="sd">        RandomState instance used by `np.random`.</span>
+<span class="sd">    :type random_state: int, RandomState instance or None, optional</span>
+<span class="sd">        (default=None)</span>
+
+<span class="sd">    :var raw_location\_: The raw robust estimated location before correction</span>
+<span class="sd">        and re-weighting.</span>
+<span class="sd">    :vartype raw_location\_: array-like of shape (n_features,)</span>
+
+<span class="sd">    :var raw_covariance\_: The raw robust estimated covariance before</span>
+<span class="sd">        correction and re-weighting.</span>
+<span class="sd">    :vartype raw_covariance\_: array-like of shape (n_features, n_features)</span>
+
+<span class="sd">    :var raw_support\_: A mask of the observations that have been used to</span>
+<span class="sd">        compute the raw robust estimates of location and shape, before</span>
+<span class="sd">        correction and re-weighting.</span>
+<span class="sd">    :vartype raw_support\_: array-like of shape (n_samples,)</span>
+
+<span class="sd">    :var location\_: Estimated robust location</span>
+<span class="sd">    :vartype location\_: array-like of shape (n_features,)</span>
+
+<span class="sd">    :var covariance\_: Estimated robust covariance matrix</span>
+<span class="sd">    :vartype covariance\_: array-like of shape (n_features, n_features)</span>
+
+<span class="sd">    :var precision\_: Estimated pseudo inverse matrix.</span>
+<span class="sd">        (stored only if store_precision is True)</span>
+<span class="sd">    :vartype precision\_: array-like of shape (n_features, n_features)</span>
+
+<span class="sd">    :var support\_: A mask of the observations that have been used to compute</span>
+<span class="sd">        the robust estimates of location and shape.</span>
+<span class="sd">    :vartype support\_: array-like of shape (n_samples,)</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">store_precision</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">assume_centered</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">support_fraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MCD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_precision</span> <span class="o">=</span> <span class="n">store_precision</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assume_centered</span> <span class="o">=</span> <span class="n">assume_centered</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">support_fraction</span> <span class="o">=</span> <span class="n">support_fraction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+
+    <span class="c1"># noinspection PyIncorrectDocstring</span>
+<div class="viewcode-block" id="MCD.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.mcd.MCD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the model using X as training data.</span>
+
+<span class="sd">        :param X: Training data. If array or matrix,</span>
+<span class="sd">            shape [n_samples, n_features],</span>
+<span class="sd">            or [n_samples, n_samples] if metric=&#39;precomputed&#39;.</span>
+<span class="sd">        :type X: {array-like, sparse matrix, BallTree, KDTree}</span>
+
+<span class="sd">        :return: self</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span> <span class="o">=</span> <span class="n">MinCovDet</span><span class="p">(</span><span class="n">store_precision</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">store_precision</span><span class="p">,</span>
+                                   <span class="n">assume_centered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assume_centered</span><span class="p">,</span>
+                                   <span class="n">support_fraction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">support_fraction</span><span class="p">,</span>
+                                   <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Use mahalanabis distance as the outlier score</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">dist_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="MCD.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.mcd.MCD.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="c1"># Computer mahalanobis distance of the samples</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">mahalanobis</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_location_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The raw robust estimated location before correction and</span>
+<span class="sd">        re-weighting.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">raw_location_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_covariance_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The raw robust estimated location before correction and</span>
+<span class="sd">        re-weighting.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">raw_covariance_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_support_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A mask of the observations that have been used to compute</span>
+<span class="sd">        the raw robust estimates of location and shape, before correction</span>
+<span class="sd">        and re-weighting.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">raw_support_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">location_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Estimated robust location.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">location_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">covariance_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Estimated robust covariance matrix.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">covariance_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">precision_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Estimated pseudo inverse matrix.</span>
+<span class="sd">        (stored only if store_precision is True)</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">precision_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A mask of the observations that have been used to compute</span>
+<span class="sd">        the robust estimates of location and shape.</span>
+
+<span class="sd">        Decorator for scikit-learn MinCovDet attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">support_</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

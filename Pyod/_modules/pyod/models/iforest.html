@@ -1,0 +1,261 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.iforest &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.iforest</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;IsolationForest Outlier Detector. Implemented on scikit-learn library.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">IsolationForest</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">invert_order</span>
+
+
+<div class="viewcode-block" id="IForest"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.iforest.IForest">[docs]</a><span class="k">class</span> <span class="nc">IForest</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper of scikit-learn Isolation Forest with more functionalities.</span>
+
+<span class="sd">    The IsolationForest &#39;isolates&#39; observations by randomly selecting a</span>
+<span class="sd">    feature and then randomly selecting a split value between the maximum and</span>
+<span class="sd">    minimum values of the selected feature.</span>
+<span class="sd">    See :cite:`liu2008isolation,liu2012isolation` for details.</span>
+
+<span class="sd">    Since recursive partitioning can be represented by a tree structure, the</span>
+<span class="sd">    number of splittings required to isolate a sample is equivalent to the path</span>
+<span class="sd">    length from the root node to the terminating node.</span>
+
+<span class="sd">    This path length, averaged over a forest of such random trees, is a</span>
+<span class="sd">    measure of normality and our decision function.</span>
+
+<span class="sd">    Random partitioning produces noticeably shorter paths for anomalies.</span>
+<span class="sd">    Hence, when a forest of random trees collectively produce shorter path</span>
+<span class="sd">    lengths for particular samples, they are highly likely to be anomalies.</span>
+
+<span class="sd">    :param n_estimators: The number of base estimators in the ensemble.</span>
+<span class="sd">    :type n_estimators: int, optional (default=100)</span>
+
+<span class="sd">    :param max_samples: The number of samples to draw from X to train</span>
+<span class="sd">        each base estimator.</span>
+
+<span class="sd">            - If int, then draw `max_samples` samples.</span>
+<span class="sd">            - If float, then draw `max_samples * X.shape[0]` samples.</span>
+<span class="sd">            - If &quot;auto&quot;, then `max_samples=min(256, n_samples)`.</span>
+<span class="sd">    :type max_samples: int or float, optional (default=&quot;auto&quot;)</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set,</span>
+<span class="sd">        i.e. the proportion of outliers in the data set. Used when fitting to</span>
+<span class="sd">        define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :param max_features: The number of features to draw from X to</span>
+<span class="sd">        train each base estimator.</span>
+
+<span class="sd">            - If int, then draw `max_features` features.</span>
+<span class="sd">            - If float, then draw `max_features * X.shape[1]` features.</span>
+<span class="sd">    :type max_features: int or float, optional (default=1.0)</span>
+
+<span class="sd">    :param bootstrap: If True, individual trees are fit on random subsets of</span>
+<span class="sd">        the training data sampled with replacement. If False, sampling without</span>
+<span class="sd">        replacement is performed.</span>
+<span class="sd">    :type bootstrap: bool, optional (default=False)</span>
+
+<span class="sd">    :param n_jobs: The number of jobs to run in parallel for both `fit` and</span>
+<span class="sd">        `predict`. If -1, then the number of jobs is set to the number of cores</span>
+<span class="sd">    :type n_jobs: int, optional (default=1)</span>
+
+<span class="sd">    :param random_state: If int, random_state is the seed used by the random</span>
+<span class="sd">        number generator; If RandomState instance, random_state is the random</span>
+<span class="sd">        number generator; If None, the random number generator is the</span>
+<span class="sd">        RandomState instance used by `np.random`.</span>
+<span class="sd">    :type random_state: int, RandomState instance or None, optional</span>
+<span class="sd">        (default=None)</span>
+
+<span class="sd">    :param verbose: Controls the verbosity of the tree building process.</span>
+<span class="sd">    :type verbose: int, optional (default=0)</span>
+
+<span class="sd">    :var estimators\_: The collection of fitted sub-estimators.</span>
+<span class="sd">    :vartype estimators\_: list</span>
+
+<span class="sd">    :var estimators_samples\_: The subset of drawn samples (i.e., the</span>
+<span class="sd">        in-bag samples) for each base estimator.</span>
+<span class="sd">    :vartype estimators_samples\_: list or arrays</span>
+
+<span class="sd">    :var max_samples\_: The actual number of samples.</span>
+<span class="sd">    :vartype max_samples\_: int</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">max_samples</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                 <span class="n">max_features</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+                 <span class="n">bootstrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">IForest</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n_estimators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_samples</span> <span class="o">=</span> <span class="n">max_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_features</span> <span class="o">=</span> <span class="n">max_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap</span> <span class="o">=</span> <span class="n">bootstrap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="n">n_jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+<div class="viewcode-block" id="IForest.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.iforest.IForest.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span> <span class="o">=</span> <span class="n">IsolationForest</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_estimators</span><span class="p">,</span>
+                                         <span class="n">max_samples</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_samples</span><span class="p">,</span>
+                                         <span class="n">contamination</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contamination</span><span class="p">,</span>
+                                         <span class="n">max_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_features</span><span class="p">,</span>
+                                         <span class="n">bootstrap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bootstrap</span><span class="p">,</span>
+                                         <span class="n">n_jobs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_jobs</span><span class="p">,</span>
+                                         <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+                                         <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                           <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Invert decision_scores_. Outliers comes with higher outlier scores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="n">invert_order</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="IForest.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.iforest.IForest.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+        <span class="c1"># Invert outlier scores. Outliers comes with higher outlier scores</span>
+        <span class="k">return</span> <span class="n">invert_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">estimators_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The collection of fitted sub-estimators.</span>
+<span class="sd">        Decorator for scikit-learn Isolation Forest attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">estimators_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">estimators_samples_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The subset of drawn samples (i.e., the in-bag samples) for</span>
+<span class="sd">        each base estimator.</span>
+<span class="sd">        Decorator for scikit-learn Isolation Forest attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">estimators_samples_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">max_samples_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The actual number of samples.</span>
+<span class="sd">        Decorator for scikit-learn Isolation Forest attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">max_samples_</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

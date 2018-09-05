@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lightgbm.callback &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>lightgbm.callback</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lightgbm.callback</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+<span class="c1"># pylint: disable = invalid-name, W0105, C0301</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">gt</span><span class="p">,</span> <span class="n">lt</span>
+
+<span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">range_</span>
+
+
+<span class="k">class</span> <span class="nc">EarlyStopException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Exception of early stopping.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    best_iteration : int</span>
+<span class="sd">        The best iteration stopped.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">best_iteration</span><span class="p">,</span> <span class="n">best_score</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EarlyStopException</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_iteration</span> <span class="o">=</span> <span class="n">best_iteration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_score</span> <span class="o">=</span> <span class="n">best_score</span>
+
+
+<span class="c1"># Callback environment used by callbacks</span>
+<span class="n">CallbackEnv</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s2">&quot;LightGBMCallbackEnv&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;params&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;iteration&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;begin_iteration&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;end_iteration&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;evaluation_result_list&quot;</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_format_eval_result</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">show_stdv</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;format metric string&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">s </span><span class="si">%s</span><span class="s1">: </span><span class="si">%g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">show_stdv</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">s </span><span class="si">%s</span><span class="s1">: </span><span class="si">%g</span><span class="s1"> + </span><span class="si">%g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">s </span><span class="si">%s</span><span class="s1">: </span><span class="si">%g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Wrong metric value&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="print_evaluation"><a class="viewcode-back" href="../../Python-API.html#lightgbm.print_evaluation">[docs]</a><span class="k">def</span> <span class="nf">print_evaluation</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">show_stdv</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a callback that prints the evaluation results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    period : int, optional (default=1)</span>
+<span class="sd">        The period to print the evaluation results.</span>
+<span class="sd">    show_stdv : bool, optional (default=True)</span>
+<span class="sd">        Whether to show stdv (if provided).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callback : function</span>
+<span class="sd">        The callback that prints the evaluation results every ``period`` iteration(s).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">period</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span> <span class="ow">and</span> <span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">period</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_format_eval_result</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">show_stdv</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%d</span><span class="s1">]</span><span class="se">\t</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+    <span class="n">callback</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="n">callback</span></div>
+
+
+<div class="viewcode-block" id="record_evaluation"><a class="viewcode-back" href="../../Python-API.html#lightgbm.record_evaluation">[docs]</a><span class="k">def</span> <span class="nf">record_evaluation</span><span class="p">(</span><span class="n">eval_result</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a callback that records the evaluation history into ``eval_result``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eval_result : dict</span>
+<span class="sd">       A dictionary to store the evaluation results.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callback : function</span>
+<span class="sd">        The callback that records the evaluation history into the passed dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eval_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Eval_result should be a dictionary&#39;</span><span class="p">)</span>
+    <span class="n">eval_result</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">:</span>
+            <span class="n">eval_result</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">data_name</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">eval_result</span><span class="p">:</span>
+            <span class="n">init</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">data_name</span><span class="p">,</span> <span class="n">eval_name</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">:</span>
+            <span class="n">eval_result</span><span class="p">[</span><span class="n">data_name</span><span class="p">][</span><span class="n">eval_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">callback</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="k">return</span> <span class="n">callback</span></div>
+
+
+<div class="viewcode-block" id="reset_parameter"><a class="viewcode-back" href="../../Python-API.html#lightgbm.reset_parameter">[docs]</a><span class="k">def</span> <span class="nf">reset_parameter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a callback that resets the parameter after the first iteration.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The initial parameter will still take in-effect on first iteration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    **kwargs: value should be list or function</span>
+<span class="sd">        List of parameters for each boosting round</span>
+<span class="sd">        or a customized function that calculates the parameter in terms of</span>
+<span class="sd">        current number of round (e.g. yields learning rate decay).</span>
+<span class="sd">        If list lst, parameter = lst[current_round].</span>
+<span class="sd">        If function func, parameter = func(current_round).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callback : function</span>
+<span class="sd">        The callback that resets the parameter after the first iteration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="n">new_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;num_class&#39;</span><span class="p">,</span> <span class="s1">&#39;num_classes&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;boosting&#39;</span><span class="p">,</span> <span class="s1">&#39;boost&#39;</span><span class="p">,</span> <span class="s1">&#39;boosting_type&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;metric&#39;</span><span class="p">,</span> <span class="s1">&#39;metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;metric_types&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;cannot reset </span><span class="si">{}</span><span class="s2"> during training&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="n">env</span><span class="o">.</span><span class="n">end_iteration</span> <span class="o">-</span> <span class="n">env</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Length of list </span><span class="si">{}</span><span class="s2"> has to equal to &#39;num_boost_round&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+                <span class="n">new_param</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">-</span> <span class="n">env</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_param</span> <span class="o">=</span> <span class="n">value</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">-</span> <span class="n">env</span><span class="o">.</span><span class="n">begin_iteration</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_param</span> <span class="o">!=</span> <span class="n">env</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">new_parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_param</span>
+        <span class="k">if</span> <span class="n">new_parameters</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reset_parameter</span><span class="p">(</span><span class="n">new_parameters</span><span class="p">)</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_parameters</span><span class="p">)</span>
+    <span class="n">callback</span><span class="o">.</span><span class="n">before_iteration</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">callback</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="n">callback</span></div>
+
+
+<div class="viewcode-block" id="early_stopping"><a class="viewcode-back" href="../../Python-API.html#lightgbm.early_stopping">[docs]</a><span class="k">def</span> <span class="nf">early_stopping</span><span class="p">(</span><span class="n">stopping_rounds</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a callback that activates early stopping.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Activates early stopping.</span>
+<span class="sd">    The model will train until the validation score stops improving.</span>
+<span class="sd">    Validation score needs to improve at least every ``early_stopping_rounds`` round(s)</span>
+<span class="sd">    to continue training.</span>
+<span class="sd">    Requires at least one validation data and one metric.</span>
+<span class="sd">    If there&#39;s more than one, will check all of them. But the training data is ignored anyway.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    stopping_rounds : int</span>
+<span class="sd">       The possible number of rounds without the trend occurrence.</span>
+
+<span class="sd">    verbose : bool, optional (default=True)</span>
+<span class="sd">        Whether to print message with early stopping information.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callback : function</span>
+<span class="sd">        The callback that activates early stopping.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">best_score</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best_iter</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">best_score_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">cmp_op</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;For early stopping, at least one dataset and eval metric is required for evaluation&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Training until validation scores don&#39;t improve for </span><span class="si">{}</span><span class="s2"> rounds.&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stopping_rounds</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">eval_ret</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">:</span>
+            <span class="n">best_iter</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">best_score_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">eval_ret</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+                <span class="n">best_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;-inf&#39;</span><span class="p">))</span>
+                <span class="n">cmp_op</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">best_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">))</span>
+                <span class="n">cmp_op</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lt</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">env</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;internal function&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cmp_op</span><span class="p">:</span>
+            <span class="n">init</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">)):</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cmp_op</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">score</span><span class="p">,</span> <span class="n">best_score</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="n">best_score</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span>
+                <span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">iteration</span>
+                <span class="n">best_score_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">evaluation_result_list</span>
+            <span class="k">elif</span> <span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">-</span> <span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">stopping_rounds</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Early stopping, best iteration is:</span><span class="se">\n</span><span class="s1">[</span><span class="si">%d</span><span class="s1">]</span><span class="se">\t</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_format_eval_result</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">best_score_list</span><span class="p">[</span><span class="n">i</span><span class="p">]])))</span>
+                <span class="k">raise</span> <span class="n">EarlyStopException</span><span class="p">(</span><span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">best_score_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">iteration</span> <span class="o">==</span> <span class="n">env</span><span class="o">.</span><span class="n">end_iteration</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Did not meet early stopping. Best iteration is:</span><span class="se">\n</span><span class="s1">[</span><span class="si">%d</span><span class="s1">]</span><span class="se">\t</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_format_eval_result</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">best_score_list</span><span class="p">[</span><span class="n">i</span><span class="p">]])))</span>
+                <span class="k">raise</span> <span class="n">EarlyStopException</span><span class="p">(</span><span class="n">best_iter</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">best_score_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">callback</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="k">return</span> <span class="n">callback</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced Topics &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LightGBM FAQ" href="FAQ.html" />
+    <link rel="prev" title="LightGBM GPU Tutorial" href="GPU-Tutorial.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Topics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#missing-value-handle">Missing Value Handle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#categorical-feature-support">Categorical Feature Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lambdarank">LambdaRank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters-tuning">Parameters Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallel-learning">Parallel Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#gpu-support">GPU Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recommendations-for-gcc-users-mingw-nix">Recommendations for gcc Users (MinGW, *nix)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Advanced Topics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Advanced-Topics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-topics">
+<h1>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="missing-value-handle">
+<h2>Missing Value Handle<a class="headerlink" href="#missing-value-handle" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>LightGBM enables the missing value handle by default. Disable it by setting <code class="docutils literal notranslate"><span class="pre">use_missing=false</span></code>.</li>
+<li>LightGBM uses NA (NaN) to represent missing values by default. Change it to use zero by setting <code class="docutils literal notranslate"><span class="pre">zero_as_missing=true</span></code>.</li>
+<li>When <code class="docutils literal notranslate"><span class="pre">zero_as_missing=false</span></code> (default), the unshown values in sparse matrices (and LightSVM) are treated as zeros.</li>
+<li>When <code class="docutils literal notranslate"><span class="pre">zero_as_missing=true</span></code>, NA and zeros (including unshown values in sparse matrices (and LightSVM)) are treated as missing.</li>
+</ul>
+</div>
+<div class="section" id="categorical-feature-support">
+<h2>Categorical Feature Support<a class="headerlink" href="#categorical-feature-support" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>LightGBM offers good accuracy with integer-encoded categorical features. LightGBM applies
+<a class="reference external" href="http://www.csiss.org/SPACE/workshops/2004/SAC/files/fisher.pdf">Fisher (1958)</a>
+to find the optimal split over categories as
+<a class="reference external" href="./Features.rst#optimal-split-for-categorical-features">described here</a>. This often performs better than one-hot encoding.</li>
+<li>Use <code class="docutils literal notranslate"><span class="pre">categorical_feature</span></code> to specify the categorical features.
+Refer to the parameter <code class="docutils literal notranslate"><span class="pre">categorical_feature</span></code> in <a class="reference external" href="./Parameters.rst#categorical_feature">Parameters</a>.</li>
+<li>Categorical features must be encoded as non-negative integers (<code class="docutils literal notranslate"><span class="pre">int</span></code>) less than <code class="docutils literal notranslate"><span class="pre">Int32.MaxValue</span></code> (2147483647).
+It is best to use a contiguous range of integers.</li>
+<li>Use <code class="docutils literal notranslate"><span class="pre">min_data_per_group</span></code>, <code class="docutils literal notranslate"><span class="pre">cat_smooth</span></code> to deal with over-fitting (when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is small or <code class="docutils literal notranslate"><span class="pre">#category</span></code> is large).</li>
+<li>For a categorical feature with high cardinality (<code class="docutils literal notranslate"><span class="pre">#category</span></code> is large), it often works best to
+treat the feature as numeric, either by simply ignoring the categorical interpretation of the integers or
+by embedding the categories in a low-dimensional numeric space.</li>
+</ul>
+</div>
+<div class="section" id="lambdarank">
+<h2>LambdaRank<a class="headerlink" href="#lambdarank" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>The label should be of type <code class="docutils literal notranslate"><span class="pre">int</span></code>, such that larger numbers correspond to higher relevance (e.g. 0:bad, 1:fair, 2:good, 3:perfect).</li>
+<li>Use <code class="docutils literal notranslate"><span class="pre">label_gain</span></code> to set the gain(weight) of <code class="docutils literal notranslate"><span class="pre">int</span></code> label.</li>
+<li>Use <code class="docutils literal notranslate"><span class="pre">max_position</span></code> to set the NDCG optimization position.</li>
+</ul>
+</div>
+<div class="section" id="parameters-tuning">
+<h2>Parameters Tuning<a class="headerlink" href="#parameters-tuning" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Refer to <a class="reference external" href="./Parameters-Tuning.rst">Parameters Tuning</a>.</li>
+</ul>
+</div>
+<div class="section" id="parallel-learning">
+<h2>Parallel Learning<a class="headerlink" href="#parallel-learning" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Refer to <a class="reference external" href="./Parallel-Learning-Guide.rst">Parallel Learning Guide</a>.</li>
+</ul>
+</div>
+<div class="section" id="gpu-support">
+<h2>GPU Support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Refer to <a class="reference external" href="./GPU-Tutorial.rst">GPU Tutorial</a> and <a class="reference external" href="./GPU-Targets.rst">GPU Targets</a>.</li>
+</ul>
+</div>
+<div class="section" id="recommendations-for-gcc-users-mingw-nix">
+<h2>Recommendations for gcc Users (MinGW, *nix)<a class="headerlink" href="#recommendations-for-gcc-users-mingw-nix" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Refer to <a class="reference external" href="./gcc-Tips.rst">gcc Tips</a>.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="LightGBM FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="GPU-Tutorial.html" class="btn btn-neutral" title="LightGBM GPU Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

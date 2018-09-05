@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Features &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Experiments" href="Experiments.html" />
+    <link rel="prev" title="Python-package Introduction" href="Python-Intro.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#optimization-in-speed-and-memory-usage">Optimization in Speed and Memory Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sparse-optimization">Sparse Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimization-in-accuracy">Optimization in Accuracy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#leaf-wise-best-first-tree-growth">Leaf-wise (Best-first) Tree Growth</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimal-split-for-categorical-features">Optimal Split for Categorical Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#optimization-in-network-communication">Optimization in Network Communication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimization-in-parallel-learning">Optimization in Parallel Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#feature-parallel">Feature Parallel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#traditional-algorithm">Traditional Algorithm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feature-parallel-in-lightgbm">Feature Parallel in LightGBM</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#data-parallel">Data Parallel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Traditional Algorithm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-parallel-in-lightgbm">Data Parallel in LightGBM</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#voting-parallel">Voting Parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gpu-support">GPU Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#applications-and-metrics">Applications and Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-features">Other Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Features</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Features.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<p>This is a conceptual overview of how LightGBM works<a class="reference external" href="#references">[1]</a>. We assume familiarity with decision tree boosting algorithms to focus instead on aspects of LightGBM that may differ from other boosting packages. For detailed algorithms, please refer to the citations or source code.</p>
+<div class="section" id="optimization-in-speed-and-memory-usage">
+<h2>Optimization in Speed and Memory Usage<a class="headerlink" href="#optimization-in-speed-and-memory-usage" title="Permalink to this headline">¶</a></h2>
+<p>Many boosting tools use pre-sort-based algorithms<a class="reference external" href="#references">[2, 3]</a> (e.g. default algorithm in xgboost) for decision tree learning. It is a simple solution, but not easy to optimize.</p>
+<p>LightGBM uses histogram-based algorithms<a class="reference external" href="#references">[4, 5, 6]</a>, which bucket continuous feature (attribute) values into discrete bins. This speeds up training and reduces memory usage. Advantages of histogram-based algorithms include the following:</p>
+<ul class="simple">
+<li><strong>Reduced cost of calculating the gain for each split</strong><ul>
+<li>Pre-sort-based algorithms have time complexity <code class="docutils literal notranslate"><span class="pre">O(#data)</span></code></li>
+<li>Computing the histogram has time complexity <code class="docutils literal notranslate"><span class="pre">O(#data)</span></code>, but this involves only a fast sum-up operation. Once the histogram is constructed, a histogram-based algorithm has time complexity <code class="docutils literal notranslate"><span class="pre">O(#bins)</span></code>, and <code class="docutils literal notranslate"><span class="pre">#bins</span></code> is far smaller than <code class="docutils literal notranslate"><span class="pre">#data</span></code>.</li>
+</ul>
+</li>
+<li><strong>Use histogram subtraction for further speedup</strong><ul>
+<li>To get one leaf’s histograms in a binary tree, use the histogram subtraction of its parent and its neighbor</li>
+<li>So it needs to construct histograms for only one leaf (with smaller <code class="docutils literal notranslate"><span class="pre">#data</span></code> than its neighbor). It then can get histograms of its neighbor by histogram subtraction with small cost (<code class="docutils literal notranslate"><span class="pre">O(#bins)</span></code>)</li>
+</ul>
+</li>
+<li><strong>Reduce memory usage</strong><ul>
+<li>Replaces continuous values with discrete bins. If <code class="docutils literal notranslate"><span class="pre">#bins</span></code> is small, can use small data type, e.g. uint8_t, to store training data</li>
+<li>No need to store additional information for pre-sorting feature values</li>
+</ul>
+</li>
+<li><strong>Reduce communication cost for parallel learning</strong></li>
+</ul>
+</div>
+<div class="section" id="sparse-optimization">
+<h2>Sparse Optimization<a class="headerlink" href="#sparse-optimization" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Need only <code class="docutils literal notranslate"><span class="pre">O(2</span> <span class="pre">*</span> <span class="pre">#non_zero_data)</span></code> to construct histogram for sparse features</li>
+</ul>
+</div>
+<div class="section" id="optimization-in-accuracy">
+<h2>Optimization in Accuracy<a class="headerlink" href="#optimization-in-accuracy" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="leaf-wise-best-first-tree-growth">
+<h3>Leaf-wise (Best-first) Tree Growth<a class="headerlink" href="#leaf-wise-best-first-tree-growth" title="Permalink to this headline">¶</a></h3>
+<p>Most decision tree learning algorithms grow trees by level (depth)-wise, like the following image:</p>
+<img alt="_images/level-wise.png" class="align-center" src="_images/level-wise.png" />
+<p>LightGBM grows trees leaf-wise (best-first)<a class="reference external" href="#references">[7]</a>. It will choose the leaf with max delta loss to grow.
+Holding <code class="docutils literal notranslate"><span class="pre">#leaf</span></code> fixed, leaf-wise algorithms tend to achieve lower loss than level-wise algorithms.</p>
+<p>Leaf-wise may cause over-fitting when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is small, so LightGBM includes the <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> parameter to limit tree depth. However, trees still grow leaf-wise even when <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> is specified.</p>
+<img alt="_images/leaf-wise.png" class="align-center" src="_images/leaf-wise.png" />
+</div>
+<div class="section" id="optimal-split-for-categorical-features">
+<h3>Optimal Split for Categorical Features<a class="headerlink" href="#optimal-split-for-categorical-features" title="Permalink to this headline">¶</a></h3>
+<p>It is common to represent categorical features with one-hot encoding, but this approach is suboptimal for tree learners. Particularly for high-cardinality categorical features, a tree built on one-hot features tends to be unbalanced and needs to grow very deep to achieve good accuracy.</p>
+<p>Instead of one-hot encoding, the optimal solution is to split on a categorical feature by partitioning its categories into 2 subsets. If the feature has <code class="docutils literal notranslate"><span class="pre">k</span></code> categories, there are <code class="docutils literal notranslate"><span class="pre">2^(k-1)</span> <span class="pre">-</span> <span class="pre">1</span></code> possible partitions.
+But there is an efficient solution for regression trees<a class="reference external" href="#references">[8]</a>. It needs about <code class="docutils literal notranslate"><span class="pre">O(k</span> <span class="pre">*</span> <span class="pre">log(k))</span></code> to find the optimal partition.</p>
+<p>The basic idea is to sort the categories according to the training objective at each split.
+More specifically, LightGBM sorts the histogram (for a categorical feature) according to its accumulated values (<code class="docutils literal notranslate"><span class="pre">sum_gradient</span> <span class="pre">/</span> <span class="pre">sum_hessian</span></code>) and then finds the best split on the sorted histogram.</p>
+</div>
+</div>
+<div class="section" id="optimization-in-network-communication">
+<h2>Optimization in Network Communication<a class="headerlink" href="#optimization-in-network-communication" title="Permalink to this headline">¶</a></h2>
+<p>It only needs to use some collective communication algorithms, like “All reduce”, “All gather” and “Reduce scatter”, in parallel learning of LightGBM.
+LightGBM implement state-of-art algorithms<a class="reference external" href="#references">[9]</a>.
+These collective communication algorithms can provide much better performance than point-to-point communication.</p>
+</div>
+<div class="section" id="optimization-in-parallel-learning">
+<h2>Optimization in Parallel Learning<a class="headerlink" href="#optimization-in-parallel-learning" title="Permalink to this headline">¶</a></h2>
+<p>LightGBM provides the following parallel learning algorithms.</p>
+<div class="section" id="feature-parallel">
+<h3>Feature Parallel<a class="headerlink" href="#feature-parallel" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="traditional-algorithm">
+<h4>Traditional Algorithm<a class="headerlink" href="#traditional-algorithm" title="Permalink to this headline">¶</a></h4>
+<p>Feature parallel aims to parallelize the “Find Best Split” in the decision tree. The procedure of traditional feature parallel is:</p>
+<ol class="arabic simple">
+<li>Partition data vertically (different machines have different feature set)</li>
+<li>Workers find local best split point {feature, threshold} on local feature set</li>
+<li>Communicate local best splits with each other and get the best one</li>
+<li>Worker with best split to perform split, then send the split result of data to other workers</li>
+<li>Other workers split data according received data</li>
+</ol>
+<p>The shortcomings of traditional feature parallel:</p>
+<ul class="simple">
+<li>Has computation overhead, since it cannot speed up “split”, whose time complexity is <code class="docutils literal notranslate"><span class="pre">O(#data)</span></code>.
+Thus, feature parallel cannot speed up well when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is large.</li>
+<li>Need communication of split result, which costs about <code class="docutils literal notranslate"><span class="pre">O(#data</span> <span class="pre">/</span> <span class="pre">8)</span></code> (one bit for one data).</li>
+</ul>
+</div>
+<div class="section" id="feature-parallel-in-lightgbm">
+<h4>Feature Parallel in LightGBM<a class="headerlink" href="#feature-parallel-in-lightgbm" title="Permalink to this headline">¶</a></h4>
+<p>Since feature parallel cannot speed up well when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is large, we make a little change: instead of partitioning data vertically, every worker holds the full data.
+Thus, LightGBM doesn’t need to communicate for split result of data since every worker knows how to split data.
+And <code class="docutils literal notranslate"><span class="pre">#data</span></code> won’t be larger, so it is reasonable to hold the full data in every machine.</p>
+<p>The procedure of feature parallel in LightGBM:</p>
+<ol class="arabic simple">
+<li>Workers find local best split point {feature, threshold} on local feature set</li>
+<li>Communicate local best splits with each other and get the best one</li>
+<li>Perform best split</li>
+</ol>
+<p>However, this feature parallel algorithm still suffers from computation overhead for “split” when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is large.
+So it will be better to use data parallel when <code class="docutils literal notranslate"><span class="pre">#data</span></code> is large.</p>
+</div>
+</div>
+<div class="section" id="data-parallel">
+<h3>Data Parallel<a class="headerlink" href="#data-parallel" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Traditional Algorithm<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>Data parallel aims to parallelize the whole decision learning. The procedure of data parallel is:</p>
+<ol class="arabic simple">
+<li>Partition data horizontally</li>
+<li>Workers use local data to construct local histograms</li>
+<li>Merge global histograms from all local histograms</li>
+<li>Find best split from merged global histograms, then perform splits</li>
+</ol>
+<p>The shortcomings of traditional data parallel:</p>
+<ul class="simple">
+<li>High communication cost.
+If using point-to-point communication algorithm, communication cost for one machine is about <code class="docutils literal notranslate"><span class="pre">O(#machine</span> <span class="pre">*</span> <span class="pre">#feature</span> <span class="pre">*</span> <span class="pre">#bin)</span></code>.
+If using collective communication algorithm (e.g. “All Reduce”), communication cost is about <code class="docutils literal notranslate"><span class="pre">O(2</span> <span class="pre">*</span> <span class="pre">#feature</span> <span class="pre">*</span> <span class="pre">#bin)</span></code> (check cost of “All Reduce” in chapter 4.5 at <a class="reference external" href="#references">[9]</a>).</li>
+</ul>
+</div>
+<div class="section" id="data-parallel-in-lightgbm">
+<h4>Data Parallel in LightGBM<a class="headerlink" href="#data-parallel-in-lightgbm" title="Permalink to this headline">¶</a></h4>
+<p>We reduce communication cost of data parallel in LightGBM:</p>
+<ol class="arabic simple">
+<li>Instead of “Merge global histograms from all local histograms”, LightGBM use “Reduce Scatter” to merge histograms of different (non-overlapping) features for different workers.
+Then workers find the local best split on local merged histograms and sync up the global best split.</li>
+<li>As aforementioned, LightGBM uses histogram subtraction to speed up training.
+Based on this, we can communicate histograms only for one leaf, and get its neighbor’s histograms by subtraction as well.</li>
+</ol>
+<p>All things considered, data parallel in LightGBM has time complexity <code class="docutils literal notranslate"><span class="pre">O(0.5</span> <span class="pre">*</span> <span class="pre">#feature</span> <span class="pre">*</span> <span class="pre">#bin)</span></code>.</p>
+</div>
+</div>
+<div class="section" id="voting-parallel">
+<h3>Voting Parallel<a class="headerlink" href="#voting-parallel" title="Permalink to this headline">¶</a></h3>
+<p>Voting parallel further reduces the communication cost in <a class="reference external" href="#data-parallel">Data Parallel</a> to constant cost.
+It uses two-stage voting to reduce the communication cost of feature histograms<a class="reference external" href="#references">[10]</a>.</p>
+</div>
+</div>
+<div class="section" id="gpu-support">
+<h2>GPU Support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">¶</a></h2>
+<p>Thanks <a class="reference external" href="https://github.com/huanzhang12">&#64;huanzhang12</a> for contributing this feature. Please read <a class="reference external" href="#references">[11]</a> to get more details.</p>
+<ul class="simple">
+<li><a class="reference external" href="./Installation-Guide.rst#build-gpu-version">GPU Installation</a></li>
+<li><a class="reference external" href="./GPU-Tutorial.rst">GPU Tutorial</a></li>
+</ul>
+</div>
+<div class="section" id="applications-and-metrics">
+<h2>Applications and Metrics<a class="headerlink" href="#applications-and-metrics" title="Permalink to this headline">¶</a></h2>
+<p>LightGBM supports the following applications:</p>
+<ul class="simple">
+<li>regression, the objective function is L2 loss</li>
+<li>binary classification, the objective function is logloss</li>
+<li>multi classification</li>
+<li>cross-entropy, the objective function is logloss and supports training on non-binary labels</li>
+<li>lambdarank, the objective function is lambdarank with NDCG</li>
+</ul>
+<p>LightGBM supports the following metrics:</p>
+<ul class="simple">
+<li>L1 loss</li>
+<li>L2 loss</li>
+<li>Log loss</li>
+<li>Classification error rate</li>
+<li>AUC</li>
+<li>NDCG</li>
+<li>MAP</li>
+<li>Multi-class log loss</li>
+<li>Multi-class error rate</li>
+<li>Fair</li>
+<li>Huber</li>
+<li>Poisson</li>
+<li>Quantile</li>
+<li>MAPE</li>
+<li>Kullback-Leibler</li>
+<li>Gamma</li>
+<li>Tweedie</li>
+</ul>
+<p>For more details, please refer to <a class="reference external" href="./Parameters.rst#metric-parameters">Parameters</a>.</p>
+</div>
+<div class="section" id="other-features">
+<h2>Other Features<a class="headerlink" href="#other-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Limit <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> of tree while grows tree leaf-wise</li>
+<li><a class="reference external" href="https://arxiv.org/abs/1505.01866">DART</a></li>
+<li>L1/L2 regularization</li>
+<li>Bagging</li>
+<li>Column (feature) sub-sample</li>
+<li>Continued train with input GBDT model</li>
+<li>Continued train with the input score file</li>
+<li>Weighted training</li>
+<li>Validation metric output during training</li>
+<li>Multi validation data</li>
+<li>Multi metrics</li>
+<li>Early stopping (both training and prediction)</li>
+<li>Prediction for leaf index</li>
+</ul>
+<p>For more details, please refer to <a class="reference external" href="./Parameters.rst">Parameters</a>.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>[1] Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang, Wei Chen, Weidong Ma, Qiwei Ye, and Tie-Yan Liu. “<a class="reference external" href="https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree.pdf">LightGBM: A Highly Efficient Gradient Boosting Decision Tree</a>.” In Advances in Neural Information Processing Systems (NIPS), pp. 3149-3157. 2017.</p>
+<p>[2] Mehta, Manish, Rakesh Agrawal, and Jorma Rissanen. “SLIQ: A fast scalable classifier for data mining.” International Conference on Extending Database Technology. Springer Berlin Heidelberg, 1996.</p>
+<p>[3] Shafer, John, Rakesh Agrawal, and Manish Mehta. “SPRINT: A scalable parallel classifier for data mining.” Proc. 1996 Int. Conf. Very Large Data Bases. 1996.</p>
+<p>[4] Ranka, Sanjay, and V. Singh. “CLOUDS: A decision tree classifier for large datasets.” Proceedings of the 4th Knowledge Discovery and Data Mining Conference. 1998.</p>
+<p>[5] Machado, F. P. “Communication and memory efficient parallel decision tree construction.” (2003).</p>
+<p>[6] Li, Ping, Qiang Wu, and Christopher J. Burges. “Mcrank: Learning to rank using multiple classification and gradient boosting.” Advances in neural information processing systems. 2007.</p>
+<p>[7] Shi, Haijian. “Best-first decision tree learning.” Diss. The University of Waikato, 2007.</p>
+<p>[8] Walter D. Fisher. “<a class="reference external" href="https://www.researchgate.net/publication/242580910_On_Grouping_for_Maximum_Homogeneity">On Grouping for Maximum Homogeneity</a>.” Journal of the American Statistical Association. Vol. 53, No. 284 (Dec., 1958), pp. 789-798.</p>
+<p>[9] Thakur, Rajeev, Rolf Rabenseifner, and William Gropp. “<a class="reference external" href="http://wwwi10.lrr.in.tum.de/~gerndt/home/Teaching/HPCSeminar/mpich_multi_coll.pdf">Optimization of collective communication operations in MPICH</a>.” International Journal of High Performance Computing Applications 19.1 (2005): 49-66.</p>
+<p>[10] Qi Meng, Guolin Ke, Taifeng Wang, Wei Chen, Qiwei Ye, Zhi-Ming Ma, Tieyan Liu. “<a class="reference external" href="http://papers.nips.cc/paper/6381-a-communication-efficient-parallel-algorithm-for-decision-tree">A Communication-Efficient Parallel Algorithm for Decision Tree</a>.” Advances in Neural Information Processing Systems 29 (NIPS 2016).</p>
+<p>[11] Huan Zhang, Si Si and Cho-Jui Hsieh. “<a class="reference external" href="https://arxiv.org/abs/1706.08359">GPU Acceleration for Large-scale Tree Boosting</a>.” arXiv:1706.08359, 2017.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Experiments.html" class="btn btn-neutral float-right" title="Experiments" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Python-Intro.html" class="btn btn-neutral" title="Python-package Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+    <title>sklearn.utils.Parallel &#8212; scikit-learn 0.21.dev0 documentation</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../_static/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../../_static/css/bootstrap-responsive.css"/>
+
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/js/copybutton.js"></script>
+    <script type="text/javascript" src="../../_static/js/extra.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_SVG"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sklearn.utils.cpu_count" href="sklearn.utils.cpu_count.html" />
+    <link rel="prev" title="sklearn.utils.Memory" href="sklearn.utils.Memory.html" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+  <script>
+     VERSION_SUBDIR = (function(groups) {
+         return groups ? groups[1] : null;
+     })(location.href.match(/^https?:\/\/scikit-learn.org\/([^\/]+)/));
+  </script>
+  <link rel="canonical" href="http://scikit-learn.org/stable/modules/generated/sklearn.utils.Parallel.html" />
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    function showMenu() {
+      var topNav = document.getElementById("scikit-navbar");
+      if (topNav.className === "navbar") {
+          topNav.className += " responsive";
+      } else {
+          topNav.className = "navbar";
+      }
+    };
+  </script>
+
+  </head><body>
+
+<div class="header-wrapper">
+    <div class="header">
+        <p class="logo"><a href="../../index.html">
+            <img src="../../_static/scikit-learn-logo-small.png" alt="Logo"/>
+        </a>
+        </p><div class="navbar" id="scikit-navbar">
+            <ul>
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../install.html">Installation</a></li>
+                <li class="btn-li"><div class="btn-group">
+              <a href="../../documentation.html">Documentation</a>
+              <a class="btn dropdown-toggle" data-toggle="dropdown">
+                 <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+            <li class="link-title">Scikit-learn <script>document.write(DOCUMENTATION_OPTIONS.VERSION + (VERSION_SUBDIR ? " (" + VERSION_SUBDIR + ")" : ""));</script></li>
+            <li><a href="../../tutorial/index.html">Tutorials</a></li>
+            <li><a href="../../user_guide.html">User guide</a></li>
+            <li><a href="../classes.html">API</a></li>
+            <li><a href="../../glossary.html">Glossary</a></li>
+            <li><a href="../../faq.html">FAQ</a></li>
+            <li><a href="../../developers/contributing.html">Contributing</a></li>
+            <li class="divider"></li>
+                <script>if (VERSION_SUBDIR != "stable") document.write('<li><a href="http://scikit-learn.org/stable/documentation.html">Stable version</a></li>')</script>
+                <script>if (VERSION_SUBDIR != "dev") document.write('<li><a href="http://scikit-learn.org/dev/documentation.html">Development version</a></li>')</script>
+                <li><a href="http://scikit-learn.org/dev/versions.html">All available versions</a></li>
+                <li><a href="../../_downloads/scikit-learn-docs.pdf">PDF documentation</a></li>
+              </ul>
+            </div>
+        </li>
+            <li><a href="../../auto_examples/index.html">Examples</a></li>
+            </ul>
+            <a href="javascript:void(0);" onclick="showMenu()">
+                <div class="nav-icon">
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                </div>
+            </a>
+            <div class="search_form">
+                <div class="gcse-search" id="cse" style="width: 100%;"></div>
+            </div>
+        </div> <!-- end navbar --></div>
+</div>
+
+
+<!-- GitHub "fork me" ribbon -->
+<a href="https://github.com/scikit-learn/scikit-learn">
+  <img class="fork-me"
+       style="position: absolute; top: 0; right: 0; border: 0;"
+       src="../../_static/img/forkme.png"
+       alt="Fork me on GitHub" />
+</a>
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+    <div class="sphinxsidebarwrapper">
+        <div class="rel">
+    
+        <div class="rellink">
+        <a href="sklearn.utils.Memory.html"
+        accesskey="P">Previous
+        <br/>
+        <span class="smallrellink">
+        sklearn.utils.Memory
+        </span>
+            <span class="hiddenrellink">
+            sklearn.utils.Memory
+            </span>
+        </a>
+        </div>
+            <div class="spacer">
+            &nbsp;
+            </div>
+        <div class="rellink">
+        <a href="sklearn.utils.cpu_count.html"
+        accesskey="N">Next
+        <br/>
+        <span class="smallrellink">
+        sklearn.utils...
+        </span>
+            <span class="hiddenrellink">
+            sklearn.utils.cpu_count
+            </span>
+        </a>
+        </div>
+
+    <!-- Ad a link to the 'up' page -->
+        <div class="spacer">
+        &nbsp;
+        </div>
+        <div class="rellink">
+        <a href="../classes.html">
+        Up
+        <br/>
+        <span class="smallrellink">
+        API Reference
+        </span>
+            <span class="hiddenrellink">
+            API Reference
+            </span>
+            
+        </a>
+        </div>
+    </div>
+    
+      <p class="doc-version"><b>scikit-learn v0.21.dev0</b><br/>
+      <a href="http://scikit-learn.org/stable/support.html#documentation-resources">Other versions</a></p>
+    <p class="citing">Please <b><a href="../../about.html#citing-scikit-learn" style="font-size: 110%;">cite us </a></b>if you use the software.</p>
+    <ul>
+<li><a class="reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">sklearn.utils</span></code>.Parallel</a></li>
+</ul>
+
+    </div>
+</div>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" checked />
+<label for="nav-trigger"></label>
+
+
+
+
+      <div class="content">
+            
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="sklearn-utils-parallel">
+<h1><a class="reference internal" href="../classes.html#module-sklearn.utils" title="sklearn.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sklearn.utils</span></code></a>.Parallel<a class="headerlink" href="#sklearn-utils-parallel" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="sklearn.utils.Parallel">
+<em class="property">class </em><code class="descclassname">sklearn.utils.</code><code class="descname">Parallel</code><span class="sig-paren">(</span><em>n_jobs=None</em>, <em>backend=None</em>, <em>verbose=0</em>, <em>timeout=None</em>, <em>pre_dispatch='2 * n_jobs'</em>, <em>batch_size='auto'</em>, <em>temp_folder=None</em>, <em>max_nbytes='1M'</em>, <em>mmap_mode='r'</em>, <em>prefer=None</em>, <em>require=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper class for readable parallel mapping.</p>
+<p>Read more in the <a class="reference external" href="https://joblib.readthedocs.io/en/latest/parallel.html#parallel" title="(in joblib v0.12.4.dev0)"><span class="xref std std-ref">User Guide</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>n_jobs: int, default: None</strong></dt>
+<dd><p class="first last">The maximum number of concurrently running jobs, such as the number
+of Python worker processes when backend=”multiprocessing”
+or the size of the thread-pool when backend=”threading”.
+If -1 all CPUs are used. If 1 is given, no parallel computing code
+is used at all, which is useful for debugging. For n_jobs below -1,
+(n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all
+CPUs but one are used.
+None is a marker for ‘unset’ that will be interpreted as n_jobs=1
+(sequential execution) unless the call is performed under a
+parallel_backend context manager that sets another value for
+n_jobs.</p>
+</dd>
+<dt><strong>backend: str, ParallelBackendBase instance or None, default: ‘loky’</strong></dt>
+<dd><p class="first">Specify the parallelization backend implementation.
+Supported backends are:</p>
+<ul class="simple">
+<li>“loky” used by default, can induce some
+communication and memory overhead when exchanging input and
+output data with the worker Python processes.</li>
+<li>“multiprocessing” previous process-based backend based on
+<cite>multiprocessing.Pool</cite>. Less robust than <cite>loky</cite>.</li>
+<li>“threading” is a very low-overhead backend but it suffers
+from the Python Global Interpreter Lock if the called function
+relies a lot on Python objects. “threading” is mostly useful
+when the execution bottleneck is a compiled extension that
+explicitly releases the GIL (for instance a Cython loop wrapped
+in a “with nogil” block or an expensive call to a library such
+as NumPy).</li>
+<li>finally, you can register backends by calling
+register_parallel_backend. This will allow you to implement
+a backend of your liking.</li>
+</ul>
+<p class="last">It is not recommended to hard-code the backend name in a call to
+Parallel in a library. Instead it is recommended to set soft hints
+(prefer) or hard constraints (require) so as to make it possible
+for library users to change the backend from the outside using the
+parallel_backend context manager.</p>
+</dd>
+<dt><strong>prefer: str in {‘processes’, ‘threads’} or None, default: None</strong></dt>
+<dd><p class="first last">Soft hint to choose the default backend if no specific backend
+was selected with the parallel_backend context manager. The
+default process-based backend is ‘loky’ and the default
+thread-based backend is ‘threading’.</p>
+</dd>
+<dt><strong>require: ‘sharedmem’ or None, default None</strong></dt>
+<dd><p class="first last">Hard constraint to select the backend. If set to ‘sharedmem’,
+the selected backend will be single-host and thread-based even
+if the user asked for a non-thread based backend with
+parallel_backend.</p>
+</dd>
+<dt><strong>verbose: int, optional</strong></dt>
+<dd><p class="first last">The verbosity level: if non zero, progress messages are
+printed. Above 50, the output is sent to stdout.
+The frequency of the messages increases with the verbosity level.
+If it more than 10, all iterations are reported.</p>
+</dd>
+<dt><strong>timeout: float, optional</strong></dt>
+<dd><p class="first last">Timeout limit for each task to complete.  If any task takes longer
+a TimeOutError will be raised. Only applied when n_jobs != 1</p>
+</dd>
+<dt><strong>pre_dispatch: {‘all’, integer, or expression, as in ‘3*n_jobs’}</strong></dt>
+<dd><p class="first last">The number of batches (of tasks) to be pre-dispatched.
+Default is ‘2*n_jobs’. When batch_size=”auto” this is reasonable
+default and the workers should never starve.</p>
+</dd>
+<dt><strong>batch_size: int or ‘auto’, default: ‘auto’</strong></dt>
+<dd><p class="first last">The number of atomic tasks to dispatch at once to each
+worker. When individual evaluations are very fast, dispatching
+calls to workers can be slower than sequential computation because
+of the overhead. Batching fast computations together can mitigate
+this.
+The <code class="docutils literal notranslate"><span class="pre">'auto'</span></code> strategy keeps track of the time it takes for a batch
+to complete, and dynamically adjusts the batch size to keep the time
+on the order of half a second, using a heuristic. The initial batch
+size is 1.
+<code class="docutils literal notranslate"><span class="pre">batch_size=&quot;auto&quot;</span></code> with <code class="docutils literal notranslate"><span class="pre">backend=&quot;threading&quot;</span></code> will dispatch
+batches of a single task at a time as the threading backend has
+very little overhead and using larger batch size has not proved to
+bring any gain in that case.</p>
+</dd>
+<dt><strong>temp_folder: str, optional</strong></dt>
+<dd><p class="first">Folder to be used by the pool for memmapping large arrays
+for sharing memory with worker processes. If None, this will try in
+order:</p>
+<ul class="simple">
+<li>a folder pointed by the JOBLIB_TEMP_FOLDER environment
+variable,</li>
+<li>/dev/shm if the folder exists and is writable: this is a
+RAM disk filesystem available by default on modern Linux
+distributions,</li>
+<li>the default system temporary folder that can be
+overridden with TMP, TMPDIR or TEMP environment
+variables, typically /tmp under Unix operating systems.</li>
+</ul>
+<p class="last">Only active when backend=”loky” or “multiprocessing”.</p>
+</dd>
+<dt><strong>max_nbytes int, str, or None, optional, 1M by default</strong></dt>
+<dd><p class="first last">Threshold on the size of arrays passed to the workers that
+triggers automated memory mapping in temp_folder. Can be an int
+in Bytes, or a human-readable string, e.g., ‘1M’ for 1 megabyte.
+Use None to disable memmapping of large arrays.
+Only active when backend=”loky” or “multiprocessing”.</p>
+</dd>
+<dt><strong>mmap_mode: {None, ‘r+’, ‘r’, ‘w+’, ‘c’}</strong></dt>
+<dd><p class="first last">Memmapping mode for numpy arrays passed to workers.
+See ‘max_nbytes’ parameter documentation for more details.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This object uses workers to compute in parallel the application of a
+function to many different arguments. The main functionality it brings
+in addition to using the raw multiprocessing or concurrent.futures API
+are (see examples for details):</p>
+<ul class="simple">
+<li>More readable code, in particular since it avoids
+constructing list of arguments.</li>
+<li><dl class="first docutils">
+<dt>Easier debugging:</dt>
+<dd><ul class="first last">
+<li>informative tracebacks even when the error happens on
+the client side</li>
+<li>using ‘n_jobs=1’ enables to turn off parallel computing
+for debugging without changing the codepath</li>
+<li>early capture of pickling errors</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>An optional progress meter.</li>
+<li>Interruption of multiprocesses jobs with ‘Ctrl-C’</li>
+<li>Flexible pickling control for the communication to and from
+the worker processes.</li>
+<li>Ability to use shared memory efficiently with worker
+processes for large numpy-based datastructures.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>A simple example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)(</span><span class="n">i</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="go">[0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]</span>
+</pre></div>
+</div>
+<p>Reshaping the output when the function has several return
+values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">modf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">modf</span><span class="p">)(</span><span class="n">i</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span>
+<span class="go">(0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i</span>
+<span class="go">(0.0, 0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0)</span>
+</pre></div>
+</div>
+<p>The progress meter: the higher the value of <cite>verbose</cite>, the more
+messages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">10</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">sleep</span><span class="p">)(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> 
+<span class="go">[Parallel(n_jobs=2)]: Done   1 tasks      | elapsed:    0.6s</span>
+<span class="go">[Parallel(n_jobs=2)]: Done   4 tasks      | elapsed:    0.8s</span>
+<span class="go">[Parallel(n_jobs=2)]: Done  10 out of  10 | elapsed:    1.4s finished</span>
+</pre></div>
+</div>
+<p>Traceback example, note how the line of the error is indicated
+as well as the values of the parameter passed to the function that
+triggered the exception, even though the traceback happens in the
+child process:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">heapq</span> <span class="k">import</span> <span class="n">nlargest</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">nlargest</span><span class="p">)(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;abcde&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> 
+<span class="go">#...</span>
+<span class="go">---------------------------------------------------------------------------</span>
+<span class="go">Sub-process traceback:</span>
+<span class="go">---------------------------------------------------------------------------</span>
+<span class="go">TypeError                                          Mon Nov 12 11:37:46 2012</span>
+<span class="go">PID: 12934                                    Python 2.7.3: /usr/bin/python</span>
+<span class="go">...........................................................................</span>
+<span class="go">/usr/lib/python2.7/heapq.pyc in nlargest(n=2, iterable=3, key=None)</span>
+<span class="go">    419         if n &gt;= size:</span>
+<span class="go">    420             return sorted(iterable, key=key, reverse=True)[:n]</span>
+<span class="go">    421</span>
+<span class="go">    422     # When key is none, use simpler decoration</span>
+<span class="go">    423     if key is None:</span>
+<span class="go">--&gt; 424         it = izip(iterable, count(0,-1))                    # decorate</span>
+<span class="go">    425         result = _nlargest(n, it)</span>
+<span class="go">    426         return map(itemgetter(0), result)                   # undecorate</span>
+<span class="go">    427</span>
+<span class="go">    428     # General case, slowest method</span>
+<span class="go"> TypeError: izip argument #1 must support iteration</span>
+<span class="go">___________________________________________________________________________</span>
+</pre></div>
+</div>
+<p>Using pre_dispatch in a producer/consumer situation, where the
+data is generated on the fly. Note how the producer is first
+called 3 times before the parallel loop is initiated, and then
+called to generate new data on the fly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">sqrt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.externals.joblib</span> <span class="k">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">producer</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Produced </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">i</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">pre_dispatch</span><span class="o">=</span><span class="s1">&#39;1.5*n_jobs&#39;</span><span class="p">)(</span>
+<span class="gp">... </span>               <span class="n">delayed</span><span class="p">(</span><span class="n">sqrt</span><span class="p">)(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">producer</span><span class="p">())</span> 
+<span class="go">Produced 0</span>
+<span class="go">Produced 1</span>
+<span class="go">Produced 2</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 1 jobs     | elapsed:  0.0s</span>
+<span class="go">Produced 3</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 2 jobs     | elapsed:  0.0s</span>
+<span class="go">Produced 4</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 3 jobs     | elapsed:  0.0s</span>
+<span class="go">Produced 5</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 4 jobs     | elapsed:  0.0s</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 6 out of 6 | elapsed:  0.0s remaining: 0.0s</span>
+<span class="go">[Parallel(n_jobs=2)]: Done 6 out of 6 | elapsed:  0.0s finished</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(iterable)</td>
+<td>Call self as a function.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#sklearn.utils.Parallel.dispatch_next" title="sklearn.utils.Parallel.dispatch_next"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dispatch_next</span></code></a>()</td>
+<td>Dispatch more data for parallel processing</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#sklearn.utils.Parallel.dispatch_one_batch" title="sklearn.utils.Parallel.dispatch_one_batch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dispatch_one_batch</span></code></a>(iterator)</td>
+<td>Prefetch the tasks for the next batch and dispatch them.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#sklearn.utils.Parallel.format" title="sklearn.utils.Parallel.format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format</span></code></a>(obj[,&nbsp;indent])</td>
+<td>Return the formatted representation of the object.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#sklearn.utils.Parallel.print_progress" title="sklearn.utils.Parallel.print_progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_progress</span></code></a>()</td>
+<td>Display the process of the parallel execution only a fraction of time, controlled by self.verbose.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="55%" />
+<col width="45%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>debug</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><strong>retrieve</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><strong>warn</strong></td>
+<td>&#160;</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="sklearn.utils.Parallel.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>n_jobs=None</em>, <em>backend=None</em>, <em>verbose=0</em>, <em>timeout=None</em>, <em>pre_dispatch='2 * n_jobs'</em>, <em>batch_size='auto'</em>, <em>temp_folder=None</em>, <em>max_nbytes='1M'</em>, <em>mmap_mode='r'</em>, <em>prefer=None</em>, <em>require=None</em><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>depth: int, optional</strong></dt>
+<dd><p class="first last">The depth of objects printed.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sklearn.utils.Parallel.dispatch_next">
+<code class="descname">dispatch_next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel.dispatch_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch more data for parallel processing</p>
+<p>This method is meant to be called concurrently by the multiprocessing
+callback. We rely on the thread-safety of dispatch_one_batch to protect
+against concurrent consumption of the unprotected iterator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sklearn.utils.Parallel.dispatch_one_batch">
+<code class="descname">dispatch_one_batch</code><span class="sig-paren">(</span><em>iterator</em><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel.dispatch_one_batch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prefetch the tasks for the next batch and dispatch them.</p>
+<p>The effective size of the batch is computed here.
+If there are no more jobs to dispatch, return False, else return True.</p>
+<p>The iterator consumption and dispatching is protected by the same
+lock so calling this function should be thread safe.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sklearn.utils.Parallel.format">
+<code class="descname">format</code><span class="sig-paren">(</span><em>obj</em>, <em>indent=0</em><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the formatted representation of the object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sklearn.utils.Parallel.print_progress">
+<code class="descname">print_progress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sklearn.utils.Parallel.print_progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display the process of the parallel execution only a fraction
+of time, controlled by self.verbose.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="clearer"></div></div>
+
+
+          </div>
+        </div>
+      </div>
+        <div class="clearer"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2007 - 2018, scikit-learn developers (BSD License).
+      <a href="../../_sources/modules/generated/sklearn.utils.Parallel.rst.txt" rel="nofollow">Show this page source</a>
+    </div>
+     <div class="rel">
+    
+    <div class="buttonPrevious">
+      <a href="sklearn.utils.Memory.html">Previous
+      </a>
+    </div>
+    <div class="buttonNext">
+      <a href="sklearn.utils.cpu_count.html">Next
+      </a>
+    </div>
+    
+     </div>
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-22606712-2']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+    <script>
+      (function() {
+        var cx = '016639176250731907682:tjtqbvtvij0';
+        var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+        gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+      })();
+    </script>
+  </body>
+</html>

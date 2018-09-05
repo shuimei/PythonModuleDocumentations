@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lightgbm.plotting &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Quick-Start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>lightgbm.plotting</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lightgbm.plotting</h1><div class="highlight"><pre>
+<span></span><span class="c1"># coding: utf-8</span>
+<span class="c1"># pylint: disable = C0103</span>
+<span class="sd">&quot;&quot;&quot;Plotting Library.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.basic</span> <span class="k">import</span> <span class="n">Booster</span>
+<span class="kn">from</span> <span class="nn">.compat</span> <span class="k">import</span> <span class="n">MATPLOTLIB_INSTALLED</span><span class="p">,</span> <span class="n">GRAPHVIZ_INSTALLED</span><span class="p">,</span> <span class="n">LGBMDeprecationWarning</span><span class="p">,</span> <span class="n">range_</span><span class="p">,</span> <span class="n">string_type</span>
+<span class="kn">from</span> <span class="nn">.sklearn</span> <span class="k">import</span> <span class="n">LGBMModel</span>
+
+
+<span class="k">def</span> <span class="nf">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">obj_name</span><span class="o">=</span><span class="s1">&#39;obj&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;check object is not tuple or does not have 2 elements&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must be a tuple of 2 elements.&#39;</span> <span class="o">%</span> <span class="n">obj_name</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="plot_importance"><a class="viewcode-back" href="../../Python-API.html#lightgbm.plot_importance">[docs]</a><span class="k">def</span> <span class="nf">plot_importance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+                    <span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Feature importance&#39;</span><span class="p">,</span>
+                    <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Feature importance&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Features&#39;</span><span class="p">,</span>
+                    <span class="n">importance_type</span><span class="o">=</span><span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="n">max_num_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">ignore_zero</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot model&#39;s feature importances.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    booster : Booster or LGBMModel</span>
+<span class="sd">        Booster or LGBMModel instance which feature importance should be plotted.</span>
+<span class="sd">    ax : matplotlib.axes.Axes or None, optional (default=None)</span>
+<span class="sd">        Target axes instance.</span>
+<span class="sd">        If None, new figure and axes will be created.</span>
+<span class="sd">    height : float, optional (default=0.2)</span>
+<span class="sd">        Bar height, passed to ``ax.barh()``.</span>
+<span class="sd">    xlim : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Tuple passed to ``ax.xlim()``.</span>
+<span class="sd">    ylim : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Tuple passed to ``ax.ylim()``.</span>
+<span class="sd">    title : string or None, optional (default=&quot;Feature importance&quot;)</span>
+<span class="sd">        Axes title.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    xlabel : string or None, optional (default=&quot;Feature importance&quot;)</span>
+<span class="sd">        X-axis title label.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    ylabel : string or None, optional (default=&quot;Features&quot;)</span>
+<span class="sd">        Y-axis title label.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    importance_type : string, optional (default=&quot;split&quot;)</span>
+<span class="sd">        How the importance is calculated.</span>
+<span class="sd">        If &quot;split&quot;, result contains numbers of times the feature is used in a model.</span>
+<span class="sd">        If &quot;gain&quot;, result contains total gains of splits which use the feature.</span>
+<span class="sd">    max_num_features : int or None, optional (default=None)</span>
+<span class="sd">        Max number of top features displayed on plot.</span>
+<span class="sd">        If None or &lt;1, all features will be displayed.</span>
+<span class="sd">    ignore_zero : bool, optional (default=True)</span>
+<span class="sd">        Whether to ignore features with zero importance.</span>
+<span class="sd">    figsize : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Figure size.</span>
+<span class="sd">    grid : bool, optional (default=True)</span>
+<span class="sd">        Whether to add a grid for axes.</span>
+<span class="sd">    **kwargs : other parameters</span>
+<span class="sd">        Other parameters passed to ``ax.barh()``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ax : matplotlib.axes.Axes</span>
+<span class="sd">        The plot with model&#39;s feature importances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">MATPLOTLIB_INSTALLED</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You must install matplotlib to plot importance.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">):</span>
+        <span class="n">booster</span> <span class="o">=</span> <span class="n">booster</span><span class="o">.</span><span class="n">booster_</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">Booster</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;booster must be Booster or LGBMModel.&#39;</span><span class="p">)</span>
+
+    <span class="n">importance</span> <span class="o">=</span> <span class="n">booster</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">(</span><span class="n">importance_type</span><span class="o">=</span><span class="n">importance_type</span><span class="p">)</span>
+    <span class="n">feature_name</span> <span class="o">=</span> <span class="n">booster</span><span class="o">.</span><span class="n">feature_name</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">importance</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Booster&#39;s feature_importance is empty.&quot;</span><span class="p">)</span>
+
+    <span class="n">tuples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">feature_name</span><span class="p">,</span> <span class="n">importance</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">ignore_zero</span><span class="p">:</span>
+        <span class="n">tuples</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tuples</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">max_num_features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_num_features</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">tuples</span> <span class="o">=</span> <span class="n">tuples</span><span class="p">[</span><span class="o">-</span><span class="n">max_num_features</span><span class="p">:]</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tuples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">figsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="s1">&#39;figsize&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+    <span class="n">ylocs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">ylocs</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">ylocs</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">ylocs</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="s1">&#39;xlim&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">ylim</span><span class="p">,</span> <span class="s1">&#39;ylim&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="plot_metric"><a class="viewcode-back" href="../../Python-API.html#lightgbm.plot_metric">[docs]</a><span class="k">def</span> <span class="nf">plot_metric</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataset_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Metric during training&#39;</span><span class="p">,</span>
+                <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Iterations&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot one metric during training.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    booster : dict or LGBMModel</span>
+<span class="sd">        Dictionary returned from ``lightgbm.train()`` or LGBMModel instance.</span>
+<span class="sd">    metric : string or None, optional (default=None)</span>
+<span class="sd">        The metric name to plot.</span>
+<span class="sd">        Only one metric supported because different metrics have various scales.</span>
+<span class="sd">        If None, first metric picked from dictionary (according to hashcode).</span>
+<span class="sd">    dataset_names : list of strings or None, optional (default=None)</span>
+<span class="sd">        List of the dataset names which are used to calculate metric to plot.</span>
+<span class="sd">        If None, all datasets are used.</span>
+<span class="sd">    ax : matplotlib.axes.Axes or None, optional (default=None)</span>
+<span class="sd">        Target axes instance.</span>
+<span class="sd">        If None, new figure and axes will be created.</span>
+<span class="sd">    xlim : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Tuple passed to ``ax.xlim()``.</span>
+<span class="sd">    ylim : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Tuple passed to ``ax.ylim()``.</span>
+<span class="sd">    title : string or None, optional (default=&quot;Metric during training&quot;)</span>
+<span class="sd">        Axes title.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    xlabel : string or None, optional (default=&quot;Iterations&quot;)</span>
+<span class="sd">        X-axis title label.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    ylabel : string or None, optional (default=&quot;auto&quot;)</span>
+<span class="sd">        Y-axis title label.</span>
+<span class="sd">        If &#39;auto&#39;, metric name is used.</span>
+<span class="sd">        If None, title is disabled.</span>
+<span class="sd">    figsize : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Figure size.</span>
+<span class="sd">    grid : bool, optional (default=True)</span>
+<span class="sd">        Whether to add a grid for axes.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ax : matplotlib.axes.Axes</span>
+<span class="sd">        The plot with metric&#39;s history over the training.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">MATPLOTLIB_INSTALLED</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You must install matplotlib to plot metric.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">):</span>
+        <span class="n">eval_results</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">booster</span><span class="o">.</span><span class="n">evals_result_</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">eval_results</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">booster</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;booster must be dict or LGBMModel.&#39;</span><span class="p">)</span>
+
+    <span class="n">num_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">eval_results</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">num_data</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;eval results cannot be empty.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">figsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="s1">&#39;figsize&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dataset_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataset_names</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">eval_results</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">dataset_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;dataset_names should be iterable and cannot be empty&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dataset_names</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">)</span>  <span class="c1"># take one as sample</span>
+    <span class="n">metrics_for_one</span> <span class="o">=</span> <span class="n">eval_results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">num_metric</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">metrics_for_one</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_metric</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;more than one metric available, picking one to plot.&quot;&quot;&quot;</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">metric</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="n">metrics_for_one</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">metrics_for_one</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No given metric in eval results.&#39;</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">metrics_for_one</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+    <span class="n">num_iteration</span><span class="p">,</span> <span class="n">max_result</span><span class="p">,</span> <span class="n">min_result</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">x_</span> <span class="o">=</span> <span class="n">range_</span><span class="p">(</span><span class="n">num_iteration</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dataset_names</span><span class="p">:</span>
+        <span class="n">metrics_for_one</span> <span class="o">=</span> <span class="n">eval_results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">metrics_for_one</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span>
+        <span class="n">max_result</span><span class="p">,</span> <span class="n">min_result</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">max_result</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="n">min_result</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">xlim</span><span class="p">,</span> <span class="s1">&#39;xlim&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_iteration</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">ylim</span><span class="p">,</span> <span class="s1">&#39;ylim&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">range_result</span> <span class="o">=</span> <span class="n">max_result</span> <span class="o">-</span> <span class="n">min_result</span>
+        <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_result</span> <span class="o">-</span> <span class="n">range_result</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">max_result</span> <span class="o">+</span> <span class="n">range_result</span> <span class="o">*</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ylabel</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">ylabel</span> <span class="o">=</span> <span class="n">metric</span>
+
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<span class="k">def</span> <span class="nf">_to_graphviz</span><span class="p">(</span><span class="n">tree_info</span><span class="p">,</span> <span class="n">show_info</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert specified tree to graphviz instance.</span>
+
+<span class="sd">    See:</span>
+<span class="sd">      - https://graphviz.readthedocs.io/en/stable/api.html#digraph</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">GRAPHVIZ_INSTALLED</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">graphviz</span> <span class="k">import</span> <span class="n">Digraph</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You must install graphviz to plot tree.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">float2str</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;{0:.</span><span class="si">{1}</span><span class="s2">f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span> \
+            <span class="k">if</span> <span class="n">precision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">string_type</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">decision</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;recursively add node or edge&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;split_index&#39;</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>  <span class="c1"># non-leaf</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;split</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;split_index&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">feature_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;split_feature_name: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature_names</span><span class="p">[</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;split_feature&#39;</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;split_feature_index: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;split_feature&#39;</span><span class="p">])</span>
+            <span class="n">label</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\nthreshold: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">float2str</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">],</span> <span class="n">precision</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">show_info</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">info</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;split_gain&#39;</span><span class="p">,</span> <span class="s1">&#39;internal_value&#39;</span><span class="p">}:</span>
+                    <span class="n">label</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\n</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">float2str</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="n">info</span><span class="p">],</span> <span class="n">precision</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">info</span> <span class="o">==</span> <span class="s1">&#39;internal_count&#39;</span><span class="p">:</span>
+                    <span class="n">label</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\n</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">root</span><span class="p">[</span><span class="n">info</span><span class="p">])</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">root</span><span class="p">[</span><span class="s1">&#39;decision_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span>
+                <span class="n">l_dec</span><span class="p">,</span> <span class="n">r_dec</span> <span class="o">=</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span>
+            <span class="k">elif</span> <span class="n">root</span><span class="p">[</span><span class="s1">&#39;decision_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;==&#39;</span><span class="p">:</span>
+                <span class="n">l_dec</span><span class="p">,</span> <span class="n">r_dec</span> <span class="o">=</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s2">&quot;isn&#39;t&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid decision type in tree model.&#39;</span><span class="p">)</span>
+            <span class="n">add</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;left_child&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">l_dec</span><span class="p">)</span>
+            <span class="n">add</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;right_child&#39;</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">r_dec</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># leaf</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;leaf</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;leaf_index&#39;</span><span class="p">])</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;leaf_index: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;leaf_index&#39;</span><span class="p">])</span>
+            <span class="n">label</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\nleaf_value: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">float2str</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;leaf_value&#39;</span><span class="p">],</span> <span class="n">precision</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s1">&#39;leaf_count&#39;</span> <span class="ow">in</span> <span class="n">show_info</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">+=</span> <span class="sa">r</span><span class="s1">&#39;\nleaf_count: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="s1">&#39;leaf_count&#39;</span><span class="p">])</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">graph</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">decision</span><span class="p">)</span>
+
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">Digraph</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">add</span><span class="p">(</span><span class="n">tree_info</span><span class="p">[</span><span class="s1">&#39;tree_structure&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">graph</span>
+
+
+<div class="viewcode-block" id="create_tree_digraph"><a class="viewcode-back" href="../../Python-API.html#lightgbm.create_tree_digraph">[docs]</a><span class="k">def</span> <span class="nf">create_tree_digraph</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">tree_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">show_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">old_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">old_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_engine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_graph_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">old_node_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_edge_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_body</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a digraph representation of specified tree.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    For more information please visit</span>
+<span class="sd">    https://graphviz.readthedocs.io/en/stable/api.html#digraph.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    booster : Booster or LGBMModel</span>
+<span class="sd">        Booster or LGBMModel instance.</span>
+<span class="sd">    tree_index : int, optional (default=0)</span>
+<span class="sd">        The index of a target tree to convert.</span>
+<span class="sd">    show_info : list of strings or None, optional (default=None)</span>
+<span class="sd">        What information should be shown in nodes.</span>
+<span class="sd">        Possible values of list items: &#39;split_gain&#39;, &#39;internal_value&#39;, &#39;internal_count&#39;, &#39;leaf_count&#39;.</span>
+<span class="sd">    precision : int or None, optional (default=None)</span>
+<span class="sd">        Used to restrict the display of floating point values to a certain precision.</span>
+<span class="sd">    **kwargs : other parameters</span>
+<span class="sd">        Other parameters passed to ``Digraph`` constructor.</span>
+<span class="sd">        Check https://graphviz.readthedocs.io/en/stable/api.html#digraph for the full list of supported parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : graphviz.Digraph</span>
+<span class="sd">        The digraph representation of specified tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">LGBMModel</span><span class="p">):</span>
+        <span class="n">booster</span> <span class="o">=</span> <span class="n">booster</span><span class="o">.</span><span class="n">booster_</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">Booster</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;booster must be Booster or LGBMModel.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;old_name&#39;</span><span class="p">,</span> <span class="s1">&#39;old_comment&#39;</span><span class="p">,</span> <span class="s1">&#39;old_filename&#39;</span><span class="p">,</span> <span class="s1">&#39;old_directory&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;old_format&#39;</span><span class="p">,</span> <span class="s1">&#39;old_engine&#39;</span><span class="p">,</span> <span class="s1">&#39;old_encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;old_graph_attr&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;old_node_attr&#39;</span><span class="p">,</span> <span class="s1">&#39;old_edge_attr&#39;</span><span class="p">,</span> <span class="s1">&#39;old_body&#39;</span><span class="p">]:</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> parameter is deprecated and will be removed in 2.3 version.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;Please use **kwargs to pass </span><span class="si">{1}</span><span class="s1"> parameter.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]),</span>
+                          <span class="n">LGBMDeprecationWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">param</span>
+    <span class="k">if</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;old_strict parameter is deprecated and will be removed in 2.3 version.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;Please use **kwargs to pass strict parameter.&#39;</span><span class="p">,</span>
+                      <span class="n">LGBMDeprecationWarning</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;strict&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;strict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">booster</span><span class="o">.</span><span class="n">dump_model</span><span class="p">()</span>
+    <span class="n">tree_infos</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;tree_info&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;feature_names&#39;</span> <span class="ow">in</span> <span class="n">model</span><span class="p">:</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">tree_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tree_infos</span><span class="p">):</span>
+        <span class="n">tree_info</span> <span class="o">=</span> <span class="n">tree_infos</span><span class="p">[</span><span class="n">tree_index</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;tree_index is out of range.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">show_info</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">_to_graphviz</span><span class="p">(</span><span class="n">tree_info</span><span class="p">,</span> <span class="n">show_info</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">graph</span></div>
+
+
+<div class="viewcode-block" id="plot_tree"><a class="viewcode-back" href="../../Python-API.html#lightgbm.plot_tree">[docs]</a><span class="k">def</span> <span class="nf">plot_tree</span><span class="p">(</span><span class="n">booster</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tree_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">old_graph_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_node_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_edge_attr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">show_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot specified tree.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    It is preferable to use ``create_tree_digraph()`` because of its lossless quality</span>
+<span class="sd">    and returned objects can be also rendered and displayed directly inside a Jupyter notebook.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    booster : Booster or LGBMModel</span>
+<span class="sd">        Booster or LGBMModel instance to be plotted.</span>
+<span class="sd">    ax : matplotlib.axes.Axes or None, optional (default=None)</span>
+<span class="sd">        Target axes instance.</span>
+<span class="sd">        If None, new figure and axes will be created.</span>
+<span class="sd">    tree_index : int, optional (default=0)</span>
+<span class="sd">        The index of a target tree to plot.</span>
+<span class="sd">    figsize : tuple of 2 elements or None, optional (default=None)</span>
+<span class="sd">        Figure size.</span>
+<span class="sd">    show_info : list of strings or None, optional (default=None)</span>
+<span class="sd">        What information should be shown in nodes.</span>
+<span class="sd">        Possible values of list items: &#39;split_gain&#39;, &#39;internal_value&#39;, &#39;internal_count&#39;, &#39;leaf_count&#39;.</span>
+<span class="sd">    precision : int or None, optional (default=None)</span>
+<span class="sd">        Used to restrict the display of floating point values to a certain precision.</span>
+<span class="sd">    **kwargs : other parameters</span>
+<span class="sd">        Other parameters passed to ``Digraph`` constructor.</span>
+<span class="sd">        Check https://graphviz.readthedocs.io/en/stable/api.html#digraph for the full list of supported parameters.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ax : matplotlib.axes.Axes</span>
+<span class="sd">        The plot with single tree.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">MATPLOTLIB_INSTALLED</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">image</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You must install matplotlib to plot tree.&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;old_graph_attr&#39;</span><span class="p">,</span> <span class="s1">&#39;old_node_attr&#39;</span><span class="p">,</span> <span class="s1">&#39;old_edge_attr&#39;</span><span class="p">]:</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> parameter is deprecated and will be removed in 2.3 version.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;Please use **kwargs to pass </span><span class="si">{1}</span><span class="s1"> parameter.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">param_name</span><span class="p">,</span> <span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]),</span>
+                          <span class="n">LGBMDeprecationWarning</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">param_name</span><span class="p">[</span><span class="mi">4</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">param</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">figsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">check_not_tuple_of_2_elements</span><span class="p">(</span><span class="n">figsize</span><span class="p">,</span> <span class="s1">&#39;figsize&#39;</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">create_tree_digraph</span><span class="p">(</span><span class="n">booster</span><span class="o">=</span><span class="n">booster</span><span class="p">,</span> <span class="n">tree_index</span><span class="o">=</span><span class="n">tree_index</span><span class="p">,</span>
+                                <span class="n">show_info</span><span class="o">=</span><span class="n">show_info</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">))</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

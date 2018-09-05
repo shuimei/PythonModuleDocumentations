@@ -1,0 +1,296 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pyod.models.ocsvm &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyod.models.ocsvm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;One-class SVM detector. Implemented on scikit-learn library.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Author: Yue Zhao &lt;yuezhao@cs.toronto.edu&gt;</span>
+<span class="c1"># License: BSD 2 clause</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="k">import</span> <span class="n">OneClassSVM</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils.validation</span> <span class="k">import</span> <span class="n">check_is_fitted</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="k">import</span> <span class="n">check_array</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">BaseDetector</span>
+<span class="kn">from</span> <span class="nn">..utils.utility</span> <span class="k">import</span> <span class="n">invert_order</span>
+
+
+<div class="viewcode-block" id="OCSVM"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.ocsvm.OCSVM">[docs]</a><span class="k">class</span> <span class="nc">OCSVM</span><span class="p">(</span><span class="n">BaseDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper of scikit-learn one-class SVM Class with more functionalities.</span>
+<span class="sd">    Unsupervised Outlier Detection.</span>
+
+<span class="sd">    Estimate the support of a high-dimensional distribution.</span>
+
+<span class="sd">    The implementation is based on libsvm.</span>
+<span class="sd">    See http://scikit-learn.org/stable/modules/svm.html#svm-outlier-detection</span>
+<span class="sd">    and :cite:`ma2003time`.</span>
+
+<span class="sd">    :param kernel: Specifies the kernel type to be used in the algorithm.</span>
+<span class="sd">        It must be one of &#39;linear&#39;, &#39;poly&#39;, &#39;rbf&#39;, &#39;sigmoid&#39;, &#39;precomputed&#39; or</span>
+<span class="sd">        a callable.</span>
+<span class="sd">        If none is given, &#39;rbf&#39; will be used. If a callable is given it is</span>
+<span class="sd">        used to precompute the kernel matrix.</span>
+<span class="sd">    :type kernel: str, optional (default=&#39;rbf&#39;)</span>
+
+<span class="sd">    :param degree: Degree of the polynomial kernel function (&#39;poly&#39;).</span>
+<span class="sd">        Ignored by all other kernels.</span>
+<span class="sd">    :type degree: int, optional (default=3)</span>
+
+<span class="sd">    :param gamma:  Kernel coefficient for &#39;rbf&#39;, &#39;poly&#39; and &#39;sigmoid&#39;.</span>
+<span class="sd">        If gamma is &#39;auto&#39; then 1/n_features will be used instead.</span>
+<span class="sd">    :type gamma: float, optional (default=&#39;auto&#39;)</span>
+
+<span class="sd">    :param coef0:  Independent term in kernel function.</span>
+<span class="sd">        It is only significant in &#39;poly&#39; and &#39;sigmoid&#39;.</span>
+<span class="sd">    :type coef0: float, optional (default=0.0)</span>
+
+<span class="sd">    :param tol: Tolerance for stopping criterion.</span>
+<span class="sd">    :type tol: float, optional</span>
+
+<span class="sd">    :param nu: An upper bound on the fraction of training</span>
+<span class="sd">        errors and a lower bound of the fraction of support</span>
+<span class="sd">        vectors. Should be in the interval (0, 1]. By default 0.5</span>
+<span class="sd">        will be taken.</span>
+<span class="sd">    :type nu: float, optional</span>
+
+<span class="sd">    :param shrinking: Whether to use the shrinking heuristic.</span>
+<span class="sd">    :type shrinking: bool, optional</span>
+
+<span class="sd">    :param cache_size: Specify the size of the kernel cache (in MB).</span>
+<span class="sd">    :type cache_size: float, optional</span>
+
+<span class="sd">    :param verbose: Enable verbose output. Note that this setting takes</span>
+<span class="sd">        advantage of a per-process runtime setting in libsvm that, if enabled,</span>
+<span class="sd">        may not work properly in a multithreaded context.</span>
+<span class="sd">    :type verbose: bool, default: False</span>
+
+<span class="sd">    :param max_iter: Hard limit on iterations within solver, or -1 for no</span>
+<span class="sd">        limit.</span>
+<span class="sd">    :type max_iter: int, optional (default=-1)</span>
+
+<span class="sd">    :param contamination: The amount of contamination of the data set, i.e.</span>
+<span class="sd">        the proportion of outliers in the data set. When fitting this is used</span>
+<span class="sd">        to define the threshold on the decision function.</span>
+<span class="sd">    :type contamination: float in (0., 0.5), optional (default=0.1)</span>
+
+<span class="sd">    :param random_state: The seed of the pseudo random number generator to use</span>
+<span class="sd">        when shuffling the data.</span>
+<span class="sd">        If int, random_state is the seed used by the random number</span>
+<span class="sd">        generator; If RandomState instance, random_state is the random number</span>
+<span class="sd">        generator; If None, the random number generator is the RandomState</span>
+<span class="sd">        instance used by `np.random`.</span>
+<span class="sd">    :type random_state: int, RandomState instance or None, optional</span>
+<span class="sd">        (default=None)</span>
+
+<span class="sd">    :var support\_: Indices of support vectors.</span>
+<span class="sd">    :vartype support\_: array-like, shape = [n_SV]</span>
+
+<span class="sd">    :var support_vectors\_: Support vectors.</span>
+<span class="sd">    :vartype support_vectors\_: array-like, shape = [nSV, n_features]</span>
+
+<span class="sd">    :var dual_coef\_: Coefficients of the support vectors in the</span>
+<span class="sd">        decision function.</span>
+<span class="sd">    :vartype dual_coef\_: array, shape = [1, n_SV]</span>
+
+<span class="sd">    :var coef\_: Weights assigned to the features (coefficients</span>
+<span class="sd">        in the primal problem). This is only available in the case of</span>
+<span class="sd">        a linear kernel.</span>
+
+<span class="sd">        `coef_` is readonly property derived from `dual_coef_` and</span>
+<span class="sd">        `support_vectors_`</span>
+<span class="sd">    :vartype coef\_: array, shape = [1, n_features]</span>
+
+<span class="sd">    :var intercept\_: Constant in the decision function.</span>
+<span class="sd">    :vartype var intercept\_: array, shape = [1,]</span>
+
+<span class="sd">    :var decision_scores\_: The outlier scores of the training data.</span>
+<span class="sd">        The higher, the more abnormal. Outliers tend to have higher</span>
+<span class="sd">        scores. This value is available once the detector is</span>
+<span class="sd">        fitted.</span>
+<span class="sd">    :vartype decision_scores\_: numpy array of shape (n_samples,)</span>
+
+<span class="sd">    :var threshold\_: The threshold is based on ``contamination``. It is the</span>
+<span class="sd">        ``n_samples * contamination`` most abnormal samples in</span>
+<span class="sd">        ``decision_scores_``. The threshold is calculated for generating</span>
+<span class="sd">        binary outlier labels.</span>
+<span class="sd">    :vartype threshold\_: float</span>
+
+<span class="sd">    :var labels\_: The binary labels of the training data. 0 stands for inliers</span>
+<span class="sd">        and 1 for outliers/anomalies. It is generated by applying</span>
+<span class="sd">        ``threshold_`` on ``decision_scores_``.</span>
+<span class="sd">    :vartype labels\_: int, either 0 or 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">coef0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">tol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">shrinking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OCSVM</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree</span> <span class="o">=</span> <span class="n">degree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef0</span> <span class="o">=</span> <span class="n">coef0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shrinking</span> <span class="o">=</span> <span class="n">shrinking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_size</span> <span class="o">=</span> <span class="n">cache_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+
+<div class="viewcode-block" id="OCSVM.fit"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.ocsvm.OCSVM.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="c1"># Validate inputs X and y (optional)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">check_array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_n_classes</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span> <span class="o">=</span> <span class="n">OneClassSVM</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">,</span>
+                                     <span class="n">degree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">,</span>
+                                     <span class="n">gamma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
+                                     <span class="n">coef0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coef0</span><span class="p">,</span>
+                                     <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+                                     <span class="n">nu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">,</span>
+                                     <span class="n">shrinking</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shrinking</span><span class="p">,</span>
+                                     <span class="n">cache_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_size</span><span class="p">,</span>
+                                     <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+                                     <span class="n">max_iter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+                                     <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">,</span>
+                           <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># Invert decision_scores_. Outliers comes with higher outlier scores</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decision_scores_</span> <span class="o">=</span> <span class="n">invert_order</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_decision_scores</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="OCSVM.decision_function"><a class="viewcode-back" href="../../../pyod.models.html#pyod.models.ocsvm.OCSVM.decision_function">[docs]</a>    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">check_is_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;decision_scores_&#39;</span><span class="p">,</span> <span class="s1">&#39;threshold_&#39;</span><span class="p">,</span> <span class="s1">&#39;labels_&#39;</span><span class="p">])</span>
+        <span class="c1"># Invert outlier scores. Outliers comes with higher outlier scores</span>
+        <span class="k">return</span> <span class="n">invert_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indices of support vectors.</span>
+<span class="sd">        Decorator for scikit-learn One class SVM attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">support_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">support_vectors_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Support vectors.</span>
+<span class="sd">        Decorator for scikit-learn One class SVM attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">support_vectors_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dual_coef_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Coefficients of the support vectors in the decision function.</span>
+<span class="sd">        Decorator for scikit-learn One class SVM attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">dual_coef_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coef_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Weights assigned to the features (coefficients in the primal</span>
+<span class="sd">        problem). This is only available in the case of a linear kernel.</span>
+<span class="sd">        `coef_` is readonly property derived from `dual_coef_` and</span>
+<span class="sd">        `support_vectors_`</span>
+<span class="sd">        Decorator for scikit-learn One class SVM attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">coef_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">intercept_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constant in the decision function.</span>
+<span class="sd">        Decorator for scikit-learn One class SVM attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detector_</span><span class="o">.</span><span class="n">intercept_</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../example.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyod.html">API Reference</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

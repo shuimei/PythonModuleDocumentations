@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pandas.cut &#8212; pandas 0.23.4 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pandas.qcut" href="pandas.qcut.html" />
+    <link rel="prev" title="pandas.crosstab" href="pandas.crosstab.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pandas.qcut.html" title="pandas.qcut"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pandas.crosstab.html" title="pandas.crosstab"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pandas 0.23.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">API Reference</a> &#187;</li> 
+      </ul>
+    </div>
+<div class="content-wrapper">
+    <div class="content">
+        <div class="document">
+            <div class="sphinxsidebar">
+                <h3>Table Of Contents</h3>
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s New</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Package overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../10min.html">10 Minutes to pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dsintro.html">Intro to Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../basics.html">Essential Basic Functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../text.html">Working with Text Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../options.html">Options and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indexing.html">Indexing and Selecting Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">MultiIndex / Advanced Indexing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../computation.html">Computational tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../missing_data.html">Working with missing data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../groupby.html">Group By: split-apply-combine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../merging.html">Merge, join, and concatenate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reshaping.html">Reshaping and Pivot Tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeseries.html">Time Series / Date functionality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timedeltas.html">Time Deltas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../categorical.html">Categorical Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../style.html">Styling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io.html">IO Tools (Text, CSV, HDF5, …)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enhancingperf.html">Enhancing Performance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sparse.html">Sparse data structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gotchas.html">Frequently Asked Questions (FAQ)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../r_interface.html">rpy2 / R interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ecosystem.html">pandas Ecosystem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison_with_r.html">Comparison with R / R libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison_with_sql.html">Comparison with SQL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison_with_sas.html">Comparison with SAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comparison_with_stata.html">Comparison with Stata</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#input-output">Input/Output</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#general-functions">General functions</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../api.html#data-manipulations">Data manipulations</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pandas.melt.html">pandas.melt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.pivot.html">pandas.pivot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.pivot_table.html">pandas.pivot_table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.crosstab.html">pandas.crosstab</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pandas.cut</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.qcut.html">pandas.qcut</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.merge.html">pandas.merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.merge_ordered.html">pandas.merge_ordered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.merge_asof.html">pandas.merge_asof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.concat.html">pandas.concat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.get_dummies.html">pandas.get_dummies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.factorize.html">pandas.factorize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.unique.html">pandas.unique</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pandas.wide_to_long.html">pandas.wide_to_long</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#top-level-missing-data">Top-level missing data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#top-level-conversions">Top-level conversions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#top-level-dealing-with-datetimelike">Top-level dealing with datetimelike</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#top-level-dealing-with-intervals">Top-level dealing with intervals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#top-level-evaluation">Top-level evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#series">Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#dataframe">DataFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#panel">Panel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#index">Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#numeric-index">Numeric Index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#categoricalindex">CategoricalIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#intervalindex">IntervalIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#multiindex">MultiIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#datetimeindex">DatetimeIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#timedeltaindex">TimedeltaIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#periodindex">PeriodIndex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#scalars">Scalars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#frequencies">Frequencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#window">Window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#groupby">GroupBy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#resampling">Resampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#style">Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#id43">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#general-utility-functions">General utility functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#extensions">Extensions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../internals.html">Internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending.html">Extending Pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release.html">Release Notes</a></li>
+</ul>
+
+                <h3 style="margin-top: 1.5em;">Search</h3>
+
+                <form class="search" action="../search.html" method="get">
+                    <input type="text" name="q" size="18"/>
+                    <input type="submit" value="Go"/>
+                    <input type="hidden" name="check_keywords" value="yes"/>
+                    <input type="hidden" name="area" value="default"/>
+                </form>
+                <p class="searchtip" style="font-size: 90%">
+                    Enter search terms or a module, class or function name.
+                </p>
+
+            </div>
+             
+            <div class="documentwrapper">
+                <div class="bodywrapper">
+                    <div class="body">
+                        
+  <div class="section" id="pandas-cut">
+<h1>pandas.cut<a class="headerlink" href="#pandas-cut" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pandas.cut">
+<code class="descclassname">pandas.</code><code class="descname">cut</code><span class="sig-paren">(</span><em>x</em>, <em>bins</em>, <em>right=True</em>, <em>labels=None</em>, <em>retbins=False</em>, <em>precision=3</em>, <em>include_lowest=False</em>, <em>duplicates='raise'</em><span class="sig-paren">)</span><a class="reference external" href="http://github.com/pandas-dev/pandas/blob/v0.23.4/pandas/core/reshape/tile.py#L26-L237"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pandas.cut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bin values into discrete intervals.</p>
+<p>Use <cite>cut</cite> when you need to segment and sort data values into bins. This
+function is also useful for going from a continuous variable to a
+categorical variable. For example, <cite>cut</cite> could convert ages to groups of
+age ranges. Supports binning into an equal number of bins, or a
+pre-specified array of bins.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array-like</p>
+<blockquote>
+<div><p>The input array to be binned. Must be 1-dimensional.</p>
+</div></blockquote>
+<p><strong>bins</strong> : int, sequence of scalars, or pandas.IntervalIndex</p>
+<blockquote>
+<div><p>The criteria to bin by.</p>
+<ul class="simple">
+<li>int : Defines the number of equal-width bins in the range of <cite>x</cite>. The
+range of <cite>x</cite> is extended by .1% on each side to include the minimum
+and maximum values of <cite>x</cite>.</li>
+<li>sequence of scalars : Defines the bin edges allowing for non-uniform
+width. No extension of the range of <cite>x</cite> is done.</li>
+<li>IntervalIndex : Defines the exact bins to be used.</li>
+</ul>
+</div></blockquote>
+<p><strong>right</strong> : bool, default True</p>
+<blockquote>
+<div><p>Indicates whether <cite>bins</cite> includes the rightmost edge or not. If
+<code class="docutils literal notranslate"><span class="pre">right</span> <span class="pre">==</span> <span class="pre">True</span></code> (the default), then the <cite>bins</cite> <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4]</span></code>
+indicate (1,2], (2,3], (3,4]. This argument is ignored when
+<cite>bins</cite> is an IntervalIndex.</p>
+</div></blockquote>
+<p><strong>labels</strong> : array or bool, optional</p>
+<blockquote>
+<div><p>Specifies the labels for the returned bins. Must be the same length as
+the resulting bins. If False, returns only integer indicators of the
+bins. This affects the type of the output container (see below).
+This argument is ignored when <cite>bins</cite> is an IntervalIndex.</p>
+</div></blockquote>
+<p><strong>retbins</strong> : bool, default False</p>
+<blockquote>
+<div><p>Whether to return the bins or not. Useful when bins is provided
+as a scalar.</p>
+</div></blockquote>
+<p><strong>precision</strong> : int, default 3</p>
+<blockquote>
+<div><p>The precision at which to store and display the bins labels.</p>
+</div></blockquote>
+<p><strong>include_lowest</strong> : bool, default False</p>
+<blockquote>
+<div><p>Whether the first interval should be left-inclusive or not.</p>
+</div></blockquote>
+<p><strong>duplicates</strong> : {default ‘raise’, ‘drop’}, optional</p>
+<blockquote>
+<div><p>If bin edges are not unique, raise ValueError or drop non-uniques.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.23.0.</span></p>
+</div>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong> : pandas.Categorical, Series, or ndarray</p>
+<blockquote>
+<div><p>An array-like object representing the respective bin for each value
+of <cite>x</cite>. The type depends on the value of <cite>labels</cite>.</p>
+<ul class="simple">
+<li>True (default) : returns a Series for Series <cite>x</cite> or a
+pandas.Categorical for all other inputs. The values stored within
+are Interval dtype.</li>
+<li>sequence of scalars : returns a Series for Series <cite>x</cite> or a
+pandas.Categorical for all other inputs. The values stored within
+are whatever the type in the sequence is.</li>
+<li>False : returns an ndarray of integers.</li>
+</ul>
+</div></blockquote>
+<p><strong>bins</strong> : numpy.ndarray or IntervalIndex.</p>
+<blockquote class="last">
+<div><p>The computed or specified bins. Only returned when <cite>retbins=True</cite>.
+For scalar or sequence <cite>bins</cite>, this is an ndarray with the computed
+bins. If set <cite>duplicates=drop</cite>, <cite>bins</cite> will drop non-unique bin. For
+an IntervalIndex <cite>bins</cite>, this is equal to <cite>bins</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="pandas.qcut.html#pandas.qcut" title="pandas.qcut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qcut</span></code></a></dt>
+<dd>Discretize variable into equal-sized buckets based on rank or based on sample quantiles.</dd>
+<dt><a class="reference internal" href="pandas.Categorical.html#pandas.Categorical" title="pandas.Categorical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.Categorical</span></code></a></dt>
+<dd>Array type for storing data that come from a fixed set of values.</dd>
+<dt><a class="reference internal" href="pandas.Series.html#pandas.Series" title="pandas.Series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Series</span></code></a></dt>
+<dd>One-dimensional array with axis labels (including time series).</dd>
+<dt><a class="reference internal" href="pandas.IntervalIndex.html#pandas.IntervalIndex" title="pandas.IntervalIndex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.IntervalIndex</span></code></a></dt>
+<dd>Immutable Index implementing an ordered, sliceable set.</dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>Any NA values will be NA in the result. Out of bounds values will be NA in
+the resulting Series or pandas.Categorical object.</p>
+<p class="rubric">Examples</p>
+<p>Discretize into three equal-sized bins.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">[(0.994, 3.0], (5.0, 7.0], (3.0, 5.0], (3.0, 5.0], (5.0, 7.0], ...</span>
+<span class="go">Categories (3, interval[float64]): [(0.994, 3.0] &lt; (3.0, 5.0] ...</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">([(0.994, 3.0], (5.0, 7.0], (3.0, 5.0], (3.0, 5.0], (5.0, 7.0], ...</span>
+<span class="go">Categories (3, interval[float64]): [(0.994, 3.0] &lt; (3.0, 5.0] ...</span>
+<span class="go">array([0.994, 3.   , 5.   , 7.   ]))</span>
+</pre></div>
+</div>
+<p>Discovers the same bins, but assign them specific labels. Notice that
+the returned Categorical’s categories are <cite>labels</cite> and is ordered.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span>
+<span class="gp">... </span>       <span class="mi">3</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bad&quot;</span><span class="p">,</span> <span class="s2">&quot;medium&quot;</span><span class="p">,</span> <span class="s2">&quot;good&quot;</span><span class="p">])</span>
+<span class="go">[bad, good, medium, medium, good, bad]</span>
+<span class="go">Categories (3, object): [bad &lt; medium &lt; good]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">labels=False</span></code> implies you just want the bins back.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">array([0, 1, 1, 3])</span>
+</pre></div>
+</div>
+<p>Passing a Series as an input returns a Series with categorical dtype:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]),</span>
+<span class="gp">... </span>              <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">a    (1.992, 4.667]</span>
+<span class="go">b    (1.992, 4.667]</span>
+<span class="go">c    (4.667, 7.333]</span>
+<span class="go">d     (7.333, 10.0]</span>
+<span class="go">e     (7.333, 10.0]</span>
+<span class="go">dtype: category</span>
+<span class="go">Categories (3, interval[float64]): [(1.992, 4.667] &lt; (4.667, ...</span>
+</pre></div>
+</div>
+<p>Passing a Series as an input returns a Series with mapping value.
+It is used to map numerically to intervals based on bins.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]),</span>
+<span class="gp">... </span>              <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">(a    0.0</span>
+<span class="go"> b    1.0</span>
+<span class="go"> c    2.0</span>
+<span class="go"> d    3.0</span>
+<span class="go"> e    4.0</span>
+<span class="go"> dtype: float64, array([0, 2, 4, 6, 8]))</span>
+</pre></div>
+</div>
+<p>Use <cite>drop</cite> optional when bins is not unique</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">duplicates</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">(a    0.0</span>
+<span class="go"> b    1.0</span>
+<span class="go"> c    2.0</span>
+<span class="go"> d    3.0</span>
+<span class="go"> e    3.0</span>
+<span class="go"> dtype: float64, array([0, 2, 4, 6, 8]))</span>
+</pre></div>
+</div>
+<p>Passing an IntervalIndex for <cite>bins</cite> results in those categories exactly.
+Notice that values not covered by the IntervalIndex are set to NaN. 0
+is to the left of the first bin (which is closed on the right), and 1.5
+falls between two bins.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bins</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">IntervalIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">],</span> <span class="n">bins</span><span class="p">)</span>
+<span class="go">[NaN, (0, 1], NaN, (2, 3], (4, 5]]</span>
+<span class="go">Categories (3, interval[int64]): [(0, 1] &lt; (2, 3] &lt; (4, 5]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="clearer"></div>
+        </div>
+    </div>
+</div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pandas.qcut.html" title="pandas.qcut"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pandas.crosstab.html" title="pandas.crosstab"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">pandas 0.23.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li> 
+      </ul>
+    </div>
+<style type="text/css">
+    .scrollToTop {
+        text-align: center;
+        font-weight: bold;
+        position: fixed;
+        bottom: 60px;
+        right: 40px;
+        display: none;
+    }
+</style>
+<a href="#" class="scrollToTop">Scroll To Top</a>
+<script type="text/javascript">
+$(document).ready(function() {
+    //Check to see if the window is top if not then display button
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 200) {
+            $('.scrollToTop').fadeIn();
+        } else {
+            $('.scrollToTop').fadeOut();
+        }
+    });
+
+    //Click event to scroll to top
+    $('.scrollToTop').click(function() {
+        $('html, body').animate({
+            scrollTop: 0
+        }, 500);
+        return false;
+    });
+});
+</script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-27880019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+  </body>
+</html>

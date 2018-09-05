@@ -1,0 +1,288 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Examples &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A List of Examples" href="examples.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="A List of Examples"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">A List of Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.abod_example">examples.abod_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.comb_example">examples.comb_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.feature_bagging_example">examples.feature_bagging_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.hbos_example">examples.hbos_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.iforest_example">examples.iforest_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.knn_example">examples.knn_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.lof_example">examples.lof_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.ocsvm_example">examples.ocsvm_example module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#module-examples.pca_example">examples.pca_example module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="knn-example">
+<h2>kNN Example<a class="headerlink" href="#knn-example" title="Permalink to this headline">¶</a></h2>
+<p>Full example: <a class="reference external" href="https://github.com/yzhao062/Pyod/blob/master/examples/knn_example.py">knn_example.py</a></p>
+<ol class="arabic">
+<li><p class="first">Import models</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyod.models.knn</span> <span class="kn">import</span> <span class="n">KNN</span>   <span class="c1"># kNN detector</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Generate sample data with <a class="reference internal" href="pyod.utils.html#pyod.utils.data.generate_data" title="pyod.utils.data.generate_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyod.utils.data.generate_data()</span></code></a>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contamination</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># percentage of outliers</span>
+<span class="n">n_train</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># number of training points</span>
+<span class="n">n_test</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># number of testing points</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span>
+    <span class="n">n_train</span><span class="o">=</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_test</span><span class="o">=</span><span class="n">n_test</span><span class="p">,</span> <span class="n">contamination</span><span class="o">=</span><span class="n">contamination</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Initialize a <a class="reference internal" href="pyod.models.html#pyod.models.knn.KNN" title="pyod.models.knn.KNN"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyod.models.knn.KNN</span></code></a> detector, fit the model, and make
+the prediction:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># train kNN detector</span>
+<span class="n">clf_name</span> <span class="o">=</span> <span class="s1">&#39;KNN&#39;</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">KNN</span><span class="p">()</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+<span class="c1"># get the prediction labels and outlier scores of the training data</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">labels_</span>  <span class="c1"># binary labels (0: inliers, 1: outliers)</span>
+<span class="n">y_train_scores</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">decision_scores_</span>  <span class="c1"># raw outlier scores</span>
+
+<span class="c1"># get the prediction on the test data</span>
+<span class="n">y_test_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>  <span class="c1"># outlier labels (0 or 1)</span>
+<span class="n">y_test_scores</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>  <span class="c1"># outlier scores</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Evaluate the prediction using ROC and Precision&#64;rank n <a class="reference internal" href="pyod.utils.html#pyod.utils.data.evaluate_print" title="pyod.utils.data.evaluate_print"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyod.utils.data.evaluate_print()</span></code></a>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># evaluate and print the results</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">On Training Data:&quot;</span><span class="p">)</span>
+<span class="n">evaluate_print</span><span class="p">(</span><span class="n">clf_name</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_train_scores</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">On Test Data:&quot;</span><span class="p">)</span>
+<span class="n">evaluate_print</span><span class="p">(</span><span class="n">clf_name</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_test_scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">See sample outputs on both training and test data:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>On Training Data:
+KNN ROC:1.0, precision @ rank n:1.0
+
+On Test Data:
+KNN ROC:0.9989, precision @ rank n:0.9
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Generate the visualizations by <code class="xref py py-func docutils literal notranslate"><span class="pre">pyod.utils.data.visualize()</span></code></p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">visualize</span><span class="p">(</span><span class="n">clf_name</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_train_pred</span><span class="p">,</span>
+          <span class="n">y_test_pred</span><span class="p">,</span> <span class="n">show_figure</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">save_figure</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<div class="figure">
+<img alt="kNN demo" src="_images/KNN.png" />
+</div>
+</div>
+<div class="section" id="model-combination-example">
+<h2>Model Combination Example<a class="headerlink" href="#model-combination-example" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/yzhao062/Pyod/blob/master/examples/comb_example.py">comb_example.py</a> is a quick demo for showing the API for combining multiple algorithms.
+Given we have <em>n</em> individual outlier detectors, each of them generates an individual score for all samples. The task is to combine the outputs from these detectors effectivelly.</p>
+<p><strong>Model combination example</strong> is made available below
+(<a class="reference external" href="https://github.com/yzhao062/Pyod/blob/master/examples/comb_example.py">Code</a>, <a class="reference external" href="https://mybinder.org/v2/gh/yzhao062/Pyod/master">Jupyter Notebooks</a>):</p>
+<p>For Jupyter Notebooks, please navigate to <strong>“/notebooks/Model Combination.ipynb”</strong></p>
+<ol class="arabic">
+<li><p class="first">Import models and generate sample data:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyod.models.knn</span> <span class="kn">import</span> <span class="n">KNN</span>  <span class="c1"># kNN detector</span>
+<span class="kn">from</span> <span class="nn">pyod.models.combination</span> <span class="kn">import</span> <span class="n">aom</span><span class="p">,</span> <span class="n">moa</span><span class="p">,</span> <span class="n">average</span><span class="p">,</span> <span class="n">maximization</span>
+<span class="kn">from</span> <span class="nn">pyod.utils.data</span> <span class="kn">import</span> <span class="n">generate_data</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span> <span class="n">generate_data</span><span class="p">(</span><span class="n">train_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># load data</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">First initialize 20 kNN outlier detectors with different k (10 to 200), and get the outlier scores:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize 20 base detectors for combination</span>
+<span class="n">k_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span>
+            <span class="mi">150</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">190</span><span class="p">,</span> <span class="mi">200</span><span class="p">]</span>
+
+<span class="n">train_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_clf</span><span class="p">])</span>
+<span class="n">test_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_clf</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_clf</span><span class="p">):</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">k_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">KNN</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;largest&#39;</span><span class="p">)</span>
+    <span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train_norm</span><span class="p">)</span>
+
+    <span class="n">train_scores</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">decision_scores_</span>
+    <span class="n">test_scores</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X_test_norm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Then the output codes are standardized into zero average and unit std before combination:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyod.utils.utility</span> <span class="kn">import</span> <span class="n">standardizer</span>
+
+<span class="c1"># scores have to be normalized before combination</span>
+<span class="n">train_scores_norm</span><span class="p">,</span> <span class="n">test_scores_norm</span> <span class="o">=</span> <span class="n">standardizer</span><span class="p">(</span><span class="n">train_scores</span><span class="p">,</span> <span class="n">test_scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Then four different combination algorithms are applied as described above:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">comb_by_average</span> <span class="o">=</span> <span class="n">average</span><span class="p">(</span><span class="n">test_scores_norm</span><span class="p">)</span>
+<span class="n">comb_by_maximization</span> <span class="o">=</span> <span class="n">maximization</span><span class="p">(</span><span class="n">test_scores_norm</span><span class="p">)</span>
+<span class="n">comb_by_aom</span> <span class="o">=</span> <span class="n">aom</span><span class="p">(</span><span class="n">test_scores_norm</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1"># 5 groups</span>
+<span class="n">comb_by_moa</span> <span class="o">=</span> <span class="n">moa</span><span class="p">(</span><span class="n">test_scores_norm</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span> <span class="c1"># 5 groups</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p class="first">Finally, all four combination methods are evaluated with ROC and Precision
+&#64; Rank n:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Combining <span class="m">20</span> kNN detectors
+Combination by Average ROC:0.9194, precision @ rank n:0.4531
+Combination by Maximization ROC:0.9198, precision @ rank n:0.4688
+Combination by AOM ROC:0.9257, precision @ rank n:0.4844
+Combination by MOA ROC:0.9263, precision @ rank n:0.4688
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">A List of Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#knn-example">kNN Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-combination-example">Model Combination Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyod.html">API Reference</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="next chapter">A List of Examples</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/example.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="A List of Examples"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>

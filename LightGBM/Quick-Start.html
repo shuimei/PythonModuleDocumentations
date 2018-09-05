@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Start &mdash; LightGBM  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python-package Introduction" href="Python-Intro.html" />
+    <link rel="prev" title="Installation Guide" href="Installation-Guide.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> LightGBM
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation-Guide.html">Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#training-data-format">Training Data Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#categorical-feature-support">Categorical Feature Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weight-and-query-group-data">Weight and Query/Group Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters-quick-look">Parameters Quick Look</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-lightgbm">Run LightGBM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Python-Intro.html">Python Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Experiments.html">Experiments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters-Tuning.html">Parameters Tuning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Python-API.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parallel-Learning-Guide.html">Parallel Learning Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GPU-Tutorial.html">GPU Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Advanced-Topics.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Development-Guide.html">Development Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LightGBM</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Start</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Quick-Start.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>This is a quick start guide for LightGBM CLI version.</p>
+<p>Follow the <a class="reference external" href="./Installation-Guide.rst">Installation Guide</a> to install LightGBM first.</p>
+<p><strong>List of other helpful links</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="./Parameters.rst">Parameters</a></li>
+<li><a class="reference external" href="./Parameters-Tuning.rst">Parameters Tuning</a></li>
+<li><a class="reference external" href="./Python-Intro.rst">Python-package Quick Start</a></li>
+<li><a class="reference external" href="./Python-API.rst">Python API</a></li>
+</ul>
+<div class="section" id="training-data-format">
+<h2>Training Data Format<a class="headerlink" href="#training-data-format" title="Permalink to this headline">¶</a></h2>
+<p>LightGBM supports input data files with <a class="reference external" href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Tab-separated_values">TSV</a> and <a class="reference external" href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">LibSVM</a> formats.</p>
+<p>Files could be both with and without headers.</p>
+<p>Label column could be specified both by index and by name.</p>
+<p>Some columns could be ignored.</p>
+<div class="section" id="categorical-feature-support">
+<h3>Categorical Feature Support<a class="headerlink" href="#categorical-feature-support" title="Permalink to this headline">¶</a></h3>
+<p>LightGBM can use categorical features directly (without one-hot encoding).
+The experiment on <a class="reference external" href="http://stat-computing.org/dataexpo/2009/">Expo data</a> shows about 8x speed-up compared with one-hot encoding.</p>
+<p>For the setting details, please refer to <a class="reference external" href="./Parameters.rst#categorical_feature">Parameters</a>.</p>
+</div>
+<div class="section" id="weight-and-query-group-data">
+<h3>Weight and Query/Group Data<a class="headerlink" href="#weight-and-query-group-data" title="Permalink to this headline">¶</a></h3>
+<p>LightGBM also supports weighted training, it needs an additional <a class="reference external" href="./Parameters.rst#weight-data">weight data</a>.
+And it needs an additional <a class="reference external" href="./Parameters.rst#query-data">query data</a> for ranking task.</p>
+<p>Also, weight and query data could be specified as columns in training data in the same manner as label.</p>
+</div>
+</div>
+<div class="section" id="parameters-quick-look">
+<h2>Parameters Quick Look<a class="headerlink" href="#parameters-quick-look" title="Permalink to this headline">¶</a></h2>
+<p>The parameters format is <code class="docutils literal notranslate"><span class="pre">key1=value1</span> <span class="pre">key2=value2</span> <span class="pre">...</span></code>.</p>
+<p>Parameters can be set both in config file and command line.
+If one parameter appears in both command line and config file, LightGBM will use the parameter from the command line.</p>
+<p>The most important parameters which new users should take a look to are located into <a class="reference external" href="./Parameters.rst#core-parameters">Core Parameters</a>
+and the top of <a class="reference external" href="./Parameters.rst#learning-control-parameters">Learning Control Parameters</a>
+sections of the full detailed list of <a class="reference external" href="./Parameters.rst">LightGBM’s parameters</a>.</p>
+</div>
+<div class="section" id="run-lightgbm">
+<h2>Run LightGBM<a class="headerlink" href="#run-lightgbm" title="Permalink to this headline">¶</a></h2>
+<p>For Windows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lightgbm</span><span class="o">.</span><span class="n">exe</span> <span class="n">config</span><span class="o">=</span><span class="n">your_config_file</span> <span class="n">other_args</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>For Unix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">lightgbm</span> <span class="n">config</span><span class="o">=</span><span class="n">your_config_file</span> <span class="n">other_args</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>Parameters can be set both in config file and command line, and the parameters in command line have higher priority than in config file.
+For example, following command line will keep <code class="docutils literal notranslate"><span class="pre">num_trees=10</span></code> and ignore the same parameter in config file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">lightgbm</span> <span class="n">config</span><span class="o">=</span><span class="n">train</span><span class="o">.</span><span class="n">conf</span> <span class="n">num_trees</span><span class="o">=</span><span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/examples/binary_classification">Binary Classification</a></li>
+<li><a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/examples/regression">Regression</a></li>
+<li><a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/examples/lambdarank">Lambdarank</a></li>
+<li><a class="reference external" href="https://github.com/Microsoft/LightGBM/tree/master/examples/parallel_learning">Parallel Learning</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Python-Intro.html" class="btn btn-neutral float-right" title="Python-package Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Installation-Guide.html" class="btn btn-neutral" title="Installation Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Microsoft Corporation.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/js/script.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

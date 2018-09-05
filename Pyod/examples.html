@@ -1,0 +1,382 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>A List of Examples &#8212; pyod 0.5.6 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Benchmarks" href="benchmark.html" />
+    <link rel="prev" title="Examples" href="example.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="benchmark.html" title="Benchmarks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Examples"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="example.html" accesskey="U">Examples</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="a-list-of-examples">
+<h1>A List of Examples<a class="headerlink" href="#a-list-of-examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-examples.abod_example">
+<span id="examples-abod-example-module"></span><h2>examples.abod_example module<a class="headerlink" href="#module-examples.abod_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using Angle-base outlier detection (ABOD) for outlier detection</p>
+<dl class="function">
+<dt id="examples.abod_example.visualize">
+<code class="descclassname">examples.abod_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/abod_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.abod_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.comb_example">
+<span id="examples-comb-example-module"></span><h2>examples.comb_example module<a class="headerlink" href="#module-examples.comb_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of combining multiple base outlier scores. Four combination
+frameworks are demonstrated:</p>
+<ol class="arabic simple">
+<li>Average: take the average of all base detectors</li>
+<li>maximization : take the maximum score across all detectors as the score</li>
+<li>Average of Maximum (AOM)</li>
+<li>Maximum of Average (MOA)</li>
+</ol>
+</div>
+<div class="section" id="module-examples.feature_bagging_example">
+<span id="examples-feature-bagging-example-module"></span><h2>examples.feature_bagging_example module<a class="headerlink" href="#module-examples.feature_bagging_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using Feature Bagging for outlier detection</p>
+<dl class="function">
+<dt id="examples.feature_bagging_example.visualize">
+<code class="descclassname">examples.feature_bagging_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/feature_bagging_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.feature_bagging_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.hbos_example">
+<span id="examples-hbos-example-module"></span><h2>examples.hbos_example module<a class="headerlink" href="#module-examples.hbos_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using HBOS for outlier detection</p>
+<dl class="function">
+<dt id="examples.hbos_example.visualize">
+<code class="descclassname">examples.hbos_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/hbos_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.hbos_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.iforest_example">
+<span id="examples-iforest-example-module"></span><h2>examples.iforest_example module<a class="headerlink" href="#module-examples.iforest_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using Isolation Forest for outlier detection</p>
+<dl class="function">
+<dt id="examples.iforest_example.visualize">
+<code class="descclassname">examples.iforest_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/iforest_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.iforest_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.knn_example">
+<span id="examples-knn-example-module"></span><h2>examples.knn_example module<a class="headerlink" href="#module-examples.knn_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using kNN for outlier detection</p>
+<dl class="function">
+<dt id="examples.knn_example.visualize">
+<code class="descclassname">examples.knn_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/knn_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.knn_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.lof_example">
+<span id="examples-lof-example-module"></span><h2>examples.lof_example module<a class="headerlink" href="#module-examples.lof_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using LOF for outlier detection</p>
+<dl class="function">
+<dt id="examples.lof_example.visualize">
+<code class="descclassname">examples.lof_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/lof_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.lof_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.ocsvm_example">
+<span id="examples-ocsvm-example-module"></span><h2>examples.ocsvm_example module<a class="headerlink" href="#module-examples.ocsvm_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using one class SVM for outlier detection</p>
+<dl class="function">
+<dt id="examples.ocsvm_example.visualize">
+<code class="descclassname">examples.ocsvm_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/ocsvm_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.ocsvm_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-examples.pca_example">
+<span id="examples-pca-example-module"></span><h2>examples.pca_example module<a class="headerlink" href="#module-examples.pca_example" title="Permalink to this headline">¶</a></h2>
+<p>Example of using PCA for outlier detection</p>
+<dl class="function">
+<dt id="examples.pca_example.visualize">
+<code class="descclassname">examples.pca_example.</code><code class="descname">visualize</code><span class="sig-paren">(</span><em>clf_name</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em>, <em>y_train_pred</em>, <em>y_test_pred</em>, <em>show_figure=True</em>, <em>save_figure=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/examples/pca_example.html#visualize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#examples.pca_example.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function for visualizing the results in examples
+Internal use only</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>clf_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The name of the detector</li>
+<li><strong>X_train</strong> – The training samples</li>
+<li><strong>X_train</strong> – numpy array of shape (n_samples, n_features)</li>
+<li><strong>y_train</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of training samples</li>
+<li><strong>X_test</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The test samples</li>
+<li><strong>y_test</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em> or </em><em>array of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – The ground truth of test samples</li>
+<li><strong>y_train_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the training samples</li>
+<li><strong>y_test_pred</strong> (<em>numpy array of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – The predicted outlier scores on the test samples</li>
+<li><strong>show_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=True</em><em>)</em>) – If set to True, show the figure</li>
+<li><strong>save_figure</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – If set to True, save the figure to the local</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="example.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">A List of Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html#knn-example">kNN Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html#model-combination-example">Model Combination Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_cc.html">API CheatSheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyod.html">API Reference</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example.html"
+                        title="previous chapter">Examples</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="benchmark.html"
+                        title="next chapter">Benchmarks</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="benchmark.html" title="Benchmarks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example.html" title="Examples"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyod 0.5.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="example.html" >Examples</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Yue Zhao.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>
