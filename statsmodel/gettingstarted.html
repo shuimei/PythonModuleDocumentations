@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Getting started &#8212; statsmodels 0.9.0 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/statsmodels_hybi_favico.ico"/>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fitting models using R-style formulas" href="example_formulas.html" />
+    <link rel="prev" title="Issues closed in the 0.5.0 development cycle" href="release/github-stats-0.5.html" />
+<link rel="stylesheet" href="_static/examples.css" type="text/css" />
+<link rel="stylesheet" href="_static/facebox.css" type="text/css" />
+<script type="text/javascript" src="_static/scripts.js">
+</script>
+<script type="text/javascript" src="_static/facebox.js">
+</script>
+<script type="text/javascript">
+$.facebox.settings.closeImage = "_static/closelabel.png"
+$.facebox.settings.loadingImage = "_static/loading.gif"
+</script>
+
+  </head><body>
+<div class="headerwrap">
+    <div class = "header">
+        
+        <a href = "index.html">
+<img src="_static/statsmodels_hybi_banner.png" alt="Logo"
+    style="padding-left: 15px"/></a>
+        
+    </div>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="example_formulas.html" title="Fitting models using R-style formulas"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="release/github-stats-0.5.html" title="Issues closed in the 0.5.0 development cycle"
+             accesskey="P">previous</a> |</li>
+<li><a href ="install.html">Install</a></li> &nbsp;|&nbsp;
+<li><a href="https://groups.google.com/forum/?hl=en#!forum/pystatsmodels">Support</a></li> &nbsp;|&nbsp;
+<li><a href="https://github.com/statsmodels/statsmodels/issues">Bugs</a></li> &nbsp;|&nbsp;
+<li><a href="dev/index.html">Develop</a></li> &nbsp;|&nbsp;
+<li><a href="examples/index.html">Examples</a></li> &nbsp;|&nbsp;
+<li><a href="faq.html">FAQ</a></li> &nbsp;|&nbsp;
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+
+
+
+
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>This very simple case-study is designed to get you up-and-running quickly with
+<code class="docutils literal notranslate"><span class="pre">statsmodels</span></code>. Starting from raw data, we will show the steps needed to
+estimate a statistical model and to draw a diagnostic plot. We will only use
+functions provided by <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> or its <code class="docutils literal notranslate"><span class="pre">pandas</span></code> and <code class="docutils literal notranslate"><span class="pre">patsy</span></code>
+dependencies.</p>
+<div class="section" id="loading-modules-and-functions">
+<h2>Loading modules and functions<a class="headerlink" href="#loading-modules-and-functions" title="Permalink to this headline">¶</a></h2>
+<p>After <a class="reference external" href="install.html">installing statsmodels and its dependencies</a>, we load a
+few modules and functions:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+
+<span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">pandas</span>
+
+<span class="gp">In [4]: </span><span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="http://pandas.pydata.org/">pandas</a> builds on <code class="docutils literal notranslate"><span class="pre">numpy</span></code> arrays to provide
+rich data structures and data analysis tools. The <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> function
+provides labelled arrays of (potentially heterogenous) data, similar to the
+<code class="docutils literal notranslate"><span class="pre">R</span></code> “data.frame”. The <code class="docutils literal notranslate"><span class="pre">pandas.read_csv</span></code> function can be used to convert a
+comma-separated values file to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> object.</p>
+<p><a class="reference external" href="https://github.com/pydata/patsy">patsy</a> is a Python library for describing
+statistical models and building <a class="reference external" href="https://en.wikipedia.org/wiki/Design_matrix">Design Matrices</a> using <code class="docutils literal notranslate"><span class="pre">R</span></code>-like formulas.</p>
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>We download the <a class="reference external" href="https://raw.githubusercontent.com/vincentarelbundock/Rdatasets/doc/HistData/Guerry.html">Guerry dataset</a>, a
+collection of historical data used in support of Andre-Michel Guerry’s 1833
+<em>Essay on the Moral Statistics of France</em>. The data set is hosted online in
+comma-separated values format (CSV) by the <a class="reference external" href="https://github.com/vincentarelbundock/Rdatasets/">Rdatasets</a> repository.
+We could download the file locally and then load it using <code class="docutils literal notranslate"><span class="pre">read_csv</span></code>, but
+<code class="docutils literal notranslate"><span class="pre">pandas</span></code> takes care of all of this automatically for us:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Guerry&quot;</span><span class="p">,</span> <span class="s2">&quot;HistData&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">timeout</span><span class="g g-Whitespace">                                   </span>Traceback (most recent call last)
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">do_open</span><span class="nt">(self, http_class, req, **http_conn_args)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1317</span>                 <span class="n">h</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">get_method</span><span class="p">(),</span> <span class="n">req</span><span class="o">.</span><span class="n">selector</span><span class="p">,</span> <span class="n">req</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span>
+<span class="ne">-&gt; </span><span class="mi">1318</span>                           <span class="n">encode_chunked</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">has_header</span><span class="p">(</span><span class="s1">&#39;Transfer-encoding&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1319</span>             <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span> <span class="c1"># timeout error</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">request</span><span class="nt">(self, method, url, body, headers, encode_chunked)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1238</span>         <span class="sd">&quot;&quot;&quot;Send a complete request to the server.&quot;&quot;&quot;</span>
+<span class="ne">-&gt; </span><span class="mi">1239</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_send_request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">encode_chunked</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1240</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">_send_request</span><span class="nt">(self, method, url, body, headers, encode_chunked)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1284</span>             <span class="n">body</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s1">&#39;body&#39;</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1285</span>         <span class="bp">self</span><span class="o">.</span><span class="n">endheaders</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="n">encode_chunked</span><span class="o">=</span><span class="n">encode_chunked</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1286</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">endheaders</span><span class="nt">(self, message_body, encode_chunked)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1233</span>             <span class="k">raise</span> <span class="n">CannotSendHeader</span><span class="p">()</span>
+<span class="ne">-&gt; </span><span class="mi">1234</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_send_output</span><span class="p">(</span><span class="n">message_body</span><span class="p">,</span> <span class="n">encode_chunked</span><span class="o">=</span><span class="n">encode_chunked</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1235</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">_send_output</span><span class="nt">(self, message_body, encode_chunked)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1025</span>         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[:]</span>
+<span class="ne">-&gt; </span><span class="mi">1026</span>         <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1027</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">send</span><span class="nt">(self, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">963</span>             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_open</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">964</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">965</span>             <span class="k">else</span><span class="p">:</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\http\client.py</span> in <span class="ni">connect</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1399</span>             <span class="bp">self</span><span class="o">.</span><span class="n">sock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">wrap_socket</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sock</span><span class="p">,</span>
+<span class="ne">-&gt; </span><span class="mi">1400</span>                                                   <span class="n">server_hostname</span><span class="o">=</span><span class="n">server_hostname</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1401</span>             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">check_hostname</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_hostname</span><span class="p">:</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\ssl.py</span> in <span class="ni">wrap_socket</span><span class="nt">(self, sock, server_side, do_handshake_on_connect, suppress_ragged_eofs, server_hostname, session)</span>
+<span class="g g-Whitespace">    </span><span class="mi">406</span>                          <span class="n">server_hostname</span><span class="o">=</span><span class="n">server_hostname</span><span class="p">,</span>
+<span class="ne">--&gt; </span><span class="mi">407</span>                          <span class="n">_context</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">_session</span><span class="o">=</span><span class="n">session</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">408</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\ssl.py</span> in <span class="ni">__init__</span><span class="nt">(self, sock, keyfile, certfile, server_side, cert_reqs, ssl_version, ca_certs, do_handshake_on_connect, family, type, proto, fileno, suppress_ragged_eofs, npn_protocols, ciphers, server_hostname, _context, _session)</span>
+<span class="g g-Whitespace">    </span><span class="mi">813</span>                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;do_handshake_on_connect should not be specified for non-blocking sockets&quot;</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">814</span>                     <span class="bp">self</span><span class="o">.</span><span class="n">do_handshake</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">815</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\ssl.py</span> in <span class="ni">do_handshake</span><span class="nt">(self, block)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1067</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1068</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_sslobj</span><span class="o">.</span><span class="n">do_handshake</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1069</span>         <span class="k">finally</span><span class="p">:</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\ssl.py</span> in <span class="ni">do_handshake</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">688</span>         <span class="sd">&quot;&quot;&quot;Start the SSL/TLS handshake.&quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">689</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_sslobj</span><span class="o">.</span><span class="n">do_handshake</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">690</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">check_hostname</span><span class="p">:</span>
+
+<span class="ne">timeout</span>: _ssl.c:817: The handshake operation timed out
+
+<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
+
+<span class="ne">URLError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-5-63f901ae7e17&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">df</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get_rdataset</span><span class="p">(</span><span class="s2">&quot;Guerry&quot;</span><span class="p">,</span> <span class="s2">&quot;HistData&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\statsmodels\datasets\utils.py</span> in <span class="ni">get_rdataset</span><span class="nt">(dataname, package, cache)</span>
+<span class="g g-Whitespace">    </span><span class="mi">293</span>     <span class="n">data</span> <span class="o">=</span> <span class="n">_maybe_reset_index</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">294</span> 
+<span class="ne">--&gt; </span><span class="mi">295</span>     <span class="n">title</span> <span class="o">=</span> <span class="n">_get_dataset_meta</span><span class="p">(</span><span class="n">dataname</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">296</span>     <span class="n">doc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_get_data</span><span class="p">(</span><span class="n">docs_base_url</span><span class="p">,</span> <span class="n">dataname</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="s2">&quot;rst&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">297</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\statsmodels\datasets\utils.py</span> in <span class="ni">_get_dataset_meta</span><span class="nt">(dataname, package, cache)</span>
+<span class="g g-Whitespace">    </span><span class="mi">236</span>     <span class="n">index_url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;https://raw.github.com/vincentarelbundock/Rdatasets/master/&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">237</span>                  <span class="s2">&quot;datasets.csv&quot;</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">238</span>     <span class="n">data</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_urlopen_cached</span><span class="p">(</span><span class="n">index_url</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">239</span>     <span class="c1"># Python 3</span>
+<span class="g g-Whitespace">    </span><span class="mi">240</span>     <span class="k">if</span> <span class="n">PY3</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\statsmodels\datasets\utils.py</span> in <span class="ni">_urlopen_cached</span><span class="nt">(url, cache)</span>
+<span class="g g-Whitespace">    </span><span class="mi">211</span>     <span class="c1"># not using the cache or didn&#39;t find it in cache</span>
+<span class="g g-Whitespace">    </span><span class="mi">212</span>     <span class="k">if</span> <span class="ow">not</span> <span class="n">from_cache</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">213</span>         <span class="n">data</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">214</span>         <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># then put it in the cache</span>
+<span class="g g-Whitespace">    </span><span class="mi">215</span>             <span class="n">_cache_it</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cache_path</span><span class="p">)</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">urlopen</span><span class="nt">(url, data, timeout, cafile, capath, cadefault, context)</span>
+<span class="g g-Whitespace">    </span><span class="mi">221</span>     <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">222</span>         <span class="n">opener</span> <span class="o">=</span> <span class="n">_opener</span>
+<span class="ne">--&gt; </span><span class="mi">223</span>     <span class="k">return</span> <span class="n">opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">224</span> 
+<span class="g g-Whitespace">    </span><span class="mi">225</span> <span class="k">def</span> <span class="nf">install_opener</span><span class="p">(</span><span class="n">opener</span><span class="p">):</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">open</span><span class="nt">(self, fullurl, data, timeout)</span>
+<span class="g g-Whitespace">    </span><span class="mi">524</span>             <span class="n">req</span> <span class="o">=</span> <span class="n">meth</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">525</span> 
+<span class="ne">--&gt; </span><span class="mi">526</span>         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">527</span> 
+<span class="g g-Whitespace">    </span><span class="mi">528</span>         <span class="c1"># post-process response</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">_open</span><span class="nt">(self, req, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">542</span>         <span class="n">protocol</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">type</span>
+<span class="g g-Whitespace">    </span><span class="mi">543</span>         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_open</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">+</span>
+<span class="ne">--&gt; </span><span class="mi">544</span>                                   <span class="s1">&#39;_open&#39;</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">545</span>         <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">546</span>             <span class="k">return</span> <span class="n">result</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">_call_chain</span><span class="nt">(self, chain, kind, meth_name, *args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">502</span>         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">503</span>             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">meth_name</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">504</span>             <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">505</span>             <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">506</span>                 <span class="k">return</span> <span class="n">result</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">https_open</span><span class="nt">(self, req)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1359</span>         <span class="k">def</span> <span class="nf">https_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1360</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_open</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">HTTPSConnection</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span>
+<span class="ne">-&gt; </span><span class="mi">1361</span>                 <span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">,</span> <span class="n">check_hostname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_hostname</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1362</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1363</span>         <span class="n">https_request</span> <span class="o">=</span> <span class="n">AbstractHTTPHandler</span><span class="o">.</span><span class="n">do_request_</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\urllib\request.py</span> in <span class="ni">do_open</span><span class="nt">(self, http_class, req, **http_conn_args)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1318</span>                           <span class="n">encode_chunked</span><span class="o">=</span><span class="n">req</span><span class="o">.</span><span class="n">has_header</span><span class="p">(</span><span class="s1">&#39;Transfer-encoding&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1319</span>             <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span> <span class="c1"># timeout error</span>
+<span class="ne">-&gt; </span><span class="mi">1320</span>                 <span class="k">raise</span> <span class="n">URLError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1321</span>             <span class="n">r</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1322</span>         <span class="k">except</span><span class="p">:</span>
+
+<span class="ne">URLError</span>: &lt;urlopen error _ssl.c:817: The handshake operation timed out&gt;
+</pre></div>
+</div>
+<p>The <a class="reference external" href="iolib.html">Input/Output doc page</a> shows how to import from various
+other formats.</p>
+<p>We select the variables of interest and look at the bottom 5 rows:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="nb">vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Department&#39;</span><span class="p">,</span> <span class="s1">&#39;Lottery&#39;</span><span class="p">,</span> <span class="s1">&#39;Literacy&#39;</span><span class="p">,</span> <span class="s1">&#39;Wealth&#39;</span><span class="p">,</span> <span class="s1">&#39;Region&#39;</span><span class="p">]</span>
+
+<span class="gp">In [7]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="nb">vars</span><span class="p">]</span>
+<span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
+<span class="nn">&lt;ipython-input-7-817b52d314c7&gt;</span> in <span class="ni">&lt;module&gt;</span><span class="nt">()</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="nb">vars</span><span class="p">]</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\pandas\core\frame.py</span> in <span class="ni">__getitem__</span><span class="nt">(self, key)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2680</span>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="n">Series</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+<span class="g g-Whitespace">   </span><span class="mi">2681</span>             <span class="c1"># either boolean or fancy integer index</span>
+<span class="ne">-&gt; </span><span class="mi">2682</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getitem_array</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2683</span>         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">):</span>
+<span class="g g-Whitespace">   </span><span class="mi">2684</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getitem_frame</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\pandas\core\frame.py</span> in <span class="ni">_getitem_array</span><span class="nt">(self, key)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2724</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take</span><span class="p">(</span><span class="n">indexer</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2725</span>         <span class="k">else</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">2726</span>             <span class="n">indexer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="o">.</span><span class="n">_convert_to_indexer</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2727</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take</span><span class="p">(</span><span class="n">indexer</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2728</span> 
+
+<span class="nn">c:\programdata\anaconda3\lib\site-packages\pandas\core\indexing.py</span> in <span class="ni">_convert_to_indexer</span><span class="nt">(self, obj, axis, is_setter)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1325</span>                 <span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+<span class="g g-Whitespace">   </span><span class="mi">1326</span>                     <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;{mask} not in index&#39;</span>
+<span class="ne">-&gt; </span><span class="mi">1327</span>                                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="o">=</span><span class="n">objarr</span><span class="p">[</span><span class="n">mask</span><span class="p">]))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1328</span> 
+<span class="g g-Whitespace">   </span><span class="mi">1329</span>                 <span class="k">return</span> <span class="n">com</span><span class="o">.</span><span class="n">_values_from_object</span><span class="p">(</span><span class="n">indexer</span><span class="p">)</span>
+
+<span class="ne">KeyError</span>: &quot;[&#39;Department&#39;] not in index&quot;
+
+<span class="gp">In [8]: </span><span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Out[8]: </span>
+<span class="go">    Lottery  Literacy  Wealth Region</span>
+<span class="go">80       68        28      56      W</span>
+<span class="go">81       40        25      68      W</span>
+<span class="go">82       55        13      67      C</span>
+<span class="go">83       14        62      82      E</span>
+<span class="go">84       51        47      30      C</span>
+</pre></div>
+</div>
+<p>Notice that there is one missing observation in the <em>Region</em> column. We
+eliminate it using a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> method provided by <code class="docutils literal notranslate"><span class="pre">pandas</span></code>:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="gp">In [10]: </span><span class="n">df</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
+<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="go">    Lottery  Literacy  Wealth Region</span>
+<span class="go">80       68        28      56      W</span>
+<span class="go">81       40        25      68      W</span>
+<span class="go">82       55        13      67      C</span>
+<span class="go">83       14        62      82      E</span>
+<span class="go">84       51        47      30      C</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="substantive-motivation-and-model">
+<h2>Substantive motivation and model<a class="headerlink" href="#substantive-motivation-and-model" title="Permalink to this headline">¶</a></h2>
+<p>We want to know whether literacy rates in the 86 French departments are
+associated with per capita wagers on the Royal Lottery in the 1820s. We need to
+control for the level of wealth in each department, and we also want to include
+a series of dummy variables on the right-hand side of our regression equation to
+control for unobserved heterogeneity due to regional effects. The model is
+estimated using ordinary least squares regression (OLS).</p>
+</div>
+<div class="section" id="design-matrices-endog-exog">
+<h2>Design matrices (<em>endog</em> &amp; <em>exog</em>)<a class="headerlink" href="#design-matrices-endog-exog" title="Permalink to this headline">¶</a></h2>
+<p>To fit most of the models covered by <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code>, you will need to create
+two design matrices. The first is a matrix of endogenous variable(s) (i.e.
+dependent, response, regressand, etc.). The second is a matrix of exogenous
+variable(s) (i.e. independent, predictor, regressor, etc.). The OLS coefficient
+estimates are calculated as usual:</p>
+<div class="math notranslate nohighlight">
+\[\hat{\beta} = (X'X)^{-1} X'y\]</div>
+<p>where <span class="math notranslate nohighlight">\(y\)</span> is an <span class="math notranslate nohighlight">\(N \times 1\)</span> column of data on lottery wagers per
+capita (<em>Lottery</em>). <span class="math notranslate nohighlight">\(X\)</span> is <span class="math notranslate nohighlight">\(N \times 7\)</span> with an intercept, the
+<em>Literacy</em> and <em>Wealth</em> variables, and 4 region binary variables.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">patsy</span></code> module provides a convenient function to prepare design matrices
+using <code class="docutils literal notranslate"><span class="pre">R</span></code>-like formulas. You can find more information <a class="reference external" href="http://patsy.readthedocs.io/en/latest/">here</a>.</p>
+<p>We use <code class="docutils literal notranslate"><span class="pre">patsy</span></code>’s <code class="docutils literal notranslate"><span class="pre">dmatrices</span></code> function to create design matrices:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="s1">&#39;Lottery ~ Literacy + Wealth + Region&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">&#39;dataframe&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting matrices/data frames look like this:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="n">y</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="go">   Lottery</span>
+<span class="go">0     41.0</span>
+<span class="go">1     38.0</span>
+<span class="go">2     66.0</span>
+
+<span class="gp">In [13]: </span><span class="n">X</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">                                                      Out[13]: </span>
+<span class="go">   Intercept  Region[T.E]  Region[T.N]   ...    Region[T.W]  Literacy  Wealth</span>
+<span class="go">0        1.0          1.0          0.0   ...            0.0      37.0    73.0</span>
+<span class="go">1        1.0          0.0          1.0   ...            0.0      51.0    22.0</span>
+<span class="go">2        1.0          0.0          0.0   ...            0.0      13.0    61.0</span>
+
+<span class="go">[3 rows x 7 columns]</span>
+</pre></div>
+</div>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">dmatrices</span></code> has</p>
+<ul class="simple">
+<li>split the categorical <em>Region</em> variable into a set of indicator variables.</li>
+<li>added a constant to the exogenous regressors matrix.</li>
+<li>returned <code class="docutils literal notranslate"><span class="pre">pandas</span></code> DataFrames instead of simple numpy arrays. This is useful because DataFrames allow <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> to carry-over meta-data (e.g. variable names) when reporting results.</li>
+</ul>
+<p>The above behavior can of course be altered. See the <a class="reference external" href="http://patsy.readthedocs.io/en/latest/">patsy doc pages</a>.</p>
+</div>
+<div class="section" id="model-fit-and-summary">
+<h2>Model fit and summary<a class="headerlink" href="#model-fit-and-summary" title="Permalink to this headline">¶</a></h2>
+<p>Fitting a model in <code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> typically involves 3 easy steps:</p>
+<ol class="arabic simple">
+<li>Use the model class to describe the model</li>
+<li>Fit the model using a class method</li>
+<li>Inspect the results using a summary method</li>
+</ol>
+<p>For OLS, this is achieved by:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">mod</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>    <span class="c1"># Describe model</span>
+
+<span class="gp">In [15]: </span><span class="n">res</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>       <span class="c1"># Fit model</span>
+
+<span class="gp">In [16]: </span><span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>   <span class="c1"># Summarize model</span>
+<span class="go">                            OLS Regression Results                            </span>
+<span class="go">==============================================================================</span>
+<span class="go">Dep. Variable:                Lottery   R-squared:                       0.338</span>
+<span class="go">Model:                            OLS   Adj. R-squared:                  0.287</span>
+<span class="go">Method:                 Least Squares   F-statistic:                     6.636</span>
+<span class="go">Date:                Wed, 05 Sep 2018   Prob (F-statistic):           1.07e-05</span>
+<span class="go">Time:                        17:10:45   Log-Likelihood:                -375.30</span>
+<span class="go">No. Observations:                  85   AIC:                             764.6</span>
+<span class="go">Df Residuals:                      78   BIC:                             781.7</span>
+<span class="go">Df Model:                           6                                         </span>
+<span class="go">Covariance Type:            nonrobust                                         </span>
+<span class="go">===============================================================================</span>
+<span class="go">                  coef    std err          t      P&gt;|t|      [0.025      0.975]</span>
+<span class="gt">-------------------------------------------------------------------------------</span>
+<span class="n">Intercept</span>      <span class="mf">38.6517</span>      <span class="mf">9.456</span>      <span class="mf">4.087</span>      <span class="mf">0.000</span>      <span class="mf">19.826</span>      <span class="mf">57.478</span>
+<span class="n">Region</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">E</span><span class="p">]</span>   <span class="o">-</span><span class="mf">15.4278</span>      <span class="mf">9.727</span>     <span class="o">-</span><span class="mf">1.586</span>      <span class="mf">0.117</span>     <span class="o">-</span><span class="mf">34.793</span>       <span class="mf">3.938</span>
+<span class="n">Region</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">N</span><span class="p">]</span>   <span class="o">-</span><span class="mf">10.0170</span>      <span class="mf">9.260</span>     <span class="o">-</span><span class="mf">1.082</span>      <span class="mf">0.283</span>     <span class="o">-</span><span class="mf">28.453</span>       <span class="mf">8.419</span>
+<span class="n">Region</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">S</span><span class="p">]</span>    <span class="o">-</span><span class="mf">4.5483</span>      <span class="mf">7.279</span>     <span class="o">-</span><span class="mf">0.625</span>      <span class="mf">0.534</span>     <span class="o">-</span><span class="mf">19.039</span>       <span class="mf">9.943</span>
+<span class="n">Region</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">W</span><span class="p">]</span>   <span class="o">-</span><span class="mf">10.0913</span>      <span class="mf">7.196</span>     <span class="o">-</span><span class="mf">1.402</span>      <span class="mf">0.165</span>     <span class="o">-</span><span class="mf">24.418</span>       <span class="mf">4.235</span>
+<span class="n">Literacy</span>       <span class="o">-</span><span class="mf">0.1858</span>      <span class="mf">0.210</span>     <span class="o">-</span><span class="mf">0.886</span>      <span class="mf">0.378</span>      <span class="o">-</span><span class="mf">0.603</span>       <span class="mf">0.232</span>
+<span class="n">Wealth</span>          <span class="mf">0.4515</span>      <span class="mf">0.103</span>      <span class="mf">4.390</span>      <span class="mf">0.000</span>       <span class="mf">0.247</span>       <span class="mf">0.656</span>
+<span class="o">==============================================================================</span>
+<span class="ne">Omnibus</span>:                        3.049   Durbin-Watson:                   1.785
+<span class="n">Prob</span><span class="p">(</span><span class="n">Omnibus</span><span class="p">):</span>                  <span class="mf">0.218</span>   <span class="n">Jarque</span><span class="o">-</span><span class="n">Bera</span> <span class="p">(</span><span class="n">JB</span><span class="p">):</span>                <span class="mf">2.694</span>
+<span class="ne">Skew</span>:                          -0.340   Prob(JB):                        0.260
+<span class="ne">Kurtosis</span>:                       2.454   Cond. No.                         371.
+<span class="o">==============================================================================</span>
+
+<span class="ne">Warnings</span>:
+<span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">Standard</span> <span class="n">Errors</span> <span class="n">assume</span> <span class="n">that</span> <span class="n">the</span> <span class="n">covariance</span> <span class="n">matrix</span> <span class="n">of</span> <span class="n">the</span> <span class="n">errors</span> <span class="ow">is</span> <span class="n">correctly</span> <span class="n">specified</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">res</span></code> object has many useful attributes. For example, we can extract
+parameter estimates and r-squared by typing:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="n">res</span><span class="o">.</span><span class="n">params</span>
+<span class="gh">Out[17]: </span><span class="go"></span>
+<span class="go">Intercept      38.651655</span>
+<span class="go">Region[T.E]   -15.427785</span>
+<span class="go">Region[T.N]   -10.016961</span>
+<span class="go">Region[T.S]    -4.548257</span>
+<span class="go">Region[T.W]   -10.091276</span>
+<span class="go">Literacy       -0.185819</span>
+<span class="go">Wealth          0.451475</span>
+<span class="go">dtype: float64</span>
+
+<span class="gp">In [18]: </span><span class="n">res</span><span class="o">.</span><span class="n">rsquared</span>
+<span class="go">                                                                                                                                                                                                        Out[18]: 0.3379508691928822</span>
+</pre></div>
+</div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">dir(res)</span></code> for a full list of attributes.</p>
+<p>For more information and examples, see the <a class="reference external" href="regression.html">Regression doc page</a></p>
+</div>
+<div class="section" id="diagnostics-and-specification-tests">
+<h2>Diagnostics and specification tests<a class="headerlink" href="#diagnostics-and-specification-tests" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> allows you to conduct a range of useful <a class="reference external" href="stats.html#residual-diagnostics-and-specification-tests">regression diagnostics
+and specification tests</a>.  For instance,
+apply the Rainbow test for linearity (the null hypothesis is that the
+relationship is properly modelled as linear):</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="n">sm</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">linear_rainbow</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="gh">Out[19]: </span><span class="go">(0.8472339976156913, 0.6997965543621643)</span>
+</pre></div>
+</div>
+<p>Admittedly, the output produced above is not very verbose, but we know from
+reading the <a class="reference external" href="generated/statsmodels.stats.diagnostic.linear_rainbow.html">docstring</a>
+(also, <code class="docutils literal notranslate"><span class="pre">print(sm.stats.linear_rainbow.__doc__)</span></code>) that the
+first number is an F-statistic and that the second is the p-value.</p>
+<p><code class="docutils literal notranslate"><span class="pre">statsmodels</span></code> also provides graphics functions. For example, we can draw a
+plot of partial regression for a set of regressors by:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">sm</span><span class="o">.</span><span class="n">graphics</span><span class="o">.</span><span class="n">plot_partregress</span><span class="p">(</span><span class="s1">&#39;Lottery&#39;</span><span class="p">,</span> <span class="s1">&#39;Wealth&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Region&#39;</span><span class="p">,</span> <span class="s1">&#39;Literacy&#39;</span><span class="p">],</span>
+<span class="gp">   ....: </span>                             <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">obs_labels</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[20]: </span><span class="go">&lt;Figure size 640x480 with 1 Axes&gt;</span>
+</pre></div>
+</div>
+<img alt="savefiggettingstarted_0.png" src="savefiggettingstarted_0.png" />
+</div>
+<div class="section" id="more">
+<h2>More<a class="headerlink" href="#more" title="Permalink to this headline">¶</a></h2>
+<p>Congratulations! You’re ready to move on to other topics in the
+<a class="reference external" href="index.html#table-of-contents">Table of Contents</a></p>
+</div>
+</div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#loading-modules-and-functions">Loading modules and functions</a></li>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#substantive-motivation-and-model">Substantive motivation and model</a></li>
+<li><a class="reference internal" href="#design-matrices-endog-exog">Design matrices (<em>endog</em> &amp; <em>exog</em>)</a></li>
+<li><a class="reference internal" href="#model-fit-and-summary">Model fit and summary</a></li>
+<li><a class="reference internal" href="#diagnostics-and-specification-tests">Diagnostics and specification tests</a></li>
+<li><a class="reference internal" href="#more">More</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="release/github-stats-0.5.html"
+                        title="previous chapter">Issues closed in the 0.5.0 development cycle</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="example_formulas.html"
+                        title="next chapter">Fitting models using R-style formulas</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/gettingstarted.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2009-2017, Josef Perktold, Skipper Seabold, Jonathan Taylor, statsmodels-developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.8.
+    </div>
+  </body>
+</html>
