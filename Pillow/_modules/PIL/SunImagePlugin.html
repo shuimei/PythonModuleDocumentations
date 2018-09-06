@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.SunImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.SunImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.SunImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># Sun image file handling</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 1995-09-10 fl   Created</span>
+<span class="c1"># 1996-05-28 fl   Fixed 32-bit alignment</span>
+<span class="c1"># 1998-12-29 fl   Import ImagePalette module</span>
+<span class="c1"># 2001-12-18 fl   Fixed palette loading (from Jean-Claude Rimbault)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2001 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 1995-1996 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span><span class="p">,</span> <span class="n">ImagePalette</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i32be</span> <span class="k">as</span> <span class="n">i32</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.3&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">i32</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x59a66a95</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for Sun raster files.</span>
+
+<div class="viewcode-block" id="SunImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SunImagePlugin.SunImageFile">[docs]</a><span class="k">class</span> <span class="nc">SunImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;SUN&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;Sun Raster File&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># The Sun Raster file header is 32 bytes in length</span>
+        <span class="c1"># and has the following format:</span>
+
+        <span class="c1">#     typedef struct _SunRaster</span>
+        <span class="c1">#     {</span>
+        <span class="c1">#         DWORD MagicNumber;      /* Magic (identification) number */</span>
+        <span class="c1">#         DWORD Width;            /* Width of image in pixels */</span>
+        <span class="c1">#         DWORD Height;           /* Height of image in pixels */</span>
+        <span class="c1">#         DWORD Depth;            /* Number of bits per pixel */</span>
+        <span class="c1">#         DWORD Length;           /* Size of image data in bytes */</span>
+        <span class="c1">#         DWORD Type;             /* Type of raster file */</span>
+        <span class="c1">#         DWORD ColorMapType;     /* Type of color map */</span>
+        <span class="c1">#         DWORD ColorMapLength;   /* Size of the color map in bytes */</span>
+        <span class="c1">#     } SUNRASTER;</span>
+
+        <span class="c1"># HEAD</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mh">0x59a66a95</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not an SUN raster file&quot;</span><span class="p">)</span>
+
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">32</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">]),</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
+
+        <span class="n">depth</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">])</span>
+        <span class="n">data_length</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">20</span><span class="p">])</span>   <span class="c1"># unreliable, ignore.</span>
+        <span class="n">file_type</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">24</span><span class="p">])</span>
+        <span class="n">palette_type</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">28</span><span class="p">])</span>  <span class="c1"># 0: None, 1: RGB, 2: Raw/arbitrary</span>
+        <span class="n">palette_length</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">32</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1;I&quot;</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L;4&quot;</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">24</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="s2">&quot;BGR&quot;</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">file_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="s1">&#39;RGBX&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">rawmode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="s1">&#39;BGRX&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Unsupported Mode/Bit Depth&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">palette_length</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">palette_length</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Unsupported Color Palette Length&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">palette_type</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Unsupported Palette Type&quot;</span><span class="p">)</span>
+
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">palette_length</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">palette</span> <span class="o">=</span> <span class="n">ImagePalette</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="s2">&quot;RGB;L&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">palette_length</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
+                <span class="n">rawmode</span> <span class="o">=</span> <span class="n">rawmode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">)</span>
+
+        <span class="c1"># 16 bit boundaries on stride</span>
+        <span class="n">stride</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">15</span><span class="p">)</span> <span class="o">//</span> <span class="mi">16</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+
+        <span class="c1"># file type: Type is the version (or flavor) of the bitmap</span>
+        <span class="c1"># file. The following values are typically found in the Type</span>
+        <span class="c1"># field:</span>
+        <span class="c1"># 0000h Old</span>
+        <span class="c1"># 0001h Standard</span>
+        <span class="c1"># 0002h Byte-encoded</span>
+        <span class="c1"># 0003h RGB format</span>
+        <span class="c1"># 0004h TIFF format</span>
+        <span class="c1"># 0005h IFF format</span>
+        <span class="c1"># FFFFh Experimental</span>
+
+        <span class="c1"># Old and standard are the same, except for the length tag.</span>
+        <span class="c1"># byte-encoded is run-length-encoded</span>
+        <span class="c1"># RGB looks similar to standard, but RGB byte order</span>
+        <span class="c1"># TIFF and IFF mean that they were converted from T/IFF</span>
+        <span class="c1"># Experimental means that it&#39;s something else.</span>
+        <span class="c1"># (https://www.fileformat.info/format/sunraster/egff.htm)</span>
+
+        <span class="k">if</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="n">stride</span><span class="p">))]</span>
+        <span class="k">elif</span> <span class="n">file_type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;sun_rle&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">rawmode</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Unsupported Sun Raster file type&#39;</span><span class="p">)</span></div>
+
+<span class="c1">#</span>
+<span class="c1"># registry</span>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">SunImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">SunImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">SunImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;.ras&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

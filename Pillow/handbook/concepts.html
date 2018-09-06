@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Concepts &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Appendices" href="appendices.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Handbook</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bands">Bands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modes">Modes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#size">Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coordinate-system">Coordinate System</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#palette">Palette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#info">Info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filters">Filters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#filters-comparison-table">Filters comparison table</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html">Appendices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Handbook</a> &raquo;</li>
+        
+      <li>Concepts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/handbook/concepts.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="concepts">
+<h1>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h1>
+<p>The Python Imaging Library handles <em>raster images</em>; that is, rectangles of
+pixel data.</p>
+<div class="section" id="bands">
+<span id="concept-bands"></span><h2>Bands<a class="headerlink" href="#bands" title="Permalink to this headline">¶</a></h2>
+<p>An image can consist of one or more bands of data. The Python Imaging Library
+allows you to store several bands in a single image, provided they all have the
+same dimensions and depth.  For example, a PNG image might have ‘R’, ‘G’, ‘B’,
+and ‘A’ bands for the red, green, blue, and alpha transparency values.  Many
+operations act on each band separately, e.g., histograms.  It is often useful to
+think of each pixel as having one value per band.</p>
+<p>To get the number and names of bands in an image, use the
+<a class="reference internal" href="../reference/Image.html#PIL.Image.Image.getbands" title="PIL.Image.Image.getbands"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getbands()</span></code></a> method.</p>
+</div>
+<div class="section" id="modes">
+<span id="concept-modes"></span><h2>Modes<a class="headerlink" href="#modes" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">mode</span></code> of an image defines the type and depth of a pixel in the
+image. The current release supports the following standard modes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">1</span></code> (1-bit pixels, black and white, stored with one pixel per byte)</li>
+<li><code class="docutils literal notranslate"><span class="pre">L</span></code> (8-bit pixels, black and white)</li>
+<li><code class="docutils literal notranslate"><span class="pre">P</span></code> (8-bit pixels, mapped to any other mode using a color palette)</li>
+<li><code class="docutils literal notranslate"><span class="pre">RGB</span></code> (3x8-bit pixels, true color)</li>
+<li><code class="docutils literal notranslate"><span class="pre">RGBA</span></code> (4x8-bit pixels, true color with transparency mask)</li>
+<li><code class="docutils literal notranslate"><span class="pre">CMYK</span></code> (4x8-bit pixels, color separation)</li>
+<li><code class="docutils literal notranslate"><span class="pre">YCbCr</span></code> (3x8-bit pixels, color video format)<ul>
+<li>Note that this refers to the JPEG, and not the ITU-R BT.2020, standard</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">LAB</span></code> (3x8-bit pixels, the L*a*b color space)</li>
+<li><code class="docutils literal notranslate"><span class="pre">HSV</span></code> (3x8-bit pixels, Hue, Saturation, Value color space)</li>
+<li><code class="docutils literal notranslate"><span class="pre">I</span></code> (32-bit signed integer pixels)</li>
+<li><code class="docutils literal notranslate"><span class="pre">F</span></code> (32-bit floating point pixels)</li>
+</ul>
+</div></blockquote>
+<p>PIL also provides limited support for a few special modes, including <code class="docutils literal notranslate"><span class="pre">LA</span></code> (L
+with alpha), <code class="docutils literal notranslate"><span class="pre">RGBX</span></code> (true color with padding) and <code class="docutils literal notranslate"><span class="pre">RGBa</span></code> (true color with
+premultiplied alpha). However, PIL doesn’t support user-defined modes; if you
+need to handle band combinations that are not listed above, use a sequence of
+Image objects.</p>
+<p>You can read the mode of an image through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">mode</span></code>
+attribute. This is a string containing one of the above values.</p>
+</div>
+<div class="section" id="size">
+<h2>Size<a class="headerlink" href="#size" title="Permalink to this headline">¶</a></h2>
+<p>You can read the image size through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">size</span></code>
+attribute. This is a 2-tuple, containing the horizontal and vertical size in
+pixels.</p>
+</div>
+<div class="section" id="coordinate-system">
+<span id="id1"></span><h2>Coordinate System<a class="headerlink" href="#coordinate-system" title="Permalink to this headline">¶</a></h2>
+<p>The Python Imaging Library uses a Cartesian pixel coordinate system, with (0,0)
+in the upper left corner. Note that the coordinates refer to the implied pixel
+corners; the centre of a pixel addressed as (0, 0) actually lies at (0.5, 0.5).</p>
+<p>Coordinates are usually passed to the library as 2-tuples (x, y). Rectangles
+are represented as 4-tuples, with the upper left corner given first. For
+example, a rectangle covering all of an 800x600 pixel image is written as (0,
+0, 800, 600).</p>
+</div>
+<div class="section" id="palette">
+<h2>Palette<a class="headerlink" href="#palette" title="Permalink to this headline">¶</a></h2>
+<p>The palette mode (<code class="docutils literal notranslate"><span class="pre">P</span></code>) uses a color palette to define the actual color for
+each pixel.</p>
+</div>
+<div class="section" id="info">
+<h2>Info<a class="headerlink" href="#info" title="Permalink to this headline">¶</a></h2>
+<p>You can attach auxiliary information to an image using the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">info</span></code> attribute. This is a dictionary object.</p>
+<p>How such information is handled when loading and saving image files is up to
+the file format handler (see the chapter on <a class="reference internal" href="image-file-formats.html#image-file-formats"><span class="std std-ref">Image file formats</span></a>). Most
+handlers add properties to the <code class="xref py py-attr docutils literal notranslate"><span class="pre">info</span></code> attribute when
+loading an image, but ignore it when saving images.</p>
+</div>
+<div class="section" id="filters">
+<span id="concept-filters"></span><h2>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
+<p>For geometry operations that may map multiple input pixels to a single output
+pixel, the Python Imaging Library provides different resampling <em>filters</em>.</p>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">NEAREST</span></code></dt>
+<dd>Pick one nearest pixel from the input image. Ignore all other input pixels.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">BOX</span></code></dt>
+<dd><p class="first">Each pixel of source image contributes to one pixel of the
+destination image with identical weights.
+For upscaling is equivalent of <code class="docutils literal notranslate"><span class="pre">NEAREST</span></code>.
+This filter can only be used with the <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.resize" title="PIL.Image.Image.resize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resize()</span></code></a>
+and <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.thumbnail" title="PIL.Image.Image.thumbnail"><code class="xref py py-meth docutils literal notranslate"><span class="pre">thumbnail()</span></code></a> methods.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 3.4.0.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">BILINEAR</span></code></dt>
+<dd>For resize calculate the output pixel value using linear interpolation
+on all pixels that may contribute to the output value.
+For other transformations linear interpolation over a 2x2 environment
+in the input image is used.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">HAMMING</span></code></dt>
+<dd><p class="first">Produces a sharper image than <code class="docutils literal notranslate"><span class="pre">BILINEAR</span></code>, doesn’t have dislocations
+on local level like with <code class="docutils literal notranslate"><span class="pre">BOX</span></code>.
+This filter can only be used with the <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.resize" title="PIL.Image.Image.resize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resize()</span></code></a>
+and <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.thumbnail" title="PIL.Image.Image.thumbnail"><code class="xref py py-meth docutils literal notranslate"><span class="pre">thumbnail()</span></code></a> methods.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 3.4.0.</span></p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">BICUBIC</span></code></dt>
+<dd>For resize calculate the output pixel value using cubic interpolation
+on all pixels that may contribute to the output value.
+For other transformations cubic interpolation over a 4x4 environment
+in the input image is used.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">LANCZOS</span></code></dt>
+<dd><p class="first">Calculate the output pixel value using a high-quality Lanczos filter (a
+truncated sinc) on all pixels that may contribute to the output value.
+This filter can only be used with the <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.resize" title="PIL.Image.Image.resize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resize()</span></code></a>
+and <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.thumbnail" title="PIL.Image.Image.thumbnail"><code class="xref py py-meth docutils literal notranslate"><span class="pre">thumbnail()</span></code></a> methods.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 1.1.3.</span></p>
+</div>
+</dd>
+</dl>
+<div class="section" id="filters-comparison-table">
+<h3>Filters comparison table<a class="headerlink" href="#filters-comparison-table" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="appendices.html" class="btn btn-neutral float-right" title="Appendices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

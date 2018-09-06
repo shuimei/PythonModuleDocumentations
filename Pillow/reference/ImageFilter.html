@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageFilter Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageFont Module" href="ImageFont.html" />
+    <link rel="prev" title="ImageFile Module" href="ImageFile.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-filter-an-image">Example: Filter an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filters">Filters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageFilter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageFilter"></span><div class="section" id="imagefilter-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module<a class="headerlink" href="#imagefilter-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFilter</span></code> module contains definitions for a pre-defined set of
+filters, which can be be used with the <a class="reference internal" href="Image.html#PIL.Image.Image.filter" title="PIL.Image.Image.filter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Image.filter()</span></code></a> method.</p>
+<div class="section" id="example-filter-an-image">
+<h2>Example: Filter an image<a class="headerlink" href="#example-filter-an-image" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageFilter</span>
+
+<span class="n">im1</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ImageFilter</span><span class="o">.</span><span class="n">BLUR</span><span class="p">)</span>
+
+<span class="n">im2</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ImageFilter</span><span class="o">.</span><span class="n">MinFilter</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">im3</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ImageFilter</span><span class="o">.</span><span class="n">MinFilter</span><span class="p">)</span>  <span class="c1"># same as MinFilter(3)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="filters">
+<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this headline">¶</a></h2>
+<p>The current version of the library provides the following set of predefined
+image enhancement filters:</p>
+<ul class="simple">
+<li><strong>BLUR</strong></li>
+<li><strong>CONTOUR</strong></li>
+<li><strong>DETAIL</strong></li>
+<li><strong>EDGE_ENHANCE</strong></li>
+<li><strong>EDGE_ENHANCE_MORE</strong></li>
+<li><strong>EMBOSS</strong></li>
+<li><strong>FIND_EDGES</strong></li>
+<li><strong>SHARPEN</strong></li>
+<li><strong>SMOOTH</strong></li>
+<li><strong>SMOOTH_MORE</strong></li>
+</ul>
+<dl class="class">
+<dt id="PIL.ImageFilter.Color3DLUT">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">Color3DLUT</code><span class="sig-paren">(</span><em>size</em>, <em>table</em>, <em>channels=3</em>, <em>target_mode=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#Color3DLUT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.Color3DLUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Three-dimensional color lookup table.</p>
+<p>Transforms 3-channel pixels using the values of the channels as coordinates
+in the 3D lookup table and interpolating the nearest elements.</p>
+<p>This method allows you to apply almost any color transformation
+in constant time by using pre-calculated decimated tables.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 5.2.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> – Size of the table. One int or tuple of (int, int, int).
+Minimal size in any dimension is 2, maximum is 65.</li>
+<li><strong>table</strong> – Flat lookup table. A list of <code class="docutils literal notranslate"><span class="pre">channels</span> <span class="pre">*</span> <span class="pre">size**3</span></code>
+float elements or a list of <code class="docutils literal notranslate"><span class="pre">size**3</span></code> channels-sized
+tuples with floats. Channels are changed first,
+then first dimension, then second, then third.
+Value 0.0 corresponds lowest value of output, 1.0 highest.</li>
+<li><strong>channels</strong> – Number of channels in the table. Could be 3 or 4.
+Default is 3.</li>
+<li><strong>target_mode</strong> – A mode for the result image. Should have not less
+than <code class="docutils literal notranslate"><span class="pre">channels</span></code> channels. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+which means that mode wouldn’t be changed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.BoxBlur">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">BoxBlur</code><span class="sig-paren">(</span><em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#BoxBlur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.BoxBlur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blurs the image by setting each pixel to the average value of the pixels
+in a square box extending radius pixels in each direction.
+Supports float radius of arbitrary size. Uses an optimized implementation
+which runs in linear time relative to the size of the image
+for any radius value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>radius</strong> – Size of the box in one direction. Radius 0 does not blur,
+returns an identical image. Radius 1 takes 1 pixel
+in each direction, i.e. 9 pixels in total.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.GaussianBlur">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">GaussianBlur</code><span class="sig-paren">(</span><em>radius=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#GaussianBlur"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.GaussianBlur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian blur filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>radius</strong> – Blur radius.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.UnsharpMask">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">UnsharpMask</code><span class="sig-paren">(</span><em>radius=2</em>, <em>percent=150</em>, <em>threshold=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#UnsharpMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.UnsharpMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unsharp mask filter.</p>
+<p>See Wikipedia’s entry on <a class="reference external" href="https://en.wikipedia.org/wiki/Unsharp_masking#Digital_unsharp_masking">digital unsharp masking</a> for an explanation of
+the parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> – Blur Radius</li>
+<li><strong>percent</strong> – Unsharp strength, in percent</li>
+<li><strong>threshold</strong> – Threshold controls the minimum brightness change that
+will be sharpened</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.Kernel">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">Kernel</code><span class="sig-paren">(</span><em>size</em>, <em>kernel</em>, <em>scale=None</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#Kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.Kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a convolution kernel.  The current version only
+supports 3x3 and 5x5 integer and floating point kernels.</p>
+<p>In the current version, kernels can only be applied to
+“L” and “RGB” images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> – Kernel size, given as (width, height). In the current
+version, this must be (3,3) or (5,5).</li>
+<li><strong>kernel</strong> – A sequence containing kernel weights.</li>
+<li><strong>scale</strong> – Scale factor. If given, the result for each pixel is
+divided by this value.  the default is the sum of the
+kernel weights.</li>
+<li><strong>offset</strong> – Offset. If given, this value is added to the result,
+after it has been divided by the scale factor.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.RankFilter">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">RankFilter</code><span class="sig-paren">(</span><em>size</em>, <em>rank</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#RankFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.RankFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a rank filter.  The rank filter sorts all pixels in
+a window of the given size, and returns the <strong>rank</strong>’th value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> – The kernel size, in pixels.</li>
+<li><strong>rank</strong> – What pixel value to pick.  Use 0 for a min filter,
+<code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">*</span> <span class="pre">size</span> <span class="pre">/</span> <span class="pre">2</span></code> for a median filter, <code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">*</span> <span class="pre">size</span> <span class="pre">-</span> <span class="pre">1</span></code>
+for a max filter, etc.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.MedianFilter">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">MedianFilter</code><span class="sig-paren">(</span><em>size=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#MedianFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.MedianFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a median filter. Picks the median pixel value in a window with the
+given size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The kernel size, in pixels.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.MinFilter">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">MinFilter</code><span class="sig-paren">(</span><em>size=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#MinFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.MinFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a min filter.  Picks the lowest pixel value in a window with the
+given size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The kernel size, in pixels.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.MaxFilter">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">MaxFilter</code><span class="sig-paren">(</span><em>size=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#MaxFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.MaxFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a max filter.  Picks the largest pixel value in a window with the
+given size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The kernel size, in pixels.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageFilter.ModeFilter">
+<em class="property">class </em><code class="descclassname">PIL.ImageFilter.</code><code class="descname">ModeFilter</code><span class="sig-paren">(</span><em>size=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFilter.html#ModeFilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFilter.ModeFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a mode filter. Picks the most frequent pixel value in a box with the
+given size.  Pixel values that occur only once or twice are ignored; if no
+pixel value occurs more than twice, the original pixel value is preserved.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> – The kernel size, in pixels.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageFont.html" class="btn btn-neutral float-right" title="ImageFont Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageFile.html" class="btn btn-neutral" title="ImageFile Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

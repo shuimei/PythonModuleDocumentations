@@ -1,0 +1,1166 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageCms &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageCms</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageCms</h1><div class="highlight"><pre>
+<span></span><span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+
+<span class="c1"># Optional color management support, based on Kevin Cazabon&#39;s PyCMS</span>
+<span class="c1"># library.</span>
+
+<span class="c1"># History:</span>
+
+<span class="c1"># 2009-03-08 fl   Added to PIL.</span>
+
+<span class="c1"># Copyright (C) 2002-2003 Kevin Cazabon</span>
+<span class="c1"># Copyright (c) 2009 by Fredrik Lundh</span>
+<span class="c1"># Copyright (c) 2013 by Eric Soroos</span>
+
+<span class="c1"># See the README file for information on usage and redistribution.  See</span>
+<span class="c1"># below for the original description.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">_imagingcms</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># Allow error import for doc purposes, but error out when accessing</span>
+    <span class="c1"># anything in core.</span>
+    <span class="kn">from</span> <span class="nn">_util</span> <span class="k">import</span> <span class="n">deferred_error</span>
+    <span class="n">_imagingcms</span> <span class="o">=</span> <span class="n">deferred_error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">PIL._util</span> <span class="k">import</span> <span class="n">isStringType</span>
+
+<span class="n">DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">pyCMS</span>
+
+<span class="s2">    a Python / PIL interface to the littleCMS ICC Color Management System</span>
+<span class="s2">    Copyright (C) 2002-2003 Kevin Cazabon</span>
+<span class="s2">    kevin@cazabon.com</span>
+<span class="s2">    http://www.cazabon.com</span>
+
+<span class="s2">    pyCMS home page:  http://www.cazabon.com/pyCMS</span>
+<span class="s2">    littleCMS home page:  http://www.littlecms.com</span>
+<span class="s2">    (littleCMS is Copyright (C) 1998-2001 Marti Maria)</span>
+
+<span class="s2">    Originally released under LGPL.  Graciously donated to PIL in</span>
+<span class="s2">    March 2009, for distribution under the standard PIL license</span>
+
+<span class="s2">    The pyCMS.py module provides a &quot;clean&quot; interface between Python/PIL and</span>
+<span class="s2">    pyCMSdll, taking care of some of the more complex handling of the direct</span>
+<span class="s2">    pyCMSdll functions, as well as error-checking and making sure that all</span>
+<span class="s2">    relevant data is kept together.</span>
+
+<span class="s2">    While it is possible to call pyCMSdll functions directly, it&#39;s not highly</span>
+<span class="s2">    recommended.</span>
+
+<span class="s2">    Version History:</span>
+
+<span class="s2">        1.0.0 pil       Oct 2013 Port to LCMS 2.</span>
+
+<span class="s2">        0.1.0 pil mod   March 10, 2009</span>
+
+<span class="s2">                        Renamed display profile to proof profile. The proof</span>
+<span class="s2">                        profile is the profile of the device that is being</span>
+<span class="s2">                        simulated, not the profile of the device which is</span>
+<span class="s2">                        actually used to display/print the final simulation</span>
+<span class="s2">                        (that&#39;d be the output profile) - also see LCMSAPI.txt</span>
+<span class="s2">                        input colorspace -&gt; using &#39;renderingIntent&#39; -&gt; proof</span>
+<span class="s2">                        colorspace -&gt; using &#39;proofRenderingIntent&#39; -&gt; output</span>
+<span class="s2">                        colorspace</span>
+
+<span class="s2">                        Added LCMS FLAGS support.</span>
+<span class="s2">                        Added FLAGS[&quot;SOFTPROOFING&quot;] as default flag for</span>
+<span class="s2">                        buildProofTransform (otherwise the proof profile/intent</span>
+<span class="s2">                        would be ignored).</span>
+
+<span class="s2">        0.1.0 pil       March 2009 - added to PIL, as PIL.ImageCms</span>
+
+<span class="s2">        0.0.2 alpha     Jan 6, 2002</span>
+
+<span class="s2">                        Added try/except statements around type() checks of</span>
+<span class="s2">                        potential CObjects... Python won&#39;t let you use type()</span>
+<span class="s2">                        on them, and raises a TypeError (stupid, if you ask</span>
+<span class="s2">                        me!)</span>
+
+<span class="s2">                        Added buildProofTransformFromOpenProfiles() function.</span>
+<span class="s2">                        Additional fixes in DLL, see DLL code for details.</span>
+
+<span class="s2">        0.0.1 alpha     first public release, Dec. 26, 2002</span>
+
+<span class="s2">    Known to-do list with current version (of Python interface, not pyCMSdll):</span>
+
+<span class="s2">        none</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">VERSION</span> <span class="o">=</span> <span class="s2">&quot;1.0.0 pil&quot;</span>
+
+<span class="c1"># --------------------------------------------------------------------.</span>
+
+<span class="n">core</span> <span class="o">=</span> <span class="n">_imagingcms</span>
+
+<span class="c1">#</span>
+<span class="c1"># intent/direction values</span>
+
+<span class="n">INTENT_PERCEPTUAL</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">INTENT_RELATIVE_COLORIMETRIC</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">INTENT_SATURATION</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">INTENT_ABSOLUTE_COLORIMETRIC</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">DIRECTION_INPUT</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">DIRECTION_OUTPUT</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">DIRECTION_PROOF</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1">#</span>
+<span class="c1"># flags</span>
+
+<span class="n">FLAGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;MATRIXINPUT&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;MATRIXOUTPUT&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;MATRIXONLY&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="s2">&quot;NOWHITEONWHITEFIXUP&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># Don&#39;t hot fix scum dot</span>
+    <span class="c1"># Don&#39;t create prelinearization tables on precalculated transforms</span>
+    <span class="c1"># (internal use):</span>
+    <span class="s2">&quot;NOPRELINEARIZATION&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="s2">&quot;GUESSDEVICECLASS&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>  <span class="c1"># Guess device class (for transform2devicelink)</span>
+    <span class="s2">&quot;NOTCACHE&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>  <span class="c1"># Inhibit 1-pixel cache</span>
+    <span class="s2">&quot;NOTPRECALC&quot;</span><span class="p">:</span> <span class="mi">256</span><span class="p">,</span>
+    <span class="s2">&quot;NULLTRANSFORM&quot;</span><span class="p">:</span> <span class="mi">512</span><span class="p">,</span>  <span class="c1"># Don&#39;t transform anyway</span>
+    <span class="s2">&quot;HIGHRESPRECALC&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># Use more memory to give better accuracy</span>
+    <span class="s2">&quot;LOWRESPRECALC&quot;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>  <span class="c1"># Use less memory to minimize resources</span>
+    <span class="s2">&quot;WHITEBLACKCOMPENSATION&quot;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">,</span>
+    <span class="s2">&quot;BLACKPOINTCOMPENSATION&quot;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">,</span>
+    <span class="s2">&quot;GAMUTCHECK&quot;</span><span class="p">:</span> <span class="mi">4096</span><span class="p">,</span>  <span class="c1"># Out of Gamut alarm</span>
+    <span class="s2">&quot;SOFTPROOFING&quot;</span><span class="p">:</span> <span class="mi">16384</span><span class="p">,</span>  <span class="c1"># Do softproofing</span>
+    <span class="s2">&quot;PRESERVEBLACK&quot;</span><span class="p">:</span> <span class="mi">32768</span><span class="p">,</span>  <span class="c1"># Black preservation</span>
+    <span class="s2">&quot;NODEFAULTRESOURCEDEF&quot;</span><span class="p">:</span> <span class="mi">16777216</span><span class="p">,</span>  <span class="c1"># CRD special</span>
+    <span class="s2">&quot;GRIDPOINTS&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="p">((</span><span class="n">n</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span>  <span class="c1"># Gridpoints</span>
+<span class="p">}</span>
+
+<span class="n">_MAX_FLAG</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">FLAGS</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">_MAX_FLAG</span> <span class="o">=</span> <span class="n">_MAX_FLAG</span> <span class="o">|</span> <span class="n">flag</span>
+
+
+<span class="c1"># --------------------------------------------------------------------.</span>
+<span class="c1"># Experimental PIL-level API</span>
+<span class="c1"># --------------------------------------------------------------------.</span>
+
+<span class="c1">##</span>
+<span class="c1"># Profile.</span>
+
+<span class="k">class</span> <span class="nc">ImageCmsProfile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param profile: Either a string representing a filename,</span>
+<span class="sd">            a file like object containing a profile or a</span>
+<span class="sd">            low-level profile object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">isStringType</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">profile_open</span><span class="p">(</span><span class="n">profile</span><span class="p">),</span> <span class="n">profile</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">profile_frombytes</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">_imagingcms</span><span class="o">.</span><span class="n">CmsProfile</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid type for Profile&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">product_name</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># profile.product_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">product_info</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># profile.product_info</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">product_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">product_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">tobytes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the profile in a format suitable for embedding in</span>
+<span class="sd">        saved images.</span>
+
+<span class="sd">        :returns: a bytes object containing the ICC profile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">profile_tobytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImageCmsTransform"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.ImageCmsTransform">[docs]</a><span class="k">class</span> <span class="nc">ImageCmsTransform</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">ImagePointHandler</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transform.  This can be used with the procedural API, or with the standard</span>
+<span class="sd">    Image.point() method.</span>
+
+<span class="sd">    Will return the output profile in the output.info[&#39;icc_profile&#39;].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">input_mode</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">,</span>
+                 <span class="n">intent</span><span class="o">=</span><span class="n">INTENT_PERCEPTUAL</span><span class="p">,</span> <span class="n">proof</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">proof_intent</span><span class="o">=</span><span class="n">INTENT_ABSOLUTE_COLORIMETRIC</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proof</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">buildTransform</span><span class="p">(</span>
+                <span class="nb">input</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                <span class="n">input_mode</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">,</span>
+                <span class="n">intent</span><span class="p">,</span>
+                <span class="n">flags</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">buildProofTransform</span><span class="p">(</span>
+                <span class="nb">input</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">output</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">proof</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span>
+                <span class="n">input_mode</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">,</span>
+                <span class="n">intent</span><span class="p">,</span> <span class="n">proof_intent</span><span class="p">,</span>
+                <span class="n">flags</span>
+            <span class="p">)</span>
+        <span class="c1"># Note: inputMode and outputMode are for pyCMS compatibility only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputMode</span> <span class="o">=</span> <span class="n">input_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputMode</span> <span class="o">=</span> <span class="n">output_mode</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_profile</span> <span class="o">=</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">imOut</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">imOut</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">imOut</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_mode</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">imOut</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">imOut</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;icc_profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_profile</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">imOut</span>
+
+    <span class="k">def</span> <span class="nf">apply_in_place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">):</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_mode</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mode mismatch&quot;</span><span class="p">)</span>  <span class="c1"># wrong output mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;icc_profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_profile</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">im</span></div>
+
+
+<div class="viewcode-block" id="get_display_profile"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.get_display_profile">[docs]</a><span class="k">def</span> <span class="nf">get_display_profile</span><span class="p">(</span><span class="n">handle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; (experimental) Fetches the profile for the current display device.</span>
+<span class="sd">    :returns: None if the profile is not known.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">ImageWin</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">ImageWin</span><span class="o">.</span><span class="n">HDC</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">get_display_profile_win32</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">get_display_profile_win32</span><span class="p">(</span><span class="n">handle</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">get</span> <span class="o">=</span> <span class="n">_imagingcms</span><span class="o">.</span><span class="n">get_display_profile</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">get</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------------.</span>
+<span class="c1"># pyCMS compatible layer</span>
+<span class="c1"># --------------------------------------------------------------------.</span>
+
+<div class="viewcode-block" id="PyCMSError"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.PyCMSError">[docs]</a><span class="k">class</span> <span class="nc">PyCMSError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot; (pyCMS) Exception class.</span>
+<span class="sd">    This is used for all errors in the pyCMS API. &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="profileToProfile"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.profileToProfile">[docs]</a><span class="k">def</span> <span class="nf">profileToProfile</span><span class="p">(</span>
+        <span class="n">im</span><span class="p">,</span> <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">renderingIntent</span><span class="o">=</span><span class="n">INTENT_PERCEPTUAL</span><span class="p">,</span>
+        <span class="n">outputMode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inPlace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Applies an ICC transformation to a given image, mapping from</span>
+<span class="sd">    inputProfile to outputProfile.</span>
+
+<span class="sd">    If the input or output profiles specified are not valid filenames, a</span>
+<span class="sd">    PyCMSError will be raised.  If inPlace == TRUE and outputMode != im.mode,</span>
+<span class="sd">    a PyCMSError will be raised.  If an error occurs during application of</span>
+<span class="sd">    the profiles, a PyCMSError will be raised.  If outputMode is not a mode</span>
+<span class="sd">    supported by the outputProfile (or by pyCMS), a PyCMSError will be</span>
+<span class="sd">    raised.</span>
+
+<span class="sd">    This function applies an ICC transformation to im from inputProfile&#39;s</span>
+<span class="sd">    color space to outputProfile&#39;s color space using the specified rendering</span>
+<span class="sd">    intent to decide how to handle out-of-gamut colors.</span>
+
+<span class="sd">    OutputMode can be used to specify that a color mode conversion is to</span>
+<span class="sd">    be done using these profiles, but the specified profiles must be able</span>
+<span class="sd">    to handle that mode.  I.e., if converting im from RGB to CMYK using</span>
+<span class="sd">    profiles, the input profile must handle RGB data, and the output</span>
+<span class="sd">    profile must handle CMYK data.</span>
+
+<span class="sd">    :param im: An open PIL image object (i.e. Image.new(...) or</span>
+<span class="sd">        Image.open(...), etc.)</span>
+<span class="sd">    :param inputProfile: String, as a valid filename path to the ICC input</span>
+<span class="sd">        profile you wish to use for this image, or a profile object</span>
+<span class="sd">    :param outputProfile: String, as a valid filename path to the ICC output</span>
+<span class="sd">        profile you wish to use for this image, or a profile object</span>
+<span class="sd">    :param renderingIntent: Integer (0-3) specifying the rendering intent you</span>
+<span class="sd">        wish to use for the transform</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">        they do.</span>
+<span class="sd">    :param outputMode: A valid PIL mode for the output image (i.e. &quot;RGB&quot;,</span>
+<span class="sd">        &quot;CMYK&quot;, etc.).  Note: if rendering the image &quot;inPlace&quot;, outputMode</span>
+<span class="sd">        MUST be the same mode as the input, or omitted completely.  If</span>
+<span class="sd">        omitted, the outputMode will be the same as the mode of the input</span>
+<span class="sd">        image (im.mode)</span>
+<span class="sd">    :param inPlace: Boolean (1 = True, None or 0 = False).  If True, the</span>
+<span class="sd">        original image is modified in-place, and None is returned.  If False</span>
+<span class="sd">        (default), a new Image object is returned with the transform applied.</span>
+<span class="sd">    :param flags: Integer (0-...) specifying additional flags</span>
+<span class="sd">    :returns: Either None or a new PIL image object, depending on value of</span>
+<span class="sd">        inPlace</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">outputMode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">outputMode</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">renderingIntent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">renderingIntent</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="s2">&quot;renderingIntent must be an integer between 0 and 3&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">flags</span> <span class="o">&lt;=</span> <span class="n">_MAX_FLAG</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span>
+            <span class="s2">&quot;flags must be an integer between 0 and </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">_MAX_FLAG</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">inputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">outputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">)</span>
+        <span class="n">transform</span> <span class="o">=</span> <span class="n">ImageCmsTransform</span><span class="p">(</span>
+            <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">outputMode</span><span class="p">,</span>
+            <span class="n">renderingIntent</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">flags</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">inPlace</span><span class="p">:</span>
+            <span class="n">transform</span><span class="o">.</span><span class="n">apply_in_place</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+            <span class="n">imOut</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imOut</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">imOut</span></div>
+
+
+<div class="viewcode-block" id="getOpenProfile"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getOpenProfile">[docs]</a><span class="k">def</span> <span class="nf">getOpenProfile</span><span class="p">(</span><span class="n">profileFilename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Opens an ICC profile file.</span>
+
+<span class="sd">    The PyCMSProfile object can be passed back into pyCMS for use in creating</span>
+<span class="sd">    transforms and such (as in ImageCms.buildTransformFromOpenProfiles()).</span>
+
+<span class="sd">    If profileFilename is not a valid filename for an ICC profile, a PyCMSError</span>
+<span class="sd">    will be raised.</span>
+
+<span class="sd">    :param profileFilename: String, as a valid filename path to the ICC profile</span>
+<span class="sd">        you wish to open, or a file-like object.</span>
+<span class="sd">    :returns: A CmsProfile class object.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profileFilename</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buildTransform"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.buildTransform">[docs]</a><span class="k">def</span> <span class="nf">buildTransform</span><span class="p">(</span>
+        <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">inMode</span><span class="p">,</span> <span class="n">outMode</span><span class="p">,</span>
+        <span class="n">renderingIntent</span><span class="o">=</span><span class="n">INTENT_PERCEPTUAL</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Builds an ICC transform mapping from the inputProfile to the</span>
+<span class="sd">    outputProfile.  Use applyTransform to apply the transform to a given</span>
+<span class="sd">    image.</span>
+
+<span class="sd">    If the input or output profiles specified are not valid filenames, a</span>
+<span class="sd">    PyCMSError will be raised.  If an error occurs during creation of the</span>
+<span class="sd">    transform, a PyCMSError will be raised.</span>
+
+<span class="sd">    If inMode or outMode are not a mode supported by the outputProfile (or</span>
+<span class="sd">    by pyCMS), a PyCMSError will be raised.</span>
+
+<span class="sd">    This function builds and returns an ICC transform from the inputProfile</span>
+<span class="sd">    to the outputProfile using the renderingIntent to determine what to do</span>
+<span class="sd">    with out-of-gamut colors.  It will ONLY work for converting images that</span>
+<span class="sd">    are in inMode to images that are in outMode color format (PIL mode,</span>
+<span class="sd">    i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.).</span>
+
+<span class="sd">    Building the transform is a fair part of the overhead in</span>
+<span class="sd">    ImageCms.profileToProfile(), so if you&#39;re planning on converting multiple</span>
+<span class="sd">    images using the same input/output settings, this can save you time.</span>
+<span class="sd">    Once you have a transform object, it can be used with</span>
+<span class="sd">    ImageCms.applyProfile() to convert images without the need to re-compute</span>
+<span class="sd">    the lookup table for the transform.</span>
+
+<span class="sd">    The reason pyCMS returns a class object rather than a handle directly</span>
+<span class="sd">    to the transform is that it needs to keep track of the PIL input/output</span>
+<span class="sd">    modes that the transform is meant for.  These attributes are stored in</span>
+<span class="sd">    the &quot;inMode&quot; and &quot;outMode&quot; attributes of the object (which can be</span>
+<span class="sd">    manually overridden if you really want to, but I don&#39;t know of any</span>
+<span class="sd">    time that would be of use, or would even work).</span>
+
+<span class="sd">    :param inputProfile: String, as a valid filename path to the ICC input</span>
+<span class="sd">        profile you wish to use for this transform, or a profile object</span>
+<span class="sd">    :param outputProfile: String, as a valid filename path to the ICC output</span>
+<span class="sd">        profile you wish to use for this transform, or a profile object</span>
+<span class="sd">    :param inMode: String, as a valid PIL mode that the appropriate profile</span>
+<span class="sd">        also supports (i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.)</span>
+<span class="sd">    :param outMode: String, as a valid PIL mode that the appropriate profile</span>
+<span class="sd">        also supports (i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.)</span>
+<span class="sd">    :param renderingIntent: Integer (0-3) specifying the rendering intent you</span>
+<span class="sd">        wish to use for the transform</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">        they do.</span>
+<span class="sd">    :param flags: Integer (0-...) specifying additional flags</span>
+<span class="sd">    :returns: A CmsTransform class object.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">renderingIntent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">renderingIntent</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="s2">&quot;renderingIntent must be an integer between 0 and 3&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">flags</span> <span class="o">&lt;=</span> <span class="n">_MAX_FLAG</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span>
+            <span class="s2">&quot;flags must be an integer between 0 and </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">_MAX_FLAG</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">inputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">outputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ImageCmsTransform</span><span class="p">(</span>
+            <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">inMode</span><span class="p">,</span> <span class="n">outMode</span><span class="p">,</span>
+            <span class="n">renderingIntent</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="buildProofTransform"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.buildProofTransform">[docs]</a><span class="k">def</span> <span class="nf">buildProofTransform</span><span class="p">(</span>
+        <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">proofProfile</span><span class="p">,</span> <span class="n">inMode</span><span class="p">,</span> <span class="n">outMode</span><span class="p">,</span>
+        <span class="n">renderingIntent</span><span class="o">=</span><span class="n">INTENT_PERCEPTUAL</span><span class="p">,</span>
+        <span class="n">proofRenderingIntent</span><span class="o">=</span><span class="n">INTENT_ABSOLUTE_COLORIMETRIC</span><span class="p">,</span>
+        <span class="n">flags</span><span class="o">=</span><span class="n">FLAGS</span><span class="p">[</span><span class="s2">&quot;SOFTPROOFING&quot;</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Builds an ICC transform mapping from the inputProfile to the</span>
+<span class="sd">    outputProfile, but tries to simulate the result that would be</span>
+<span class="sd">    obtained on the proofProfile device.</span>
+
+<span class="sd">    If the input, output, or proof profiles specified are not valid</span>
+<span class="sd">    filenames, a PyCMSError will be raised.</span>
+
+<span class="sd">    If an error occurs during creation of the transform, a PyCMSError will</span>
+<span class="sd">    be raised.</span>
+
+<span class="sd">    If inMode or outMode are not a mode supported by the outputProfile</span>
+<span class="sd">    (or by pyCMS), a PyCMSError will be raised.</span>
+
+<span class="sd">    This function builds and returns an ICC transform from the inputProfile</span>
+<span class="sd">    to the outputProfile, but tries to simulate the result that would be</span>
+<span class="sd">    obtained on the proofProfile device using renderingIntent and</span>
+<span class="sd">    proofRenderingIntent to determine what to do with out-of-gamut</span>
+<span class="sd">    colors.  This is known as &quot;soft-proofing&quot;.  It will ONLY work for</span>
+<span class="sd">    converting images that are in inMode to images that are in outMode</span>
+<span class="sd">    color format (PIL mode, i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.).</span>
+
+<span class="sd">    Usage of the resulting transform object is exactly the same as with</span>
+<span class="sd">    ImageCms.buildTransform().</span>
+
+<span class="sd">    Proof profiling is generally used when using an output device to get a</span>
+<span class="sd">    good idea of what the final printed/displayed image would look like on</span>
+<span class="sd">    the proofProfile device when it&#39;s quicker and easier to use the</span>
+<span class="sd">    output device for judging color.  Generally, this means that the</span>
+<span class="sd">    output device is a monitor, or a dye-sub printer (etc.), and the simulated</span>
+<span class="sd">    device is something more expensive, complicated, or time consuming</span>
+<span class="sd">    (making it difficult to make a real print for color judgement purposes).</span>
+
+<span class="sd">    Soft-proofing basically functions by adjusting the colors on the</span>
+<span class="sd">    output device to match the colors of the device being simulated. However,</span>
+<span class="sd">    when the simulated device has a much wider gamut than the output</span>
+<span class="sd">    device, you may obtain marginal results.</span>
+
+<span class="sd">    :param inputProfile: String, as a valid filename path to the ICC input</span>
+<span class="sd">        profile you wish to use for this transform, or a profile object</span>
+<span class="sd">    :param outputProfile: String, as a valid filename path to the ICC output</span>
+<span class="sd">        (monitor, usually) profile you wish to use for this transform, or a</span>
+<span class="sd">        profile object</span>
+<span class="sd">    :param proofProfile: String, as a valid filename path to the ICC proof</span>
+<span class="sd">        profile you wish to use for this transform, or a profile object</span>
+<span class="sd">    :param inMode: String, as a valid PIL mode that the appropriate profile</span>
+<span class="sd">        also supports (i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.)</span>
+<span class="sd">    :param outMode: String, as a valid PIL mode that the appropriate profile</span>
+<span class="sd">        also supports (i.e. &quot;RGB&quot;, &quot;RGBA&quot;, &quot;CMYK&quot;, etc.)</span>
+<span class="sd">    :param renderingIntent: Integer (0-3) specifying the rendering intent you</span>
+<span class="sd">        wish to use for the input-&gt;proof (simulated) transform</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">        they do.</span>
+<span class="sd">    :param proofRenderingIntent: Integer (0-3) specifying the rendering intent you</span>
+<span class="sd">        wish to use for proof-&gt;output transform</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">        they do.</span>
+<span class="sd">    :param flags: Integer (0-...) specifying additional flags</span>
+<span class="sd">    :returns: A CmsTransform class object.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">renderingIntent</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">renderingIntent</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="s2">&quot;renderingIntent must be an integer between 0 and 3&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">flags</span> <span class="o">&lt;=</span> <span class="n">_MAX_FLAG</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span>
+            <span class="s2">&quot;flags must be an integer between 0 and </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">_MAX_FLAG</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">inputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">inputProfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">outputProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">outputProfile</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proofProfile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">proofProfile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">proofProfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ImageCmsTransform</span><span class="p">(</span>
+            <span class="n">inputProfile</span><span class="p">,</span> <span class="n">outputProfile</span><span class="p">,</span> <span class="n">inMode</span><span class="p">,</span> <span class="n">outMode</span><span class="p">,</span> <span class="n">renderingIntent</span><span class="p">,</span>
+            <span class="n">proofProfile</span><span class="p">,</span> <span class="n">proofRenderingIntent</span><span class="p">,</span> <span class="n">flags</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<span class="n">buildTransformFromOpenProfiles</span> <span class="o">=</span> <span class="n">buildTransform</span>
+<span class="n">buildProofTransformFromOpenProfiles</span> <span class="o">=</span> <span class="n">buildProofTransform</span>
+
+
+<div class="viewcode-block" id="applyTransform"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.applyTransform">[docs]</a><span class="k">def</span> <span class="nf">applyTransform</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">inPlace</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Applies a transform to a given image.</span>
+
+<span class="sd">    If im.mode != transform.inMode, a PyCMSError is raised.</span>
+
+<span class="sd">    If inPlace == TRUE and transform.inMode != transform.outMode, a</span>
+<span class="sd">    PyCMSError is raised.</span>
+
+<span class="sd">    If im.mode, transfer.inMode, or transfer.outMode is not supported by</span>
+<span class="sd">    pyCMSdll or the profiles you used for the transform, a PyCMSError is</span>
+<span class="sd">    raised.</span>
+
+<span class="sd">    If an error occurs while the transform is being applied, a PyCMSError</span>
+<span class="sd">    is raised.</span>
+
+<span class="sd">    This function applies a pre-calculated transform (from</span>
+<span class="sd">    ImageCms.buildTransform() or ImageCms.buildTransformFromOpenProfiles())</span>
+<span class="sd">    to an image.  The transform can be used for multiple images, saving</span>
+<span class="sd">    considerable calculation time if doing the same conversion multiple times.</span>
+
+<span class="sd">    If you want to modify im in-place instead of receiving a new image as</span>
+<span class="sd">    the return value, set inPlace to TRUE.  This can only be done if</span>
+<span class="sd">    transform.inMode and transform.outMode are the same, because we can&#39;t</span>
+<span class="sd">    change the mode in-place (the buffer sizes for some modes are</span>
+<span class="sd">    different).  The  default behavior is to return a new Image object of</span>
+<span class="sd">    the same dimensions in mode transform.outMode.</span>
+
+<span class="sd">    :param im: A PIL Image object, and im.mode must be the same as the inMode</span>
+<span class="sd">        supported by the transform.</span>
+<span class="sd">    :param transform: A valid CmsTransform class object</span>
+<span class="sd">    :param inPlace: Bool (1 == True, 0 or None == False).  If True, im is</span>
+<span class="sd">        modified in place and None is returned, if False, a new Image object</span>
+<span class="sd">        with the transform applied is returned (and im is not changed). The</span>
+<span class="sd">        default is False.</span>
+<span class="sd">    :returns: Either None, or a new PIL Image object, depending on the value of</span>
+<span class="sd">        inPlace. The profile will be returned in the image&#39;s</span>
+<span class="sd">        info[&#39;icc_profile&#39;].</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inPlace</span><span class="p">:</span>
+            <span class="n">transform</span><span class="o">.</span><span class="n">apply_in_place</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+            <span class="n">imOut</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">imOut</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">imOut</span></div>
+
+
+<div class="viewcode-block" id="createProfile"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.createProfile">[docs]</a><span class="k">def</span> <span class="nf">createProfile</span><span class="p">(</span><span class="n">colorSpace</span><span class="p">,</span> <span class="n">colorTemp</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Creates a profile.</span>
+
+<span class="sd">    If colorSpace not in [&quot;LAB&quot;, &quot;XYZ&quot;, &quot;sRGB&quot;], a PyCMSError is raised</span>
+
+<span class="sd">    If using LAB and colorTemp != a positive integer, a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while creating the profile, a PyCMSError is raised.</span>
+
+<span class="sd">    Use this function to create common profiles on-the-fly instead of</span>
+<span class="sd">    having to supply a profile on disk and knowing the path to it.  It</span>
+<span class="sd">    returns a normal CmsProfile object that can be passed to</span>
+<span class="sd">    ImageCms.buildTransformFromOpenProfiles() to create a transform to apply</span>
+<span class="sd">    to images.</span>
+
+<span class="sd">    :param colorSpace: String, the color space of the profile you wish to</span>
+<span class="sd">        create.</span>
+<span class="sd">        Currently only &quot;LAB&quot;, &quot;XYZ&quot;, and &quot;sRGB&quot; are supported.</span>
+<span class="sd">    :param colorTemp: Positive integer for the white point for the profile, in</span>
+<span class="sd">        degrees Kelvin (i.e. 5000, 6500, 9600, etc.).  The default is for D50</span>
+<span class="sd">        illuminant if omitted (5000k).  colorTemp is ONLY applied to LAB</span>
+<span class="sd">        profiles, and is ignored for XYZ and sRGB.</span>
+<span class="sd">    :returns: A CmsProfile class object</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">colorSpace</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;LAB&quot;</span><span class="p">,</span> <span class="s2">&quot;XYZ&quot;</span><span class="p">,</span> <span class="s2">&quot;sRGB&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span>
+            <span class="s2">&quot;Color space not supported for on-the-fly profile creation (</span><span class="si">%s</span><span class="s2">)&quot;</span>
+            <span class="o">%</span> <span class="n">colorSpace</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">colorSpace</span> <span class="o">==</span> <span class="s2">&quot;LAB&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">colorTemp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">colorTemp</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span>
+                <span class="s2">&quot;Color temperature must be numeric, </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2"> not valid&quot;</span>
+                <span class="o">%</span> <span class="n">colorTemp</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">createProfile</span><span class="p">(</span><span class="n">colorSpace</span><span class="p">,</span> <span class="n">colorTemp</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileName"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileName">[docs]</a><span class="k">def</span> <span class="nf">getProfileName</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    (pyCMS) Gets the internal product name for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised If an error occurs while trying to obtain the</span>
+<span class="sd">    name tag, a PyCMSError is raised.</span>
+
+<span class="sd">    Use this function to obtain the INTERNAL name of the profile (stored</span>
+<span class="sd">    in an ICC tag in the profile itself), usually the one used when the</span>
+<span class="sd">    profile was originally created.  Sometimes this tag also contains</span>
+<span class="sd">    additional information supplied by the creator.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal name of the profile as stored</span>
+<span class="sd">        in an ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="c1"># do it in python, not c.</span>
+        <span class="c1">#    // name was &quot;%s - %s&quot; (model, manufacturer) || Description ,</span>
+        <span class="c1">#    // but if the Model and Manufacturer were the same or the model</span>
+        <span class="c1">#    // was long, Just the model,  in 1.x</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_model</span>
+        <span class="n">manufacturer</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_manufacturer</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">model</span> <span class="ow">or</span> <span class="n">manufacturer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_description</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">manufacturer</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">model</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">manufacturer</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileInfo"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileInfo">[docs]</a><span class="k">def</span> <span class="nf">getProfileInfo</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the internal product information for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the info tag, a PyCMSError</span>
+<span class="sd">    is raised</span>
+
+<span class="sd">    Use this function to obtain the information stored in the profile&#39;s</span>
+<span class="sd">    info tag.  This often contains details about the profile, and how it</span>
+<span class="sd">    was created, as supplied by the creator.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal profile information stored in</span>
+<span class="sd">        an ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="c1"># Python, not C. the white point bits weren&#39;t working well,</span>
+        <span class="c1"># so skipping.</span>
+        <span class="c1">#    // info was description \r\n\r\n copyright \r\n\r\n K007 tag \r\n\r\n whitepoint</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_description</span>
+        <span class="n">cpright</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_copyright</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">cpright</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">elt</span><span class="p">:</span>
+                <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elt</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span>
+
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileCopyright"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileCopyright">[docs]</a><span class="k">def</span> <span class="nf">getProfileCopyright</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the copyright for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the copyright tag, a PyCMSError</span>
+<span class="sd">    is raised</span>
+
+<span class="sd">    Use this function to obtain the information stored in the profile&#39;s</span>
+<span class="sd">    copyright tag.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal profile information stored in</span>
+<span class="sd">        an ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_copyright</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileManufacturer"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileManufacturer">[docs]</a><span class="k">def</span> <span class="nf">getProfileManufacturer</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the manufacturer for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the manufacturer tag, a</span>
+<span class="sd">    PyCMSError is raised</span>
+
+<span class="sd">    Use this function to obtain the information stored in the profile&#39;s</span>
+<span class="sd">    manufacturer tag.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal profile information stored in</span>
+<span class="sd">        an ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_manufacturer</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileModel"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileModel">[docs]</a><span class="k">def</span> <span class="nf">getProfileModel</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the model for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the model tag, a PyCMSError</span>
+<span class="sd">    is raised</span>
+
+<span class="sd">    Use this function to obtain the information stored in the profile&#39;s</span>
+<span class="sd">    model tag.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal profile information stored in</span>
+<span class="sd">        an ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_model</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getProfileDescription"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getProfileDescription">[docs]</a><span class="k">def</span> <span class="nf">getProfileDescription</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the description for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the description tag, a PyCMSError</span>
+<span class="sd">    is raised</span>
+
+<span class="sd">    Use this function to obtain the information stored in the profile&#39;s</span>
+<span class="sd">    description tag.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: A string containing the internal profile information stored in an</span>
+<span class="sd">        ICC tag.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># add an extra newline to preserve pyCMS compatibility</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">product_description</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="getDefaultIntent"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.getDefaultIntent">[docs]</a><span class="k">def</span> <span class="nf">getDefaultIntent</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Gets the default intent name for the given profile.</span>
+
+<span class="sd">    If profile isn&#39;t a valid CmsProfile object or filename to a profile,</span>
+<span class="sd">    a PyCMSError is raised.</span>
+
+<span class="sd">    If an error occurs while trying to obtain the default intent, a</span>
+<span class="sd">    PyCMSError is raised.</span>
+
+<span class="sd">    Use this function to determine the default (and usually best optimized)</span>
+<span class="sd">    rendering intent for this profile.  Most profiles support multiple</span>
+<span class="sd">    rendering intents, but are intended mostly for one type of conversion.</span>
+<span class="sd">    If you wish to use a different intent than returned, use</span>
+<span class="sd">    ImageCms.isIntentSupported() to verify it will work first.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :returns: Integer 0-3 specifying the default rendering intent for this</span>
+<span class="sd">        profile.</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">            they do.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">rendering_intent</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="isIntentSupported"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.isIntentSupported">[docs]</a><span class="k">def</span> <span class="nf">isIntentSupported</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Checks if a given intent is supported.</span>
+
+<span class="sd">    Use this function to verify that you can use your desired</span>
+<span class="sd">    renderingIntent with profile, and that profile can be used for the</span>
+<span class="sd">    input/output/proof profile as you desire.</span>
+
+<span class="sd">    Some profiles are created specifically for one &quot;direction&quot;, can cannot</span>
+<span class="sd">    be used for others.  Some profiles can only be used for certain</span>
+<span class="sd">    rendering intents... so it&#39;s best to either verify this before trying</span>
+<span class="sd">    to create a transform with them (using this function), or catch the</span>
+<span class="sd">    potential PyCMSError that will occur if they don&#39;t support the modes</span>
+<span class="sd">    you select.</span>
+
+<span class="sd">    :param profile: EITHER a valid CmsProfile object, OR a string of the</span>
+<span class="sd">        filename of an ICC profile.</span>
+<span class="sd">    :param intent: Integer (0-3) specifying the rendering intent you wish to</span>
+<span class="sd">        use with this profile</span>
+
+<span class="sd">            INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)</span>
+<span class="sd">            INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)</span>
+<span class="sd">            INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)</span>
+<span class="sd">            INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</span>
+
+<span class="sd">        see the pyCMS documentation for details on rendering intents and what</span>
+<span class="sd">            they do.</span>
+<span class="sd">    :param direction: Integer specifying if the profile is to be used for input,</span>
+<span class="sd">        output, or proof</span>
+
+<span class="sd">            INPUT  = 0 (or use ImageCms.DIRECTION_INPUT)</span>
+<span class="sd">            OUTPUT = 1 (or use ImageCms.DIRECTION_OUTPUT)</span>
+<span class="sd">            PROOF  = 2 (or use ImageCms.DIRECTION_PROOF)</span>
+
+<span class="sd">    :returns: 1 if the intent/direction are supported, -1 if they are not.</span>
+<span class="sd">    :exception PyCMSError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">ImageCmsProfile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">ImageCmsProfile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="c1"># FIXME: I get different results for the same data w. different</span>
+        <span class="c1"># compilers.  Bug in LittleCMS or in the binding?</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">is_intent_supported</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PyCMSError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="versions"><a class="viewcode-back" href="../../reference/ImageCms.html#PIL.ImageCms.versions">[docs]</a><span class="k">def</span> <span class="nf">versions</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    (pyCMS) Fetches versions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">VERSION</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">littlecms_version</span><span class="p">,</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Image</span><span class="o">.</span><span class="n">VERSION</span>
+    <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

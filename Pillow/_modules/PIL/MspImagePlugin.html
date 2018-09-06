@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.MspImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.MspImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.MspImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1">#</span>
+<span class="c1"># MSP file handling</span>
+<span class="c1">#</span>
+<span class="c1"># This is the format used by the Paint program in Windows 1 and 2.</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1">#       95-09-05 fl     Created</span>
+<span class="c1">#       97-01-03 fl     Read/write MSP images</span>
+<span class="c1">#       17-02-21 es     Fixed RLE interpretation</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) Secret Labs AB 1997.</span>
+<span class="c1"># Copyright (c) Fredrik Lundh 1995-97.</span>
+<span class="c1"># Copyright (c) Eric Soroos 2017.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+<span class="c1"># More info on this format: https://archive.org/details/gg243631</span>
+<span class="c1"># Page 313:</span>
+<span class="c1"># Figure 205. Windows Paint Version 1: &quot;DanM&quot; Format</span>
+<span class="c1"># Figure 206. Windows Paint Version 2: &quot;LinS&quot; Format. Used in Windows V2.03</span>
+<span class="c1">#</span>
+<span class="c1"># See also: http://www.fileformat.info/format/mspaint/egff.htm</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i16le</span> <span class="k">as</span> <span class="n">i16</span><span class="p">,</span> <span class="n">o16le</span> <span class="k">as</span> <span class="n">o16</span><span class="p">,</span> <span class="n">i8</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1&quot;</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># read MSP files</span>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;DanM&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;LinS&quot;</span><span class="p">]</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for Windows MSP images.  This plugin supports both</span>
+<span class="c1"># uncompressed (Windows 1.0).</span>
+
+<div class="viewcode-block" id="MspImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.MspImagePlugin.MspImageFile">[docs]</a><span class="k">class</span> <span class="nc">MspImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MSP&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;Windows Paint&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Header</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;DanM&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;LinS&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not an MSP file&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Header checksum</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">checksum</span> <span class="o">=</span> <span class="n">checksum</span> <span class="o">^</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">checksum</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;bad MSP checksum&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:]),</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;DanM&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;MSP&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="MspDecoder"><a class="viewcode-back" href="../../reference/plugins.html#PIL.MspImagePlugin.MspDecoder">[docs]</a><span class="k">class</span> <span class="nc">MspDecoder</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">PyDecoder</span><span class="p">):</span>
+    <span class="c1"># The algo for the MSP decoder is from</span>
+    <span class="c1"># http://www.fileformat.info/format/mspaint/egff.htm</span>
+    <span class="c1"># cc-by-attribution -- That page references is taken from the</span>
+    <span class="c1"># Encyclopedia of Graphics File Formats and is licensed by</span>
+    <span class="c1"># O&#39;Reilly under the Creative Common/Attribution license</span>
+    <span class="c1">#</span>
+    <span class="c1"># For RLE encoded files, the 32byte header is followed by a scan</span>
+    <span class="c1"># line map, encoded as one 16bit word of encoded byte length per</span>
+    <span class="c1"># line.</span>
+    <span class="c1">#</span>
+    <span class="c1"># NOTE: the encoded length of the line can be 0. This was not</span>
+    <span class="c1"># handled in the previous version of this encoder, and there&#39;s no</span>
+    <span class="c1"># mention of how to handle it in the documentation. From the few</span>
+    <span class="c1"># examples I&#39;ve seen, I&#39;ve assumed that it is a fill of the</span>
+    <span class="c1"># background color, in this case, white.</span>
+    <span class="c1">#</span>
+    <span class="c1">#</span>
+    <span class="c1"># Pseudocode of the decoder:</span>
+    <span class="c1"># Read a BYTE value as the RunType</span>
+    <span class="c1">#  If the RunType value is zero</span>
+    <span class="c1">#   Read next byte as the RunCount</span>
+    <span class="c1">#   Read the next byte as the RunValue</span>
+    <span class="c1">#   Write the RunValue byte RunCount times</span>
+    <span class="c1">#  If the RunType value is non-zero</span>
+    <span class="c1">#   Use this value as the RunCount</span>
+    <span class="c1">#   Read and write the next RunCount bytes literally</span>
+    <span class="c1">#</span>
+    <span class="c1">#  e.g.:</span>
+    <span class="c1">#  0x00 03 ff 05 00 01 02 03 04</span>
+    <span class="c1">#  would yield the bytes:</span>
+    <span class="c1">#  0xff ff ff 00 01 02 03 04</span>
+    <span class="c1">#</span>
+    <span class="c1"># which are then interpreted as a bit packed mode &#39;1&#39; image</span>
+
+    <span class="n">_pulls_fd</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="MspDecoder.decode"><a class="viewcode-back" href="../../reference/plugins.html#PIL.MspImagePlugin.MspDecoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+
+        <span class="n">img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="n">blank_line</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">((</span><span class="mh">0xff</span><span class="p">,)</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span><span class="o">+</span><span class="mi">7</span><span class="p">)</span><span class="o">//</span><span class="mi">8</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+            <span class="n">rowmap</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">%d</span><span class="s2">H&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span><span class="p">),</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Truncated MSP file in row map&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">rowlen</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rowmap</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rowlen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">img</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">blank_line</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">rowlen</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rowlen</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Truncated MSP file, expected </span><span class="si">%d</span><span class="s2"> bytes on row </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                  <span class="p">(</span><span class="n">rowlen</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">rowlen</span><span class="p">:</span>
+                    <span class="n">runtype</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                    <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">runtype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="p">(</span><span class="n">runcount</span><span class="p">,</span> <span class="n">runval</span><span class="p">)</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s2">&quot;Bc&quot;</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+                        <span class="n">img</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">runval</span> <span class="o">*</span> <span class="n">runcount</span><span class="p">)</span>
+                        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">runcount</span> <span class="o">=</span> <span class="n">runtype</span>
+                        <span class="n">img</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">runcount</span><span class="p">])</span>
+                        <span class="n">idx</span> <span class="o">+=</span> <span class="n">runcount</span>
+
+            <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Corrupted MSP file in row </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_as_raw</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span></div></div>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_decoder</span><span class="p">(</span><span class="s1">&#39;MSP&#39;</span><span class="p">,</span> <span class="n">MspDecoder</span><span class="p">)</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># write MSP files (uncompressed only)</span>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write mode </span><span class="si">%s</span><span class="s2"> as MSP&quot;</span> <span class="o">%</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1"># create MSP header</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">16</span>
+
+    <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Da&quot;</span><span class="p">),</span> <span class="n">i16</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;nM&quot;</span><span class="p">)</span>  <span class="c1"># version 1</span>
+    <span class="n">header</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">header</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="n">header</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span>
+    <span class="n">header</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">header</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">checksum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">checksum</span> <span class="o">=</span> <span class="n">checksum</span> <span class="o">^</span> <span class="n">h</span>
+    <span class="n">header</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="n">checksum</span>  <span class="c1"># FIXME: is this the right field?</span>
+
+    <span class="c1"># header</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o16</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+
+    <span class="c1"># image body</span>
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># registry</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">MspImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">MspImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">MspImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">MspImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;.msp&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

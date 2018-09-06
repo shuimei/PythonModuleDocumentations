@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageStat Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageTk Module" href="ImageTk.html" />
+    <link rel="prev" title="ImageSequence Module" href="ImageSequence.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageStat.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageStat"></span><div class="section" id="imagestat-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageStat</span></code> Module<a class="headerlink" href="#imagestat-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageStat</span></code> module calculates global statistics for an image, or
+for a region of an image.</p>
+<dl class="class">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat">
+<em class="property">class </em><code class="descclassname">PIL.ImageStat.</code><code class="descname">Stat</code><span class="sig-paren">(</span><em>image_or_list</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate statistics for the given image. If a mask is included,
+only the regions covered by that mask are included in the
+statistics. You can also pass in a previously calculated histogram.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image</strong> – A PIL image, or a precalculated histogram.</li>
+<li><strong>mask</strong> – An optional mask.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.extrema">
+<code class="descname">extrema</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.extrema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Min/max values for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.count">
+<code class="descname">count</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of pixels for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.sum">
+<code class="descname">sum</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of all pixels for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.sum2">
+<code class="descname">sum2</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.sum2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Squared sum of all pixels for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.mean">
+<code class="descname">mean</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average (arithmetic mean) pixel level for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.median">
+<code class="descname">median</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.median" title="Permalink to this definition">¶</a></dt>
+<dd><p>Median pixel level for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.rms">
+<code class="descname">rms</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.rms" title="Permalink to this definition">¶</a></dt>
+<dd><p>RMS (root-mean-square) for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.var">
+<code class="descname">var</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variance for each band in the image.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageStat.PIL.ImageStat.Stat.stddev">
+<code class="descname">stddev</code><a class="headerlink" href="#PIL.ImageStat.PIL.ImageStat.Stat.stddev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard deviation for each band in the image.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageTk.html" class="btn btn-neutral float-right" title="ImageTk Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageSequence.html" class="btn btn-neutral" title="ImageSequence Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

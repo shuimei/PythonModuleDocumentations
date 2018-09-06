@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TiffTags Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PSDraw Module" href="PSDraw.html" />
+    <link rel="prev" title="ExifTags Module" href="ExifTags.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/TiffTags.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.TiffTags"></span><div class="section" id="tifftags-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">TiffTags</span></code> Module<a class="headerlink" href="#tifftags-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">TiffTags</span></code> module exposes many of the standard TIFF
+metadata tag numbers, names, and type information.</p>
+<dl class="method">
+<dt id="PIL.TiffTags.lookup">
+<code class="descclassname">PIL.TiffTags.</code><code class="descname">lookup</code><span class="sig-paren">(</span><em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/TiffTags.html#lookup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.TiffTags.lookup" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag</strong> – Integer tag number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Taginfo namedtuple, From the <code class="docutils literal notranslate"><span class="pre">TAGS_V2</span></code> info if possible,
+otherwise just populating the value and name from <code class="docutils literal notranslate"><span class="pre">TAGS</span></code>.
+If the tag is not recognized, “unknown” is returned for the name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.1.0.</span></p>
+</div>
+<dl class="class">
+<dt id="PIL.TiffTags.TagInfo">
+<em class="property">class </em><code class="descclassname">PIL.TiffTags.</code><code class="descname">TagInfo</code><a class="reference internal" href="../_modules/PIL/TiffTags.html#TagInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.TiffTags.TagInfo" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="PIL.TiffTags.TagInfo.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self</em>, <em>value=None</em>, <em>name=&quot;unknown&quot;</em>, <em>type=None</em>, <em>length=0</em>, <em>enum=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.TiffTags.TagInfo.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> – Integer Tag Number</li>
+<li><strong>name</strong> – Tag Name</li>
+<li><strong>type</strong> – Integer type from <a class="reference internal" href="#PIL.TiffTags.PIL.TiffTags.TYPES" title="PIL.TiffTags.PIL.TiffTags.TYPES"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.TiffTags.TYPES</span></code></a></li>
+<li><strong>length</strong> – Array length: 0 == variable, 1 == single value, n = fixed</li>
+<li><strong>enum</strong> – Dict of name:integer value options for an enumeration</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.TiffTags.TagInfo.cvt_enum">
+<code class="descname">cvt_enum</code><span class="sig-paren">(</span><em>self</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/TiffTags.html#TagInfo.cvt_enum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.TiffTags.TagInfo.cvt_enum" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – The enumerated value name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The integer corresponding to the name.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.0.0.</span></p>
+</div>
+<dl class="attribute">
+<dt id="PIL.TiffTags.PIL.TiffTags.TAGS_V2">
+<code class="descclassname">PIL.TiffTags.</code><code class="descname">TAGS_V2</code><a class="headerlink" href="#PIL.TiffTags.PIL.TiffTags.TAGS_V2" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">TAGS_V2</span></code> dictionary maps 16-bit integer tag numbers to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.TagTypes.TagInfo</span></code> tuples for metadata fields defined in the TIFF
+spec.</p>
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified">New in version 3.0.0.</span></p>
+</div>
+<dl class="attribute">
+<dt id="PIL.TiffTags.PIL.TiffTags.TAGS">
+<code class="descclassname">PIL.TiffTags.</code><code class="descname">TAGS</code><a class="headerlink" href="#PIL.TiffTags.PIL.TiffTags.TAGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">TAGS</span></code> dictionary maps 16-bit integer TIFF tag number to
+descriptive string names.  For instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">PIL.TiffTags</span> <span class="k">import</span> <span class="n">TAGS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TAGS</span><span class="p">[</span><span class="mh">0x010e</span><span class="p">]</span>
+<span class="go">&#39;ImageDescription&#39;</span>
+</pre></div>
+</div>
+<p>This dictionary contains a superset of the tags in TAGS_V2, common
+EXIF tags, and other well known metadata tags.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.TiffTags.PIL.TiffTags.TYPES">
+<code class="descclassname">PIL.TiffTags.</code><code class="descname">TYPES</code><a class="headerlink" href="#PIL.TiffTags.PIL.TiffTags.TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="docutils literal notranslate"><span class="pre">TYPES</span></code> dictionary maps the TIFF type short integer to a
+human readable type name.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="PSDraw.html" class="btn btn-neutral float-right" title="PSDraw Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ExifTags.html" class="btn btn-neutral" title="ExifTags Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

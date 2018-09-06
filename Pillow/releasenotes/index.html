@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Release Notes &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.3.0" href="5.3.0.html" />
+    <link rel="prev" title="About" href="../about.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Release Notes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="release-notes">
+<h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Contributors please include release notes as needed or appropriate with your bug fixes, feature additions and tests.</p>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="5.3.0.html">5.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html#api-additions">API Additions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html#other-changes">Other Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.2.0.html">5.2.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html#api-changes">API Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html#api-additions">API Additions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html#other-changes">Other Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.1.0.html">5.1.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html#new-file-format">New File Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html#api-changes">API Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html#other-changes">Other Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.0.0.html">5.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html#backwards-incompatible-changes">Backwards Incompatible Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html#api-changes">API Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html#api-additions">API Additions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html#other-changes">Other Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.3.0.html">4.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html#api-changes">API Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html#api-additions">API Additions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html#other-changes">Other Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.2.1.html">4.2.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html#fixed-windows-pypy-build">Fixed Windows PyPy Build</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.2.0.html">4.2.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html#added-complex-text-rendering">Added Complex Text Rendering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html#new-optional-parameters">New Optional Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html#new-decompressionbomb-warning">New DecompressionBomb Warning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html#removed-deprecated-items">Removed Deprecated Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html#removed-core-image-function">Removed Core Image Function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.1.1.html">4.1.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html#fix-regression-with-reading-dpi-from-exif-data">Fix Regression with reading DPI from EXIF data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html#incompatibility-between-3-6-0-and-3-6-1">Incompatibility between 3.6.0 and 3.6.1</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.1.0.html">4.1.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#removed-deprecated-items">Removed Deprecated Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#closing-files-when-opening-images">Closing Files When Opening Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#changes-to-gif-handling-when-saving">Changes to GIF Handling When Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#new-method-image-remap-palette">New Method: Image.remap_palette</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#added-decoder-registry-and-support-for-python-based-decoders">Added Decoder Registry and Support for Python Based Decoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html#tests">Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.0.0.html">4.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#python-2-6-and-3-2-dropped">Python 2.6 and 3.2 Dropped</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#support-added-for-python-3-6">Support added for Python 3.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#olefileio-py">OleFileIO.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#sgi-image-save">SGI image save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#zero-sized-images">Zero sized images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#internal-handles-eof-flag">Internal handles_eof flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html#image-core-stretch-removed">Image.core.stretch removed</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.4.0.html">3.4.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#new-resizing-filters">New resizing filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#deprecation-warning-when-saving-jpegs">Deprecation Warning when Saving JPEGs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#new-dds-decoders">New DDS Decoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#append-images-to-gif">Append images to GIF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#save-multiple-frame-tiff">Save multiple frame TIFF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html#image-core-open-ppm-removed">Image.core.open_ppm removed</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.3.2.html">3.3.2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html#integer-overflow-in-map-c">Integer overflow in Map.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html#sign-extension-in-storage-c">Sign Extension in Storage.c</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.3.0.html">3.3.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html#libimagequant-support">Libimagequant support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html#new-setup-py-options">New Setup.py options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html#resizing">Resizing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html#rotation">Rotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html#image-metadata">Image Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.2.0.html">3.2.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html#new-dds-and-ftex-image-plugins">New DDS and FTEX Image Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html#updates-to-the-gbrimageplugin">Updates to the GbrImagePlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html#passthrough-parameters-for-imagedraw-text">Passthrough Parameters for ImageDraw.text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html#imagesequence-iterator-changes">ImageSequence.Iterator changes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.1.2.html">3.1.2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html#cve-2016-3076-buffer-overflow-in-jpeg2kencode-c">CVE-2016-3076 – Buffer overflow in Jpeg2KEncode.c</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.1.1.html">3.1.1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html#cve-2016-0740-buffer-overflow-in-tiffdecode-c">CVE-2016-0740 – Buffer overflow in TiffDecode.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html#cve-2016-0775-buffer-overflow-in-flidecode-c">CVE-2016-0775 – Buffer overflow in FliDecode.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html#cve-2016-2533-buffer-overflow-in-pcddecode-c">CVE-2016-2533 – Buffer overflow in PcdDecode.c</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html#integer-overflow-in-resample-c">Integer overflow in Resample.c</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.1.0.html">3.1.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html#imagedraw-arc-chord-and-pieslice-can-now-use-floats">ImageDraw arc, chord and pieslice can now use floats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html#consistent-multiline-text-spacing">Consistent multiline text spacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html#exif-jpeg-and-tiff-metadata">Exif, Jpeg and Tiff Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.0.0.html">3.0.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html#saving-multipage-images">Saving Multipage Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html#tiff-imagefiledirectory-rewrite">Tiff ImageFileDirectory Rewrite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html#deprecated-methods">Deprecated Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html#libjpeg-and-zlib-are-required-by-default">LibJpeg and Zlib are Required by Default</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2.8.0.html">2.8.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html#open-http-response-objects-with-image-open">Open HTTP response objects with Image.open</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2.7.0.html">2.7.0</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#sane-plugin">Sane Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#png-text-chunk-size-limits">Png text chunk size limits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#image-resizing-filters">Image resizing filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#image-transposition">Image transposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#gaussian-blur-and-unsharp-mask">Gaussian blur and unsharp mask</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html#tiff-parameter-changes">TIFF Parameter Changes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5.3.0.html" class="btn btn-neutral float-right" title="5.3.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../about.html" class="btn btn-neutral" title="About" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

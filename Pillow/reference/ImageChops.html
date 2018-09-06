@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageChops (“Channel Operations”) Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageColor Module" href="ImageColor.html" />
+    <link rel="prev" title="Image Module" href="Image.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageChops.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageChops"></span><div class="section" id="imagechops-channel-operations-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module<a class="headerlink" href="#imagechops-channel-operations-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageChops</span></code> module contains a number of arithmetical image
+operations, called channel operations (“chops”). These can be used for various
+purposes, including special effects, image compositions, algorithmic painting,
+and more.</p>
+<p>For more pre-made operations, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageOps</span></code>.</p>
+<p>At this time, most channel operations are only implemented for 8-bit images
+(e.g. “L” and “RGB”).</p>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>Most channel operations take one or two image arguments and returns a new
+image. Unless otherwise noted, the result of a channel operation is always
+clipped to the range 0 to MAX (which is 255 for all modes supported by the
+operations in this module).</p>
+<dl class="function">
+<dt id="PIL.ImageChops.add">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">add</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em>, <em>scale=1.0</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds two images, dividing the result by scale and adding the
+offset. If omitted, scale defaults to 1.0, and offset to 0.0.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="o">+</span> <span class="n">image2</span><span class="p">)</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.add_modulo">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">add_modulo</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#add_modulo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.add_modulo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add two images, without clipping the result.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="o">+</span> <span class="n">image2</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.blend">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">blend</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#blend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.blend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blend images using constant transparency weight. Alias for
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.blend()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.composite">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">composite</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em>, <em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#composite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create composite using transparency mask. Alias for
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.composite()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.constant">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">constant</code><span class="sig-paren">(</span><em>image</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#constant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a channel with a given grey level.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.darker">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">darker</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#darker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.darker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares the two images, pixel by pixel, and returns a new image
+containing the darker values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">image1</span><span class="p">,</span> <span class="n">image2</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.difference">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">difference</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.difference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the absolute value of the pixel-by-pixel difference between the two
+images.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">image1</span> <span class="o">-</span> <span class="n">image2</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.duplicate">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">duplicate</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#duplicate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.duplicate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a channel. Alias for <a class="reference internal" href="Image.html#PIL.Image.Image.copy" title="PIL.Image.Image.copy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.copy()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.invert">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">invert</code><span class="sig-paren">(</span><em>image</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#invert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert an image (channel).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">MAX</span> <span class="o">-</span> <span class="n">image</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.lighter">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">lighter</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#lighter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.lighter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares the two images, pixel by pixel, and returns a new image containing
+the lighter values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">image1</span><span class="p">,</span> <span class="n">image2</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.logical_and">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">logical_and</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#logical_and"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.logical_and" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logical AND between two images.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="ow">and</span> <span class="n">image2</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.logical_or">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">logical_or</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#logical_or"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.logical_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logical OR between two images.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="ow">or</span> <span class="n">image2</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.multiply">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">multiply</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#multiply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Superimposes two images on top of each other.</p>
+<p>If you multiply an image with a solid black image, the result is black. If
+you multiply with a solid white image, the image is unaffected.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">image1</span> <span class="o">*</span> <span class="n">image2</span> <span class="o">/</span> <span class="n">MAX</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageChops.PIL.ImageChops.offset">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">offset</code><span class="sig-paren">(</span><em>image</em>, <em>xoffset</em>, <em>yoffset=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageChops.PIL.ImageChops.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the image where data has been offset by the given
+distances. Data wraps around the edges. If <strong>yoffset</strong> is omitted, it
+is assumed to be equal to <strong>xoffset</strong>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.screen">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">screen</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#screen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.screen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Superimposes two inverted images on top of each other.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">MAX</span> <span class="o">-</span> <span class="p">((</span><span class="n">MAX</span> <span class="o">-</span> <span class="n">image1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">MAX</span> <span class="o">-</span> <span class="n">image2</span><span class="p">)</span> <span class="o">/</span> <span class="n">MAX</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.subtract">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">subtract</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em>, <em>scale=1.0</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#subtract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts two images, dividing the result by scale and adding the
+offset. If omitted, scale defaults to 1.0, and offset to 0.0.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="o">-</span> <span class="n">image2</span><span class="p">)</span> <span class="o">/</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.ImageChops.subtract_modulo">
+<code class="descclassname">PIL.ImageChops.</code><code class="descname">subtract_modulo</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageChops.html#subtract_modulo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageChops.subtract_modulo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtract two images, without clipping the result.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">image1</span> <span class="o">-</span> <span class="n">image2</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageColor.html" class="btn btn-neutral float-right" title="ImageColor Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Image.html" class="btn btn-neutral" title="Image Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

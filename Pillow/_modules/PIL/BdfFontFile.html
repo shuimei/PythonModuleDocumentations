@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.BdfFontFile &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.BdfFontFile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.BdfFontFile</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># bitmap distribution font (bdf) file parser</span>
+<span class="c1">#</span>
+<span class="c1"># history:</span>
+<span class="c1"># 1996-05-16 fl   created (as bdf2pil)</span>
+<span class="c1"># 1997-08-25 fl   converted to FontFile driver</span>
+<span class="c1"># 2001-05-25 fl   removed bogus __init__ call</span>
+<span class="c1"># 2002-11-20 fl   robustification (from Kevin Cazabon, Dmitry Vasiliev)</span>
+<span class="c1"># 2003-04-22 fl   more robustification (from Graham Dumpleton)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2003 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 1997-2003 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">FontFile</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># parse X Bitmap Distribution Format (BDF)</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="n">bdf_slant</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="s2">&quot;Roman&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="s2">&quot;Italic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;O&quot;</span><span class="p">:</span> <span class="s2">&quot;Oblique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RI&quot;</span><span class="p">:</span> <span class="s2">&quot;Reverse Italic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RO&quot;</span><span class="p">:</span> <span class="s2">&quot;Reverse Oblique&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OT&quot;</span><span class="p">:</span> <span class="s2">&quot;Other&quot;</span>
+<span class="p">}</span>
+
+<span class="n">bdf_spacing</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="s2">&quot;Proportional&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="s2">&quot;Monospaced&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="s2">&quot;Cell&quot;</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="bdf_char"><a class="viewcode-back" href="../../PIL.html#PIL.BdfFontFile.bdf_char">[docs]</a><span class="k">def</span> <span class="nf">bdf_char</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="c1"># skip to STARTCHAR</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;STARTCHAR&quot;</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+
+    <span class="c1"># load symbol properties</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">s</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;BITMAP&quot;</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">props</span><span class="p">[</span><span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+
+    <span class="c1"># load bitmap</span>
+    <span class="n">bitmap</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">s</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;ENDCHAR&quot;</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">bitmap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">bitmap</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
+
+    <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;BBX&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="p">[</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">props</span><span class="p">[</span><span class="s2">&quot;DWIDTH&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+
+    <span class="n">bbox</span> <span class="o">=</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">),</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="o">-</span><span class="n">d</span><span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="n">l</span><span class="p">,</span> <span class="o">-</span><span class="n">d</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">frombytes</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">bitmap</span><span class="p">,</span> <span class="s2">&quot;hex&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># deal with zero-width characters</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s2">&quot;ENCODING&quot;</span><span class="p">]),</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">im</span></div>
+
+
+<span class="c1">##</span>
+<span class="c1"># Font file plugin for the X11 BDF format.</span>
+
+<div class="viewcode-block" id="BdfFontFile"><a class="viewcode-back" href="../../PIL.html#PIL.BdfFontFile.BdfFontFile">[docs]</a><span class="k">class</span> <span class="nc">BdfFontFile</span><span class="p">(</span><span class="n">FontFile</span><span class="o">.</span><span class="n">FontFile</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+
+        <span class="n">FontFile</span><span class="o">.</span><span class="n">FontFile</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="mi">13</span><span class="p">]</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;STARTFONT 2.1&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a valid BDF file&quot;</span><span class="p">)</span>
+
+        <span class="n">props</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">s</span><span class="p">[:</span><span class="mi">13</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;ENDPROPERTIES&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">props</span><span class="p">[</span><span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;COMMENT&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;COPYRIGHT&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;LogicalFontDescription&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span>
+
+        <span class="c1"># font = props[&quot;FONT&quot;].split(&quot;-&quot;)</span>
+
+        <span class="c1"># font[4] = bdf_slant[font[4].upper()]</span>
+        <span class="c1"># font[11] = bdf_spacing[font[11].upper()]</span>
+
+        <span class="c1"># ascent = int(props[&quot;FONT_ASCENT&quot;])</span>
+        <span class="c1"># descent = int(props[&quot;FONT_DESCENT&quot;])</span>
+
+        <span class="c1"># fontname = &quot;;&quot;.join(font[1:])</span>
+
+        <span class="c1"># print(&quot;#&quot;, fontname)</span>
+        <span class="c1"># for i in comments:</span>
+        <span class="c1">#       print(&quot;#&quot;, i)</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">bdf_char</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="nb">id</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span><span class="p">),</span> <span class="n">im</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">ch</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">glyph</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">glyph</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">xy</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">im</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

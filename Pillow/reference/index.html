@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Image Module" href="Image.html" />
+    <link rel="prev" title="Writing Your Own Image Plugin" href="../handbook/writing-your-own-file-decoder.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Image.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Image.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Image.html#the-image-class">The Image Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Image.html#attributes">Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html#color-names">Color Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html#cmsprofile">CmsProfile</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html#example-draw-a-gray-cross-over-an-image">Example: Draw a gray cross over an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html#concepts">Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html#example-draw-partial-opacity-text">Example: Draw Partial Opacity Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html#example-vary-the-sharpness-of-an-image">Example: Vary the sharpness of an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html#classes">Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html#example-parse-an-image">Example: Parse an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html#parser"><code class="docutils literal notranslate"><span class="pre">Parser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html#pydecoder"><code class="docutils literal notranslate"><span class="pre">PyDecoder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html#example-filter-an-image">Example: Filter an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html#filters">Filters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html#example-using-the-imagemath-module">Example: Using the <code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html#expression-syntax">Expression syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html#extracting-frames-from-an-animation">Extracting frames from an animation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html#the-iterator-class">The <code class="docutils literal notranslate"><span class="pre">Iterator</span></code> class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html#id1"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html#pyaccess-class"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.BdfFontFile"><code class="docutils literal notranslate"><span class="pre">BdfFontFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.ContainerIO"><code class="docutils literal notranslate"><span class="pre">ContainerIO</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.FontFile"><code class="docutils literal notranslate"><span class="pre">FontFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.GdImageFile"><code class="docutils literal notranslate"><span class="pre">GdImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.GimpGradientFile"><code class="docutils literal notranslate"><span class="pre">GimpGradientFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.GimpPaletteFile"><code class="docutils literal notranslate"><span class="pre">GimpPaletteFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.ImageDraw2"><code class="docutils literal notranslate"><span class="pre">ImageDraw2</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.ImageShow"><code class="docutils literal notranslate"><span class="pre">ImageShow</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.ImageTransform"><code class="docutils literal notranslate"><span class="pre">ImageTransform</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.JpegPresets"><code class="docutils literal notranslate"><span class="pre">JpegPresets</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.PaletteFile"><code class="docutils literal notranslate"><span class="pre">PaletteFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.PcfFontFile"><code class="docutils literal notranslate"><span class="pre">PcfFontFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#pngimageplugin-itxt-class"><code class="docutils literal notranslate"><span class="pre">PngImagePlugin.iTXt</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#pngimageplugin-pnginfo-class"><code class="docutils literal notranslate"><span class="pre">PngImagePlugin.PngInfo</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.TarIO"><code class="docutils literal notranslate"><span class="pre">TarIO</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL.WalImageFile"><code class="docutils literal notranslate"><span class="pre">WalImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html#module-PIL._binary"><code class="docutils literal notranslate"><span class="pre">_binary</span></code> Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Plugin reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.BmpImagePlugin"><code class="docutils literal notranslate"><span class="pre">BmpImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.BufrStubImagePlugin"><code class="docutils literal notranslate"><span class="pre">BufrStubImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.CurImagePlugin"><code class="docutils literal notranslate"><span class="pre">CurImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.DcxImagePlugin"><code class="docutils literal notranslate"><span class="pre">DcxImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.EpsImagePlugin"><code class="docutils literal notranslate"><span class="pre">EpsImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.FitsStubImagePlugin"><code class="docutils literal notranslate"><span class="pre">FitsStubImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.FliImagePlugin"><code class="docutils literal notranslate"><span class="pre">FliImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.FpxImagePlugin"><code class="docutils literal notranslate"><span class="pre">FpxImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.GbrImagePlugin"><code class="docutils literal notranslate"><span class="pre">GbrImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.GifImagePlugin"><code class="docutils literal notranslate"><span class="pre">GifImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.GribStubImagePlugin"><code class="docutils literal notranslate"><span class="pre">GribStubImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.Hdf5StubImagePlugin"><code class="docutils literal notranslate"><span class="pre">Hdf5StubImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.IcnsImagePlugin"><code class="docutils literal notranslate"><span class="pre">IcnsImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.IcoImagePlugin"><code class="docutils literal notranslate"><span class="pre">IcoImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.ImImagePlugin"><code class="docutils literal notranslate"><span class="pre">ImImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.ImtImagePlugin"><code class="docutils literal notranslate"><span class="pre">ImtImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.IptcImagePlugin"><code class="docutils literal notranslate"><span class="pre">IptcImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.JpegImagePlugin"><code class="docutils literal notranslate"><span class="pre">JpegImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.Jpeg2KImagePlugin"><code class="docutils literal notranslate"><span class="pre">Jpeg2KImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.McIdasImagePlugin"><code class="docutils literal notranslate"><span class="pre">McIdasImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.MicImagePlugin"><code class="docutils literal notranslate"><span class="pre">MicImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.MpegImagePlugin"><code class="docutils literal notranslate"><span class="pre">MpegImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.MspImagePlugin"><code class="docutils literal notranslate"><span class="pre">MspImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PalmImagePlugin"><code class="docutils literal notranslate"><span class="pre">PalmImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PcdImagePlugin"><code class="docutils literal notranslate"><span class="pre">PcdImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PcxImagePlugin"><code class="docutils literal notranslate"><span class="pre">PcxImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PdfImagePlugin"><code class="docutils literal notranslate"><span class="pre">PdfImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PixarImagePlugin"><code class="docutils literal notranslate"><span class="pre">PixarImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PngImagePlugin"><code class="docutils literal notranslate"><span class="pre">PngImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PpmImagePlugin"><code class="docutils literal notranslate"><span class="pre">PpmImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.PsdImagePlugin"><code class="docutils literal notranslate"><span class="pre">PsdImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.SgiImagePlugin"><code class="docutils literal notranslate"><span class="pre">SgiImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.SpiderImagePlugin"><code class="docutils literal notranslate"><span class="pre">SpiderImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.SunImagePlugin"><code class="docutils literal notranslate"><span class="pre">SunImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.TgaImagePlugin"><code class="docutils literal notranslate"><span class="pre">TgaImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.TiffImagePlugin"><code class="docutils literal notranslate"><span class="pre">TiffImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.WebPImagePlugin"><code class="docutils literal notranslate"><span class="pre">WebPImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.WmfImagePlugin"><code class="docutils literal notranslate"><span class="pre">WmfImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.XVThumbImagePlugin"><code class="docutils literal notranslate"><span class="pre">XVThumbImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.XbmImagePlugin"><code class="docutils literal notranslate"><span class="pre">XbmImagePlugin</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#module-PIL.XpmImagePlugin"><code class="docutils literal notranslate"><span class="pre">XpmImagePlugin</span></code> Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="open_files.html">File Handling in Pillow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="limits.html">Limits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_allocator.html">Block Allocator</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Image.html" class="btn btn-neutral float-right" title="Image Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../handbook/writing-your-own-file-decoder.html" class="btn btn-neutral" title="Writing Your Own Image Plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

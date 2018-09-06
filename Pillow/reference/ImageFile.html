@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageFile Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageFilter Module" href="ImageFilter.html" />
+    <link rel="prev" title="ImageEnhance Module" href="ImageEnhance.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-parse-an-image">Example: Parse an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parser"><code class="docutils literal notranslate"><span class="pre">Parser</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pydecoder"><code class="docutils literal notranslate"><span class="pre">PyDecoder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageFile.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageFile"></span><div class="section" id="imagefile-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFile</span></code> Module<a class="headerlink" href="#imagefile-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFile</span></code> module provides support functions for the image open
+and save functions.</p>
+<p>In addition, it provides a <a class="reference internal" href="#PIL.ImageFile.Parser" title="PIL.ImageFile.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> class which can be used to decode
+an image piece by piece (e.g. while receiving it over a network connection).
+This class implements the same consumer interface as the standard <strong>sgmllib</strong>
+and <strong>xmllib</strong> modules.</p>
+<div class="section" id="example-parse-an-image">
+<h2>Example: Parse an image<a class="headerlink" href="#example-parse-an-image" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageFile</span>
+
+<span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;hopper.pgm&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">Parser</span><span class="p">()</span>
+
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;copy.jpg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parser">
+<h2><a class="reference internal" href="#PIL.ImageFile.Parser" title="PIL.ImageFile.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a><a class="headerlink" href="#parser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PIL.ImageFile.Parser">
+<em class="property">class </em><code class="descclassname">PIL.ImageFile.</code><code class="descname">Parser</code><a class="reference internal" href="../_modules/PIL/ImageFile.html#Parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.Parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Incremental image parser.  This class implements the standard
+feed/close consumer interface.</p>
+<dl class="method">
+<dt id="PIL.ImageFile.Parser.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#Parser.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.Parser.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Consumer) Close the stream.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An image object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>IOError</strong> – If the parser failed to parse the image file either
+because it cannot be identified or cannot be
+decoded.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.Parser.feed">
+<code class="descname">feed</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#Parser.feed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.Parser.feed" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Consumer) Feed data to the parser.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – A string buffer.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>IOError</strong> – If the parser failed to parse the image file.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.Parser.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#Parser.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.Parser.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Consumer) Reset the parser.  Note that you can only call this
+method immediately after you’ve created a parser; parser
+instances cannot be reused.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pydecoder">
+<h2><a class="reference internal" href="#PIL.ImageFile.PyDecoder" title="PIL.ImageFile.PyDecoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyDecoder</span></code></a><a class="headerlink" href="#pydecoder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PIL.ImageFile.PyDecoder">
+<em class="property">class </em><code class="descclassname">PIL.ImageFile.</code><code class="descname">PyDecoder</code><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python implementation of a format decoder. Override this class and
+add the decoding logic in the <cite>decode</cite> method.</p>
+<p>See <a class="reference internal" href="../handbook/writing-your-own-file-decoder.html#file-decoders-py"><span class="std std-ref">Writing Your Own File Decoder in Python</span></a></p>
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.cleanup">
+<code class="descname">cleanup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override to perform decoder specific cleanup</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.decode">
+<code class="descname">decode</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override to perform the decoding process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> – A bytes object with the data to be decoded.  If <cite>handles_eof</cite>
+is set, then <cite>buffer</cite> will be empty and <cite>self.fd</cite> will be set.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A tuple of (bytes consumed, errcode). If finished with decoding
+return &lt;0 for the bytes consumed. Err codes are from <cite>ERRORS</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override to perform decoder specific initialization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – Array of args items from the tile entry</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.set_as_raw">
+<code class="descname">set_as_raw</code><span class="sig-paren">(</span><em>data</em>, <em>rawmode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.set_as_raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.set_as_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience method to set the internal image from a stream of raw data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> – Bytes to be set</li>
+<li><strong>rawmode</strong> – The rawmode to be used for the decoder. If not specified,
+it will default to the mode of the image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.setfd">
+<code class="descname">setfd</code><span class="sig-paren">(</span><em>fd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.setfd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.setfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called from ImageFile to set the python file-like object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fd</strong> – A python file-like object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageFile.PyDecoder.setimage">
+<code class="descname">setimage</code><span class="sig-paren">(</span><em>im</em>, <em>extents=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageFile.html#PyDecoder.setimage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageFile.PyDecoder.setimage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called from ImageFile to set the core output image for the decoder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im</strong> – A core image object</li>
+<li><strong>extents</strong> – a 4 tuple of (x0, y0, x1, y1) defining the rectangle
+for this tile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageFilter.html" class="btn btn-neutral float-right" title="ImageFilter Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageEnhance.html" class="btn btn-neutral" title="ImageEnhance Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

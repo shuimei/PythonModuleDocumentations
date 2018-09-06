@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageDraw2 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageDraw2</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageDraw2</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># WCK-style drawing interface operations</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2003-12-07 fl   created</span>
+<span class="c1"># 2005-05-15 fl   updated; added to PIL as ImageDraw2</span>
+<span class="c1"># 2005-05-15 fl   added text support</span>
+<span class="c1"># 2005-05-20 fl   added arc/chord/pieslice support</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2003-2005 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 2003-2005 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageColor</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageFont</span><span class="p">,</span> <span class="n">ImagePath</span>
+
+
+<div class="viewcode-block" id="Pen"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Pen">[docs]</a><span class="k">class</span> <span class="nc">Pen</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">ImageColor</span><span class="o">.</span><span class="n">getrgb</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span></div>
+
+
+<div class="viewcode-block" id="Brush"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Brush">[docs]</a><span class="k">class</span> <span class="nc">Brush</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">opacity</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">ImageColor</span><span class="o">.</span><span class="n">getrgb</span><span class="p">(</span><span class="n">color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Font"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Font">[docs]</a><span class="k">class</span> <span class="nc">Font</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+        <span class="c1"># FIXME: add support for bitmap fonts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">ImageColor</span><span class="o">.</span><span class="n">getrgb</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">truetype</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Draw"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw">[docs]</a><span class="k">class</span> <span class="nc">Draw</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">&quot;im&quot;</span><span class="p">):</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Draw.flush"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span></div>
+
+<div class="viewcode-block" id="Draw.render"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">pen</span><span class="p">,</span> <span class="n">brush</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># handle color arguments</span>
+        <span class="n">outline</span> <span class="o">=</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pen</span><span class="p">,</span> <span class="n">Pen</span><span class="p">):</span>
+            <span class="n">outline</span> <span class="o">=</span> <span class="n">pen</span><span class="o">.</span><span class="n">color</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">pen</span><span class="o">.</span><span class="n">width</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">brush</span><span class="p">,</span> <span class="n">Pen</span><span class="p">):</span>
+            <span class="n">outline</span> <span class="o">=</span> <span class="n">brush</span><span class="o">.</span><span class="n">color</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">brush</span><span class="o">.</span><span class="n">width</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">brush</span><span class="p">,</span> <span class="n">Brush</span><span class="p">):</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="n">brush</span><span class="o">.</span><span class="n">color</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pen</span><span class="p">,</span> <span class="n">Brush</span><span class="p">):</span>
+            <span class="n">fill</span> <span class="o">=</span> <span class="n">pen</span><span class="o">.</span><span class="n">color</span>
+        <span class="c1"># handle transformation</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="n">xy</span> <span class="o">=</span> <span class="n">ImagePath</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+            <span class="n">xy</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+        <span class="c1"># render the item</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">outline</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="p">,</span> <span class="n">op</span><span class="p">)(</span><span class="n">xy</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="n">outline</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.settransform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.settransform">[docs]</a>    <span class="k">def</span> <span class="nf">settransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">)</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.arc"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.arc">[docs]</a>    <span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;arc&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.chord"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.chord">[docs]</a>    <span class="k">def</span> <span class="nf">chord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;chord&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.ellipse"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.ellipse">[docs]</a>    <span class="k">def</span> <span class="nf">ellipse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;ellipse&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.line"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.line">[docs]</a>    <span class="k">def</span> <span class="nf">line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.pieslice"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.pieslice">[docs]</a>    <span class="k">def</span> <span class="nf">pieslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;pieslice&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.polygon"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.polygon">[docs]</a>    <span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;polygon&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.rectangle"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.rectangle">[docs]</a>    <span class="k">def</span> <span class="nf">rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;rectangle&quot;</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="o">*</span><span class="n">options</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.text"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">:</span>
+            <span class="n">xy</span> <span class="o">=</span> <span class="n">ImagePath</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+            <span class="n">xy</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="o">.</span><span class="n">font</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">font</span><span class="o">.</span><span class="n">color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Draw.textsize"><a class="viewcode-back" href="../../PIL.html#PIL.ImageDraw2.Draw.textsize">[docs]</a>    <span class="k">def</span> <span class="nf">textsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">textsize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">font</span><span class="o">.</span><span class="n">font</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

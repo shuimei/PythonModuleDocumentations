@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageOps &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageOps</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageOps</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># standard image operations</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2001-10-20 fl   Created</span>
+<span class="c1"># 2001-10-23 fl   Added autocontrast operator</span>
+<span class="c1"># 2001-12-18 fl   Added Kevin&#39;s fit operator</span>
+<span class="c1"># 2004-03-14 fl   Fixed potential division by zero in equalize</span>
+<span class="c1"># 2005-05-05 fl   Fixed equalize for low number of values</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2001-2004 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 2001-2004 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">isStringType</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># helpers</span>
+
+<span class="k">def</span> <span class="nf">_border</span><span class="p">(</span><span class="n">border</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">border</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">,</span> <span class="n">top</span> <span class="o">=</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">border</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">border</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">border</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">top</span> <span class="o">=</span> <span class="n">right</span> <span class="o">=</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">border</span>
+    <span class="k">return</span> <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span>
+
+
+<span class="k">def</span> <span class="nf">_color</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">isStringType</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">ImageColor</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">ImageColor</span><span class="o">.</span><span class="n">getcolor</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">color</span>
+
+
+<span class="k">def</span> <span class="nf">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+        <span class="c1"># FIXME: apply to lookup table, not image data</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;mode P support coming soon&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">lut</span><span class="p">)</span> <span class="o">==</span> <span class="mi">256</span><span class="p">:</span>
+            <span class="n">lut</span> <span class="o">=</span> <span class="n">lut</span> <span class="o">+</span> <span class="n">lut</span> <span class="o">+</span> <span class="n">lut</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="n">lut</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;not supported for this image mode&quot;</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="c1"># actions</span>
+
+
+<div class="viewcode-block" id="autocontrast"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.autocontrast">[docs]</a><span class="k">def</span> <span class="nf">autocontrast</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maximize (normalize) image contrast. This function calculates a</span>
+<span class="sd">    histogram of the input image, removes **cutoff** percent of the</span>
+<span class="sd">    lightest and darkest pixels from the histogram, and remaps the image</span>
+<span class="sd">    so that the darkest pixel becomes black (0), and the lightest</span>
+<span class="sd">    becomes white (255).</span>
+
+<span class="sd">    :param image: The image to process.</span>
+<span class="sd">    :param cutoff: How many percent to cut off from the histogram.</span>
+<span class="sd">    :param ignore: The background pixel value (use None for no background).</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">histogram</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">histogram</span><span class="p">()</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">histogram</span><span class="p">),</span> <span class="mi">256</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">[</span><span class="n">layer</span><span class="p">:</span><span class="n">layer</span><span class="o">+</span><span class="mi">256</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ignore</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># get rid of outliers</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">h</span><span class="p">[</span><span class="n">ignore</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># assume sequence</span>
+                <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">ignore</span><span class="p">:</span>
+                    <span class="n">h</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="c1"># cut off pixels from both ends of the histogram</span>
+            <span class="c1"># get number of pixels</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">h</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+            <span class="c1"># remove cutoff% pixels from the low end</span>
+            <span class="n">cut</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cutoff</span> <span class="o">//</span> <span class="mi">100</span>
+            <span class="k">for</span> <span class="n">lo</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">cut</span> <span class="o">&gt;</span> <span class="n">h</span><span class="p">[</span><span class="n">lo</span><span class="p">]:</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="n">cut</span> <span class="o">-</span> <span class="n">h</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span>
+                    <span class="n">h</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">h</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cut</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">cut</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="c1"># remove cutoff% samples from the hi end</span>
+            <span class="n">cut</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">cutoff</span> <span class="o">//</span> <span class="mi">100</span>
+            <span class="k">for</span> <span class="n">hi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">cut</span> <span class="o">&gt;</span> <span class="n">h</span><span class="p">[</span><span class="n">hi</span><span class="p">]:</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="n">cut</span> <span class="o">-</span> <span class="n">h</span><span class="p">[</span><span class="n">hi</span><span class="p">]</span>
+                    <span class="n">h</span><span class="p">[</span><span class="n">hi</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">h</span><span class="p">[</span><span class="n">hi</span><span class="p">]</span> <span class="o">-=</span> <span class="n">cut</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">cut</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="c1"># find lowest/highest samples after preprocessing</span>
+        <span class="k">for</span> <span class="n">lo</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">lo</span><span class="p">]:</span>
+                <span class="k">break</span>
+        <span class="k">for</span> <span class="n">hi</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">h</span><span class="p">[</span><span class="n">hi</span><span class="p">]:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">hi</span> <span class="o">&lt;=</span> <span class="n">lo</span><span class="p">:</span>
+            <span class="c1"># don&#39;t bother</span>
+            <span class="n">lut</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="mf">255.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="n">lo</span><span class="p">)</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="o">-</span><span class="n">lo</span> <span class="o">*</span> <span class="n">scale</span>
+            <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ix</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ix</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ix</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">elif</span> <span class="n">ix</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">:</span>
+                    <span class="n">ix</span> <span class="o">=</span> <span class="mi">255</span>
+                <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="colorize"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.colorize">[docs]</a><span class="k">def</span> <span class="nf">colorize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">black</span><span class="p">,</span> <span class="n">white</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Colorize grayscale image.  The **black** and **white**</span>
+<span class="sd">    arguments should be RGB tuples; this function calculates a color</span>
+<span class="sd">    wedge mapping all black pixels in the source image to the first</span>
+<span class="sd">    color, and all white pixels to the second color.</span>
+
+<span class="sd">    :param image: The image to colorize.</span>
+<span class="sd">    :param black: The color to use for black input pixels.</span>
+<span class="sd">    :param white: The color to use for white input pixels.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span>
+    <span class="n">black</span> <span class="o">=</span> <span class="n">_color</span><span class="p">(</span><span class="n">black</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="n">white</span> <span class="o">=</span> <span class="n">_color</span><span class="p">(</span><span class="n">white</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="n">red</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">green</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">blue</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+        <span class="n">red</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">black</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="o">*</span><span class="p">(</span><span class="n">white</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">black</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">//</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">green</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">black</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="o">*</span><span class="p">(</span><span class="n">white</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">black</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">//</span><span class="mi">255</span><span class="p">)</span>
+        <span class="n">blue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">black</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">i</span><span class="o">*</span><span class="p">(</span><span class="n">white</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">black</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">//</span><span class="mi">255</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">red</span> <span class="o">+</span> <span class="n">green</span> <span class="o">+</span> <span class="n">blue</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="crop"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.crop">[docs]</a><span class="k">def</span> <span class="nf">crop</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove border from image.  The same amount of pixels are removed</span>
+<span class="sd">    from all four sides.  This function works on all image modes.</span>
+
+<span class="sd">    .. seealso:: :py:meth:`~PIL.Image.Image.crop`</span>
+
+<span class="sd">    :param image: The image to crop.</span>
+<span class="sd">    :param border: The number of pixels to remove.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">_border</span><span class="p">(</span><span class="n">border</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">right</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">bottom</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a rescaled image by a specific factor given in parameter.</span>
+<span class="sd">    A factor greater than 1 expands the image, between 0 and 1 contracts the</span>
+<span class="sd">    image.</span>
+
+<span class="sd">    :param image: The image to rescale.</span>
+<span class="sd">    :param factor: The expansion factor, as a float.</span>
+<span class="sd">    :param resample: An optional resampling filter. Same values possible as</span>
+<span class="sd">       in the PIL.Image.resize function.</span>
+<span class="sd">    :returns: An :py:class:`~PIL.Image.Image` object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">factor</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">factor</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the factor must be greater than 0&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="p">)),</span>
+                <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">factor</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">resample</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="deform"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.deform">[docs]</a><span class="k">def</span> <span class="nf">deform</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">deformer</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">BILINEAR</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deform the image.</span>
+
+<span class="sd">    :param image: The image to deform.</span>
+<span class="sd">    :param deformer: A deformer object.  Any object that implements a</span>
+<span class="sd">                    **getmesh** method can be used.</span>
+<span class="sd">    :param resample: An optional resampling filter. Same values possible as</span>
+<span class="sd">       in the PIL.Image.transform function.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">MESH</span><span class="p">,</span> <span class="n">deformer</span><span class="o">.</span><span class="n">getmesh</span><span class="p">(</span><span class="n">image</span><span class="p">),</span> <span class="n">resample</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="equalize"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.equalize">[docs]</a><span class="k">def</span> <span class="nf">equalize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equalize the image histogram. This function applies a non-linear</span>
+<span class="sd">    mapping to the input image, in order to create a uniform</span>
+<span class="sd">    distribution of grayscale values in the output image.</span>
+
+<span class="sd">    :param image: The image to equalize.</span>
+<span class="sd">    :param mask: An optional mask.  If given, only the pixels selected by</span>
+<span class="sd">                 the mask are included in the analysis.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="mi">256</span><span class="p">):</span>
+        <span class="n">histo</span> <span class="o">=</span> <span class="p">[</span><span class="n">_f</span> <span class="k">for</span> <span class="n">_f</span> <span class="ow">in</span> <span class="n">h</span><span class="p">[</span><span class="n">b</span><span class="p">:</span><span class="n">b</span><span class="o">+</span><span class="mi">256</span><span class="p">]</span> <span class="k">if</span> <span class="n">_f</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">histo</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">lut</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">histo</span><span class="p">)</span> <span class="o">-</span> <span class="n">histo</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">//</span> <span class="mi">255</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">step</span><span class="p">:</span>
+                <span class="n">lut</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="n">step</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+                    <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="n">step</span><span class="p">)</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">b</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="expand"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.expand">[docs]</a><span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add border to the image</span>
+
+<span class="sd">    :param image: The image to expand.</span>
+<span class="sd">    :param border: Border width, in pixels.</span>
+<span class="sd">    :param fill: Pixel fill value (a color value).  Default is 0 (black).</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="n">_border</span><span class="p">(</span><span class="n">border</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">right</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">top</span> <span class="o">+</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bottom</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="n">_color</span><span class="p">(</span><span class="n">fill</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">NEAREST</span><span class="p">,</span> <span class="n">bleed</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">centering</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a sized and cropped version of the image, cropped to the</span>
+<span class="sd">    requested aspect ratio and size.</span>
+
+<span class="sd">    This function was contributed by Kevin Cazabon.</span>
+
+<span class="sd">    :param image: The image to size and crop.</span>
+<span class="sd">    :param size: The requested output size in pixels, given as a</span>
+<span class="sd">                 (width, height) tuple.</span>
+<span class="sd">    :param method: What resampling method to use. Default is</span>
+<span class="sd">                   :py:attr:`PIL.Image.NEAREST`.</span>
+<span class="sd">    :param bleed: Remove a border around the outside of the image (from all</span>
+<span class="sd">                  four edges. The value is a decimal percentage (use 0.01 for</span>
+<span class="sd">                  one percent). The default value is 0 (no border).</span>
+<span class="sd">    :param centering: Control the cropping position.  Use (0.5, 0.5) for</span>
+<span class="sd">                      center cropping (e.g. if cropping the width, take 50% off</span>
+<span class="sd">                      of the left side, and therefore 50% off the right side).</span>
+<span class="sd">                      (0.0, 0.0) will crop from the top left corner (i.e. if</span>
+<span class="sd">                      cropping the width, take all of the crop off of the right</span>
+<span class="sd">                      side, and if cropping the height, take all of it off the</span>
+<span class="sd">                      bottom).  (1.0, 0.0) will crop from the bottom left</span>
+<span class="sd">                      corner, etc. (i.e. if cropping the width, take all of the</span>
+<span class="sd">                      crop off the left side, and if cropping the height take</span>
+<span class="sd">                      none from the top, and therefore all off the bottom).</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># by Kevin Cazabon, Feb 17/2000</span>
+    <span class="c1"># kevin@cazabon.com</span>
+    <span class="c1"># http://www.cazabon.com</span>
+
+    <span class="c1"># ensure inputs are valid</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">centering</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">centering</span> <span class="o">=</span> <span class="p">[</span><span class="n">centering</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centering</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">if</span> <span class="n">centering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">centering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">centering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.50</span>
+    <span class="k">if</span> <span class="n">centering</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="ow">or</span> <span class="n">centering</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">centering</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.50</span>
+
+    <span class="k">if</span> <span class="n">bleed</span> <span class="o">&gt;</span> <span class="mf">0.49999</span> <span class="ow">or</span> <span class="n">bleed</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">bleed</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># calculate the area to use for resizing and cropping, subtracting</span>
+    <span class="c1"># the &#39;bleed&#39; around the edges</span>
+
+    <span class="c1"># number of pixels to trim off on Top and Bottom, Left and Right</span>
+    <span class="n">bleedPixels</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">int</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">bleed</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span>
+        <span class="nb">int</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">bleed</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="n">liveArea</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">bleed</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">liveArea</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">bleedPixels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bleedPixels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">bleedPixels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bleedPixels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">)</span>
+
+    <span class="n">liveSize</span> <span class="o">=</span> <span class="p">(</span><span class="n">liveArea</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">liveArea</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">liveArea</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">liveArea</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># calculate the aspect ratio of the liveArea</span>
+    <span class="n">liveAreaAspectRatio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># calculate the aspect ratio of the output image</span>
+    <span class="n">aspectRatio</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1"># figure out if the sides or top/bottom will be cropped off</span>
+    <span class="k">if</span> <span class="n">liveAreaAspectRatio</span> <span class="o">&gt;=</span> <span class="n">aspectRatio</span><span class="p">:</span>
+        <span class="c1"># liveArea is wider than what&#39;s needed, crop the sides</span>
+        <span class="n">cropWidth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">aspectRatio</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">cropHeight</span> <span class="o">=</span> <span class="n">liveSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># liveArea is taller than what&#39;s needed, crop the top and bottom</span>
+        <span class="n">cropWidth</span> <span class="o">=</span> <span class="n">liveSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cropHeight</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="n">aspectRatio</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="c1"># make the crop</span>
+    <span class="n">leftSide</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">liveArea</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">cropWidth</span><span class="p">)</span> <span class="o">*</span> <span class="n">centering</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">leftSide</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">leftSide</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">topSide</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">liveArea</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">liveSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">cropHeight</span><span class="p">)</span> <span class="o">*</span> <span class="n">centering</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">topSide</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">topSide</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">leftSide</span><span class="p">,</span> <span class="n">topSide</span><span class="p">,</span> <span class="n">leftSide</span> <span class="o">+</span> <span class="n">cropWidth</span><span class="p">,</span> <span class="n">topSide</span> <span class="o">+</span> <span class="n">cropHeight</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># resize the image and return it</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flip the image vertically (top to bottom).</span>
+
+<span class="sd">    :param image: The image to flip.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_TOP_BOTTOM</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="grayscale"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.grayscale">[docs]</a><span class="k">def</span> <span class="nf">grayscale</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the image to grayscale.</span>
+
+<span class="sd">    :param image: The image to convert.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invert"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.invert">[docs]</a><span class="k">def</span> <span class="nf">invert</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Invert (negate) the image.</span>
+
+<span class="sd">    :param image: The image to invert.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+        <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">255</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mirror"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.mirror">[docs]</a><span class="k">def</span> <span class="nf">mirror</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flip image horizontally (left to right).</span>
+
+<span class="sd">    :param image: The image to mirror.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="posterize"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.posterize">[docs]</a><span class="k">def</span> <span class="nf">posterize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reduce the number of bits for each color channel.</span>
+
+<span class="sd">    :param image: The image to posterize.</span>
+<span class="sd">    :param bits: The number of bits to keep for each channel (1-8).</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mi">8</span><span class="o">-</span><span class="n">bits</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+        <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solarize"><a class="viewcode-back" href="../../reference/ImageOps.html#PIL.ImageOps.solarize">[docs]</a><span class="k">def</span> <span class="nf">solarize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Invert all pixel values above a threshold.</span>
+
+<span class="sd">    :param image: The image to solarize.</span>
+<span class="sd">    :param threshold: All pixels above this greyscale level are inverted.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lut</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+            <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lut</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">255</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_lut</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">lut</span><span class="p">)</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PIL USM components, from Kevin Cazabon.</span>
+
+<span class="k">def</span> <span class="nf">gaussian_blur</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PIL_usm.gblur(im, [radius])&quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;PIL.ImageOps.gaussian_blur is deprecated. &#39;</span>
+        <span class="s1">&#39;Use PIL.ImageFilter.GaussianBlur instead. &#39;</span>
+        <span class="s1">&#39;This function will be removed in a future version.&#39;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">gblur</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PIL_usm.gblur(im, [radius])&quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;PIL.ImageOps.gblur is deprecated. &#39;</span>
+        <span class="s1">&#39;Use PIL.ImageFilter.GaussianBlur instead. &#39;</span>
+        <span class="s1">&#39;This function will be removed in a future version.&#39;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">gaussian_blur</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">unsharp_mask</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PIL_usm.usm(im, [radius, percent, threshold])&quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;PIL.ImageOps.unsharp_mask is deprecated. &#39;</span>
+        <span class="s1">&#39;Use PIL.ImageFilter.UnsharpMask instead. &#39;</span>
+        <span class="s1">&#39;This function will be removed in a future version.&#39;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="mf">5.0</span>
+    <span class="k">if</span> <span class="n">percent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">percent</span> <span class="o">=</span> <span class="mi">150</span>
+    <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">unsharp_mask</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">percent</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">usm</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PIL_usm.usm(im, [radius, percent, threshold])&quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;PIL.ImageOps.usm is deprecated. &#39;</span>
+        <span class="s1">&#39;Use PIL.ImageFilter.UnsharpMask instead. &#39;</span>
+        <span class="s1">&#39;This function will be removed in a future version.&#39;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">unsharp_mask</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">percent</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">box_blur</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Blur the image by setting each pixel to the average value of the pixels</span>
+<span class="sd">    in a square box extending radius pixels in each direction.</span>
+<span class="sd">    Supports float radius of arbitrary size. Uses an optimized implementation</span>
+<span class="sd">    which runs in linear time relative to the size of the image</span>
+<span class="sd">    for any radius value.</span>
+
+<span class="sd">    :param image: The image to blur.</span>
+<span class="sd">    :param radius: Size of the box in one direction. Radius 0 does not blur,</span>
+<span class="sd">                   returns an identical image. Radius 1 takes 1 pixel</span>
+<span class="sd">                   in each direction, i.e. 9 pixels in total.</span>
+<span class="sd">    :return: An image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;PIL.ImageOps.box_blur is deprecated. &#39;</span>
+        <span class="s1">&#39;Use PIL.ImageFilter.BoxBlur instead. &#39;</span>
+        <span class="s1">&#39;This function will be removed in a future version.&#39;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span>
+    <span class="p">)</span>
+
+    <span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">_new</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">box_blur</span><span class="p">(</span><span class="n">radius</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

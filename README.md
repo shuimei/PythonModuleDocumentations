@@ -9,6 +9,7 @@ collection of Python Model Documentations for data scientists.
 + seaborn
 + LightGBM
 + statsmodel
++ Pillow
 + ...
 
 ## usage

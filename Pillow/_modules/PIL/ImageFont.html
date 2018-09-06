@@ -1,0 +1,682 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageFont &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageFont</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageFont</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># PIL raster font management</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 1996-08-07 fl   created (experimental)</span>
+<span class="c1"># 1997-08-25 fl   minor adjustments to handle fonts from pilfont 0.3</span>
+<span class="c1"># 1999-02-06 fl   rewrote most font management stuff in C</span>
+<span class="c1"># 1999-03-17 fl   take pth files into account in load_path (from Richard Jones)</span>
+<span class="c1"># 2001-02-17 fl   added freetype support</span>
+<span class="c1"># 2001-05-09 fl   added TransposedFont wrapper class</span>
+<span class="c1"># 2002-03-04 fl   make sure we have a &quot;L&quot; or &quot;1&quot; font</span>
+<span class="c1"># 2002-12-04 fl   skip non-directory entries in the system path</span>
+<span class="c1"># 2003-04-29 fl   add embedded default font</span>
+<span class="c1"># 2003-09-27 fl   added support for truetype charmap encodings</span>
+<span class="c1">#</span>
+<span class="c1"># Todo:</span>
+<span class="c1"># Adapt to PILFONT2 format (16-bit fonts, compressed, single file)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2003 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 1996-2003 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">isDirectory</span><span class="p">,</span> <span class="n">isPath</span><span class="p">,</span> <span class="n">py3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">LAYOUT_BASIC</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">LAYOUT_RAQM</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<span class="k">class</span> <span class="nc">_imagingft_not_installed</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># module placeholder</span>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;The _imagingft C module is not installed&quot;</span><span class="p">)</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_imagingft</span> <span class="k">as</span> <span class="n">core</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">core</span> <span class="o">=</span> <span class="n">_imagingft_not_installed</span><span class="p">()</span>
+
+
+<span class="c1"># FIXME: add support for pilfont2 format (see FontFile.py)</span>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Font metrics format:</span>
+<span class="c1">#       &quot;PILfont&quot; LF</span>
+<span class="c1">#       fontdescriptor LF</span>
+<span class="c1">#       (optional) key=value... LF</span>
+<span class="c1">#       &quot;DATA&quot; LF</span>
+<span class="c1">#       binary data: 256*10*2 bytes (dx, dy, dstbox, srcbox)</span>
+<span class="c1">#</span>
+<span class="c1"># To place a character, cut out srcbox and paste at dstbox,</span>
+<span class="c1"># relative to the character position.  Then move the character</span>
+<span class="c1"># position according to dx, dy.</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+
+<span class="k">class</span> <span class="nc">ImageFont</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s2">&quot;PIL font wrapper&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_load_pilfont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">,</span> <span class="s2">&quot;.gif&quot;</span><span class="p">,</span> <span class="s2">&quot;.pbm&quot;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fullname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ext</span>
+                    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fullname</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">image</span> <span class="ow">and</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot find glyph data file&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">fullname</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_pilfont_data</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_load_pilfont_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+
+        <span class="c1"># read PILfont header</span>
+        <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;PILfont</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Not a PILfont file&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># FIXME: should be a dictionary</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;DATA</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="c1"># read PILfont metrics</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">256</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1"># check image</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid font image mode&quot;</span><span class="p">)</span>
+
+        <span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">font</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getmask</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Wrapper for FreeType fonts.  Application code should use the</span>
+<span class="c1"># &lt;b&gt;truetype&lt;/b&gt; factory function to create font objects.</span>
+
+<span class="k">class</span> <span class="nc">FreeTypeFont</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s2">&quot;FreeType font wrapper (requires _imagingft service)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">layout_engine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># FIXME: use service provider instead</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">font</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">encoding</span>
+
+        <span class="k">if</span> <span class="n">layout_engine</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">LAYOUT_BASIC</span><span class="p">,</span> <span class="n">LAYOUT_RAQM</span><span class="p">):</span>
+            <span class="n">layout_engine</span> <span class="o">=</span> <span class="n">LAYOUT_BASIC</span>
+            <span class="k">if</span> <span class="n">core</span><span class="o">.</span><span class="n">HAVE_RAQM</span><span class="p">:</span>
+                <span class="n">layout_engine</span> <span class="o">=</span> <span class="n">LAYOUT_RAQM</span>
+        <span class="k">if</span> <span class="n">layout_engine</span> <span class="o">==</span> <span class="n">LAYOUT_RAQM</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">core</span><span class="o">.</span><span class="n">HAVE_RAQM</span><span class="p">:</span>
+            <span class="n">layout_engine</span> <span class="o">=</span> <span class="n">LAYOUT_BASIC</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_engine</span> <span class="o">=</span> <span class="n">layout_engine</span>
+
+        <span class="k">if</span> <span class="n">isPath</span><span class="p">(</span><span class="n">font</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">getfont</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">layout_engine</span><span class="o">=</span><span class="n">layout_engine</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">font_bytes</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">getfont</span><span class="p">(</span>
+                <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_bytes</span><span class="p">,</span> <span class="n">layout_engine</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_multiline_split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="n">split_character</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_character</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">family</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">style</span>
+
+    <span class="k">def</span> <span class="nf">getmetrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">ascent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">descent</span>
+
+    <span class="k">def</span> <span class="nf">getsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">size</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">getsize_multiline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">max_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiline_split</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">line_spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">spacing</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line_width</span><span class="p">,</span> <span class="n">line_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+            <span class="n">max_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_width</span><span class="p">,</span> <span class="n">line_width</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">max_width</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">*</span><span class="n">line_spacing</span> <span class="o">-</span> <span class="n">spacing</span>
+
+    <span class="k">def</span> <span class="nf">getoffset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getmask2</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getmask2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">fill</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">size</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">im</span><span class="p">,</span> <span class="n">offset</span>
+
+    <span class="k">def</span> <span class="nf">font_variant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">layout_engine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a copy of this FreeTypeFont object,</span>
+<span class="sd">        using any specified arguments to override the settings.</span>
+
+<span class="sd">        Parameters are identical to the parameters used to initialize this</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        :return: A FreeTypeFont object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">font</span><span class="p">,</span>
+                            <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">size</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span><span class="p">,</span>
+                            <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">encoding</span><span class="p">,</span>
+                            <span class="n">layout_engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_engine</span> <span class="k">if</span> <span class="n">layout_engine</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">layout_engine</span>
+                            <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TransposedFont</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s2">&quot;Wrapper for writing rotated or mirrored text&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper that creates a transposed font from any existing font</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        :param font: A font object.</span>
+<span class="sd">        :param orientation: An optional orientation.  If given, this should</span>
+<span class="sd">            be one of Image.FLIP_LEFT_RIGHT, Image.FLIP_TOP_BOTTOM,</span>
+<span class="sd">            Image.ROTATE_90, Image.ROTATE_180, or Image.ROTATE_270.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">font</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">orientation</span>  <span class="c1"># any &#39;transpose&#39; argument, or None</span>
+
+    <span class="k">def</span> <span class="nf">getsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_90</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">ROTATE_270</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span>
+
+    <span class="k">def</span> <span class="nf">getmask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">getmask</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">im</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orientation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">im</span>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../reference/ImageFont.html#PIL.ImageFont.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a font file.  This function loads a font object from the given</span>
+<span class="sd">    bitmap font file, and returns the corresponding font object.</span>
+
+<span class="sd">    :param filename: Name of font file.</span>
+<span class="sd">    :return: A font object.</span>
+<span class="sd">    :exception IOError: If the file could not be read.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">_load_pilfont</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="truetype"><a class="viewcode-back" href="../../reference/ImageFont.html#PIL.ImageFont.truetype">[docs]</a><span class="k">def</span> <span class="nf">truetype</span><span class="p">(</span><span class="n">font</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+             <span class="n">layout_engine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a TrueType or OpenType font from a file or file-like object,</span>
+<span class="sd">    and create a font object.</span>
+<span class="sd">    This function loads a font object from the given file or file-like</span>
+<span class="sd">    object, and creates a font object for a font of the given size.</span>
+
+<span class="sd">    This function requires the _imagingft service.</span>
+
+<span class="sd">    :param font: A filename or file-like object containing a TrueType font.</span>
+<span class="sd">                     Under Windows, if the file is not found in this filename,</span>
+<span class="sd">                     the loader also looks in Windows :file:`fonts/` directory.</span>
+<span class="sd">    :param size: The requested size, in points.</span>
+<span class="sd">    :param index: Which font face to load (default is first available face).</span>
+<span class="sd">    :param encoding: Which font encoding to use (default is Unicode). Common</span>
+<span class="sd">                     encodings are &quot;unic&quot; (Unicode), &quot;symb&quot; (Microsoft</span>
+<span class="sd">                     Symbol), &quot;ADOB&quot; (Adobe Standard), &quot;ADBE&quot; (Adobe Expert),</span>
+<span class="sd">                     and &quot;armn&quot; (Apple Roman). See the FreeType documentation</span>
+<span class="sd">                     for more information.</span>
+<span class="sd">    :param layout_engine: Which layout engine to use, if available:</span>
+<span class="sd">                     `ImageFont.LAYOUT_BASIC` or `ImageFont.LAYOUT_RAQM`.</span>
+<span class="sd">    :return: A font object.</span>
+<span class="sd">    :exception IOError: If the file could not be read.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">layout_engine</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+        <span class="n">ttf_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+
+        <span class="n">dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+            <span class="c1"># check the windows font repository</span>
+            <span class="c1"># NOTE: must use uppercase WINDIR, to work around bugs in</span>
+            <span class="c1"># 1.5.2&#39;s os.environ.get()</span>
+            <span class="n">windir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;WINDIR&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">windir</span><span class="p">:</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">windir</span><span class="p">,</span> <span class="s2">&quot;fonts&quot;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;linux&#39;</span><span class="p">,</span> <span class="s1">&#39;linux2&#39;</span><span class="p">):</span>
+            <span class="n">lindirs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;XDG_DATA_DIRS&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">lindirs</span><span class="p">:</span>
+                <span class="c1"># According to the freedesktop spec, XDG_DATA_DIRS should</span>
+                <span class="c1"># default to /usr/share</span>
+                <span class="n">lindirs</span> <span class="o">=</span> <span class="s1">&#39;/usr/share&#39;</span>
+            <span class="n">dirs</span> <span class="o">+=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lindir</span><span class="p">,</span> <span class="s2">&quot;fonts&quot;</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">lindir</span> <span class="ow">in</span> <span class="n">lindirs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span><span class="p">:</span>
+            <span class="n">dirs</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;/Library/Fonts&#39;</span><span class="p">,</span> <span class="s1">&#39;/System/Library/Fonts&#39;</span><span class="p">,</span>
+                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/Library/Fonts&#39;</span><span class="p">)]</span>
+
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">ttf_filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">first_font_with_a_different_extension</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">walkroot</span><span class="p">,</span> <span class="n">walkdir</span><span class="p">,</span> <span class="n">walkfilenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">walkfilename</span> <span class="ow">in</span> <span class="n">walkfilenames</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ext</span> <span class="ow">and</span> <span class="n">walkfilename</span> <span class="o">==</span> <span class="n">ttf_filename</span><span class="p">:</span>
+                        <span class="n">fontpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">walkroot</span><span class="p">,</span> <span class="n">walkfilename</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="n">fontpath</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">layout_engine</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">ext</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">walkfilename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ttf_filename</span><span class="p">:</span>
+                        <span class="n">fontpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">walkroot</span><span class="p">,</span> <span class="n">walkfilename</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fontpath</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.ttf&#39;</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="n">fontpath</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">layout_engine</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span> <span class="ow">and</span> <span class="n">first_font_with_a_different_extension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">first_font_with_a_different_extension</span> <span class="o">=</span> <span class="n">fontpath</span>
+        <span class="k">if</span> <span class="n">first_font_with_a_different_extension</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="n">first_font_with_a_different_extension</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span>
+                                <span class="n">index</span><span class="p">,</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">layout_engine</span><span class="p">)</span>
+        <span class="k">raise</span></div>
+
+
+<div class="viewcode-block" id="load_path"><a class="viewcode-back" href="../../reference/ImageFont.html#PIL.ImageFont.load_path">[docs]</a><span class="k">def</span> <span class="nf">load_path</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load font file. Same as :py:func:`~PIL.ImageFont.load`, but searches for a</span>
+<span class="sd">    bitmap font along the Python path.</span>
+
+<span class="sd">    :param filename: Name of font file.</span>
+<span class="sd">    :return: A font object.</span>
+<span class="sd">    :exception IOError: If the file could not be read.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">isDirectory</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">py3</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot find font file&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_default"><a class="viewcode-back" href="../../reference/ImageFont.html#PIL.ImageFont.load_default">[docs]</a><span class="k">def</span> <span class="nf">load_default</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Load a &quot;better than nothing&quot; default font.</span>
+
+<span class="sd">    .. versionadded:: 1.1.4</span>
+
+<span class="sd">    :return: A font object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+    <span class="kn">import</span> <span class="nn">base64</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">_load_pilfont_data</span><span class="p">(</span>
+        <span class="c1"># courB08</span>
+        <span class="n">BytesIO</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">UElMZm9udAo7Ozs7OzsxMDsKREFUQQoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAA//8AAQAAAAAAAAABAAEA</span>
+<span class="s1">BgAAAAH/+gADAAAAAQAAAAMABgAGAAAAAf/6AAT//QADAAAABgADAAYAAAAA//kABQABAAYAAAAL</span>
+<span class="s1">AAgABgAAAAD/+AAFAAEACwAAABAACQAGAAAAAP/5AAUAAAAQAAAAFQAHAAYAAP////oABQAAABUA</span>
+<span class="s1">AAAbAAYABgAAAAH/+QAE//wAGwAAAB4AAwAGAAAAAf/5AAQAAQAeAAAAIQAIAAYAAAAB//kABAAB</span>
+<span class="s1">ACEAAAAkAAgABgAAAAD/+QAE//0AJAAAACgABAAGAAAAAP/6AAX//wAoAAAALQAFAAYAAAAB//8A</span>
+<span class="s1">BAACAC0AAAAwAAMABgAAAAD//AAF//0AMAAAADUAAQAGAAAAAf//AAMAAAA1AAAANwABAAYAAAAB</span>
+<span class="s1">//kABQABADcAAAA7AAgABgAAAAD/+QAFAAAAOwAAAEAABwAGAAAAAP/5AAYAAABAAAAARgAHAAYA</span>
+<span class="s1">AAAA//kABQAAAEYAAABLAAcABgAAAAD/+QAFAAAASwAAAFAABwAGAAAAAP/5AAYAAABQAAAAVgAH</span>
+<span class="s1">AAYAAAAA//kABQAAAFYAAABbAAcABgAAAAD/+QAFAAAAWwAAAGAABwAGAAAAAP/5AAUAAABgAAAA</span>
+<span class="s1">ZQAHAAYAAAAA//kABQAAAGUAAABqAAcABgAAAAD/+QAFAAAAagAAAG8ABwAGAAAAAf/8AAMAAABv</span>
+<span class="s1">AAAAcQAEAAYAAAAA//wAAwACAHEAAAB0AAYABgAAAAD/+gAE//8AdAAAAHgABQAGAAAAAP/7AAT/</span>
+<span class="s1">/gB4AAAAfAADAAYAAAAB//oABf//AHwAAACAAAUABgAAAAD/+gAFAAAAgAAAAIUABgAGAAAAAP/5</span>
+<span class="s1">AAYAAQCFAAAAiwAIAAYAAP////oABgAAAIsAAACSAAYABgAA////+gAFAAAAkgAAAJgABgAGAAAA</span>
+<span class="s1">AP/6AAUAAACYAAAAnQAGAAYAAP////oABQAAAJ0AAACjAAYABgAA////+gAFAAAAowAAAKkABgAG</span>
+<span class="s1">AAD////6AAUAAACpAAAArwAGAAYAAAAA//oABQAAAK8AAAC0AAYABgAA////+gAGAAAAtAAAALsA</span>
+<span class="s1">BgAGAAAAAP/6AAQAAAC7AAAAvwAGAAYAAP////oABQAAAL8AAADFAAYABgAA////+gAGAAAAxQAA</span>
+<span class="s1">AMwABgAGAAD////6AAUAAADMAAAA0gAGAAYAAP////oABQAAANIAAADYAAYABgAA////+gAGAAAA</span>
+<span class="s1">2AAAAN8ABgAGAAAAAP/6AAUAAADfAAAA5AAGAAYAAP////oABQAAAOQAAADqAAYABgAAAAD/+gAF</span>
+<span class="s1">AAEA6gAAAO8ABwAGAAD////6AAYAAADvAAAA9gAGAAYAAAAA//oABQAAAPYAAAD7AAYABgAA////</span>
+<span class="s1">+gAFAAAA+wAAAQEABgAGAAD////6AAYAAAEBAAABCAAGAAYAAP////oABgAAAQgAAAEPAAYABgAA</span>
+<span class="s1">////+gAGAAABDwAAARYABgAGAAAAAP/6AAYAAAEWAAABHAAGAAYAAP////oABgAAARwAAAEjAAYA</span>
+<span class="s1">BgAAAAD/+gAFAAABIwAAASgABgAGAAAAAf/5AAQAAQEoAAABKwAIAAYAAAAA//kABAABASsAAAEv</span>
+<span class="s1">AAgABgAAAAH/+QAEAAEBLwAAATIACAAGAAAAAP/5AAX//AEyAAABNwADAAYAAAAAAAEABgACATcA</span>
+<span class="s1">AAE9AAEABgAAAAH/+QAE//wBPQAAAUAAAwAGAAAAAP/7AAYAAAFAAAABRgAFAAYAAP////kABQAA</span>
+<span class="s1">AUYAAAFMAAcABgAAAAD/+wAFAAABTAAAAVEABQAGAAAAAP/5AAYAAAFRAAABVwAHAAYAAAAA//sA</span>
+<span class="s1">BQAAAVcAAAFcAAUABgAAAAD/+QAFAAABXAAAAWEABwAGAAAAAP/7AAYAAgFhAAABZwAHAAYAAP//</span>
+<span class="s1">//kABQAAAWcAAAFtAAcABgAAAAD/+QAGAAABbQAAAXMABwAGAAAAAP/5AAQAAgFzAAABdwAJAAYA</span>
+<span class="s1">AP////kABgAAAXcAAAF+AAcABgAAAAD/+QAGAAABfgAAAYQABwAGAAD////7AAUAAAGEAAABigAF</span>
+<span class="s1">AAYAAP////sABQAAAYoAAAGQAAUABgAAAAD/+wAFAAABkAAAAZUABQAGAAD////7AAUAAgGVAAAB</span>
+<span class="s1">mwAHAAYAAAAA//sABgACAZsAAAGhAAcABgAAAAD/+wAGAAABoQAAAacABQAGAAAAAP/7AAYAAAGn</span>
+<span class="s1">AAABrQAFAAYAAAAA//kABgAAAa0AAAGzAAcABgAA////+wAGAAABswAAAboABQAGAAD////7AAUA</span>
+<span class="s1">AAG6AAABwAAFAAYAAP////sABgAAAcAAAAHHAAUABgAAAAD/+wAGAAABxwAAAc0ABQAGAAD////7</span>
+<span class="s1">AAYAAgHNAAAB1AAHAAYAAAAA//sABQAAAdQAAAHZAAUABgAAAAH/+QAFAAEB2QAAAd0ACAAGAAAA</span>
+<span class="s1">Av/6AAMAAQHdAAAB3gAHAAYAAAAA//kABAABAd4AAAHiAAgABgAAAAD/+wAF//0B4gAAAecAAgAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</span>
+<span class="s1">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAB</span>
+<span class="s1">//sAAwACAecAAAHpAAcABgAAAAD/+QAFAAEB6QAAAe4ACAAGAAAAAP/5AAYAAAHuAAAB9AAHAAYA</span>
+<span class="s1">AAAA//oABf//AfQAAAH5AAUABgAAAAD/+QAGAAAB+QAAAf8ABwAGAAAAAv/5AAMAAgH/AAACAAAJ</span>
+<span class="s1">AAYAAAAA//kABQABAgAAAAIFAAgABgAAAAH/+gAE//sCBQAAAggAAQAGAAAAAP/5AAYAAAIIAAAC</span>
+<span class="s1">DgAHAAYAAAAB//kABf/+Ag4AAAISAAUABgAA////+wAGAAACEgAAAhkABQAGAAAAAP/7AAX//gIZ</span>
+<span class="s1">AAACHgADAAYAAAAA//wABf/9Ah4AAAIjAAEABgAAAAD/+QAHAAACIwAAAioABwAGAAAAAP/6AAT/</span>
+<span class="s1">+wIqAAACLgABAAYAAAAA//kABP/8Ai4AAAIyAAMABgAAAAD/+gAFAAACMgAAAjcABgAGAAAAAf/5</span>
+<span class="s1">AAT//QI3AAACOgAEAAYAAAAB//kABP/9AjoAAAI9AAQABgAAAAL/+QAE//sCPQAAAj8AAgAGAAD/</span>
+<span class="s1">///7AAYAAgI/AAACRgAHAAYAAAAA//kABgABAkYAAAJMAAgABgAAAAH//AAD//0CTAAAAk4AAQAG</span>
+<span class="s1">AAAAAf//AAQAAgJOAAACUQADAAYAAAAB//kABP/9AlEAAAJUAAQABgAAAAH/+QAF//4CVAAAAlgA</span>
+<span class="s1">BQAGAAD////7AAYAAAJYAAACXwAFAAYAAP////kABgAAAl8AAAJmAAcABgAA////+QAGAAACZgAA</span>
+<span class="s1">Am0ABwAGAAD////5AAYAAAJtAAACdAAHAAYAAAAA//sABQACAnQAAAJ5AAcABgAA////9wAGAAAC</span>
+<span class="s1">eQAAAoAACQAGAAD////3AAYAAAKAAAAChwAJAAYAAP////cABgAAAocAAAKOAAkABgAA////9wAG</span>
+<span class="s1">AAACjgAAApUACQAGAAD////4AAYAAAKVAAACnAAIAAYAAP////cABgAAApwAAAKjAAkABgAA////</span>
+<span class="s1">+gAGAAACowAAAqoABgAGAAAAAP/6AAUAAgKqAAACrwAIAAYAAP////cABQAAAq8AAAK1AAkABgAA</span>
+<span class="s1">////9wAFAAACtQAAArsACQAGAAD////3AAUAAAK7AAACwQAJAAYAAP////gABQAAAsEAAALHAAgA</span>
+<span class="s1">BgAAAAD/9wAEAAACxwAAAssACQAGAAAAAP/3AAQAAALLAAACzwAJAAYAAAAA//cABAAAAs8AAALT</span>
+<span class="s1">AAkABgAAAAD/+AAEAAAC0wAAAtcACAAGAAD////6AAUAAALXAAAC3QAGAAYAAP////cABgAAAt0A</span>
+<span class="s1">AALkAAkABgAAAAD/9wAFAAAC5AAAAukACQAGAAAAAP/3AAUAAALpAAAC7gAJAAYAAAAA//cABQAA</span>
+<span class="s1">Au4AAALzAAkABgAAAAD/9wAFAAAC8wAAAvgACQAGAAAAAP/4AAUAAAL4AAAC/QAIAAYAAAAA//oA</span>
+<span class="s1">Bf//Av0AAAMCAAUABgAA////+gAGAAADAgAAAwkABgAGAAD////3AAYAAAMJAAADEAAJAAYAAP//</span>
+<span class="s1">//cABgAAAxAAAAMXAAkABgAA////9wAGAAADFwAAAx4ACQAGAAD////4AAYAAAAAAAoABwASAAYA</span>
+<span class="s1">AP////cABgAAAAcACgAOABMABgAA////+gAFAAAADgAKABQAEAAGAAD////6AAYAAAAUAAoAGwAQ</span>
+<span class="s1">AAYAAAAA//gABgAAABsACgAhABIABgAAAAD/+AAGAAAAIQAKACcAEgAGAAAAAP/4AAYAAAAnAAoA</span>
+<span class="s1">LQASAAYAAAAA//gABgAAAC0ACgAzABIABgAAAAD/+QAGAAAAMwAKADkAEQAGAAAAAP/3AAYAAAA5</span>
+<span class="s1">AAoAPwATAAYAAP////sABQAAAD8ACgBFAA8ABgAAAAD/+wAFAAIARQAKAEoAEQAGAAAAAP/4AAUA</span>
+<span class="s1">AABKAAoATwASAAYAAAAA//gABQAAAE8ACgBUABIABgAAAAD/+AAFAAAAVAAKAFkAEgAGAAAAAP/5</span>
+<span class="s1">AAUAAABZAAoAXgARAAYAAAAA//gABgAAAF4ACgBkABIABgAAAAD/+AAGAAAAZAAKAGoAEgAGAAAA</span>
+<span class="s1">AP/4AAYAAABqAAoAcAASAAYAAAAA//kABgAAAHAACgB2ABEABgAAAAD/+AAFAAAAdgAKAHsAEgAG</span>
+<span class="s1">AAD////4AAYAAAB7AAoAggASAAYAAAAA//gABQAAAIIACgCHABIABgAAAAD/+AAFAAAAhwAKAIwA</span>
+<span class="s1">EgAGAAAAAP/4AAUAAACMAAoAkQASAAYAAAAA//gABQAAAJEACgCWABIABgAAAAD/+QAFAAAAlgAK</span>
+<span class="s1">AJsAEQAGAAAAAP/6AAX//wCbAAoAoAAPAAYAAAAA//oABQABAKAACgClABEABgAA////+AAGAAAA</span>
+<span class="s1">pQAKAKwAEgAGAAD////4AAYAAACsAAoAswASAAYAAP////gABgAAALMACgC6ABIABgAA////+QAG</span>
+<span class="s1">AAAAugAKAMEAEQAGAAD////4AAYAAgDBAAoAyAAUAAYAAP////kABQACAMgACgDOABMABgAA////</span>
+<span class="s1">+QAGAAIAzgAKANUAEw==</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)),</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">iVBORw0KGgoAAAANSUhEUgAAAx4AAAAUAQAAAAArMtZoAAAEwElEQVR4nABlAJr/AHVE4czCI/4u</span>
+<span class="s1">Mc4b7vuds/xzjz5/3/7u/n9vMe7vnfH/9++vPn/xyf5zhxzjt8GHw8+2d83u8x27199/nxuQ6Od9</span>
+<span class="s1">M43/5z2I+9n9ZtmDBwMQECDRQw/eQIQohJXxpBCNVE6QCCAAAAD//wBlAJr/AgALyj1t/wINwq0g</span>
+<span class="s1">LeNZUworuN1cjTPIzrTX6ofHWeo3v336qPzfEwRmBnHTtf95/fglZK5N0PDgfRTslpGBvz7LFc4F</span>
+<span class="s1">IUXBWQGjQ5MGCx34EDFPwXiY4YbYxavpnhHFrk14CDAAAAD//wBlAJr/AgKqRooH2gAgPeggvUAA</span>
+<span class="s1">Bu2WfgPoAwzRAABAAAAAAACQgLz/3Uv4Gv+gX7BJgDeeGP6AAAD1NMDzKHD7ANWr3loYbxsAD791</span>
+<span class="s1">NAADfcoIDyP44K/jv4Y63/Z+t98Ovt+ub4T48LAAAAD//wBlAJr/AuplMlADJAAAAGuAphWpqhMx</span>
+<span class="s1">in0A/fRvAYBABPgBwBUgABBQ/sYAyv9g0bCHgOLoGAAAAAAAREAAwI7nr0ArYpow7aX8//9LaP/9</span>
+<span class="s1">SjdavWA8ePHeBIKB//81/83ndznOaXx379wAAAD//wBlAJr/AqDxW+D3AABAAbUh/QMnbQag/gAY</span>
+<span class="s1">AYDAAACgtgD/gOqAAAB5IA/8AAAk+n9w0AAA8AAAmFRJuPo27ciC0cD5oeW4E7KA/wD3ECMAn2tt</span>
+<span class="s1">y8PgwH8AfAxFzC0JzeAMtratAsC/ffwAAAD//wBlAJr/BGKAyCAA4AAAAvgeYTAwHd1kmQF5chkG</span>
+<span class="s1">ABoMIHcL5xVpTfQbUqzlAAAErwAQBgAAEOClA5D9il08AEh/tUzdCBsXkbgACED+woQg8Si9VeqY</span>
+<span class="s1">lODCn7lmF6NhnAEYgAAA/NMIAAAAAAD//2JgjLZgVGBg5Pv/Tvpc8hwGBjYGJADjHDrAwPzAjv/H</span>
+<span class="s1">/Wf3PzCwtzcwHmBgYGcwbZz8wHaCAQMDOwMDQ8MCBgYOC3W7mp+f0w+wHOYxO3OG+e376hsMZjk3</span>
+<span class="s1">AAAAAP//YmCMY2A4wMAIN5e5gQETPD6AZisDAwMDgzSDAAPjByiHcQMDAwMDg1nOze1lByRu5/47</span>
+<span class="s1">c4859311AYNZzg0AAAAA//9iYGDBYihOIIMuwIjGL39/fwffA8b//xv/P2BPtzzHwCBjUQAAAAD/</span>
+<span class="s1">/yLFBrIBAAAA//9i1HhcwdhizX7u8NZNzyLbvT97bfrMf/QHI8evOwcSqGUJAAAA//9iYBB81iSw</span>
+<span class="s1">pEE170Qrg5MIYydHqwdDQRMrAwcVrQAAAAD//2J4x7j9AAMDn8Q/BgYLBoaiAwwMjPdvMDBYM1Tv</span>
+<span class="s1">oJodAAAAAP//Yqo/83+dxePWlxl3npsel9lvLfPcqlE9725C+acfVLMEAAAA//9i+s9gwCoaaGMR</span>
+<span class="s1">evta/58PTEWzr21hufPjA8N+qlnBwAAAAAD//2JiWLci5v1+HmFXDqcnULE/MxgYGBj+f6CaJQAA</span>
+<span class="s1">AAD//2Ji2FrkY3iYpYC5qDeGgeEMAwPDvwQBBoYvcTwOVLMEAAAA//9isDBgkP///0EOg9z35v//</span>
+<span class="s1">Gc/eeW7BwPj5+QGZhANUswMAAAD//2JgqGBgYGBgqEMXlvhMPUsAAAAA//8iYDd1AAAAAP//AwDR</span>
+<span class="s1">w7IkEbzhVQAAAABJRU5ErkJggg==</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">))))</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

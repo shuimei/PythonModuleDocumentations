@@ -1,0 +1,659 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.TiffTags &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.TiffTags</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.TiffTags</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># TIFF tags</span>
+<span class="c1">#</span>
+<span class="c1"># This module provides clear-text names for various well-known</span>
+<span class="c1"># TIFF tags.  the TIFF codec works just fine without it.</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) Secret Labs AB 1999.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="c1">##</span>
+<span class="c1"># This module provides constants and clear-text names for various</span>
+<span class="c1"># well-known TIFF tags.</span>
+<span class="c1">##</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+
+
+<div class="viewcode-block" id="TagInfo"><a class="viewcode-back" href="../../reference/TiffTags.html#PIL.TiffTags.TagInfo">[docs]</a><span class="k">class</span> <span class="nc">TagInfo</span><span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;_TagInfo&quot;</span><span class="p">,</span> <span class="s2">&quot;value name type length enum&quot;</span><span class="p">)):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unknown&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enum</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">TagInfo</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">enum</span> <span class="ow">or</span> <span class="p">{})</span>
+
+<div class="viewcode-block" id="TagInfo.cvt_enum"><a class="viewcode-back" href="../../reference/TiffTags.html#PIL.TiffTags.TagInfo.cvt_enum">[docs]</a>    <span class="k">def</span> <span class="nf">cvt_enum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">enum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="lookup"><a class="viewcode-back" href="../../reference/TiffTags.html#PIL.TiffTags.lookup">[docs]</a><span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param tag: Integer tag number</span>
+<span class="sd">    :returns: Taginfo namedtuple, From the TAGS_V2 info if possible,</span>
+<span class="sd">        otherwise just populating the value and name from TAGS.</span>
+<span class="sd">        If the tag is not recognized, &quot;unknown&quot; is returned for the name</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">TAGS_V2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">TagInfo</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">TAGS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)))</span></div>
+
+
+<span class="c1">##</span>
+<span class="c1"># Map tag numbers to tag info.</span>
+<span class="c1">#</span>
+<span class="c1">#  id: (Name, Type, Length, enum_values)</span>
+<span class="c1">#</span>
+<span class="c1"># The length here differs from the length in the tiff spec.  For</span>
+<span class="c1"># numbers, the tiff spec is for the number of fields returned. We</span>
+<span class="c1"># agree here.  For string-like types, the tiff spec uses the length of</span>
+<span class="c1"># field in bytes.  In Pillow, we are using the number of expected</span>
+<span class="c1"># fields, in general 1 for string-like types.</span>
+
+
+<span class="n">BYTE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">ASCII</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">SHORT</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">LONG</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">RATIONAL</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">UNDEFINED</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">SIGNED_RATIONAL</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">DOUBLE</span> <span class="o">=</span> <span class="mi">12</span>
+
+<span class="n">TAGS_V2</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="mi">254</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;NewSubfileType&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">255</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SubfileType&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">256</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageWidth&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">257</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageLength&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">258</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;BitsPerSample&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">259</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Compression&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="p">{</span><span class="s2">&quot;Uncompressed&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;CCITT 1d&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Group 3 Fax&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Group 4 Fax&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+           <span class="s2">&quot;LZW&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;JPEG&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;PackBits&quot;</span><span class="p">:</span> <span class="mi">32773</span><span class="p">}),</span>
+
+    <span class="mi">262</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PhotometricInterpretation&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="p">{</span><span class="s2">&quot;WhiteIsZero&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;BlackIsZero&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;RGB Palette&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+           <span class="s2">&quot;Transparency Mask&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;CMYK&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;YCbCr&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;CieLAB&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+           <span class="s2">&quot;CFA&quot;</span><span class="p">:</span> <span class="mi">32803</span><span class="p">,</span>  <span class="c1"># TIFF/EP, Adobe DNG</span>
+           <span class="s2">&quot;LinearRaw&quot;</span><span class="p">:</span> <span class="mi">32892</span><span class="p">}),</span>  <span class="c1"># Adobe DNG</span>
+    <span class="mi">263</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Threshholding&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">264</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;CellWidth&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">265</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;CellLength&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">266</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;FillOrder&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">269</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DocumentName&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="mi">270</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageDescription&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">271</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Make&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">272</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Model&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">273</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;StripOffsets&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">274</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Orientation&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">277</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SamplesPerPixel&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">278</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RowsPerStrip&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">279</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;StripByteCounts&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+    <span class="mi">280</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MinSampleValue&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">281</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MaxSampleValue&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">282</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;XResolution&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">283</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YResolution&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">284</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PlanarConfiguration&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Contiguous&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Separate&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}),</span>
+    <span class="mi">285</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PageName&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">286</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;XPosition&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">287</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YPosition&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">288</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;FreeOffsets&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">289</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;FreeByteCounts&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="mi">290</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;GrayResponseUnit&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">291</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;GrayResponseCurve&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">292</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;T4Options&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">293</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;T6Options&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">296</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ResolutionUnit&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;inch&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;cm&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}),</span>
+    <span class="mi">297</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PageNumber&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+
+    <span class="mi">301</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TransferFunction&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">305</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Software&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">306</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="mi">315</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Artist&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">316</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;HostComputer&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">317</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Predictor&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;none&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Horizontal Differencing&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}),</span>
+    <span class="mi">318</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;WhitePoint&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="mi">319</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PrimaryChromaticities&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+
+    <span class="mi">320</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ColorMap&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">321</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;HalftoneHints&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="mi">322</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TileWidth&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">323</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TileLength&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">324</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TileOffsets&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">325</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TileByteCounts&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+    <span class="mi">332</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;InkSet&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">333</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;InkNames&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">334</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;NumberOfInks&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">336</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DotRange&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">337</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TargetPrinter&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">338</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ExtraSamples&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">339</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SampleFormat&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+    <span class="mi">340</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SMinSampleValue&quot;</span><span class="p">,</span> <span class="n">DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">341</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SMaxSampleValue&quot;</span><span class="p">,</span> <span class="n">DOUBLE</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">342</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TransferRange&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+
+    <span class="mi">347</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGTables&quot;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="c1"># obsolete JPEG tags</span>
+    <span class="mi">512</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGProc&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">513</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGInterchangeFormat&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">514</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGInterchangeFormatLength&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">515</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGRestartInterval&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">517</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGLosslessPredictors&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">518</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGPointTransforms&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">519</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGQTables&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">520</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGDCTables&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="mi">521</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPEGACTables&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+    <span class="mi">529</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YCbCrCoefficients&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="mi">530</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YCbCrSubSampling&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="mi">531</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YCbCrPositioning&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">532</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ReferenceBlackWhite&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+
+    <span class="mi">700</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;XMP&#39;</span><span class="p">,</span> <span class="n">BYTE</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="mi">33432</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Copyright&quot;</span><span class="p">,</span> <span class="n">ASCII</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">34377</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;PhotoshopInfo&#39;</span><span class="p">,</span> <span class="n">BYTE</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="c1"># FIXME add more tags here</span>
+    <span class="mi">34665</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ExifIFD&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">34675</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ICCProfile&#39;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">34853</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;GPSInfoIFD&#39;</span><span class="p">,</span> <span class="n">BYTE</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="c1"># MPInfo</span>
+    <span class="mi">45056</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MPFVersion&quot;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45057</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;NumberOfImages&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45058</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MPEntry&quot;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45059</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageUIDList&quot;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># UNDONE, check</span>
+    <span class="mi">45060</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;TotalFrames&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45313</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MPIndividualNum&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45569</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PanOrientation&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45570</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PanOverlap_H&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45571</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PanOverlap_V&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45572</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;BaseViewpointNum&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45573</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ConvergenceAngle&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45574</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;BaselineLength&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45575</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;VerticalDivergence&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45576</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;AxisDistance_X&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45577</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;AxisDistance_Y&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45578</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;AxisDistance_Z&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45579</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;YawAngle&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45580</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;PitchAngle&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">45581</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RollAngle&quot;</span><span class="p">,</span> <span class="n">SIGNED_RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+
+    <span class="mi">50741</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;MakerNoteSafety&quot;</span><span class="p">,</span> <span class="n">SHORT</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;Unsafe&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Safe&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+    <span class="mi">50780</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;BestQualityScale&quot;</span><span class="p">,</span> <span class="n">RATIONAL</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="mi">50838</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageJMetaDataByteCounts&quot;</span><span class="p">,</span> <span class="n">LONG</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Can be more than one</span>
+    <span class="mi">50839</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;ImageJMetaData&quot;</span><span class="p">,</span> <span class="n">UNDEFINED</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>        <span class="c1"># see Issue #2006</span>
+<span class="p">}</span>
+
+<span class="c1"># Legacy Tags structure</span>
+<span class="c1"># these tags aren&#39;t included above, but were in the previous versions</span>
+<span class="n">TAGS</span> <span class="o">=</span> <span class="p">{</span><span class="mi">347</span><span class="p">:</span> <span class="s1">&#39;JPEGTables&#39;</span><span class="p">,</span>
+        <span class="mi">700</span><span class="p">:</span> <span class="s1">&#39;XMP&#39;</span><span class="p">,</span>
+
+        <span class="c1"># Additional Exif Info</span>
+        <span class="mi">32932</span><span class="p">:</span> <span class="s1">&#39;Wang Annotation&#39;</span><span class="p">,</span>
+        <span class="mi">33434</span><span class="p">:</span> <span class="s1">&#39;ExposureTime&#39;</span><span class="p">,</span>
+        <span class="mi">33437</span><span class="p">:</span> <span class="s1">&#39;FNumber&#39;</span><span class="p">,</span>
+        <span class="mi">33445</span><span class="p">:</span> <span class="s1">&#39;MD FileTag&#39;</span><span class="p">,</span>
+        <span class="mi">33446</span><span class="p">:</span> <span class="s1">&#39;MD ScalePixel&#39;</span><span class="p">,</span>
+        <span class="mi">33447</span><span class="p">:</span> <span class="s1">&#39;MD ColorTable&#39;</span><span class="p">,</span>
+        <span class="mi">33448</span><span class="p">:</span> <span class="s1">&#39;MD LabName&#39;</span><span class="p">,</span>
+        <span class="mi">33449</span><span class="p">:</span> <span class="s1">&#39;MD SampleInfo&#39;</span><span class="p">,</span>
+        <span class="mi">33450</span><span class="p">:</span> <span class="s1">&#39;MD PrepDate&#39;</span><span class="p">,</span>
+        <span class="mi">33451</span><span class="p">:</span> <span class="s1">&#39;MD PrepTime&#39;</span><span class="p">,</span>
+        <span class="mi">33452</span><span class="p">:</span> <span class="s1">&#39;MD FileUnits&#39;</span><span class="p">,</span>
+        <span class="mi">33550</span><span class="p">:</span> <span class="s1">&#39;ModelPixelScaleTag&#39;</span><span class="p">,</span>
+        <span class="mi">33723</span><span class="p">:</span> <span class="s1">&#39;IptcNaaInfo&#39;</span><span class="p">,</span>
+        <span class="mi">33918</span><span class="p">:</span> <span class="s1">&#39;INGR Packet Data Tag&#39;</span><span class="p">,</span>
+        <span class="mi">33919</span><span class="p">:</span> <span class="s1">&#39;INGR Flag Registers&#39;</span><span class="p">,</span>
+        <span class="mi">33920</span><span class="p">:</span> <span class="s1">&#39;IrasB Transformation Matrix&#39;</span><span class="p">,</span>
+        <span class="mi">33922</span><span class="p">:</span> <span class="s1">&#39;ModelTiepointTag&#39;</span><span class="p">,</span>
+        <span class="mi">34264</span><span class="p">:</span> <span class="s1">&#39;ModelTransformationTag&#39;</span><span class="p">,</span>
+        <span class="mi">34377</span><span class="p">:</span> <span class="s1">&#39;PhotoshopInfo&#39;</span><span class="p">,</span>
+        <span class="mi">34735</span><span class="p">:</span> <span class="s1">&#39;GeoKeyDirectoryTag&#39;</span><span class="p">,</span>
+        <span class="mi">34736</span><span class="p">:</span> <span class="s1">&#39;GeoDoubleParamsTag&#39;</span><span class="p">,</span>
+        <span class="mi">34737</span><span class="p">:</span> <span class="s1">&#39;GeoAsciiParamsTag&#39;</span><span class="p">,</span>
+        <span class="mi">34850</span><span class="p">:</span> <span class="s1">&#39;ExposureProgram&#39;</span><span class="p">,</span>
+        <span class="mi">34852</span><span class="p">:</span> <span class="s1">&#39;SpectralSensitivity&#39;</span><span class="p">,</span>
+        <span class="mi">34855</span><span class="p">:</span> <span class="s1">&#39;ISOSpeedRatings&#39;</span><span class="p">,</span>
+        <span class="mi">34856</span><span class="p">:</span> <span class="s1">&#39;OECF&#39;</span><span class="p">,</span>
+        <span class="mi">34864</span><span class="p">:</span> <span class="s1">&#39;SensitivityType&#39;</span><span class="p">,</span>
+        <span class="mi">34865</span><span class="p">:</span> <span class="s1">&#39;StandardOutputSensitivity&#39;</span><span class="p">,</span>
+        <span class="mi">34866</span><span class="p">:</span> <span class="s1">&#39;RecommendedExposureIndex&#39;</span><span class="p">,</span>
+        <span class="mi">34867</span><span class="p">:</span> <span class="s1">&#39;ISOSpeed&#39;</span><span class="p">,</span>
+        <span class="mi">34868</span><span class="p">:</span> <span class="s1">&#39;ISOSpeedLatitudeyyy&#39;</span><span class="p">,</span>
+        <span class="mi">34869</span><span class="p">:</span> <span class="s1">&#39;ISOSpeedLatitudezzz&#39;</span><span class="p">,</span>
+        <span class="mi">34908</span><span class="p">:</span> <span class="s1">&#39;HylaFAX FaxRecvParams&#39;</span><span class="p">,</span>
+        <span class="mi">34909</span><span class="p">:</span> <span class="s1">&#39;HylaFAX FaxSubAddress&#39;</span><span class="p">,</span>
+        <span class="mi">34910</span><span class="p">:</span> <span class="s1">&#39;HylaFAX FaxRecvTime&#39;</span><span class="p">,</span>
+        <span class="mi">36864</span><span class="p">:</span> <span class="s1">&#39;ExifVersion&#39;</span><span class="p">,</span>
+        <span class="mi">36867</span><span class="p">:</span> <span class="s1">&#39;DateTimeOriginal&#39;</span><span class="p">,</span>
+        <span class="mi">36868</span><span class="p">:</span> <span class="s1">&#39;DateTImeDigitized&#39;</span><span class="p">,</span>
+        <span class="mi">37121</span><span class="p">:</span> <span class="s1">&#39;ComponentsConfiguration&#39;</span><span class="p">,</span>
+        <span class="mi">37122</span><span class="p">:</span> <span class="s1">&#39;CompressedBitsPerPixel&#39;</span><span class="p">,</span>
+        <span class="mi">37724</span><span class="p">:</span> <span class="s1">&#39;ImageSourceData&#39;</span><span class="p">,</span>
+        <span class="mi">37377</span><span class="p">:</span> <span class="s1">&#39;ShutterSpeedValue&#39;</span><span class="p">,</span>
+        <span class="mi">37378</span><span class="p">:</span> <span class="s1">&#39;ApertureValue&#39;</span><span class="p">,</span>
+        <span class="mi">37379</span><span class="p">:</span> <span class="s1">&#39;BrightnessValue&#39;</span><span class="p">,</span>
+        <span class="mi">37380</span><span class="p">:</span> <span class="s1">&#39;ExposureBiasValue&#39;</span><span class="p">,</span>
+        <span class="mi">37381</span><span class="p">:</span> <span class="s1">&#39;MaxApertureValue&#39;</span><span class="p">,</span>
+        <span class="mi">37382</span><span class="p">:</span> <span class="s1">&#39;SubjectDistance&#39;</span><span class="p">,</span>
+        <span class="mi">37383</span><span class="p">:</span> <span class="s1">&#39;MeteringMode&#39;</span><span class="p">,</span>
+        <span class="mi">37384</span><span class="p">:</span> <span class="s1">&#39;LightSource&#39;</span><span class="p">,</span>
+        <span class="mi">37385</span><span class="p">:</span> <span class="s1">&#39;Flash&#39;</span><span class="p">,</span>
+        <span class="mi">37386</span><span class="p">:</span> <span class="s1">&#39;FocalLength&#39;</span><span class="p">,</span>
+        <span class="mi">37396</span><span class="p">:</span> <span class="s1">&#39;SubjectArea&#39;</span><span class="p">,</span>
+        <span class="mi">37500</span><span class="p">:</span> <span class="s1">&#39;MakerNote&#39;</span><span class="p">,</span>
+        <span class="mi">37510</span><span class="p">:</span> <span class="s1">&#39;UserComment&#39;</span><span class="p">,</span>
+        <span class="mi">37520</span><span class="p">:</span> <span class="s1">&#39;SubSec&#39;</span><span class="p">,</span>
+        <span class="mi">37521</span><span class="p">:</span> <span class="s1">&#39;SubSecTimeOriginal&#39;</span><span class="p">,</span>
+        <span class="mi">37522</span><span class="p">:</span> <span class="s1">&#39;SubsecTimeDigitized&#39;</span><span class="p">,</span>
+        <span class="mi">40960</span><span class="p">:</span> <span class="s1">&#39;FlashPixVersion&#39;</span><span class="p">,</span>
+        <span class="mi">40961</span><span class="p">:</span> <span class="s1">&#39;ColorSpace&#39;</span><span class="p">,</span>
+        <span class="mi">40962</span><span class="p">:</span> <span class="s1">&#39;PixelXDimension&#39;</span><span class="p">,</span>
+        <span class="mi">40963</span><span class="p">:</span> <span class="s1">&#39;PixelYDimension&#39;</span><span class="p">,</span>
+        <span class="mi">40964</span><span class="p">:</span> <span class="s1">&#39;RelatedSoundFile&#39;</span><span class="p">,</span>
+        <span class="mi">40965</span><span class="p">:</span> <span class="s1">&#39;InteroperabilityIFD&#39;</span><span class="p">,</span>
+        <span class="mi">41483</span><span class="p">:</span> <span class="s1">&#39;FlashEnergy&#39;</span><span class="p">,</span>
+        <span class="mi">41484</span><span class="p">:</span> <span class="s1">&#39;SpatialFrequencyResponse&#39;</span><span class="p">,</span>
+        <span class="mi">41486</span><span class="p">:</span> <span class="s1">&#39;FocalPlaneXResolution&#39;</span><span class="p">,</span>
+        <span class="mi">41487</span><span class="p">:</span> <span class="s1">&#39;FocalPlaneYResolution&#39;</span><span class="p">,</span>
+        <span class="mi">41488</span><span class="p">:</span> <span class="s1">&#39;FocalPlaneResolutionUnit&#39;</span><span class="p">,</span>
+        <span class="mi">41492</span><span class="p">:</span> <span class="s1">&#39;SubjectLocation&#39;</span><span class="p">,</span>
+        <span class="mi">41493</span><span class="p">:</span> <span class="s1">&#39;ExposureIndex&#39;</span><span class="p">,</span>
+        <span class="mi">41495</span><span class="p">:</span> <span class="s1">&#39;SensingMethod&#39;</span><span class="p">,</span>
+        <span class="mi">41728</span><span class="p">:</span> <span class="s1">&#39;FileSource&#39;</span><span class="p">,</span>
+        <span class="mi">41729</span><span class="p">:</span> <span class="s1">&#39;SceneType&#39;</span><span class="p">,</span>
+        <span class="mi">41730</span><span class="p">:</span> <span class="s1">&#39;CFAPattern&#39;</span><span class="p">,</span>
+        <span class="mi">41985</span><span class="p">:</span> <span class="s1">&#39;CustomRendered&#39;</span><span class="p">,</span>
+        <span class="mi">41986</span><span class="p">:</span> <span class="s1">&#39;ExposureMode&#39;</span><span class="p">,</span>
+        <span class="mi">41987</span><span class="p">:</span> <span class="s1">&#39;WhiteBalance&#39;</span><span class="p">,</span>
+        <span class="mi">41988</span><span class="p">:</span> <span class="s1">&#39;DigitalZoomRatio&#39;</span><span class="p">,</span>
+        <span class="mi">41989</span><span class="p">:</span> <span class="s1">&#39;FocalLengthIn35mmFilm&#39;</span><span class="p">,</span>
+        <span class="mi">41990</span><span class="p">:</span> <span class="s1">&#39;SceneCaptureType&#39;</span><span class="p">,</span>
+        <span class="mi">41991</span><span class="p">:</span> <span class="s1">&#39;GainControl&#39;</span><span class="p">,</span>
+        <span class="mi">41992</span><span class="p">:</span> <span class="s1">&#39;Contrast&#39;</span><span class="p">,</span>
+        <span class="mi">41993</span><span class="p">:</span> <span class="s1">&#39;Saturation&#39;</span><span class="p">,</span>
+        <span class="mi">41994</span><span class="p">:</span> <span class="s1">&#39;Sharpness&#39;</span><span class="p">,</span>
+        <span class="mi">41995</span><span class="p">:</span> <span class="s1">&#39;DeviceSettingDescription&#39;</span><span class="p">,</span>
+        <span class="mi">41996</span><span class="p">:</span> <span class="s1">&#39;SubjectDistanceRange&#39;</span><span class="p">,</span>
+        <span class="mi">42016</span><span class="p">:</span> <span class="s1">&#39;ImageUniqueID&#39;</span><span class="p">,</span>
+        <span class="mi">42032</span><span class="p">:</span> <span class="s1">&#39;CameraOwnerName&#39;</span><span class="p">,</span>
+        <span class="mi">42033</span><span class="p">:</span> <span class="s1">&#39;BodySerialNumber&#39;</span><span class="p">,</span>
+        <span class="mi">42034</span><span class="p">:</span> <span class="s1">&#39;LensSpecification&#39;</span><span class="p">,</span>
+        <span class="mi">42035</span><span class="p">:</span> <span class="s1">&#39;LensMake&#39;</span><span class="p">,</span>
+        <span class="mi">42036</span><span class="p">:</span> <span class="s1">&#39;LensModel&#39;</span><span class="p">,</span>
+        <span class="mi">42037</span><span class="p">:</span> <span class="s1">&#39;LensSerialNumber&#39;</span><span class="p">,</span>
+        <span class="mi">42112</span><span class="p">:</span> <span class="s1">&#39;GDAL_METADATA&#39;</span><span class="p">,</span>
+        <span class="mi">42113</span><span class="p">:</span> <span class="s1">&#39;GDAL_NODATA&#39;</span><span class="p">,</span>
+        <span class="mi">42240</span><span class="p">:</span> <span class="s1">&#39;Gamma&#39;</span><span class="p">,</span>
+        <span class="mi">50215</span><span class="p">:</span> <span class="s1">&#39;Oce Scanjob Description&#39;</span><span class="p">,</span>
+        <span class="mi">50216</span><span class="p">:</span> <span class="s1">&#39;Oce Application Selector&#39;</span><span class="p">,</span>
+        <span class="mi">50217</span><span class="p">:</span> <span class="s1">&#39;Oce Identification Number&#39;</span><span class="p">,</span>
+        <span class="mi">50218</span><span class="p">:</span> <span class="s1">&#39;Oce ImageLogic Characteristics&#39;</span><span class="p">,</span>
+
+        <span class="c1"># Adobe DNG</span>
+        <span class="mi">50706</span><span class="p">:</span> <span class="s1">&#39;DNGVersion&#39;</span><span class="p">,</span>
+        <span class="mi">50707</span><span class="p">:</span> <span class="s1">&#39;DNGBackwardVersion&#39;</span><span class="p">,</span>
+        <span class="mi">50708</span><span class="p">:</span> <span class="s1">&#39;UniqueCameraModel&#39;</span><span class="p">,</span>
+        <span class="mi">50709</span><span class="p">:</span> <span class="s1">&#39;LocalizedCameraModel&#39;</span><span class="p">,</span>
+        <span class="mi">50710</span><span class="p">:</span> <span class="s1">&#39;CFAPlaneColor&#39;</span><span class="p">,</span>
+        <span class="mi">50711</span><span class="p">:</span> <span class="s1">&#39;CFALayout&#39;</span><span class="p">,</span>
+        <span class="mi">50712</span><span class="p">:</span> <span class="s1">&#39;LinearizationTable&#39;</span><span class="p">,</span>
+        <span class="mi">50713</span><span class="p">:</span> <span class="s1">&#39;BlackLevelRepeatDim&#39;</span><span class="p">,</span>
+        <span class="mi">50714</span><span class="p">:</span> <span class="s1">&#39;BlackLevel&#39;</span><span class="p">,</span>
+        <span class="mi">50715</span><span class="p">:</span> <span class="s1">&#39;BlackLevelDeltaH&#39;</span><span class="p">,</span>
+        <span class="mi">50716</span><span class="p">:</span> <span class="s1">&#39;BlackLevelDeltaV&#39;</span><span class="p">,</span>
+        <span class="mi">50717</span><span class="p">:</span> <span class="s1">&#39;WhiteLevel&#39;</span><span class="p">,</span>
+        <span class="mi">50718</span><span class="p">:</span> <span class="s1">&#39;DefaultScale&#39;</span><span class="p">,</span>
+        <span class="mi">50719</span><span class="p">:</span> <span class="s1">&#39;DefaultCropOrigin&#39;</span><span class="p">,</span>
+        <span class="mi">50720</span><span class="p">:</span> <span class="s1">&#39;DefaultCropSize&#39;</span><span class="p">,</span>
+        <span class="mi">50721</span><span class="p">:</span> <span class="s1">&#39;ColorMatrix1&#39;</span><span class="p">,</span>
+        <span class="mi">50722</span><span class="p">:</span> <span class="s1">&#39;ColorMatrix2&#39;</span><span class="p">,</span>
+        <span class="mi">50723</span><span class="p">:</span> <span class="s1">&#39;CameraCalibration1&#39;</span><span class="p">,</span>
+        <span class="mi">50724</span><span class="p">:</span> <span class="s1">&#39;CameraCalibration2&#39;</span><span class="p">,</span>
+        <span class="mi">50725</span><span class="p">:</span> <span class="s1">&#39;ReductionMatrix1&#39;</span><span class="p">,</span>
+        <span class="mi">50726</span><span class="p">:</span> <span class="s1">&#39;ReductionMatrix2&#39;</span><span class="p">,</span>
+        <span class="mi">50727</span><span class="p">:</span> <span class="s1">&#39;AnalogBalance&#39;</span><span class="p">,</span>
+        <span class="mi">50728</span><span class="p">:</span> <span class="s1">&#39;AsShotNeutral&#39;</span><span class="p">,</span>
+        <span class="mi">50729</span><span class="p">:</span> <span class="s1">&#39;AsShotWhiteXY&#39;</span><span class="p">,</span>
+        <span class="mi">50730</span><span class="p">:</span> <span class="s1">&#39;BaselineExposure&#39;</span><span class="p">,</span>
+        <span class="mi">50731</span><span class="p">:</span> <span class="s1">&#39;BaselineNoise&#39;</span><span class="p">,</span>
+        <span class="mi">50732</span><span class="p">:</span> <span class="s1">&#39;BaselineSharpness&#39;</span><span class="p">,</span>
+        <span class="mi">50733</span><span class="p">:</span> <span class="s1">&#39;BayerGreenSplit&#39;</span><span class="p">,</span>
+        <span class="mi">50734</span><span class="p">:</span> <span class="s1">&#39;LinearResponseLimit&#39;</span><span class="p">,</span>
+        <span class="mi">50735</span><span class="p">:</span> <span class="s1">&#39;CameraSerialNumber&#39;</span><span class="p">,</span>
+        <span class="mi">50736</span><span class="p">:</span> <span class="s1">&#39;LensInfo&#39;</span><span class="p">,</span>
+        <span class="mi">50737</span><span class="p">:</span> <span class="s1">&#39;ChromaBlurRadius&#39;</span><span class="p">,</span>
+        <span class="mi">50738</span><span class="p">:</span> <span class="s1">&#39;AntiAliasStrength&#39;</span><span class="p">,</span>
+        <span class="mi">50740</span><span class="p">:</span> <span class="s1">&#39;DNGPrivateData&#39;</span><span class="p">,</span>
+        <span class="mi">50778</span><span class="p">:</span> <span class="s1">&#39;CalibrationIlluminant1&#39;</span><span class="p">,</span>
+        <span class="mi">50779</span><span class="p">:</span> <span class="s1">&#39;CalibrationIlluminant2&#39;</span><span class="p">,</span>
+        <span class="mi">50784</span><span class="p">:</span> <span class="s1">&#39;Alias Layer Metadata&#39;</span>
+        <span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_populate</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">TAGS_V2</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Populate legacy structure.</span>
+        <span class="n">TAGS</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sk</span><span class="p">,</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">TAGS</span><span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">sv</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sk</span>
+
+        <span class="n">TAGS_V2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">TagInfo</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+
+
+<span class="n">_populate</span><span class="p">()</span>
+<span class="c1">##</span>
+<span class="c1"># Map type numbers to type names -- defined in ImageFileDirectory.</span>
+
+<span class="n">TYPES</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># was:</span>
+<span class="c1"># TYPES = {</span>
+<span class="c1">#     1: &quot;byte&quot;,</span>
+<span class="c1">#     2: &quot;ascii&quot;,</span>
+<span class="c1">#     3: &quot;short&quot;,</span>
+<span class="c1">#     4: &quot;long&quot;,</span>
+<span class="c1">#     5: &quot;rational&quot;,</span>
+<span class="c1">#     6: &quot;signed byte&quot;,</span>
+<span class="c1">#     7: &quot;undefined&quot;,</span>
+<span class="c1">#     8: &quot;signed short&quot;,</span>
+<span class="c1">#     9: &quot;signed long&quot;,</span>
+<span class="c1">#     10: &quot;signed rational&quot;,</span>
+<span class="c1">#     11: &quot;float&quot;,</span>
+<span class="c1">#     12: &quot;double&quot;,</span>
+<span class="c1"># }</span>
+
+<span class="c1">#</span>
+<span class="c1"># These tags are handled by default in libtiff, without</span>
+<span class="c1"># adding to the custom dictionary. From tif_dir.c, searching for</span>
+<span class="c1"># case TIFFTAG in the _TIFFVSetField function:</span>
+<span class="c1"># Line: item.</span>
+<span class="c1"># 148: case TIFFTAG_SUBFILETYPE:</span>
+<span class="c1"># 151: case TIFFTAG_IMAGEWIDTH:</span>
+<span class="c1"># 154: case TIFFTAG_IMAGELENGTH:</span>
+<span class="c1"># 157: case TIFFTAG_BITSPERSAMPLE:</span>
+<span class="c1"># 181: case TIFFTAG_COMPRESSION:</span>
+<span class="c1"># 202: case TIFFTAG_PHOTOMETRIC:</span>
+<span class="c1"># 205: case TIFFTAG_THRESHHOLDING:</span>
+<span class="c1"># 208: case TIFFTAG_FILLORDER:</span>
+<span class="c1"># 214: case TIFFTAG_ORIENTATION:</span>
+<span class="c1"># 221: case TIFFTAG_SAMPLESPERPIXEL:</span>
+<span class="c1"># 228: case TIFFTAG_ROWSPERSTRIP:</span>
+<span class="c1"># 238: case TIFFTAG_MINSAMPLEVALUE:</span>
+<span class="c1"># 241: case TIFFTAG_MAXSAMPLEVALUE:</span>
+<span class="c1"># 244: case TIFFTAG_SMINSAMPLEVALUE:</span>
+<span class="c1"># 247: case TIFFTAG_SMAXSAMPLEVALUE:</span>
+<span class="c1"># 250: case TIFFTAG_XRESOLUTION:</span>
+<span class="c1"># 256: case TIFFTAG_YRESOLUTION:</span>
+<span class="c1"># 262: case TIFFTAG_PLANARCONFIG:</span>
+<span class="c1"># 268: case TIFFTAG_XPOSITION:</span>
+<span class="c1"># 271: case TIFFTAG_YPOSITION:</span>
+<span class="c1"># 274: case TIFFTAG_RESOLUTIONUNIT:</span>
+<span class="c1"># 280: case TIFFTAG_PAGENUMBER:</span>
+<span class="c1"># 284: case TIFFTAG_HALFTONEHINTS:</span>
+<span class="c1"># 288: case TIFFTAG_COLORMAP:</span>
+<span class="c1"># 294: case TIFFTAG_EXTRASAMPLES:</span>
+<span class="c1"># 298: case TIFFTAG_MATTEING:</span>
+<span class="c1"># 305: case TIFFTAG_TILEWIDTH:</span>
+<span class="c1"># 316: case TIFFTAG_TILELENGTH:</span>
+<span class="c1"># 327: case TIFFTAG_TILEDEPTH:</span>
+<span class="c1"># 333: case TIFFTAG_DATATYPE:</span>
+<span class="c1"># 344: case TIFFTAG_SAMPLEFORMAT:</span>
+<span class="c1"># 361: case TIFFTAG_IMAGEDEPTH:</span>
+<span class="c1"># 364: case TIFFTAG_SUBIFD:</span>
+<span class="c1"># 376: case TIFFTAG_YCBCRPOSITIONING:</span>
+<span class="c1"># 379: case TIFFTAG_YCBCRSUBSAMPLING:</span>
+<span class="c1"># 383: case TIFFTAG_TRANSFERFUNCTION:</span>
+<span class="c1"># 389: case TIFFTAG_REFERENCEBLACKWHITE:</span>
+<span class="c1"># 393: case TIFFTAG_INKNAMES:</span>
+
+<span class="c1"># some of these are not in our TAGS_V2 dict and were included from tiff.h</span>
+
+<span class="n">LIBTIFF_CORE</span> <span class="o">=</span> <span class="p">{</span><span class="mi">255</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">257</span><span class="p">,</span> <span class="mi">258</span><span class="p">,</span> <span class="mi">259</span><span class="p">,</span> <span class="mi">262</span><span class="p">,</span> <span class="mi">263</span><span class="p">,</span> <span class="mi">266</span><span class="p">,</span> <span class="mi">274</span><span class="p">,</span> <span class="mi">277</span><span class="p">,</span>
+                <span class="mi">278</span><span class="p">,</span> <span class="mi">280</span><span class="p">,</span> <span class="mi">281</span><span class="p">,</span> <span class="mi">340</span><span class="p">,</span> <span class="mi">341</span><span class="p">,</span> <span class="mi">282</span><span class="p">,</span> <span class="mi">283</span><span class="p">,</span> <span class="mi">284</span><span class="p">,</span> <span class="mi">286</span><span class="p">,</span> <span class="mi">287</span><span class="p">,</span>
+                <span class="mi">296</span><span class="p">,</span> <span class="mi">297</span><span class="p">,</span> <span class="mi">321</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">338</span><span class="p">,</span> <span class="mi">32995</span><span class="p">,</span> <span class="mi">322</span><span class="p">,</span> <span class="mi">323</span><span class="p">,</span> <span class="mi">32998</span><span class="p">,</span>
+                <span class="mi">32996</span><span class="p">,</span> <span class="mi">339</span><span class="p">,</span> <span class="mi">32997</span><span class="p">,</span> <span class="mi">330</span><span class="p">,</span> <span class="mi">531</span><span class="p">,</span> <span class="mi">530</span><span class="p">,</span> <span class="mi">301</span><span class="p">,</span> <span class="mi">532</span><span class="p">,</span> <span class="mi">333</span><span class="p">,</span>
+                <span class="c1"># as above</span>
+                <span class="mi">269</span>  <span class="c1"># this has been in our tests forever, and works</span>
+                <span class="p">}</span>
+
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">320</span><span class="p">)</span>  <span class="c1"># Array of short, crashes</span>
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">301</span><span class="p">)</span>  <span class="c1"># Array of short, crashes</span>
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">532</span><span class="p">)</span>  <span class="c1"># Array of long, crashes</span>
+
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>  <span class="c1"># We don&#39;t have support for subfiletypes</span>
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">322</span><span class="p">)</span>  <span class="c1"># We don&#39;t have support for tiled images in libtiff</span>
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">323</span><span class="p">)</span>  <span class="c1"># Tiled images</span>
+<span class="n">LIBTIFF_CORE</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">333</span><span class="p">)</span>  <span class="c1"># Ink Names either</span>
+
+<span class="c1"># Note to advanced users: There may be combinations of these</span>
+<span class="c1"># parameters and values that when added properly, will work and</span>
+<span class="c1"># produce valid tiff images that may work in your application.</span>
+<span class="c1"># It is safe to add and remove tags from this set from Pillow&#39;s point</span>
+<span class="c1"># of view so long as you test against libtiff.</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

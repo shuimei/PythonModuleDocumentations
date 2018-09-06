@@ -1,0 +1,349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.GimpGradientFile &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.GimpGradientFile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.GimpGradientFile</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># stuff to read (and render) GIMP gradient files</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1">#       97-08-23 fl     Created</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) Secret Labs AB 1997.</span>
+<span class="c1"># Copyright (c) Fredrik Lundh 1997.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">o8</span>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Stuff to translate curve segments to palette values (derived from</span>
+<span class="c1"># the corresponding code in GIMP, written by Federico Mena Quintero.</span>
+<span class="c1"># See the GIMP distribution for more information.)</span>
+<span class="c1">#</span>
+
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1e-10</span>
+
+
+<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">middle</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">middle</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">pos</span> <span class="o">/</span> <span class="n">middle</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">-</span> <span class="n">middle</span>
+        <span class="n">middle</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">middle</span>
+        <span class="k">if</span> <span class="n">middle</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">1.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">pos</span> <span class="o">/</span> <span class="n">middle</span></div>
+
+
+<div class="viewcode-block" id="curved"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.curved">[docs]</a><span class="k">def</span> <span class="nf">curved</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pos</span> <span class="o">**</span> <span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="n">log</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">EPSILON</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="sine"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.sine">[docs]</a><span class="k">def</span> <span class="nf">sine</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sin</span><span class="p">((</span><span class="o">-</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">linear</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span></div>
+
+
+<div class="viewcode-block" id="sphere_increasing"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.sphere_increasing">[docs]</a><span class="k">def</span> <span class="nf">sphere_increasing</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">linear</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sphere_decreasing"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.sphere_decreasing">[docs]</a><span class="k">def</span> <span class="nf">sphere_decreasing</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">linear</span><span class="p">(</span><span class="n">middle</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<span class="n">SEGMENTS</span> <span class="o">=</span> <span class="p">[</span><span class="n">linear</span><span class="p">,</span> <span class="n">curved</span><span class="p">,</span> <span class="n">sine</span><span class="p">,</span> <span class="n">sphere_increasing</span><span class="p">,</span> <span class="n">sphere_decreasing</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="GradientFile"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.GradientFile">[docs]</a><span class="k">class</span> <span class="nc">GradientFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">gradient</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="GradientFile.getpalette"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.GradientFile.getpalette">[docs]</a>    <span class="k">def</span> <span class="nf">getpalette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entries</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
+
+        <span class="n">palette</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">ix</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">xm</span><span class="p">,</span> <span class="n">rgb0</span><span class="p">,</span> <span class="n">rgb1</span><span class="p">,</span> <span class="n">segment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">entries</span><span class="p">):</span>
+
+            <span class="n">x</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">entries</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="n">x1</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">ix</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">xm</span><span class="p">,</span> <span class="n">rgb0</span><span class="p">,</span> <span class="n">rgb1</span><span class="p">,</span> <span class="n">segment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+
+            <span class="n">w</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+
+            <span class="k">if</span> <span class="n">w</span> <span class="o">&lt;</span> <span class="n">EPSILON</span><span class="p">:</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">segment</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">segment</span><span class="p">((</span><span class="n">xm</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">w</span><span class="p">)</span>
+
+            <span class="c1"># expand to RGBA</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">o8</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">((</span><span class="n">rgb1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">o8</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">((</span><span class="n">rgb1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">o8</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">((</span><span class="n">rgb1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">o8</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span> <span class="o">*</span> <span class="p">((</span><span class="n">rgb1</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">rgb0</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+
+            <span class="c1"># add to palette</span>
+            <span class="n">palette</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">g</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">palette</span><span class="p">),</span> <span class="s2">&quot;RGBA&quot;</span></div></div>
+
+
+<span class="c1">##</span>
+<span class="c1"># File handler for GIMP&#39;s gradient format.</span>
+
+<div class="viewcode-block" id="GimpGradientFile"><a class="viewcode-back" href="../../PIL.html#PIL.GimpGradientFile.GimpGradientFile">[docs]</a><span class="k">class</span> <span class="nc">GimpGradientFile</span><span class="p">(</span><span class="n">GradientFile</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="mi">13</span><span class="p">]</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;GIMP Gradient&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a GIMP gradient file&quot;</span><span class="p">)</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># GIMP 1.2 gradient files don&#39;t contain a name, but GIMP 1.3 files do</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;Name: &quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="n">gradient</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+
+            <span class="n">s</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[:</span><span class="mi">11</span><span class="p">]]</span>
+
+            <span class="n">x0</span><span class="p">,</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">xm</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">rgb0</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+            <span class="n">rgb1</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
+
+            <span class="n">segment</span> <span class="o">=</span> <span class="n">SEGMENTS</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">11</span><span class="p">])]</span>
+            <span class="n">cspace</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">cspace</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot handle HSV colour space&quot;</span><span class="p">)</span>
+
+            <span class="n">gradient</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">xm</span><span class="p">,</span> <span class="n">rgb0</span><span class="p">,</span> <span class="n">rgb1</span><span class="p">,</span> <span class="n">segment</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">gradient</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageTransform &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageTransform</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageTransform</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># transform wrappers</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2002-04-08 fl   Created</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2002 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 2002 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+
+
+<div class="viewcode-block" id="Transform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.Transform">[docs]</a><span class="k">class</span> <span class="nc">Transform</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">ImageTransformHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="Transform.getdata"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.Transform.getdata">[docs]</a>    <span class="k">def</span> <span class="nf">getdata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
+
+<div class="viewcode-block" id="Transform.transform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.Transform.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="c1"># can be overridden</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getdata</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AffineTransform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.AffineTransform">[docs]</a><span class="k">class</span> <span class="nc">AffineTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define an affine image transform.</span>
+
+<span class="sd">    This function takes a 6-tuple (a, b, c, d, e, f) which contain the first</span>
+<span class="sd">    two rows from an affine transform matrix. For each pixel (x, y) in the</span>
+<span class="sd">    output image, the new value is taken from a position (a x + b y + c,</span>
+<span class="sd">    d x + e y + f) in the input image, rounded to nearest pixel.</span>
+
+<span class="sd">    This function can be used to scale, translate, rotate, and shear the</span>
+<span class="sd">    original image.</span>
+
+<span class="sd">    See :py:meth:`~PIL.Image.Image.transform`</span>
+
+<span class="sd">    :param matrix: A 6-tuple (a, b, c, d, e, f) containing the first two rows</span>
+<span class="sd">        from an affine transform matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">AFFINE</span></div>
+
+
+<div class="viewcode-block" id="ExtentTransform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.ExtentTransform">[docs]</a><span class="k">class</span> <span class="nc">ExtentTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a transform to extract a subregion from an image.</span>
+
+<span class="sd">    Maps a rectangle (defined by two corners) from the image to a rectangle of</span>
+<span class="sd">    the given size. The resulting image will contain data sampled from between</span>
+<span class="sd">    the corners, such that (x0, y0) in the input image will end up at (0,0) in</span>
+<span class="sd">    the output image, and (x1, y1) at size.</span>
+
+<span class="sd">    This method can be used to crop, stretch, shrink, or mirror an arbitrary</span>
+<span class="sd">    rectangle in the current image. It is slightly slower than crop, but about</span>
+<span class="sd">    as fast as a corresponding resize operation.</span>
+
+<span class="sd">    See :py:meth:`~PIL.Image.Image.transform`</span>
+
+<span class="sd">    :param bbox: A 4-tuple (x0, y0, x1, y1) which specifies two points in the</span>
+<span class="sd">        input image&#39;s coordinate system. See :ref:`coordinate-system`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">EXTENT</span></div>
+
+
+<div class="viewcode-block" id="QuadTransform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.QuadTransform">[docs]</a><span class="k">class</span> <span class="nc">QuadTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a quad image transform.</span>
+
+<span class="sd">    Maps a quadrilateral (a region defined by four corners) from the image to a</span>
+<span class="sd">    rectangle of the given size.</span>
+
+<span class="sd">    See :py:meth:`~PIL.Image.Image.transform`</span>
+
+<span class="sd">    :param xy: An 8-tuple (x0, y0, x1, y1, x2, y2, x3, y3) which contain the</span>
+<span class="sd">        upper left, lower left, lower right, and upper right corner of the</span>
+<span class="sd">        source quadrilateral.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">QUAD</span></div>
+
+
+<div class="viewcode-block" id="MeshTransform"><a class="viewcode-back" href="../../PIL.html#PIL.ImageTransform.MeshTransform">[docs]</a><span class="k">class</span> <span class="nc">MeshTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Define a mesh image transform.  A mesh transform consists of one or more</span>
+<span class="sd">    individual quad transforms.</span>
+
+<span class="sd">    See :py:meth:`~PIL.Image.Image.transform`</span>
+
+<span class="sd">    :param data: A list of (bbox, quad) tuples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">MESH</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

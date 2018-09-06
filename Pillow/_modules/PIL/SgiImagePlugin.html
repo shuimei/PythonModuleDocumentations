@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.SgiImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.SgiImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.SgiImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># SGI image file handling</span>
+<span class="c1">#</span>
+<span class="c1"># See &quot;The SGI Image File Format (Draft version 0.97)&quot;, Paul Haeberli.</span>
+<span class="c1"># &lt;ftp://ftp.sgi.com/graphics/SGIIMAGESPEC&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2017-22-07 mb   Add RLE decompression</span>
+<span class="c1"># 2016-16-10 mb   Add save method without compression</span>
+<span class="c1"># 1995-09-10 fl   Created</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2016 by Mickael Bonfill.</span>
+<span class="c1"># Copyright (c) 2008 by Karsten Hiddemann.</span>
+<span class="c1"># Copyright (c) 1997 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 1995 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i8</span><span class="p">,</span> <span class="n">o8</span><span class="p">,</span> <span class="n">i16be</span> <span class="k">as</span> <span class="n">i16</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">py3</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.3&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">i16</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">474</span>
+
+
+<span class="n">MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="s2">&quot;L;16B&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="s2">&quot;L;16B&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span> <span class="s2">&quot;RGB;16B&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">,</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span> <span class="s2">&quot;RGBA;16B&quot;</span>
+<span class="p">}</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for SGI images.</span>
+<div class="viewcode-block" id="SgiImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SgiImagePlugin.SgiImageFile">[docs]</a><span class="k">class</span> <span class="nc">SgiImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;SGI&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;SGI Image File Format&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># HEAD</span>
+        <span class="n">headlen</span> <span class="o">=</span> <span class="mi">512</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">headlen</span><span class="p">)</span>
+
+        <span class="c1"># magic number : 474</span>
+        <span class="k">if</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">474</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not an SGI image file&quot;</span><span class="p">)</span>
+
+        <span class="c1"># compression : verbatim or RLE</span>
+        <span class="n">compression</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c1"># bpc : 1 or 2 bytes (8bits or 16bits)</span>
+        <span class="n">bpc</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="c1"># dimension : 1, 2 or 3 (depending on xsize, ysize and zsize)</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+
+        <span class="c1"># xsize : width</span>
+        <span class="n">xsize</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span>
+
+        <span class="c1"># ysize : height</span>
+        <span class="n">ysize</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">:])</span>
+
+        <span class="c1"># zsize : channels count</span>
+        <span class="n">zsize</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">10</span><span class="p">:])</span>
+
+        <span class="c1"># layout</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">bpc</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">zsize</span>
+
+        <span class="c1"># determine mode from bits/zsize</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rawmode</span> <span class="o">=</span> <span class="n">MODES</span><span class="p">[</span><span class="n">layout</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">rawmode</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported SGI image mode&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">xsize</span><span class="p">,</span> <span class="n">ysize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">rawmode</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># orientation -1 : scanlines begins at the bottom-left corner</span>
+        <span class="n">orientation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># decoder info</span>
+        <span class="k">if</span> <span class="n">compression</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pagesize</span> <span class="o">=</span> <span class="n">xsize</span> <span class="o">*</span> <span class="n">ysize</span> <span class="o">*</span> <span class="n">bpc</span>
+            <span class="k">if</span> <span class="n">bpc</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;SGI16&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                              <span class="n">headlen</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orientation</span><span class="p">))]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">offset</span> <span class="o">=</span> <span class="n">headlen</span>
+                <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                            <span class="n">offset</span><span class="p">,</span> <span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)))</span>
+                    <span class="n">offset</span> <span class="o">+=</span> <span class="n">pagesize</span>
+        <span class="k">elif</span> <span class="n">compression</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;sgi_rle&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                          <span class="n">headlen</span><span class="p">,</span> <span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">bpc</span><span class="p">))]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;RGBA&quot;</span> <span class="ow">and</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported SGI image mode&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get the keyword arguments</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span>
+
+    <span class="c1"># Byte-per-pixel precision, 1 = 8bits per pixel</span>
+    <span class="n">bpc</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bpc&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bpc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported number of bytes per pixel&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Flip the image, since the origin of SGI file is the bottom-left corner</span>
+    <span class="n">orientation</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># Define the file as SGI File Format</span>
+    <span class="n">magicNumber</span> <span class="o">=</span> <span class="mi">474</span>
+    <span class="c1"># Run-Length Encoding Compression - Unsupported at this time</span>
+    <span class="n">rle</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Number of dimensions (x,y,z)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="c1"># X Dimension = width / Y Dimension = height</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="c1"># Z Dimension: Number of channels</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="c1"># assert we&#39;ve got the right number of bands.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">getbands</span><span class="p">())</span> <span class="o">!=</span> <span class="n">z</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incorrect number of bands in SGI write: </span><span class="si">%s</span><span class="s2"> vs </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">getbands</span><span class="p">())))</span>
+
+    <span class="c1"># Minimum Byte value</span>
+    <span class="n">pinmin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Maximum Byte value (255 = 8bits per pixel)</span>
+    <span class="n">pinmax</span> <span class="o">=</span> <span class="mi">255</span>
+    <span class="c1"># Image name (79 characters max, truncated below in write)</span>
+    <span class="n">imgName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">py3</span><span class="p">:</span>
+        <span class="n">imgName</span> <span class="o">=</span> <span class="n">imgName</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+    <span class="c1"># Standard representation of pixel in the file</span>
+    <span class="n">colormap</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;h&#39;</span><span class="p">,</span> <span class="n">magicNumber</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">rle</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">bpc</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;H&#39;</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;H&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;H&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;H&#39;</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;l&#39;</span><span class="p">,</span> <span class="n">pinmin</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;l&#39;</span><span class="p">,</span> <span class="n">pinmax</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;4s&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># dummy</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;79s&#39;</span><span class="p">,</span> <span class="n">imgName</span><span class="p">))</span>  <span class="c1"># truncates to 79 chars</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># force null byte after imgname</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;&gt;l&#39;</span><span class="p">,</span> <span class="n">colormap</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;404s&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># dummy</span>
+
+    <span class="n">rawmode</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+    <span class="k">if</span> <span class="n">bpc</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s1">&#39;L;16B&#39;</span>
+
+    <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">tobytes</span><span class="p">(</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="n">rawmode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">orientation</span><span class="p">))</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="SGI16Decoder"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SgiImagePlugin.SGI16Decoder">[docs]</a><span class="k">class</span> <span class="nc">SGI16Decoder</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">PyDecoder</span><span class="p">):</span>
+    <span class="n">_pulls_fd</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SGI16Decoder.decode"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SgiImagePlugin.SGI16Decoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+        <span class="n">rawmode</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">orientation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span>
+        <span class="n">pagesize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span>
+        <span class="n">zsize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">zsize</span><span class="p">):</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span><span class="p">))</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">frombytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fd</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pagesize</span><span class="p">),</span> <span class="s1">&#39;raw&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;L;16B&#39;</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">putband</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">band</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span></div></div>
+
+<span class="c1">#</span>
+<span class="c1"># registry</span>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_decoder</span><span class="p">(</span><span class="s2">&quot;SGI16&quot;</span><span class="p">,</span> <span class="n">SGI16Decoder</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">SgiImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">SgiImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">SgiImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">SgiImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;image/sgi&quot;</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">SgiImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;image/rgb&quot;</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extensions</span><span class="p">(</span><span class="n">SgiImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;.bw&quot;</span><span class="p">,</span> <span class="s2">&quot;.rgb&quot;</span><span class="p">,</span> <span class="s2">&quot;.rgba&quot;</span><span class="p">,</span> <span class="s2">&quot;.sgi&quot;</span><span class="p">])</span>
+
+<span class="c1"># End of file</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

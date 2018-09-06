@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.Jpeg2KImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.Jpeg2KImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.Jpeg2KImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># JPEG2000 file handling</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2014-03-12 ajh  Created</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2014 Coriolis Systems Limited</span>
+<span class="c1"># Copyright (c) 2014 Alastair Houghton</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_codestream</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse the JPEG 2000 codestream to extract the size and component</span>
+<span class="sd">    count from the SIZ marker segment, returning a PIL (size, mode) tuple.&quot;&quot;&quot;</span>
+
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">lsiz</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;H&#39;</span><span class="p">,</span> <span class="n">hdr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">siz</span> <span class="o">=</span> <span class="n">hdr</span> <span class="o">+</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lsiz</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">lsiz</span><span class="p">,</span> <span class="n">rsiz</span><span class="p">,</span> <span class="n">xsiz</span><span class="p">,</span> <span class="n">ysiz</span><span class="p">,</span> <span class="n">xosiz</span><span class="p">,</span> <span class="n">yosiz</span><span class="p">,</span> <span class="n">xtsiz</span><span class="p">,</span> <span class="n">ytsiz</span><span class="p">,</span> \
+        <span class="n">xtosiz</span><span class="p">,</span> <span class="n">ytosiz</span><span class="p">,</span> <span class="n">csiz</span> \
+        <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;&gt;HHIIIIIIIIH&#39;</span><span class="p">,</span> <span class="n">siz</span><span class="p">)</span>
+    <span class="n">ssiz</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">csiz</span>
+    <span class="n">xrsiz</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">csiz</span>
+    <span class="n">yrsiz</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="n">csiz</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">csiz</span><span class="p">):</span>
+        <span class="n">ssiz</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xrsiz</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">yrsiz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> \
+            <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;&gt;BBB&#39;</span><span class="p">,</span> <span class="n">siz</span><span class="p">,</span> <span class="mi">36</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">xsiz</span> <span class="o">-</span> <span class="n">xosiz</span><span class="p">,</span> <span class="n">ysiz</span> <span class="o">-</span> <span class="n">yosiz</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">csiz</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">yrsiz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x7f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;I;16&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+    <span class="k">elif</span> <span class="n">csiz</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;LA&#39;</span>
+    <span class="k">elif</span> <span class="n">csiz</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span>
+    <span class="k">elif</span> <span class="n">csiz</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGBA&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_jp2_header</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse the JP2 header box to extract size, component count and</span>
+<span class="sd">    color space information, returning a PIL (size, mode) tuple.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Find the JP2 header box</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">lbox</span><span class="p">,</span> <span class="n">tbox</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;I4s&#39;</span><span class="p">,</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">lbox</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">lbox</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;Q&#39;</span><span class="p">,</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">hlen</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hlen</span> <span class="o">=</span> <span class="mi">8</span>
+
+        <span class="k">if</span> <span class="n">lbox</span> <span class="o">&lt;</span> <span class="n">hlen</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Invalid JP2 header length&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tbox</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;jp2h&#39;</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lbox</span> <span class="o">-</span> <span class="n">hlen</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">lbox</span> <span class="o">-</span> <span class="n">hlen</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_CUR</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;could not find JP2 header&#39;</span><span class="p">)</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">bpc</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">nc</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">hio</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">lbox</span><span class="p">,</span> <span class="n">tbox</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;I4s&#39;</span><span class="p">,</span> <span class="n">hio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">lbox</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">lbox</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;Q&#39;</span><span class="p">,</span> <span class="n">hio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">hlen</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hlen</span> <span class="o">=</span> <span class="mi">8</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="n">hio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">lbox</span> <span class="o">-</span> <span class="n">hlen</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tbox</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;ihdr&#39;</span><span class="p">:</span>
+            <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="n">bpc</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">unkc</span><span class="p">,</span> <span class="n">ipr</span> \
+                <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;IIHBBBB&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unkc</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bpc</span> <span class="o">&amp;</span> <span class="mh">0x7f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;I;16&#39;</span>
+                <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+                <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;LA&#39;</span>
+                <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span>
+                <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGBA&#39;</span>
+                <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">tbox</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;colr&#39;</span><span class="p">:</span>
+            <span class="n">meth</span><span class="p">,</span> <span class="n">prec</span><span class="p">,</span> <span class="n">approx</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;&gt;BBB&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">cs</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">&#39;&gt;I&#39;</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="mi">3</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">cs</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>   <span class="c1"># sRGB</span>
+                    <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bpc</span> <span class="o">&amp;</span> <span class="mh">0x7f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;I;16&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGBA&#39;</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">cs</span> <span class="o">==</span> <span class="mi">17</span><span class="p">:</span>  <span class="c1"># grayscale</span>
+                    <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bpc</span> <span class="o">&amp;</span> <span class="mh">0x7f</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;I;16&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;LA&#39;</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">cs</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>  <span class="c1"># sYCC</span>
+                    <span class="k">if</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGB&#39;</span>
+                    <span class="k">elif</span> <span class="n">nc</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RGBA&#39;</span>
+                    <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Malformed jp2 header&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for JPEG2000 images.</span>
+
+
+<div class="viewcode-block" id="Jpeg2KImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.Jpeg2KImagePlugin.Jpeg2KImageFile">[docs]</a><span class="k">class</span> <span class="nc">Jpeg2KImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;JPEG2000&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;JPEG 2000 (ISO 15444)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sig</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xff\x4f\xff\x51</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">codec</span> <span class="o">=</span> <span class="s2">&quot;j2k&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">_parse_codestream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">sig</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">sig</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00\x00\x00\x0c</span><span class="s1">jP  </span><span class="se">\x0d\x0a\x87\x0a</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">codec</span> <span class="o">=</span> <span class="s2">&quot;jp2&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">_parse_jp2_header</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;not a JPEG 2000 file&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;unable to determine size/mode&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fstat</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;jpeg2k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">codec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">length</span><span class="p">))]</span>
+
+<div class="viewcode-block" id="Jpeg2KImageFile.load"><a class="viewcode-back" href="../../reference/plugins.html#PIL.Jpeg2KImagePlugin.Jpeg2KImageFile.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">:</span>
+            <span class="n">power</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span>
+            <span class="n">adjust</span> <span class="o">=</span> <span class="n">power</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">adjust</span><span class="p">)</span> <span class="o">/</span> <span class="n">power</span><span class="p">),</span>
+                         <span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">adjust</span><span class="p">)</span> <span class="o">/</span> <span class="n">power</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">:</span>
+            <span class="c1"># Update the reduce and layers settings</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">t3</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">4</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">t3</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">prefix</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xff\x4f\xff\x51</span><span class="s1">&#39;</span> <span class="ow">or</span>
+            <span class="n">prefix</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00\x00\x00\x0c</span><span class="s1">jP  </span><span class="se">\x0d\x0a\x87\x0a</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># Save support</span>
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.j2k&#39;</span><span class="p">):</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;j2k&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;jp2&#39;</span>
+
+    <span class="c1"># Get the keyword arguments</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span>
+
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">tile_offset</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tile_offset&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">tile_size</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tile_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">quality_mode</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quality_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;rates&#39;</span><span class="p">)</span>
+    <span class="n">quality_layers</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quality_layers&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">num_resolutions</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_resolutions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">cblk_size</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;codeblock_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">precinct_size</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;precinct_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">irreversible</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;irreversible&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">progression</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;progression&#39;</span><span class="p">,</span> <span class="s1">&#39;LRCP&#39;</span><span class="p">)</span>
+    <span class="n">cinema_mode</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cinema_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">)</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;fileno&quot;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">fd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">offset</span><span class="p">,</span>
+        <span class="n">tile_offset</span><span class="p">,</span>
+        <span class="n">tile_size</span><span class="p">,</span>
+        <span class="n">quality_mode</span><span class="p">,</span>
+        <span class="n">quality_layers</span><span class="p">,</span>
+        <span class="n">num_resolutions</span><span class="p">,</span>
+        <span class="n">cblk_size</span><span class="p">,</span>
+        <span class="n">precinct_size</span><span class="p">,</span>
+        <span class="n">irreversible</span><span class="p">,</span>
+        <span class="n">progression</span><span class="p">,</span>
+        <span class="n">cinema_mode</span><span class="p">,</span>
+        <span class="n">fd</span>
+    <span class="p">)</span>
+
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="p">[(</span><span class="s1">&#39;jpeg2k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="p">)])</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># Registry stuff</span>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">Jpeg2KImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">Jpeg2KImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">Jpeg2KImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extensions</span><span class="p">(</span><span class="n">Jpeg2KImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;.jp2&quot;</span><span class="p">,</span> <span class="s2">&quot;.j2k&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpc&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpf&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpx&quot;</span><span class="p">,</span> <span class="s2">&quot;.j2c&quot;</span><span class="p">])</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">Jpeg2KImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s1">&#39;image/jp2&#39;</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">Jpeg2KImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s1">&#39;image/jpx&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

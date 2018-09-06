@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.1.0 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.0.0" href="4.0.0.html" />
+    <link rel="prev" title="4.1.1" href="4.1.1.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.1.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#removed-deprecated-items">Removed Deprecated Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#closing-files-when-opening-images">Closing Files When Opening Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes-to-gif-handling-when-saving">Changes to GIF Handling When Saving</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-method-image-remap-palette">New Method: Image.remap_palette</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#added-decoder-registry-and-support-for-python-based-decoders">Added Decoder Registry and Support for Python Based Decoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tests">Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>4.1.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/4.1.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>4.1.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="removed-deprecated-items">
+<h2>Removed Deprecated Items<a class="headerlink" href="#removed-deprecated-items" title="Permalink to this headline">¶</a></h2>
+<p>Several deprecated items have been removed.</p>
+<ul class="simple">
+<li>Support for spaces in tiff kwargs in the parameters for ‘x resolution’, ‘y
+resolution’, ‘resolution unit’, and ‘date time’ has been
+removed. Underscores should be used instead.</li>
+<li>The methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.ImageDraw.ImageDraw.setink()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.ImageDraw.ImageDraw.setfill()</span></code>, and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.ImageDraw.ImageDraw.setfont()</span></code> have been removed.</li>
+</ul>
+</div>
+<div class="section" id="closing-files-when-opening-images">
+<h2>Closing Files When Opening Images<a class="headerlink" href="#closing-files-when-opening-images" title="Permalink to this headline">¶</a></h2>
+<p>The file handling when opening images has been overhauled. Previously,
+Pillow would attempt to close some, but not all image formats
+after loading the image data. Now, the following behavior
+is specified:</p>
+<ul class="simple">
+<li>For images where an open file is passed in, it is the
+responsibility of the calling code to close the file.</li>
+<li>For images where Pillow opens the file and the file is known to have
+only one frame, the file is closed after loading.</li>
+<li>If the file has more than one frame, or if it can’t be determined,
+then the file is left open to permit seeking to subsequent
+frames. It will be closed, eventually, in the <code class="docutils literal notranslate"><span class="pre">close</span></code> or
+<code class="docutils literal notranslate"><span class="pre">__del__</span></code> methods.</li>
+<li>If the image is memory mapped, then we can’t close the mapping to
+the underlying file until we are done with the image. The mapping
+will be closed in the <code class="docutils literal notranslate"><span class="pre">close</span></code> or <code class="docutils literal notranslate"><span class="pre">__del__</span></code> method.</li>
+</ul>
+</div>
+<div class="section" id="changes-to-gif-handling-when-saving">
+<h2>Changes to GIF Handling When Saving<a class="headerlink" href="#changes-to-gif-handling-when-saving" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="../reference/plugins.html#module-PIL.GifImagePlugin" title="PIL.GifImagePlugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.GifImagePlugin</span></code></a> code has been refactored to fix the flow when
+saving images. There are two external changes that arise from this:</p>
+<ul class="simple">
+<li>An <a class="reference internal" href="../reference/ImagePalette.html#PIL.ImagePalette.ImagePalette" title="PIL.ImagePalette.ImagePalette"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.ImagePalette.ImagePalette</span></code></a> object is now accepted
+as a specified palette argument in <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.save" title="PIL.Image.Image.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.save()</span></code></a>.</li>
+<li>The image to be saved is no longer modified in place by any of the
+operations of the save function. Previously it was modified when
+optimizing the image palette.</li>
+</ul>
+<p>This refactor fixed some bugs with palette handling when saving
+multiple frame GIFs.</p>
+</div>
+<div class="section" id="new-method-image-remap-palette">
+<h2>New Method: Image.remap_palette<a class="headerlink" href="#new-method-image-remap-palette" title="Permalink to this headline">¶</a></h2>
+<p>The method <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.remap_palette" title="PIL.Image.Image.remap_palette"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.remap_palette()</span></code></a> has been
+added. This method was hoisted from the GifImagePlugin code used to
+optimize the palette.</p>
+</div>
+<div class="section" id="added-decoder-registry-and-support-for-python-based-decoders">
+<h2>Added Decoder Registry and Support for Python Based Decoders<a class="headerlink" href="#added-decoder-registry-and-support-for-python-based-decoders" title="Permalink to this headline">¶</a></h2>
+<p>There is now a decoder registry similar to the image plugin
+registries. Image plugins can register a decoder, and it will be
+called when the decoding is requested. This allows for the creation of
+pure Python decoders. While the Python decoders will not be as fast as
+their C based counterparts, they may be easier and quicker to develop
+or safer to run.</p>
+</div>
+<div class="section" id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<p>Many tests have been added, including correctness tests for image
+formats that have been previously untested.</p>
+<p>We are now running automated tests in Docker containers against more
+Linux versions than are provided on Travis CI, which is currently
+Ubuntu 14.04 x64. This Pillow release is tested on 64-bit Alpine,
+Arch, Ubuntu 12.04 and 16.04, and 32-bit Debian Stretch and Ubuntu
+14.04. This also covers a wider range of dependency versions than are
+provided on Travis natively.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="4.0.0.html" class="btn btn-neutral float-right" title="4.0.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="4.1.1.html" class="btn btn-neutral" title="4.1.1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

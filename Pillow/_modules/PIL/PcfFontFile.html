@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.PcfFontFile &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.PcfFontFile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.PcfFontFile</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># THIS IS WORK IN PROGRESS</span>
+<span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># portable compiled font file parser</span>
+<span class="c1">#</span>
+<span class="c1"># history:</span>
+<span class="c1"># 1997-08-19 fl   created</span>
+<span class="c1"># 2003-09-13 fl   fixed loading of unicode fonts</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2003 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 1997-2003 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">FontFile</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i8</span><span class="p">,</span> <span class="n">i16le</span> <span class="k">as</span> <span class="n">l16</span><span class="p">,</span> <span class="n">i32le</span> <span class="k">as</span> <span class="n">l32</span><span class="p">,</span> <span class="n">i16be</span> <span class="k">as</span> <span class="n">b16</span><span class="p">,</span> <span class="n">i32be</span> <span class="k">as</span> <span class="n">b32</span>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># declarations</span>
+
+<span class="n">PCF_MAGIC</span> <span class="o">=</span> <span class="mh">0x70636601</span>  <span class="c1"># &quot;\x01fcp&quot;</span>
+
+<span class="n">PCF_PROPERTIES</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">PCF_ACCELERATORS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PCF_METRICS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">PCF_BITMAPS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">PCF_INK_METRICS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">PCF_BDF_ENCODINGS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">PCF_SWIDTHS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">PCF_GLYPH_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">PCF_BDF_ACCELERATORS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="n">BYTES_PER_ROW</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">lambda</span> <span class="n">bits</span><span class="p">:</span> <span class="p">((</span><span class="n">bits</span><span class="o">+</span><span class="mi">7</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="k">lambda</span> <span class="n">bits</span><span class="p">:</span> <span class="p">((</span><span class="n">bits</span><span class="o">+</span><span class="mi">15</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">1</span><span class="p">,</span>
+    <span class="k">lambda</span> <span class="n">bits</span><span class="p">:</span> <span class="p">((</span><span class="n">bits</span><span class="o">+</span><span class="mi">31</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">3</span><span class="p">,</span>
+    <span class="k">lambda</span> <span class="n">bits</span><span class="p">:</span> <span class="p">((</span><span class="n">bits</span><span class="o">+</span><span class="mi">63</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">7</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="sz"><a class="viewcode-back" href="../../PIL.html#PIL.PcfFontFile.sz">[docs]</a><span class="k">def</span> <span class="nf">sz</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">o</span><span class="p">:</span><span class="n">s</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">o</span><span class="p">)]</span></div>
+
+
+<span class="c1">##</span>
+<span class="c1"># Font file plugin for the X11 PCF format.</span>
+
+<div class="viewcode-block" id="PcfFontFile"><a class="viewcode-back" href="../../PIL.html#PIL.PcfFontFile.PcfFontFile">[docs]</a><span class="k">class</span> <span class="nc">PcfFontFile</span><span class="p">(</span><span class="n">FontFile</span><span class="o">.</span><span class="n">FontFile</span><span class="p">):</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+
+        <span class="n">magic</span> <span class="o">=</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">magic</span> <span class="o">!=</span> <span class="n">PCF_MAGIC</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a PCF file&quot;</span><span class="p">)</span>
+
+        <span class="n">FontFile</span><span class="o">.</span><span class="n">FontFile</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">count</span> <span class="o">=</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">count</span><span class="p">):</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">toc</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_properties</span><span class="p">()</span>
+
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_metrics</span><span class="p">()</span>
+        <span class="n">bitmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_bitmaps</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_encoding</span><span class="p">()</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># create glyph structure</span>
+
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+            <span class="n">ix</span> <span class="o">=</span> <span class="n">encoding</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+                <span class="n">glyph</span> <span class="o">=</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="o">-</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">bitmaps</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">glyph</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span> <span class="o">=</span> <span class="n">glyph</span>
+
+    <span class="k">def</span> <span class="nf">_getformat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+
+        <span class="nb">format</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toc</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
+        <span class="n">fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">l32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">&amp;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="n">b16</span><span class="p">,</span> <span class="n">b32</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="n">l16</span><span class="p">,</span> <span class="n">l32</span>
+
+        <span class="k">return</span> <span class="n">fp</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span>
+
+    <span class="k">def</span> <span class="nf">_load_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># font properties</span>
+
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">fp</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getformat</span><span class="p">(</span><span class="n">PCF_PROPERTIES</span><span class="p">)</span>
+
+        <span class="n">nprops</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+        <span class="c1"># read property description</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nprops</span><span class="p">):</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))))</span>
+        <span class="k">if</span> <span class="n">nprops</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">4</span> <span class="o">-</span> <span class="p">(</span><span class="n">nprops</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># pad</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">sz</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">sz</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+            <span class="n">properties</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="n">properties</span>
+
+    <span class="k">def</span> <span class="nf">_load_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># font metrics</span>
+
+        <span class="n">metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">fp</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getformat</span><span class="p">(</span><span class="n">PCF_METRICS</span><span class="p">)</span>
+
+        <span class="n">append</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">append</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nb">format</span> <span class="o">&amp;</span> <span class="mh">0xff00</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x100</span><span class="p">:</span>
+
+            <span class="c1"># &quot;compressed&quot; metrics</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))):</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">128</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">128</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">128</span>
+                <span class="n">ascent</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">128</span>
+                <span class="n">descent</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">128</span>
+                <span class="n">xsize</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="n">left</span>
+                <span class="n">ysize</span> <span class="o">=</span> <span class="n">ascent</span> <span class="o">+</span> <span class="n">descent</span>
+                <span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">xsize</span><span class="p">,</span> <span class="n">ysize</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span>
+                     <span class="n">ascent</span><span class="p">,</span> <span class="n">descent</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># &quot;jumbo&quot; metrics</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))):</span>
+                <span class="n">left</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">right</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">ascent</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">descent</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">attributes</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">xsize</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="n">left</span>
+                <span class="n">ysize</span> <span class="o">=</span> <span class="n">ascent</span> <span class="o">+</span> <span class="n">descent</span>
+                <span class="n">append</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">xsize</span><span class="p">,</span> <span class="n">ysize</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span>
+                     <span class="n">ascent</span><span class="p">,</span> <span class="n">descent</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">metrics</span>
+
+    <span class="k">def</span> <span class="nf">_load_bitmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">):</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># bitmap data</span>
+
+        <span class="n">bitmaps</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">fp</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getformat</span><span class="p">(</span><span class="n">PCF_BITMAPS</span><span class="p">)</span>
+
+        <span class="n">nbitmaps</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">nbitmaps</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Wrong number of bitmaps&quot;</span><span class="p">)</span>
+
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbitmaps</span><span class="p">):</span>
+            <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span>
+
+        <span class="n">bitmapSizes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">bitmapSizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i32</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span>
+
+        <span class="c1"># byteorder = format &amp; 4  # non-zero =&gt; MSB</span>
+        <span class="n">bitorder</span> <span class="o">=</span> <span class="nb">format</span> <span class="o">&amp;</span> <span class="mi">8</span>   <span class="c1"># non-zero =&gt; MSB</span>
+        <span class="n">padindex</span> <span class="o">=</span> <span class="nb">format</span> <span class="o">&amp;</span> <span class="mi">3</span>
+
+        <span class="n">bitmapsize</span> <span class="o">=</span> <span class="n">bitmapSizes</span><span class="p">[</span><span class="n">padindex</span><span class="p">]</span>
+        <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bitmapsize</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">bitmapsize</span><span class="p">)</span>
+
+        <span class="n">pad</span> <span class="o">=</span> <span class="n">BYTES_PER_ROW</span><span class="p">[</span><span class="n">padindex</span><span class="p">]</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;1;R&quot;</span>
+        <span class="k">if</span> <span class="n">bitorder</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbitmaps</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">b</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">offsets</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">bitmaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Image</span><span class="o">.</span><span class="n">frombytes</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="n">b</span><span class="p">:</span><span class="n">e</span><span class="p">],</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bitmaps</span>
+
+    <span class="k">def</span> <span class="nf">_load_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># map character code to bitmap index</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span>
+
+        <span class="n">fp</span><span class="p">,</span> <span class="nb">format</span><span class="p">,</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getformat</span><span class="p">(</span><span class="n">PCF_BDF_ENCODINGS</span><span class="p">)</span>
+
+        <span class="n">firstCol</span><span class="p">,</span> <span class="n">lastCol</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">firstRow</span><span class="p">,</span> <span class="n">lastRow</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">default</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">nencoding</span> <span class="o">=</span> <span class="p">(</span><span class="n">lastCol</span> <span class="o">-</span> <span class="n">firstCol</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lastRow</span> <span class="o">-</span> <span class="n">firstRow</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nencoding</span><span class="p">):</span>
+            <span class="n">encodingOffset</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">encodingOffset</span> <span class="o">!=</span> <span class="mh">0xFFFF</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">encoding</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">firstCol</span><span class="p">]</span> <span class="o">=</span> <span class="n">encodingOffset</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">break</span>  <span class="c1"># only load ISO-8859-1 glyphs</span>
+
+        <span class="k">return</span> <span class="n">encoding</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1081 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.PngImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.PngImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.PngImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># PNG support code</span>
+<span class="c1">#</span>
+<span class="c1"># See &quot;PNG (Portable Network Graphics) Specification, version 1.0;</span>
+<span class="c1"># W3C Recommendation&quot;, 1996-10-01, Thomas Boutell (ed.).</span>
+<span class="c1">#</span>
+<span class="c1"># history:</span>
+<span class="c1"># 1996-05-06 fl   Created (couldn&#39;t resist it)</span>
+<span class="c1"># 1996-12-14 fl   Upgraded, added read and verify support (0.2)</span>
+<span class="c1"># 1996-12-15 fl   Separate PNG stream parser</span>
+<span class="c1"># 1996-12-29 fl   Added write support, added getchunks</span>
+<span class="c1"># 1996-12-30 fl   Eliminated circular references in decoder (0.3)</span>
+<span class="c1"># 1998-07-12 fl   Read/write 16-bit images as mode I (0.4)</span>
+<span class="c1"># 2001-02-08 fl   Added transparency support (from Zircon) (0.5)</span>
+<span class="c1"># 2001-04-16 fl   Don&#39;t close data source in &quot;open&quot; method (0.6)</span>
+<span class="c1"># 2004-02-24 fl   Don&#39;t even pretend to support interlaced files (0.7)</span>
+<span class="c1"># 2004-08-31 fl   Do basic sanity check on chunk identifiers (0.8)</span>
+<span class="c1"># 2004-09-20 fl   Added PngInfo chunk container</span>
+<span class="c1"># 2004-12-18 fl   Added DPI read support (based on code by Niki Spahiev)</span>
+<span class="c1"># 2008-08-13 fl   Added tRNS support for RGB images</span>
+<span class="c1"># 2009-03-06 fl   Support for preserving ICC profiles (by Florian Hoech)</span>
+<span class="c1"># 2009-03-08 fl   Added zTXT support (from Lowell Alleman)</span>
+<span class="c1"># 2009-03-29 fl   Read interlaced PNG files (from Conrado Porto Lopes Gouvua)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2009 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 1996 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">zlib</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span><span class="p">,</span> <span class="n">ImagePalette</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i8</span><span class="p">,</span> <span class="n">i16be</span> <span class="k">as</span> <span class="n">i16</span><span class="p">,</span> <span class="n">i32be</span> <span class="k">as</span> <span class="n">i32</span><span class="p">,</span> <span class="n">o16be</span> <span class="k">as</span> <span class="n">o16</span><span class="p">,</span> <span class="n">o32be</span> <span class="k">as</span> <span class="n">o32</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">py3</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.9&quot;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">is_cid</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">br</span><span class="s2">&quot;\w\w\w\w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">match</span>
+
+
+<span class="n">_MAGIC</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\211</span><span class="s2">PNG</span><span class="se">\r\n\032\n</span><span class="s2">&quot;</span>
+
+
+<span class="n">_MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># supported bits/color combinations, and corresponding modes/rawmodes</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L;2&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L;4&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;I;16B&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="s2">&quot;RGB;16B&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;P;1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;P;2&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;P;4&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;LA&quot;</span><span class="p">,</span> <span class="s2">&quot;LA&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="s2">&quot;LA;16B&quot;</span><span class="p">),</span>  <span class="c1"># LA;16B-&gt;LA not yet available</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>  <span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="s2">&quot;RGBA;16B&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="n">_simple_palette</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;^</span><span class="se">\xff</span><span class="s1">*</span><span class="se">\x00\xff</span><span class="s1">*$&#39;</span><span class="p">)</span>
+
+<span class="c1"># Maximum decompressed size for a iTXt or zTXt chunk.</span>
+<span class="c1"># Eliminates decompression bombs where compressed chunks can expand 1000x</span>
+<span class="n">MAX_TEXT_CHUNK</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">SAFEBLOCK</span>
+<span class="c1"># Set the maximum total text chunk size.</span>
+<span class="n">MAX_TEXT_MEMORY</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="n">MAX_TEXT_CHUNK</span>
+
+
+<span class="k">def</span> <span class="nf">_safe_zlib_decompress</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">dobj</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">()</span>
+    <span class="n">plaintext</span> <span class="o">=</span> <span class="n">dobj</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">MAX_TEXT_CHUNK</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dobj</span><span class="o">.</span><span class="n">unconsumed_tail</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Decompressed Data Too Large&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plaintext</span>
+
+
+<span class="k">def</span> <span class="nf">_crc32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Support classes.  Suitable for PNG and related formats like MNG etc.</span>
+
+<div class="viewcode-block" id="ChunkStream"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream">[docs]</a><span class="k">class</span> <span class="nc">ChunkStream</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ChunkStream.read"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Fetch a new chunk. Returns header information.&quot;</span>
+        <span class="n">cid</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span>
+            <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="n">cid</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_cid</span><span class="p">(</span><span class="n">cid</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;broken PNG file (chunk </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">repr</span><span class="p">(</span><span class="n">cid</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span></div>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ChunkStream.close"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="ChunkStream.push"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ChunkStream.call"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="s2">&quot;Call the appropriate chunk handler&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;STREAM </span><span class="si">%r</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;chunk_&quot;</span> <span class="o">+</span> <span class="n">cid</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))(</span><span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChunkStream.crc"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.crc">[docs]</a>    <span class="k">def</span> <span class="nf">crc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="s2">&quot;Read and verify checksum&quot;</span>
+
+        <span class="c1"># Skip CRC checks for ancillary chunks if allowed to load truncated images</span>
+        <span class="c1"># 5th byte of first char is 1 [specs, section 5.4]</span>
+        <span class="k">if</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i8</span><span class="p">(</span><span class="n">cid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crc_skip</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">crc1</span> <span class="o">=</span> <span class="n">_crc32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">_crc32</span><span class="p">(</span><span class="n">cid</span><span class="p">))</span>
+            <span class="n">crc2</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">crc1</span> <span class="o">!=</span> <span class="n">crc2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;broken PNG file (bad header checksum in </span><span class="si">%r</span><span class="s2">)&quot;</span>
+                                  <span class="o">%</span> <span class="n">cid</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;broken PNG file (incomplete checksum in </span><span class="si">%r</span><span class="s2">)&quot;</span>
+                              <span class="o">%</span> <span class="n">cid</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChunkStream.crc_skip"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.crc_skip">[docs]</a>    <span class="k">def</span> <span class="nf">crc_skip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="s2">&quot;Read checksum.  Used if the C module is not present&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ChunkStream.verify"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.ChunkStream.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endchunk</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;IEND&quot;</span><span class="p">):</span>
+
+        <span class="c1"># Simple approach; just calculate checksum for all remaining</span>
+        <span class="c1"># blocks.  Must be called directly after open.</span>
+
+        <span class="n">cids</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;truncated PNG file&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">cid</span> <span class="o">==</span> <span class="n">endchunk</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crc</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">))</span>
+            <span class="n">cids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cids</span></div></div>
+
+
+<div class="viewcode-block" id="iTXt"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.iTXt">[docs]</a><span class="k">class</span> <span class="nc">iTXt</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subclass of string to allow iTXt chunks to look like strings while</span>
+<span class="sd">    keeping their extra information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="iTXt.__new__"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.iTXt.__new__">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">tkey</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param cls: the class to use when creating the instance</span>
+<span class="sd">        :param text: value for this key</span>
+<span class="sd">        :param lang: language code</span>
+<span class="sd">        :param tkey: UTF-8 version of the key name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tkey</span> <span class="o">=</span> <span class="n">tkey</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+
+
+<div class="viewcode-block" id="PngInfo"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.PngInfo">[docs]</a><span class="k">class</span> <span class="nc">PngInfo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    PNG chunk container (for use with save(pnginfo=))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="PngInfo.add"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.PngInfo.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends an arbitrary chunk. Use with caution.</span>
+
+<span class="sd">        :param cid: a byte string, 4 bytes long.</span>
+<span class="sd">        :param data: a byte string of the encoded data</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PngInfo.add_itxt"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.PngInfo.add_itxt">[docs]</a>    <span class="k">def</span> <span class="nf">add_itxt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tkey</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">zip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends an iTXt chunk.</span>
+
+<span class="sd">        :param key: latin-1 encodable text key name</span>
+<span class="sd">        :param value: value for this key</span>
+<span class="sd">        :param lang: language code</span>
+<span class="sd">        :param tkey: UTF-8 version of the key name</span>
+<span class="sd">        :param zip: compression flag</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lang</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tkey</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">tkey</span> <span class="o">=</span> <span class="n">tkey</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">zip</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;iTXt&quot;</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0\x01\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">lang</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">tkey</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span>
+                     <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;iTXt&quot;</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0\0\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">lang</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">tkey</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span>
+                     <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PngInfo.add_text"><a class="viewcode-back" href="../../PIL.html#PIL.PngImagePlugin.PngInfo.add_text">[docs]</a>    <span class="k">def</span> <span class="nf">add_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">zip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends a text chunk.</span>
+
+<span class="sd">        :param key: latin-1 encodable text key name</span>
+<span class="sd">        :param value: value for this key, text or an</span>
+<span class="sd">           :py:class:`PIL.PngImagePlugin.iTXt` instance</span>
+<span class="sd">        :param zip: compression flag</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">iTXt</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_itxt</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">lang</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">tkey</span><span class="p">,</span> <span class="nb">zip</span><span class="o">=</span><span class="nb">zip</span><span class="p">)</span>
+
+        <span class="c1"># The tEXt chunk stores latin-1 text</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">UnicodeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_itxt</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">zip</span><span class="o">=</span><span class="nb">zip</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">zip</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;zTXt&quot;</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;tEXt&quot;</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">value</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PNG image stream (IHDR/IEND)</span>
+
+<div class="viewcode-block" id="PngStream"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream">[docs]</a><span class="k">class</span> <span class="nc">PngStream</span><span class="p">(</span><span class="n">ChunkStream</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">):</span>
+
+        <span class="n">ChunkStream</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
+
+        <span class="c1"># local copies of Image attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_text</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_tile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_palette</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_memory</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="PngStream.check_text_memory"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.check_text_memory">[docs]</a>    <span class="k">def</span> <span class="nf">check_text_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunklen</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_memory</span> <span class="o">+=</span> <span class="n">chunklen</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_memory</span> <span class="o">&gt;</span> <span class="n">MAX_TEXT_MEMORY</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too much memory used in text chunks: </span><span class="si">%s</span><span class="s2">&gt;MAX_TEXT_MEMORY&quot;</span> <span class="o">%</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">text_memory</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_iCCP"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_iCCP">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_iCCP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># ICC profile</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="c1"># according to PNG spec, the iCCP chunk contains:</span>
+        <span class="c1"># Profile name  1-79 bytes (character string)</span>
+        <span class="c1"># Null separator        1 byte (null character)</span>
+        <span class="c1"># Compression method    1 byte (0)</span>
+        <span class="c1"># Compressed profile    n bytes (zlib with deflate compression)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;iCCP profile name </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Compression method </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">comp_method</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">comp_method</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Unknown compression method </span><span class="si">%s</span><span class="s2"> in iCCP chunk&quot;</span> <span class="o">%</span>
+                              <span class="n">comp_method</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">icc_profile</span> <span class="o">=</span> <span class="n">_safe_zlib_decompress</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                <span class="n">icc_profile</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="k">except</span> <span class="n">zlib</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">icc_profile</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># FIXME</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icc_profile</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_IHDR"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_IHDR">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_IHDR</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># image header</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_size</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_rawmode</span> <span class="o">=</span> <span class="n">_MODES</span><span class="p">[(</span><span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">]),</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">9</span><span class="p">]))]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">12</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;interlace&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">11</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;unknown filter category&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_IDAT"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_IDAT">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_IDAT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># image data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;zip&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">im_size</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_rawmode</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_idat</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_IEND"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_IEND">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_IEND</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># end of PNG image</span>
+        <span class="k">raise</span> <span class="ne">EOFError</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_PLTE"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_PLTE">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_PLTE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># palette</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_palette</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_tRNS"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_tRNS">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_tRNS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># transparency</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_simple_palette</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="c1"># tRNS contains only one full-transparent entry,</span>
+                <span class="c1"># other entries are full opaque</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;transparency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># otherwise, we have a byte string with one alpha value</span>
+                <span class="c1"># for each palette entry</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;transparency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;transparency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_mode</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;transparency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:]),</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_gAMA"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_gAMA">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_gAMA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="c1"># gamma setting</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100000.0</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_cHRM"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_cHRM">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_cHRM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="c1"># chromaticity, 8 unsigned ints, actual value is scaled by 100,000</span>
+        <span class="c1"># WP x,y, Red x,y, Green x,y Blue x,y</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="n">raw_vals</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;</span><span class="si">%d</span><span class="s1">I&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span><span class="p">),</span> <span class="n">s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s1">&#39;chromaticity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">elt</span><span class="o">/</span><span class="mf">100000.0</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">raw_vals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_sRGB"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_sRGB">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_sRGB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="c1"># srgb rendering intent, 1 byte</span>
+        <span class="c1"># 0 perceptual</span>
+        <span class="c1"># 1 relative colorimetric</span>
+        <span class="c1"># 2 saturation</span>
+        <span class="c1"># 3 absolute colorimetric</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s1">&#39;srgb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_pHYs"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_pHYs">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_pHYs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># pixels per unit</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="n">i32</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># meter</span>
+            <span class="n">dpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">px</span> <span class="o">*</span> <span class="mf">0.0254</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">py</span> <span class="o">*</span> <span class="mf">0.0254</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dpi</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="s2">&quot;aspect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_tEXt"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_tEXt">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_tEXt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># text</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># fallback for broken tEXt tags</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">py3</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_text</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_text_memory</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_zTXt"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_zTXt">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_zTXt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># compressed text</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
+            <span class="n">comp_method</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">comp_method</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">comp_method</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Unknown compression method </span><span class="si">%s</span><span class="s2"> in zTXt chunk&quot;</span> <span class="o">%</span>
+                              <span class="n">comp_method</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">_safe_zlib_decompress</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="k">except</span> <span class="n">zlib</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">k</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">py3</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">,</span> <span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_text</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_text_memory</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="PngStream.chunk_iTXt"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngStream.chunk_iTXt">[docs]</a>    <span class="k">def</span> <span class="nf">chunk_iTXt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+
+        <span class="c1"># international text</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="n">cf</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">i8</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lang</span><span class="p">,</span> <span class="n">tk</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="n">cf</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">_safe_zlib_decompress</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">s</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span>
+                <span class="k">except</span> <span class="n">zlib</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">s</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="n">py3</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="n">tk</span> <span class="o">=</span> <span class="n">tk</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;strict&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">UnicodeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">im_info</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im_text</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">iTXt</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">tk</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_text_memory</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">s</span></div></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PNG reader</span>
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span> <span class="o">==</span> <span class="n">_MAGIC</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for PNG images.</span>
+
+<div class="viewcode-block" id="PngImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngImageFile">[docs]</a><span class="k">class</span> <span class="nc">PngImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;PNG&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;Portable network graphics&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">!=</span> <span class="n">_MAGIC</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a PNG file&quot;</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Parse headers up to the first IDAT chunk</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">png</span> <span class="o">=</span> <span class="n">PngStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="c1">#</span>
+            <span class="c1"># get next chunk</span>
+
+            <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%r</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> (unknown)&quot;</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">crc</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># Copy relevant attributes from the PngStream.  An alternative</span>
+        <span class="c1"># would be to let the PngStream class modify these attributes</span>
+        <span class="c1"># directly, but that introduces circular references which are</span>
+        <span class="c1"># difficult to break if things go wrong in the decoder...</span>
+        <span class="c1"># (believe me, I&#39;ve tried ;-)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_text</span>  <span class="c1"># experimental</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_tile</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_palette</span><span class="p">:</span>
+            <span class="n">rawmode</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">im_palette</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">palette</span> <span class="o">=</span> <span class="n">ImagePalette</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span> <span class="o">=</span> <span class="n">length</span>  <span class="c1"># used by load_read()</span>
+
+<div class="viewcode-block" id="PngImageFile.verify"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngImageFile.verify">[docs]</a>    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Verify PNG file&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;verify must be called directly after open&quot;</span><span class="p">)</span>
+
+        <span class="c1"># back up to beginning of IDAT block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">verify</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="PngImageFile.load_prepare"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngImageFile.load_prepare">[docs]</a>    <span class="k">def</span> <span class="nf">load_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;internal: prepare to read PNG file&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;interlace&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+
+        <span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">load_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PngImageFile.load_read"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngImageFile.load_read">[docs]</a>    <span class="k">def</span> <span class="nf">load_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_bytes</span><span class="p">):</span>
+        <span class="s2">&quot;internal: read more image data&quot;</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># end of chunk, skip forward to next one</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>  <span class="c1"># CRC</span>
+
+            <span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">cid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;IDAT&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;DDAT&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">cid</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span> <span class="o">=</span> <span class="n">length</span>  <span class="c1"># empty chunks are allowed</span>
+
+        <span class="c1"># read more data from this chunk</span>
+        <span class="k">if</span> <span class="n">read_bytes</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">read_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">read_bytes</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">read_bytes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idat</span> <span class="o">-</span> <span class="n">read_bytes</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">read_bytes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PngImageFile.load_end"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.PngImageFile.load_end">[docs]</a>    <span class="k">def</span> <span class="nf">load_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;internal: finished reading image data&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">png</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">png</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PNG writer</span>
+
+<span class="n">_OUTMODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># supported PIL modes, and corresponding rawmodes/bits/color combinations</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span>    <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>       <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x01\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;L;1&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;L;1&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x01\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;L;2&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;L;2&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x02\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;L;4&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;L;4&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;L&quot;</span><span class="p">:</span>    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span>       <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x08\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;LA&quot;</span><span class="p">:</span>   <span class="p">(</span><span class="s2">&quot;LA&quot;</span><span class="p">,</span>      <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x08\x04</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;I&quot;</span><span class="p">:</span>    <span class="p">(</span><span class="s2">&quot;I;16B&quot;</span><span class="p">,</span>   <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x10\x00</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;P;1&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;P;1&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x01\x03</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;P;2&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;P;2&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x02\x03</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;P;4&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;P;4&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x04\x03</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span>    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span>       <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x08\x03</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;RGB&quot;</span><span class="p">:</span>  <span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span>     <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x08\x02</span><span class="s1">&#39;</span><span class="p">),</span>
+    <span class="s2">&quot;RGBA&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span>    <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x08\x06</span><span class="s1">&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="putchunk"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.putchunk">[docs]</a><span class="k">def</span> <span class="nf">putchunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a PNG chunk (including CRC field)&quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o32</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">+</span> <span class="n">cid</span><span class="p">)</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">crc</span> <span class="o">=</span> <span class="n">_crc32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">_crc32</span><span class="p">(</span><span class="n">cid</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o32</span><span class="p">(</span><span class="n">crc</span><span class="p">))</span></div>
+
+
+<span class="k">class</span> <span class="nc">_idat</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># wrap output from the encoder in IDAT chunks</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk</span> <span class="o">=</span> <span class="n">chunk</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;IDAT&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">chunk</span><span class="o">=</span><span class="n">putchunk</span><span class="p">):</span>
+    <span class="c1"># save an image to disk (called by the save method)</span>
+
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+
+        <span class="c1">#</span>
+        <span class="c1"># attempt to minimize storage requirements for palette images</span>
+        <span class="k">if</span> <span class="s2">&quot;bits&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="p">:</span>
+            <span class="c1"># number of bits specified by user</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="p">[</span><span class="s2">&quot;bits&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check palette contents</span>
+            <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">palette</span><span class="p">:</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">getdata</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span><span class="o">//</span><span class="mi">3</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="mi">256</span>
+
+        <span class="k">if</span> <span class="n">colors</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">colors</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">colors</span> <span class="o">&lt;=</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="k">if</span> <span class="n">bits</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">bits</span><span class="p">)</span>
+
+    <span class="c1"># encoder options</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span> <span class="o">=</span> <span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optimize&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                        <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;compress_level&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;compress_type&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                        <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dictionary&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+    <span class="c1"># get the corresponding PNG mode</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rawmode</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">_OUTMODES</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write mode </span><span class="si">%s</span><span class="s2"> as PNG&quot;</span> <span class="o">%</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># write minimal PNG file</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_MAGIC</span><span class="p">)</span>
+
+    <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;IHDR&quot;</span><span class="p">,</span>
+          <span class="n">o32</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">o32</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>     <span class="c1"># 0: size</span>
+          <span class="n">mode</span><span class="p">,</span>                                 <span class="c1"># 8: depth/type</span>
+          <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span>                                <span class="c1"># 10: compression</span>
+          <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span>                                <span class="c1"># 11: filter category</span>
+          <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">)</span>                                <span class="c1"># 12: interlace flag</span>
+
+    <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;cHRM&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;gAMA&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;sBIT&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;sRGB&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tIME&quot;</span><span class="p">]</span>
+
+    <span class="n">icc</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">icc</span><span class="p">:</span>
+        <span class="c1"># ICC profile</span>
+        <span class="c1"># according to PNG spec, the iCCP chunk contains:</span>
+        <span class="c1"># Profile name  1-79 bytes (character string)</span>
+        <span class="c1"># Null separator        1 byte (null character)</span>
+        <span class="c1"># Compression method    1 byte (0)</span>
+        <span class="c1"># Compressed profile    n bytes (zlib with deflate compression)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;ICC Profile&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">icc</span><span class="p">)</span>
+        <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;iCCP&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># You must either have sRGB or iCCP.</span>
+        <span class="c1"># Disallow sRGB chunks when an iCCP-chunk has been emitted.</span>
+        <span class="n">chunks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;sRGB&quot;</span><span class="p">)</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pnginfo&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">info</span><span class="p">:</span>
+        <span class="n">chunks_multiple_allowed</span> <span class="o">=</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;sPLT&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;iTXt&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tEXt&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;zTXt&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cid</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+                <span class="n">chunks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
+                <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">cid</span> <span class="ow">in</span> <span class="n">chunks_multiple_allowed</span><span class="p">:</span>
+                <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+        <span class="n">palette_byte_number</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">bits</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">palette_bytes</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">getpalette</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)[:</span><span class="n">palette_byte_number</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette_bytes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">palette_byte_number</span><span class="p">:</span>
+            <span class="n">palette_bytes</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span>
+        <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;PLTE&quot;</span><span class="p">,</span> <span class="n">palette_bytes</span><span class="p">)</span>
+
+    <span class="n">transparency</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transparency&#39;</span><span class="p">,</span>
+                                      <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transparency&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">transparency</span> <span class="ow">or</span> <span class="n">transparency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="c1"># limit to actual palette size</span>
+            <span class="n">alpha_bytes</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">bits</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transparency</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tRNS&quot;</span><span class="p">,</span> <span class="n">transparency</span><span class="p">[:</span><span class="n">alpha_bytes</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">transparency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">transparency</span><span class="p">))</span>
+                <span class="n">alpha</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xFF</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="n">transparency</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span>
+                <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tRNS&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="p">[:</span><span class="n">alpha_bytes</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span><span class="p">:</span>
+            <span class="n">transparency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">65535</span><span class="p">,</span> <span class="n">transparency</span><span class="p">))</span>
+            <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tRNS&quot;</span><span class="p">,</span> <span class="n">o16</span><span class="p">(</span><span class="n">transparency</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span><span class="p">:</span>
+            <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">transparency</span>
+            <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tRNS&quot;</span><span class="p">,</span> <span class="n">o16</span><span class="p">(</span><span class="n">red</span><span class="p">)</span> <span class="o">+</span> <span class="n">o16</span><span class="p">(</span><span class="n">green</span><span class="p">)</span> <span class="o">+</span> <span class="n">o16</span><span class="p">(</span><span class="n">blue</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;transparency&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="p">:</span>
+                <span class="c1"># don&#39;t bother with transparency if it&#39;s an RGBA</span>
+                <span class="c1"># and it&#39;s in the info dict. It&#39;s probably just stale.</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot use transparency for this mode&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span> <span class="ow">and</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">getpalettemode</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">:</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">getpalette</span><span class="p">(</span><span class="s2">&quot;RGBA&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+            <span class="n">alpha_bytes</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">bits</span>
+            <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;tRNS&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="p">[:</span><span class="n">alpha_bytes</span><span class="p">])</span>
+
+    <span class="n">dpi</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dpi&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dpi</span><span class="p">:</span>
+        <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;pHYs&quot;</span><span class="p">,</span>
+              <span class="n">o32</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dpi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">0.0254</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)),</span>
+              <span class="n">o32</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dpi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mf">0.0254</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)),</span>
+              <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x01</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pnginfo&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">info</span><span class="p">:</span>
+        <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;bKGD&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;hIST&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cid</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+                <span class="n">chunks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
+                <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">_idat</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">chunk</span><span class="p">),</span>
+                    <span class="p">[(</span><span class="s2">&quot;zip&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rawmode</span><span class="p">)])</span>
+
+    <span class="n">chunk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;IEND&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;flush&quot;</span><span class="p">):</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PNG chunk converter</span>
+
+<div class="viewcode-block" id="getchunks"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PngImagePlugin.getchunks">[docs]</a><span class="k">def</span> <span class="nf">getchunks</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a list of PNG chunks representing this image.&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">collector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">crc</span> <span class="o">=</span> <span class="n">o32</span><span class="p">(</span><span class="n">_crc32</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">_crc32</span><span class="p">(</span><span class="n">cid</span><span class="p">)))</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">cid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">crc</span><span class="p">))</span>
+
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">collector</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span>
+
+    <span class="k">return</span> <span class="n">fp</span><span class="o">.</span><span class="n">data</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Registry</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">PngImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">PngImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">PngImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">PngImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">PngImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;image/png&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,839 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageDraw Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageEnhance Module" href="ImageEnhance.html" />
+    <link rel="prev" title="ImageCms Module" href="ImageCms.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-draw-a-gray-cross-over-an-image">Example: Draw a gray cross over an image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#concepts">Concepts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#coordinates">Coordinates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#colors">Colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color-names">Color Names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fonts">Fonts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example-draw-partial-opacity-text">Example: Draw Partial Opacity Text</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageDraw.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageDraw"></span><div class="section" id="imagedraw-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module<a class="headerlink" href="#imagedraw-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageDraw</span></code> module provides simple 2D graphics for
+<a class="reference internal" href="Image.html#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> objects.  You can use this module to create new
+images, annotate or retouch existing images, and to generate graphics on the
+fly for web use.</p>
+<p>For a more advanced drawing library for PIL, see the <a class="reference external" href="https://github.com/pytroll/aggdraw">aggdraw module</a>.</p>
+<div class="section" id="example-draw-a-gray-cross-over-an-image">
+<h2>Example: Draw a gray cross over an image<a class="headerlink" href="#example-draw-a-gray-cross-over-an-image" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;hopper.jpg&quot;</span><span class="p">)</span>
+
+<span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+<span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+<span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+
+<span class="c1"># write to stdout</span>
+<span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="s2">&quot;PNG&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="concepts">
+<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="coordinates">
+<h3>Coordinates<a class="headerlink" href="#coordinates" title="Permalink to this headline">¶</a></h3>
+<p>The graphics interface uses the same coordinate system as PIL itself, with (0,
+0) in the upper left corner.</p>
+</div>
+<div class="section" id="colors">
+<h3>Colors<a class="headerlink" href="#colors" title="Permalink to this headline">¶</a></h3>
+<p>To specify colors, you can use numbers or tuples just as you would use with
+<a class="reference internal" href="Image.html#PIL.Image.new" title="PIL.Image.new"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.new()</span></code></a> or <a class="reference internal" href="Image.html#PIL.Image.Image.putpixel" title="PIL.Image.Image.putpixel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.putpixel()</span></code></a>. For “1”,
+“L”, and “I” images, use integers. For “RGB” images, use a 3-tuple containing
+integer values. For “F” images, use integer or floating point values.</p>
+<p>For palette images (mode “P”), use integers as color indexes. In 1.1.4 and
+later, you can also use RGB 3-tuples or color names (see below). The drawing
+layer will automatically assign color indexes, as long as you don’t draw with
+more than 256 colors.</p>
+</div>
+<div class="section" id="color-names">
+<h3>Color Names<a class="headerlink" href="#color-names" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference internal" href="ImageColor.html#color-names"><span class="std std-ref">Color Names</span></a> for the color names supported by Pillow.</p>
+</div>
+<div class="section" id="fonts">
+<h3>Fonts<a class="headerlink" href="#fonts" title="Permalink to this headline">¶</a></h3>
+<p>PIL can use bitmap fonts or OpenType/TrueType fonts.</p>
+<p>Bitmap fonts are stored in PIL’s own format, where each font typically consists
+of two files, one named .pil and the other usually named .pbm. The former
+contains font metrics, the latter raster data.</p>
+<p>To load a bitmap font, use the load functions in the <a class="reference internal" href="ImageFont.html#module-PIL.ImageFont" title="PIL.ImageFont"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFont</span></code></a>
+module.</p>
+<p>To load a OpenType/TrueType font, use the truetype function in the
+<a class="reference internal" href="ImageFont.html#module-PIL.ImageFont" title="PIL.ImageFont"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFont</span></code></a> module. Note that this function depends on third-party
+libraries, and may not available in all PIL builds.</p>
+</div>
+</div>
+<div class="section" id="example-draw-partial-opacity-text">
+<h2>Example: Draw Partial Opacity Text<a class="headerlink" href="#example-draw-partial-opacity-text" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageFont</span>
+<span class="c1"># get an image</span>
+<span class="n">base</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;Pillow/Tests/images/hopper.png&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span><span class="p">)</span>
+
+<span class="c1"># make a blank image for the text, initialized to transparent text color</span>
+<span class="n">txt</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="c1"># get a font</span>
+<span class="n">fnt</span> <span class="o">=</span> <span class="n">ImageFont</span><span class="o">.</span><span class="n">truetype</span><span class="p">(</span><span class="s1">&#39;Pillow/Tests/fonts/FreeMono.ttf&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="c1"># get a drawing context</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+
+<span class="c1"># draw text, half opacity</span>
+<span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">fnt</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">128</span><span class="p">))</span>
+<span class="c1"># draw text, full opacity</span>
+<span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">60</span><span class="p">),</span> <span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="n">fnt</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">))</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">alpha_composite</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
+
+<span class="n">out</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.Draw">
+<em class="property">class </em><code class="descclassname">PIL.ImageDraw.</code><code class="descname">Draw</code><span class="sig-paren">(</span><em>im</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.Draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an object that can be used to draw in the given image.</p>
+<p>Note that the image will be modified in place.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>im</strong> – The image to draw in.</li>
+<li><strong>mode</strong> – Optional mode to use for color values.  For RGB
+images, this argument can be RGB or RGBA (to blend the
+drawing into the image).  For all other modes, this argument
+must be the same as the image mode.  If omitted, the mode
+defaults to the mode of the image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.getfont">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">getfont</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.getfont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current default font.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An image font.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.arc">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">arc</code><span class="sig-paren">(</span><em>xy</em>, <em>start</em>, <em>end</em>, <em>fill=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.arc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an arc (a portion of a circle outline) between the start and end
+angles, inside the given bounding box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – <p>Two points to define the bounding box. Sequence of
+<code class="docutils literal notranslate"><span class="pre">[(x0,</span> <span class="pre">y0),</span> <span class="pre">(x1,</span> <span class="pre">y1)]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">y0,</span> <span class="pre">x1,</span> <span class="pre">y1]</span></code>,</p>
+<blockquote>
+<div>where <code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">&gt;=</span> <span class="pre">x0</span></code> and <code class="docutils literal notranslate"><span class="pre">y1</span> <span class="pre">&gt;=</span> <span class="pre">y0</span></code>.</div></blockquote>
+</li>
+<li><strong>start</strong> – Starting angle, in degrees. Angles are measured from
+3 o’clock, increasing clockwise.</li>
+<li><strong>end</strong> – Ending angle, in degrees.</li>
+<li><strong>fill</strong> – Color to use for the arc.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.bitmap">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">bitmap</code><span class="sig-paren">(</span><em>xy</em>, <em>bitmap</em>, <em>fill=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.bitmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a bitmap (mask) at the given position, using the current fill color
+for the non-zero portions. The bitmap should be a valid transparency mask
+(mode “1”) or matte (mode “L” or “RGBA”).</p>
+<p>This is equivalent to doing <code class="docutils literal notranslate"><span class="pre">image.paste(xy,</span> <span class="pre">color,</span> <span class="pre">bitmap)</span></code>.</p>
+<p>To paste pixel data into an image, use the
+<a class="reference internal" href="Image.html#PIL.Image.Image.paste" title="PIL.Image.Image.paste"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paste()</span></code></a> method on the image itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.chord">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">chord</code><span class="sig-paren">(</span><em>xy</em>, <em>start</em>, <em>end</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.chord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.arc" title="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.arc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">arc()</span></code></a>, but connects the end points
+with a straight line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – <p>Two points to define the bounding box. Sequence of
+<code class="docutils literal notranslate"><span class="pre">[(x0,</span> <span class="pre">y0),</span> <span class="pre">(x1,</span> <span class="pre">y1)]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">y0,</span> <span class="pre">x1,</span> <span class="pre">y1]</span></code>,</p>
+<blockquote>
+<div>where <code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">&gt;=</span> <span class="pre">x0</span></code> and <code class="docutils literal notranslate"><span class="pre">y1</span> <span class="pre">&gt;=</span> <span class="pre">y0</span></code>.</div></blockquote>
+</li>
+<li><strong>outline</strong> – Color to use for the outline.</li>
+<li><strong>fill</strong> – Color to use for the fill.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.ellipse">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">ellipse</code><span class="sig-paren">(</span><em>xy</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.ellipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws an ellipse inside the given bounding box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – <p>Two points to define the bounding box. Sequence of either
+<code class="docutils literal notranslate"><span class="pre">[(x0,</span> <span class="pre">y0),</span> <span class="pre">(x1,</span> <span class="pre">y1)]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">y0,</span> <span class="pre">x1,</span> <span class="pre">y1]</span></code>,</p>
+<blockquote>
+<div>where <code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">&gt;=</span> <span class="pre">x0</span></code> and <code class="docutils literal notranslate"><span class="pre">y1</span> <span class="pre">&gt;=</span> <span class="pre">y0</span></code>.</div></blockquote>
+</li>
+<li><strong>outline</strong> – Color to use for the outline.</li>
+<li><strong>fill</strong> – Color to use for the fill.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.line">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">line</code><span class="sig-paren">(</span><em>xy</em>, <em>fill=None</em>, <em>width=0</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a line between the coordinates in the <strong>xy</strong> list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Sequence of either 2-tuples like <code class="docutils literal notranslate"><span class="pre">[(x,</span> <span class="pre">y),</span> <span class="pre">(x,</span> <span class="pre">y),</span> <span class="pre">...]</span></code> or
+numeric values like <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">...]</span></code>.</li>
+<li><strong>fill</strong> – Color to use for the line.</li>
+<li><strong>width</strong> – <p>The line width, in pixels. Note that line
+joins are not handled well, so wide polylines will not look good.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.5.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This option was broken until version 1.1.6.</p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.pieslice">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">pieslice</code><span class="sig-paren">(</span><em>xy</em>, <em>start</em>, <em>end</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.pieslice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as arc, but also draws straight lines between the end points and the
+center of the bounding box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – <p>Two points to define the bounding box. Sequence of
+<code class="docutils literal notranslate"><span class="pre">[(x0,</span> <span class="pre">y0),</span> <span class="pre">(x1,</span> <span class="pre">y1)]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">y0,</span> <span class="pre">x1,</span> <span class="pre">y1]</span></code>,</p>
+<blockquote>
+<div>where <code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">&gt;=</span> <span class="pre">x0</span></code> and <code class="docutils literal notranslate"><span class="pre">y1</span> <span class="pre">&gt;=</span> <span class="pre">y0</span></code>.</div></blockquote>
+</li>
+<li><strong>start</strong> – Starting angle, in degrees. Angles are measured from
+3 o’clock, increasing clockwise.</li>
+<li><strong>end</strong> – Ending angle, in degrees.</li>
+<li><strong>fill</strong> – Color to use for the fill.</li>
+<li><strong>outline</strong> – Color to use for the outline.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.point">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">point</code><span class="sig-paren">(</span><em>xy</em>, <em>fill=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws points (individual pixels) at the given coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Sequence of either 2-tuples like <code class="docutils literal notranslate"><span class="pre">[(x,</span> <span class="pre">y),</span> <span class="pre">(x,</span> <span class="pre">y),</span> <span class="pre">...]</span></code> or
+numeric values like <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">...]</span></code>.</li>
+<li><strong>fill</strong> – Color to use for the point.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.polygon">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">polygon</code><span class="sig-paren">(</span><em>xy</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a polygon.</p>
+<p>The polygon outline consists of straight lines between the given
+coordinates, plus a straight line between the last and the first
+coordinate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Sequence of either 2-tuples like <code class="docutils literal notranslate"><span class="pre">[(x,</span> <span class="pre">y),</span> <span class="pre">(x,</span> <span class="pre">y),</span> <span class="pre">...]</span></code> or
+numeric values like <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">...]</span></code>.</li>
+<li><strong>outline</strong> – Color to use for the outline.</li>
+<li><strong>fill</strong> – Color to use for the fill.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.rectangle">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">rectangle</code><span class="sig-paren">(</span><em>xy</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.rectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a rectangle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Two points to define the bounding box. Sequence of either
+<code class="docutils literal notranslate"><span class="pre">[(x0,</span> <span class="pre">y0),</span> <span class="pre">(x1,</span> <span class="pre">y1)]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x0,</span> <span class="pre">y0,</span> <span class="pre">x1,</span> <span class="pre">y1]</span></code>. The second point
+is just outside the drawn rectangle.</li>
+<li><strong>outline</strong> – Color to use for the outline.</li>
+<li><strong>fill</strong> – Color to use for the fill.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.shape">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">shape</code><span class="sig-paren">(</span><em>shape</em>, <em>fill=None</em>, <em>outline=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.shape" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method is experimental.</p>
+</div>
+<p>Draw a shape.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.text">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">text</code><span class="sig-paren">(</span><em>xy</em>, <em>text</em>, <em>fill=None</em>, <em>font=None</em>, <em>anchor=None</em>, <em>spacing=0</em>, <em>align=&quot;left&quot;</em>, <em>direction=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the string at the given position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Top left corner of the text.</li>
+<li><strong>text</strong> – Text to be drawn. If it contains any newline characters,
+the text is passed on to multiline_text()</li>
+<li><strong>fill</strong> – Color to use for the text.</li>
+<li><strong>font</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageFont</span></code> instance.</li>
+<li><strong>spacing</strong> – If the text is passed on to multiline_text(),
+the number of pixels between lines.</li>
+<li><strong>align</strong> – If the text is passed on to multiline_text(),
+“left”, “center” or “right”.</li>
+<li><strong>direction</strong> – <p>Direction of the text. It can be ‘rtl’ (right to
+left), ‘ltr’ (left to right), ‘ttb’ (top to
+bottom) or ‘btt’ (bottom to top). Requires
+libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+<li><strong>features</strong> – <p>A list of OpenType font features to be used during text
+layout. This is usually used to turn on optional
+font features that are not enabled by default,
+for example ‘dlig’ or ‘ss01’, but can be also
+used to turn off default font features for
+example ‘-liga’ to disable ligatures or ‘-kern’
+to disable kerning.  To get all supported
+features, see
+<a class="reference external" href="https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist">https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist</a>
+Requires libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.multiline_text">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">multiline_text</code><span class="sig-paren">(</span><em>xy</em>, <em>text</em>, <em>fill=None</em>, <em>font=None</em>, <em>anchor=None</em>, <em>spacing=0</em>, <em>align=&quot;left&quot;</em>, <em>direction=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.multiline_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws the string at the given position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – Top left corner of the text.</li>
+<li><strong>text</strong> – Text to be drawn.</li>
+<li><strong>fill</strong> – Color to use for the text.</li>
+<li><strong>font</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageFont</span></code> instance.</li>
+<li><strong>spacing</strong> – The number of pixels between lines.</li>
+<li><strong>align</strong> – “left”, “center” or “right”.</li>
+<li><strong>direction</strong> – <p>Direction of the text. It can be ‘rtl’ (right to
+left), ‘ltr’ (left to right), ‘ttb’ (top to
+bottom) or ‘btt’ (bottom to top). Requires
+libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+<li><strong>features</strong> – <p>A list of OpenType font features to be used during text
+layout. This is usually used to turn on optional
+font features that are not enabled by default,
+for example ‘dlig’ or ‘ss01’, but can be also
+used to turn off default font features for
+example ‘-liga’ to disable ligatures or ‘-kern’
+to disable kerning.  To get all supported
+features, see
+<a class="reference external" href="https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist">https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist</a>
+Requires libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.textsize">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">textsize</code><span class="sig-paren">(</span><em>text</em>, <em>font=None</em>, <em>spacing=4</em>, <em>direction=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.textsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of the given string, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>text</strong> – Text to be measured. If it contains any newline characters,
+the text is passed on to multiline_textsize()</li>
+<li><strong>font</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageFont</span></code> instance.</li>
+<li><strong>spacing</strong> – If the text is passed on to multiline_textsize(),
+the number of pixels between lines.</li>
+<li><strong>direction</strong> – <p>Direction of the text. It can be ‘rtl’ (right to
+left), ‘ltr’ (left to right), ‘ttb’ (top to
+bottom) or ‘btt’ (bottom to top). Requires
+libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+<li><strong>features</strong> – <p>A list of OpenType font features to be used during text
+layout. This is usually used to turn on optional
+font features that are not enabled by default,
+for example ‘dlig’ or ‘ss01’, but can be also
+used to turn off default font features for
+example ‘-liga’ to disable ligatures or ‘-kern’
+to disable kerning.  To get all supported
+features, see
+<a class="reference external" href="https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist">https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist</a>
+Requires libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.ImageDraw.multiline_textsize">
+<code class="descclassname">PIL.ImageDraw.ImageDraw.</code><code class="descname">multiline_textsize</code><span class="sig-paren">(</span><em>text</em>, <em>font=None</em>, <em>spacing=4</em>, <em>direction=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.ImageDraw.multiline_textsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the size of the given string, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>text</strong> – Text to be measured.</li>
+<li><strong>font</strong> – An <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageFont</span></code> instance.</li>
+<li><strong>spacing</strong> – The number of pixels between lines.</li>
+<li><strong>direction</strong> – <p>Direction of the text. It can be ‘rtl’ (right to
+left), ‘ltr’ (left to right), ‘ttb’ (top to
+bottom) or ‘btt’ (bottom to top). Requires
+libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+<li><strong>features</strong> – <p>A list of OpenType font features to be used during text
+layout. This is usually used to turn on optional
+font features that are not enabled by default,
+for example ‘dlig’ or ‘ss01’, but can be also
+used to turn off default font features for
+example ‘-liga’ to disable ligatures or ‘-kern’
+to disable kerning.  To get all supported
+features, see
+<a class="reference external" href="https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist">https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist</a>
+Requires libraqm.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.2.0.</span></p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.getdraw">
+<code class="descclassname">PIL.ImageDraw.</code><code class="descname">getdraw</code><span class="sig-paren">(</span><em>im=None</em>, <em>hints=None</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.getdraw" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method is experimental.</p>
+</div>
+<p>A more advanced 2D drawing interface for PIL images,
+based on the WCK interface.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im</strong> – The image to draw in.</li>
+<li><strong>hints</strong> – An optional list of hints.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A (drawing context, drawing resource factory) tuple.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageDraw.PIL.ImageDraw.floodfill">
+<code class="descclassname">PIL.ImageDraw.</code><code class="descname">floodfill</code><span class="sig-paren">(</span><em>image</em>, <em>xy</em>, <em>value</em>, <em>border=None</em>, <em>thresh=0</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageDraw.PIL.ImageDraw.floodfill" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method is experimental.</p>
+</div>
+<p>Fills a bounded region with a given color.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image</strong> – Target image.</li>
+<li><strong>xy</strong> – Seed position (a 2-item coordinate tuple).</li>
+<li><strong>value</strong> – Fill color.</li>
+<li><strong>border</strong> – Optional border value.  If given, the region consists of
+pixels with a color different from the border color.  If not given,
+the region consists of pixels having the same color as the seed
+pixel.</li>
+<li><strong>thresh</strong> – Optional threshold value which specifies a maximum
+tolerable difference of a pixel value from the ‘background’ in
+order for it to be replaced. Useful for filling regions of non-
+homogeneous, but similar, colors.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageEnhance.html" class="btn btn-neutral float-right" title="ImageEnhance Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageCms.html" class="btn btn-neutral" title="ImageCms Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

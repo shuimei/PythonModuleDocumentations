@@ -1,0 +1,894 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Handbook" href="handbook/index.html" />
+    <link rel="prev" title="Pillow" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#warnings">Warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-installation">Basic Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#windows-installation">Windows Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macos-installation">macOS Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linux-installation">Linux Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freebsd-installation">FreeBSD Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-from-source">Building From Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#external-libraries">External Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-options">Build Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-on-macos">Building on macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-on-windows">Building on Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-on-freebsd">Building on FreeBSD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-on-linux">Building on Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-on-android">Building on Android</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#platform-support">Platform Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#continuous-integration-targets">Continuous Integration Targets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-platforms">Other Platforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#old-versions">Old Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="warnings">
+<h2>Warnings<a class="headerlink" href="#warnings" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Pillow and PIL cannot co-exist in the same environment. Before installing Pillow, please uninstall PIL.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Pillow &gt;= 1.0 no longer supports “import Image”. Please use “from PIL import Image” instead.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Pillow &gt;= 2.1.0 no longer supports “import _imaging”. Please use “from PIL.Image import core as _imaging” instead.</p>
+</div>
+</div>
+<div class="section" id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pillow is supported on the following Python versions</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Python</strong></td>
+<td><strong>2.4</strong></td>
+<td><strong>2.5</strong></td>
+<td><strong>2.6</strong></td>
+<td><strong>2.7</strong></td>
+<td><strong>3.2</strong></td>
+<td><strong>3.3</strong></td>
+<td><strong>3.4</strong></td>
+<td><strong>3.5</strong></td>
+<td><strong>3.6</strong></td>
+<td><strong>3.7</strong></td>
+</tr>
+<tr class="row-even"><td>Pillow &lt; 2.0.0</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>Pillow 2.x - 3.x</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>Pillow 4.x</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>Pillow 5.0.x - 5.1.x</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>Pillow &gt;= 5.2.0</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>&#160;</td>
+<td>&#160;</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="basic-installation">
+<h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following instructions will install Pillow with support for
+most common image formats. See <a class="reference internal" href="#external-libraries"><span class="std std-ref">External Libraries</span></a> for a
+full list of external libraries supported.</p>
+</div>
+<p>Install Pillow with <strong class="command">pip</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install Pillow
+</pre></div>
+</div>
+<div class="section" id="windows-installation">
+<h3>Windows Installation<a class="headerlink" href="#windows-installation" title="Permalink to this headline">¶</a></h3>
+<p>We provide Pillow binaries for Windows compiled for the matrix of
+supported Pythons in both 32 and 64-bit versions in wheel, egg, and
+executable installers. These binaries have all of the optional
+libraries included except for raqm and libimagequant:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">Pillow</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="macos-installation">
+<h3>macOS Installation<a class="headerlink" href="#macos-installation" title="Permalink to this headline">¶</a></h3>
+<p>We provide binaries for macOS for each of the supported Python
+versions in the wheel format. These include support for all optional
+libraries except libimagequant.  Raqm support requires libraqm,
+fribidi, and harfbuzz to be installed separately:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install Pillow
+</pre></div>
+</div>
+</div>
+<div class="section" id="linux-installation">
+<h3>Linux Installation<a class="headerlink" href="#linux-installation" title="Permalink to this headline">¶</a></h3>
+<p>We provide binaries for Linux for each of the supported Python
+versions in the manylinux wheel format. These include support for all
+optional libraries except libimagequant. Raqm support requires
+libraqm, fribidi, and harfbuzz to be installed separately:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install Pillow
+</pre></div>
+</div>
+<p>Most major Linux distributions, including Fedora, Debian/Ubuntu and
+ArchLinux also include Pillow in packages that previously contained
+PIL e.g. <code class="docutils literal notranslate"><span class="pre">python-imaging</span></code>.</p>
+</div>
+<div class="section" id="freebsd-installation">
+<h3>FreeBSD Installation<a class="headerlink" href="#freebsd-installation" title="Permalink to this headline">¶</a></h3>
+<p>Pillow can be installed on FreeBSD via the official Ports or Packages systems:</p>
+<p><strong>Ports</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd /usr/ports/graphics/py-pillow &amp;&amp; make install clean
+</pre></div>
+</div>
+<p><strong>Packages</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pkg install py27-pillow
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference external" href="https://www.freshports.org/graphics/py-pillow/">Pillow FreeBSD port</a> and packages
+are tested by the ports team with all supported FreeBSD versions
+and against Python 2.7 and 3.x.</p>
+</div>
+</div>
+</div>
+<div class="section" id="building-from-source">
+<h2>Building From Source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h2>
+<p>Download and extract the <a class="reference external" href="https://pypi.org/project/Pillow/">compressed archive from PyPI</a>.</p>
+<div class="section" id="external-libraries">
+<span id="id1"></span><h3>External Libraries<a class="headerlink" href="#external-libraries" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You <strong>do not need to install all supported external libraries</strong> to
+use Pillow’s basic features. <strong>Zlib</strong> and <strong>libjpeg</strong> are required
+by default.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are scripts to install the dependencies for some operating
+systems included in the <code class="docutils literal notranslate"><span class="pre">depends</span></code> directory. Also see the
+Dockerfiles in our <a class="reference external" href="https://github.com/python-pillow/docker-images">docker images repo</a>.</p>
+</div>
+<p>Many of Pillow’s features require external libraries:</p>
+<ul class="simple">
+<li><strong>libjpeg</strong> provides JPEG functionality.<ul>
+<li>Pillow has been tested with libjpeg versions <strong>6b</strong>, <strong>8</strong>, <strong>9-9c</strong> and
+libjpeg-turbo version <strong>8</strong>.</li>
+<li>Starting with Pillow 3.0.0, libjpeg is required by default, but
+may be disabled with the <code class="docutils literal notranslate"><span class="pre">--disable-jpeg</span></code> flag.</li>
+</ul>
+</li>
+<li><strong>zlib</strong> provides access to compressed PNGs<ul>
+<li>Starting with Pillow 3.0.0, zlib is required by default, but may
+be disabled with the <code class="docutils literal notranslate"><span class="pre">--disable-zlib</span></code> flag.</li>
+</ul>
+</li>
+<li><strong>libtiff</strong> provides compressed TIFF functionality<ul>
+<li>Pillow has been tested with libtiff versions <strong>3.x</strong> and <strong>4.0</strong></li>
+</ul>
+</li>
+<li><strong>libfreetype</strong> provides type related services</li>
+<li><strong>littlecms</strong> provides color management<ul>
+<li>Pillow version 2.2.1 and below uses liblcms1, Pillow 2.3.0 and
+above uses liblcms2. Tested with <strong>1.19</strong> and <strong>2.7</strong>.</li>
+</ul>
+</li>
+<li><strong>libwebp</strong> provides the WebP format.<ul>
+<li>Pillow has been tested with version <strong>0.1.3</strong>, which does not read
+transparent WebP files. Versions <strong>0.3.0</strong> and above support
+transparency.</li>
+</ul>
+</li>
+<li><strong>tcl/tk</strong> provides support for tkinter bitmap and photo images.</li>
+<li><strong>openjpeg</strong> provides JPEG 2000 functionality.<ul>
+<li>Pillow has been tested with openjpeg <strong>2.0.0</strong> and <strong>2.1.0</strong>.</li>
+<li>Pillow does <strong>not</strong> support the earlier <strong>1.5</strong> series which ships
+with Ubuntu &lt;= 14.04 and Debian Jessie.</li>
+</ul>
+</li>
+<li><strong>libimagequant</strong> provides improved color quantization<ul>
+<li>Pillow has been tested with libimagequant <strong>2.6-2.12.1</strong></li>
+<li>Libimagequant is licensed GPLv3, which is more restrictive than
+the Pillow license, therefore we will not be distributing binaries
+with libimagequant support enabled.</li>
+<li>Windows support: Libimagequant requires VS2013/MSVC 18 to compile,
+so it is unlikely to work with any Python prior to 3.5 on Windows.</li>
+</ul>
+</li>
+<li><strong>libraqm</strong> provides complex text layout support.<ul>
+<li>libraqm provides bidirectional text support (using FriBiDi),
+shaping (using HarfBuzz), and proper script itemization. As a
+result, Raqm can support most writing systems covered by Unicode.</li>
+<li>libraqm depends on the following libraries: FreeType, HarfBuzz,
+FriBiDi, make sure that you install them before installing libraqm
+if not available as package in your system.</li>
+<li>setting text direction or font features is not supported without
+libraqm.</li>
+<li>libraqm is dynamically loaded in Pillow 5.0.0 and above, so support
+is available if all the libraries are installed.</li>
+<li>Windows support: Raqm support is currently unsupported on Windows.</li>
+</ul>
+</li>
+</ul>
+<p>Once you have installed the prerequisites, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install Pillow
+</pre></div>
+</div>
+<p>If the prerequisites are installed in the standard library locations
+for your machine (e.g. <code class="file docutils literal notranslate"><span class="pre">/usr</span></code> or <code class="file docutils literal notranslate"><span class="pre">/usr/local</span></code>), no
+additional configuration should be required. If they are installed in
+a non-standard location, you may need to configure setuptools to use
+those locations by editing <code class="file docutils literal notranslate"><span class="pre">setup.py</span></code> or
+<code class="file docutils literal notranslate"><span class="pre">setup.cfg</span></code>, or by adding environment variables on the command
+line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ CFLAGS=&quot;-I/usr/pkg/include&quot; pip install pillow
+</pre></div>
+</div>
+<p>If Pillow has been previously built without the required
+prerequisites, it may be necessary to manually clear the pip cache or
+build without cache using the <code class="docutils literal notranslate"><span class="pre">--no-cache-dir</span></code> option to force a
+build with newly installed external libraries.</p>
+</div>
+<div class="section" id="build-options">
+<h3>Build Options<a class="headerlink" href="#build-options" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Environment variable: <code class="docutils literal notranslate"><span class="pre">MAX_CONCURRENCY=n</span></code>. By default, Pillow will
+use multiprocessing to build the extension on all available CPUs,
+but not more than 4. Setting <code class="docutils literal notranslate"><span class="pre">MAX_CONCURRENCY</span></code> to 1 will disable
+parallel building.</li>
+<li>Build flags: <code class="docutils literal notranslate"><span class="pre">--disable-zlib</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-jpeg</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--disable-tiff</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-freetype</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-lcms</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--disable-webp</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-webpmux</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-jpeg2000</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--disable-imagequant</span></code>.
+Disable building the corresponding feature even if the development
+libraries are present on the building machine.</li>
+<li>Build flags: <code class="docutils literal notranslate"><span class="pre">--enable-zlib</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-jpeg</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--enable-tiff</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-freetype</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-lcms</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--enable-webp</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-webpmux</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-jpeg2000</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--enable-imagequant</span></code>.
+Require that the corresponding feature is built. The build will raise
+an exception if the libraries are not found. Webpmux (WebP metadata)
+relies on WebP support. Tcl and Tk also must be used together.</li>
+<li>Build flag: <code class="docutils literal notranslate"><span class="pre">--disable-platform-guessing</span></code>. Skips all of the
+platform dependent guessing of include and library directories for
+automated build systems that configure the proper paths in the
+environment variables (e.g. Buildroot).</li>
+<li>Build flag: <code class="docutils literal notranslate"><span class="pre">--debug</span></code>. Adds a debugging flag to the include and
+library search process to dump all paths searched for and found to
+stdout.</li>
+</ul>
+<p>Sample usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ MAX_CONCURRENCY=1 python setup.py build_ext --enable-[feature] install
+</pre></div>
+</div>
+<p>or using pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install pillow --global-option=&quot;build_ext&quot; --global-option=&quot;--enable-[feature]&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-on-macos">
+<h3>Building on macOS<a class="headerlink" href="#building-on-macos" title="Permalink to this headline">¶</a></h3>
+<p>The Xcode command line tools are required to compile portions of
+Pillow. The tools are installed by running <code class="docutils literal notranslate"><span class="pre">xcode-select</span> <span class="pre">--install</span></code>
+from the command line. The command line tools are required even if you
+have the full Xcode package installed.  It may be necessary to run
+<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">xcodebuild</span> <span class="pre">-license</span></code> to accept the license prior to using the
+tools.</p>
+<p>The easiest way to install external libraries is via <a class="reference external" href="https://brew.sh/">Homebrew</a>. After you install Homebrew, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ brew install libtiff libjpeg webp little-cms2
+</pre></div>
+</div>
+<p>To install libraqm on macOS use Homebrew to install its dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ brew install freetype harfbuzz fribidi
+</pre></div>
+</div>
+<p>Then see <code class="docutils literal notranslate"><span class="pre">depends/install_raqm_cmake.sh</span></code> to install libraqm.</p>
+<p>Now install Pillow with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install Pillow
+</pre></div>
+</div>
+<p>or from within the uncompressed source directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-on-windows">
+<h3>Building on Windows<a class="headerlink" href="#building-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>We don’t recommend trying to build on Windows. It is a maze of twisty
+passages, mostly dead ends. There are build scripts and notes for the
+Windows build in the <code class="docutils literal notranslate"><span class="pre">winbuild</span></code> directory.</p>
+</div>
+<div class="section" id="building-on-freebsd">
+<h3>Building on FreeBSD<a class="headerlink" href="#building-on-freebsd" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only FreeBSD 10 and 11 tested</p>
+</div>
+<p>Make sure you have Python’s development libraries installed.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo pkg install python2
+</pre></div>
+</div>
+<p>Or for Python 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo pkg install python3
+</pre></div>
+</div>
+<p>Prerequisites are installed on <strong>FreeBSD 10 or 11</strong> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo pkg install jpeg-turbo tiff webp lcms2 freetype2 openjpeg harfbuzz fribidi
+</pre></div>
+</div>
+<p>Then see <code class="docutils literal notranslate"><span class="pre">depends/install_raqm_cmake.sh</span></code> to install libraqm.</p>
+</div>
+<div class="section" id="building-on-linux">
+<h3>Building on Linux<a class="headerlink" href="#building-on-linux" title="Permalink to this headline">¶</a></h3>
+<p>If you didn’t build Python from source, make sure you have Python’s
+development libraries installed.</p>
+<p>In Debian or Ubuntu:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install python-dev python-setuptools
+</pre></div>
+</div>
+<p>Or for Python 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install python3-dev python3-setuptools
+</pre></div>
+</div>
+<p>In Fedora, the command is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install python-devel redhat-rpm-config
+</pre></div>
+</div>
+<p>Or for Python 3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install python3-devel redhat-rpm-config
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">redhat-rpm-config</span></code> is required on Fedora 23, but not earlier versions.</p>
+</div>
+<p>Prerequisites are installed on <strong>Ubuntu 14.04 LTS</strong> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install libtiff5-dev libjpeg8-dev zlib1g-dev \
+    libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev \
+    tcl8.6-dev tk8.6-dev python-tk
+</pre></div>
+</div>
+<p>Then see <code class="docutils literal notranslate"><span class="pre">depends/install_raqm.sh</span></code> to install libraqm.</p>
+<p>Prerequisites are installed on recent <strong>RedHat</strong> <strong>Centos</strong> or <strong>Fedora</strong> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install libtiff-devel libjpeg-devel zlib-devel freetype-devel \
+    lcms2-devel libwebp-devel tcl-devel tk-devel libraqm-devel \
+    libimagequant-devel
+</pre></div>
+</div>
+<p>Note that the package manager may be yum or dnf, depending on the
+exact distribution.</p>
+<p>See also the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code>s in the Test Infrastructure repo
+(<a class="reference external" href="https://github.com/python-pillow/docker-images">https://github.com/python-pillow/docker-images</a>) for a known working
+install process for other tested distros.</p>
+</div>
+<div class="section" id="building-on-android">
+<h3>Building on Android<a class="headerlink" href="#building-on-android" title="Permalink to this headline">¶</a></h3>
+<p>Basic Android support has been added for compilation within the Termux
+environment. The dependencies can be installed by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pkg -y install python python-dev ndk-sysroot clang make \
+    libjpeg-turbo-dev
+</pre></div>
+</div>
+<p>This has been tested within the Termux app on ChromeOS, on x86.</p>
+</div>
+</div>
+<div class="section" id="platform-support">
+<h2>Platform Support<a class="headerlink" href="#platform-support" title="Permalink to this headline">¶</a></h2>
+<p>Current platform support for Pillow. Binary distributions are
+contributed for each release on a volunteer basis, but the source
+should compile and run everywhere platform support is listed. In
+general, we aim to support all current versions of Linux, macOS, and
+Windows.</p>
+<div class="section" id="continuous-integration-targets">
+<h3>Continuous Integration Targets<a class="headerlink" href="#continuous-integration-targets" title="Permalink to this headline">¶</a></h3>
+<p>These platforms are built and tested for every change.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="35%" />
+<col width="26%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Operating system</strong></td>
+<td><strong>Tested Python versions</strong></td>
+<td><strong>Tested Architecture</strong></td>
+</tr>
+<tr class="row-even"><td>Alpine</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Arch</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Amazon</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Centos 6</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Centos 7</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Debian Stretch</td>
+<td>2.7</td>
+<td>x86</td>
+</tr>
+<tr class="row-even"><td>Fedora 25</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Fedora 26</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Mac OS X 10.10 Yosemite*</td>
+<td>2.7, 3.4, 3.5, 3.6, 3.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Ubuntu Linux 16.04 LTS</td>
+<td>2.7</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td rowspan="2">Ubuntu Linux 14.04 LTS</td>
+<td>2.7, 3.4, 3.5, 3.6, 3.7,
+pypy, pypy3</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>2.7</td>
+<td>x86</td>
+</tr>
+<tr class="row-even"><td rowspan="2">Windows Server 2012 R2</td>
+<td>2.7, 3.4</td>
+<td>x86, x86-64</td>
+</tr>
+<tr class="row-odd"><td>pypy, 3.5/mingw</td>
+<td>x86</td>
+</tr>
+</tbody>
+</table>
+<p>* Mac OS X CI is not run for every commit, but is run for every release.</p>
+</div>
+<div class="section" id="other-platforms">
+<h3>Other Platforms<a class="headerlink" href="#other-platforms" title="Permalink to this headline">¶</a></h3>
+<p>These platforms have been reported to work at the versions mentioned.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Contributors please test Pillow on your platform then update this
+document and send a pull request.</p>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="29%" />
+<col width="25%" />
+<col width="27%" />
+<col width="19%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Operating system</strong></td>
+<td><strong>Tested Python versions</strong></td>
+<td><strong>Latest tested Pillow version</strong></td>
+<td><strong>Tested processors</strong></td>
+</tr>
+<tr class="row-even"><td>macOS 10.13 High Sierra</td>
+<td>2.7, 3.4, 3.5, 3.6</td>
+<td>4.2.1</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>macOS 10.12 Sierra</td>
+<td>2.7, 3.4, 3.5, 3.6</td>
+<td>4.1.1</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Mac OS X 10.11 El Capitan</td>
+<td>2.7, 3.3, 3.4, 3.5</td>
+<td>4.1.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Mac OS X 10.9 Mavericks</td>
+<td>2.7, 3.2, 3.3, 3.4</td>
+<td>3.0.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Mac OS X 10.8 Mountain Lion</td>
+<td>2.6, 2.7, 3.2, 3.3</td>
+<td>&#160;</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Redhat Linux 6</td>
+<td>2.6</td>
+<td>&#160;</td>
+<td>x86</td>
+</tr>
+<tr class="row-even"><td>CentOS 6.3</td>
+<td>2.7, 3.3</td>
+<td>&#160;</td>
+<td>x86</td>
+</tr>
+<tr class="row-odd"><td>Fedora 23</td>
+<td>2.7, 3.4</td>
+<td>3.1.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td rowspan="3">Ubuntu Linux 12.04 LTS</td>
+<td>2.6, 3.2, 3.3, 3.4, 3.5
+PyPy5.3.1, PyPy3 v2.4.0</td>
+<td>3.4.1</td>
+<td>x86,x86-64</td>
+</tr>
+<tr class="row-odd"><td>2.7</td>
+<td>4.3.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>2.7, 3.2</td>
+<td>3.4.1</td>
+<td>ppc</td>
+</tr>
+<tr class="row-odd"><td>Ubuntu Linux 10.04 LTS</td>
+<td>2.6</td>
+<td>2.3.0</td>
+<td>x86,x86-64</td>
+</tr>
+<tr class="row-even"><td>Debian 8.2 Jessie</td>
+<td>2.7, 3.4</td>
+<td>3.1.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Raspbian Jessie</td>
+<td>2.7, 3.4</td>
+<td>3.1.0</td>
+<td>arm</td>
+</tr>
+<tr class="row-even"><td>Raspbian Stretch</td>
+<td>2.7, 3.5</td>
+<td>4.0.0</td>
+<td>arm</td>
+</tr>
+<tr class="row-odd"><td>Gentoo Linux</td>
+<td>2.7, 3.2</td>
+<td>2.1.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>FreeBSD 11.1</td>
+<td>2.7, 3.4, 3.5, 3.6</td>
+<td>4.3.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>FreeBSD 10.3</td>
+<td>2.7, 3.4, 3.5</td>
+<td>4.2.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>FreeBSD 10.2</td>
+<td>2.7, 3.4</td>
+<td>3.1.0</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-odd"><td>Windows 8.1 Pro</td>
+<td>2.6, 2.7, 3.2, 3.3, 3.4</td>
+<td>2.4.0</td>
+<td>x86,x86-64</td>
+</tr>
+<tr class="row-even"><td>Windows 8 Pro</td>
+<td>2.6, 2.7, 3.2, 3.3, 3.4a3</td>
+<td>2.2.0</td>
+<td>x86,x86-64</td>
+</tr>
+<tr class="row-odd"><td>Windows 7 Pro</td>
+<td>2.7, 3.2, 3.3</td>
+<td>3.4.1</td>
+<td>x86-64</td>
+</tr>
+<tr class="row-even"><td>Windows Server 2008 R2 Enterprise</td>
+<td>3.3</td>
+<td>&#160;</td>
+<td>x86-64</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="old-versions">
+<h2>Old Versions<a class="headerlink" href="#old-versions" title="Permalink to this headline">¶</a></h2>
+<p>You can download old distributions from <a class="reference external" href="https://pypi.org/project/Pillow/">PyPI</a>. Only the latest major
+releases for Python 2.x and 3.x are visible, but all releases are
+available by direct URL access
+e.g. <a class="reference external" href="https://pypi.org/project/Pillow/1.0/">https://pypi.org/project/Pillow/1.0/</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="handbook/index.html" class="btn btn-neutral float-right" title="Handbook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Pillow" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

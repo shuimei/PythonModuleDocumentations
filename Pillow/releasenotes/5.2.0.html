@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.2.0 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.1.0" href="5.1.0.html" />
+    <link rel="prev" title="5.3.0" href="5.3.0.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deprecations">Deprecations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-additions">API Additions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#d-color-lookup-tables">3D color lookup tables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imagecolor-getrgb">ImageColor.getrgb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imagefile-get-format-mimetype">ImageFile.get_format_mimetype</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imagefont-getsize-multiline">ImageFont.getsize_multiline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image-rotate">Image.rotate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tga-file-format">TGA file format</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#other-changes">Other Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#support-added-for-python-3-7">Support added for Python 3.7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-macos-wheels-with-xcode-6-4-supporting-older-macos-versions">Build macOS wheels with Xcode 6.4, supporting older macOS versions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fix-i2f-compilation-with-some-gcc-versions">Fix _i2f compilation with some GCC versions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resolve-confusion-getting-pil-pillow-version-string">Resolve confusion getting PIL / Pillow version string</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>5.2.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/5.2.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>5.2.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="api-changes">
+<h2>API Changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deprecations">
+<h3>Deprecations<a class="headerlink" href="#deprecations" title="Permalink to this headline">¶</a></h3>
+<p>These version constants have been deprecated. <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> will be removed in
+Pillow 6.0.0, and <code class="docutils literal notranslate"><span class="pre">PILLOW_VERSION</span></code> will be removed after that.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">PIL.VERSION</span></code> (old PIL version 1.1.7)</li>
+<li><code class="docutils literal notranslate"><span class="pre">PIL.PILLOW_VERSION</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">PIL.Image.VERSION</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">PIL.Image.PILLOW_VERSION</span></code></li>
+</ul>
+<p>Use <code class="docutils literal notranslate"><span class="pre">PIL.__version__</span></code> instead.</p>
+</div>
+</div>
+<div class="section" id="api-additions">
+<h2>API Additions<a class="headerlink" href="#api-additions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="d-color-lookup-tables">
+<h3>3D color lookup tables<a class="headerlink" href="#d-color-lookup-tables" title="Permalink to this headline">¶</a></h3>
+<p>Support for 3D color lookup table transformations has been added.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/3D_lookup_table">https://en.wikipedia.org/wiki/3D_lookup_table</a></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Color3DLUT.generate</span></code> transforms 3-channel pixels using the values of the
+channels as coordinates in the 3D lookup table and interpolating the nearest
+elements.</p>
+<p>It allows you to apply almost any color transformation in constant time by
+using pre-calculated decimated tables.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Color3DLUT.transform()</span></code> allows altering table values with a callback.</p>
+<p>If NumPy is installed, the performance of argument conversion is dramatically
+improved when a source table supports buffer interface (NumPy &amp;&amp; arrays in
+Python &gt;= 3).</p>
+</div>
+<div class="section" id="imagecolor-getrgb">
+<h3>ImageColor.getrgb<a class="headerlink" href="#imagecolor-getrgb" title="Permalink to this headline">¶</a></h3>
+<p>Previously <code class="docutils literal notranslate"><span class="pre">Image.rotate</span></code> only supported HSL color strings. Now HSB and HSV
+strings are also supported, as well as float values. For example,
+<code class="docutils literal notranslate"><span class="pre">ImageColor.getrgb(&quot;hsv(180,100%,99.5%)&quot;)</span></code>.</p>
+</div>
+<div class="section" id="imagefile-get-format-mimetype">
+<h3>ImageFile.get_format_mimetype<a class="headerlink" href="#imagefile-get-format-mimetype" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ImageFile.get_format_mimetype</span></code> has been added to return the MIME type of an
+image file, where available. For example,
+<code class="docutils literal notranslate"><span class="pre">Image.open(&quot;hopper.jpg&quot;).get_format_mimetype()</span></code> returns <code class="docutils literal notranslate"><span class="pre">&quot;image/jpeg&quot;</span></code>.</p>
+</div>
+<div class="section" id="imagefont-getsize-multiline">
+<h3>ImageFont.getsize_multiline<a class="headerlink" href="#imagefont-getsize-multiline" title="Permalink to this headline">¶</a></h3>
+<p>A new method to return the size of multiline text, for example
+<code class="docutils literal notranslate"><span class="pre">font.getsize_multiline(&quot;ABC\nAaaa&quot;)</span></code></p>
+</div>
+<div class="section" id="image-rotate">
+<h3>Image.rotate<a class="headerlink" href="#image-rotate" title="Permalink to this headline">¶</a></h3>
+<p>A new named parameter, <code class="docutils literal notranslate"><span class="pre">fillcolor</span></code>, has been added to <code class="docutils literal notranslate"><span class="pre">Image.rotate</span></code>. This
+color specifies the background color to use in the area outside the rotated
+image. This parameter takes the same color specifications as used in
+<code class="docutils literal notranslate"><span class="pre">Image.new</span></code>.</p>
+</div>
+<div class="section" id="tga-file-format">
+<h3>TGA file format<a class="headerlink" href="#tga-file-format" title="Permalink to this headline">¶</a></h3>
+<p>Pillow can now read and write LA data (in addition to L, P, RGB and RGBA), and
+write RLE data (in addition to uncompressed).</p>
+</div>
+</div>
+<div class="section" id="other-changes">
+<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="support-added-for-python-3-7">
+<h3>Support added for Python 3.7<a class="headerlink" href="#support-added-for-python-3-7" title="Permalink to this headline">¶</a></h3>
+<p>Pillow 5.2 supports Python 3.7.</p>
+</div>
+<div class="section" id="build-macos-wheels-with-xcode-6-4-supporting-older-macos-versions">
+<h3>Build macOS wheels with Xcode 6.4, supporting older macOS versions<a class="headerlink" href="#build-macos-wheels-with-xcode-6-4-supporting-older-macos-versions" title="Permalink to this headline">¶</a></h3>
+<p>The macOS wheels for Pillow 5.1.0 were built with Xcode 9.2, meaning 10.12
+Sierra was the lowest supported version.</p>
+<p>Prior to Pillow 5.1.0, Xcode 8 was used, supporting El Capitan 10.11.</p>
+<p>Instead, Pillow 5.2.0 is built with the oldest available Xcode 6.4 to support
+at least 10.10 Yosemite.</p>
+</div>
+<div class="section" id="fix-i2f-compilation-with-some-gcc-versions">
+<h3>Fix _i2f compilation with some GCC versions<a class="headerlink" href="#fix-i2f-compilation-with-some-gcc-versions" title="Permalink to this headline">¶</a></h3>
+<p>For example, this allows compilation with GCC 4.8 on NetBSD.</p>
+</div>
+<div class="section" id="resolve-confusion-getting-pil-pillow-version-string">
+<h3>Resolve confusion getting PIL / Pillow version string<a class="headerlink" href="#resolve-confusion-getting-pil-pillow-version-string" title="Permalink to this headline">¶</a></h3>
+<p>Re: “version constants deprecated” listed above, as user gnbl notes in #3082:</p>
+<ul class="simple">
+<li>it’s confusing that PIL.VERSION returns the version string of the former PIL instead of Pillow’s</li>
+<li>there does not seem to be documentation on this version number (why this, will it ever change, ..) e.g. at <a class="reference external" href="https://pillow.readthedocs.io/en/5.1.x/about.html#why-a-fork">https://pillow.readthedocs.io/en/5.1.x/about.html#why-a-fork</a></li>
+<li>it’s confusing that PIL.version is a module and does not return the version information directly or hints on how to get it</li>
+<li>the package information header is essentially useless (placeholder, does not even mention Pillow, nor the version)</li>
+<li>PIL._version module documentation comment could explain how to access the version information</li>
+</ul>
+<p>We have attempted to resolve these issues in #3083, #3090 and #3218.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="5.1.0.html" class="btn btn-neutral float-right" title="5.1.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5.3.0.html" class="btn btn-neutral" title="5.3.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

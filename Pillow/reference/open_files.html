@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>File Handling in Pillow &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Limits" href="limits.html" />
+    <link rel="prev" title="Internal Reference Docs" href="internal_design.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">File Handling in Pillow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#issues">Issues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#image-lifecycle">Image Lifecycle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complications">Complications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#proposed-file-handling">Proposed File Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="limits.html">Limits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_allocator.html">Block Allocator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+          <li><a href="internal_design.html">Internal Reference Docs</a> &raquo;</li>
+        
+      <li>File Handling in Pillow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/open_files.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="file-handling-in-pillow">
+<span id="file-handling"></span><h1>File Handling in Pillow<a class="headerlink" href="#file-handling-in-pillow" title="Permalink to this headline">¶</a></h1>
+<p>When opening a file as an image, Pillow requires a filename,
+pathlib.Path object, or a file-like object.  Pillow uses the filename
+or Path to open a file, so for the rest of this article, they will all
+be treated as a file-like object.</p>
+<p>The first four of these items are equivalent, the last is dangerous
+and may fail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">)</span>
+
+<span class="n">im2</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">))</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+<span class="n">im3</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">im4</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()))</span>
+
+<span class="c1"># Dangerous FAIL:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">im5</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">im5</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># FAILS, closed file</span>
+</pre></div>
+</div>
+<p>The documentation specifies that the file will be closed after the
+<code class="docutils literal notranslate"><span class="pre">Image.Image.load()</span></code> method is called.  This is an aspirational
+specification rather than an accurate reflection of the state of the
+code.</p>
+<p>Pillow cannot in general close and reopen a file, so any access to
+that file needs to be prior to the close.</p>
+<div class="section" id="issues">
+<h2>Issues<a class="headerlink" href="#issues" title="Permalink to this headline">¶</a></h2>
+<p>The current open file handling is inconsistent at best:</p>
+<ul class="simple">
+<li>Most of the image plugins do not close the input file.</li>
+<li>Multi-frame images behave badly when seeking through the file, as
+it’s legal to seek backward in the file until the last image is
+read, and then it’s not.</li>
+<li>Using the file context manager to provide a file-like object to
+Pillow is dangerous unless the context of the image is limited to
+the context of the file.</li>
+</ul>
+</div>
+<div class="section" id="image-lifecycle">
+<h2>Image Lifecycle<a class="headerlink" href="#image-lifecycle" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">Image.open()</span></code> called. Path-like objects are opened as a
+file. Metadata is read from the open file. The file is left open for
+further usage.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">Image.Image.load()</span></code> when the pixel data from the image is
+required, <code class="docutils literal notranslate"><span class="pre">load()</span></code> is called. The current frame is read into
+memory. The image can now be used independently of the underlying
+image file.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">Image.Image.seek()</span></code> in the case of multi-frame images
+(e.g. multipage TIFF and animated GIF) the image file left open so
+that seek can load the appropriate frame.  When the last frame is
+read, the image file is closed (at least in some image plugins), and
+no more seeks can occur.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">Image.Image.close()</span></code> Closes the file pointer and destroys the
+core image object. This is used in the Pillow context manager
+support. e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>
+   <span class="o">...</span>  <span class="c1"># image operations here.</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The lifecycle of a single frame image is relatively simple. The file
+must remain open until the <code class="docutils literal notranslate"><span class="pre">load()</span></code> or <code class="docutils literal notranslate"><span class="pre">close()</span></code> function is
+called.</p>
+<p>Multi-frame images are more complicated. The <code class="docutils literal notranslate"><span class="pre">load()</span></code> method is not
+a terminal method, so it should not close the underlying file. The
+current behavior of <code class="docutils literal notranslate"><span class="pre">seek()</span></code> closing the underlying file on
+accessing the last frame is presumably a heuristic for closing the
+file after iterating through the entire sequence. In general, Pillow
+does not know if there are going to be any requests for additional
+data until the caller has explicitly closed the image.</p>
+</div>
+<div class="section" id="complications">
+<h2>Complications<a class="headerlink" href="#complications" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">TiffImagePlugin has some code to pass the underlying file descriptor
+into libtiff (if working on an actual file). Since libtiff closes
+the file descriptor internally, it is duplicated prior to passing it
+into libtiff.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">decoder.handles_eof</span></code> This slightly misnamed flag indicates that
+the decoder wants to be called with a 0 length buffer when reads are
+done. Despite the comments in <code class="docutils literal notranslate"><span class="pre">ImageFile.load()</span></code>, the only decoder
+that actually uses this flag is the Jpeg2K decoder. The use of this
+flag in Jpeg2K predated the change to the decoder that added the
+pulls_fd flag, and is therefore not used.</p>
+</li>
+<li><p class="first">I don’t think that there’s any way to make this safe without
+changing the lazy loading:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dangerous FAIL:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">im5</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">im5</span><span class="o">.</span><span class="n">load</span><span class="p">()</span> <span class="c1"># FAILS, closed file</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="proposed-file-handling">
+<h2>Proposed File Handling<a class="headerlink" href="#proposed-file-handling" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">Image.Image.load()</span></code> should close the image file, unless there are
+multiple frames.</li>
+<li><code class="docutils literal notranslate"><span class="pre">Image.Image.seek()</span></code> should never close the image file.</li>
+<li>Users of the library should call <code class="docutils literal notranslate"><span class="pre">Image.Image.close()</span></code> on any
+multi-frame image to ensure that the underlying file is closed.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="limits.html" class="btn btn-neutral float-right" title="Limits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="internal_design.html" class="btn btn-neutral" title="Internal Reference Docs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

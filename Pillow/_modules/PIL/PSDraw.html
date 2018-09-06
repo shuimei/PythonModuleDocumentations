@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.PSDraw &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.PSDraw</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.PSDraw</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># simple postscript graphics interface</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 1996-04-20 fl   Created</span>
+<span class="c1"># 1999-01-10 fl   Added gsave/grestore to image method</span>
+<span class="c1"># 2005-05-04 fl   Fixed floating point issue in image (from Eric Etheridge)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2005 by Secret Labs AB.  All rights reserved.</span>
+<span class="c1"># Copyright (c) 1996 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">EpsImagePlugin</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">py3</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1">##</span>
+<span class="c1"># Simple Postscript graphics interface.</span>
+
+
+<div class="viewcode-block" id="PSDraw"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw">[docs]</a><span class="k">class</span> <span class="nc">PSDraw</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets up printing to the given file. If **fp** is omitted,</span>
+<span class="sd">    :py:attr:`sys.stdout` is assumed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">fp</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
+
+    <span class="k">def</span> <span class="nf">_fp_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_write</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">py3</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">to_write</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">to_write</span><span class="p">,</span> <span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="PSDraw.begin_document"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.begin_document">[docs]</a>    <span class="k">def</span> <span class="nf">begin_document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up printing of a document. (Write Postscript DSC header.)&quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: incomplete</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;%!PS-Adobe-3.0</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;save</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;/showpage { } def</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;</span><span class="si">%%</span><span class="s2">EndComments</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;</span><span class="si">%%</span><span class="s2">BeginDocument</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># self._fp_write(ERROR_PS)  # debugging!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="n">EDROFF_PS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="n">VDI_PS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%%</span><span class="s2">EndProlog</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isofont</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="PSDraw.end_document"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.end_document">[docs]</a>    <span class="k">def</span> <span class="nf">end_document</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ends printing. (Write Postscript DSC footer.)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%%</span><span class="s2">EndDocument</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;restore showpage</span><span class="se">\n</span><span class="s2">&quot;</span>
+                       <span class="s2">&quot;</span><span class="si">%%</span><span class="s2">End</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;flush&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PSDraw.setfont"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.setfont">[docs]</a>    <span class="k">def</span> <span class="nf">setfont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects which font to use.</span>
+
+<span class="sd">        :param font: A Postscript font name</span>
+<span class="sd">        :param size: Size in points.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">font</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isofont</span><span class="p">:</span>
+            <span class="c1"># reencode font</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;/PSDraw-</span><span class="si">%s</span><span class="s2"> ISOLatin1Encoding /</span><span class="si">%s</span><span class="s2"> E</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span>
+                           <span class="p">(</span><span class="n">font</span><span class="p">,</span> <span class="n">font</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isofont</span><span class="p">[</span><span class="n">font</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># rough</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;/F0 </span><span class="si">%d</span><span class="s2"> /PSDraw-</span><span class="si">%s</span><span class="s2"> F</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">font</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="PSDraw.line"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.line">[docs]</a>    <span class="k">def</span> <span class="nf">line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy0</span><span class="p">,</span> <span class="n">xy1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draws a line between the two points. Coordinates are given in</span>
+<span class="sd">        Postscript point coordinates (72 points per inch, (0, 0) is the lower</span>
+<span class="sd">        left corner of the page).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">xy0</span> <span class="o">+</span> <span class="n">xy1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> Vl</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">xy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSDraw.rectangle"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.rectangle">[docs]</a>    <span class="k">def</span> <span class="nf">rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draws a rectangle.</span>
+
+<span class="sd">        :param box: A 4-tuple of integers whose order and function is currently</span>
+<span class="sd">                    undocumented.</span>
+
+<span class="sd">                    Hint: the tuple is passed into this format string:</span>
+
+<span class="sd">                    .. code-block:: python</span>
+
+<span class="sd">                        %d %d M %d %d 0 Vr\n</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> M </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> 0 Vr</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">box</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSDraw.text"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.text">[docs]</a>    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draws text at the given position. You must use</span>
+<span class="sd">        :py:meth:`~PIL.PSDraw.PSDraw.setfont` before calling this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">(&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">))</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">))</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">xy</span> <span class="o">+</span> <span class="p">(</span><span class="n">text</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2"> M (</span><span class="si">%s</span><span class="s2">) S</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">xy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PSDraw.image"><a class="viewcode-back" href="../../reference/PSDraw.html#PIL.PSDraw.PSDraw.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Draw a PIL image, centered in the given box.&quot;&quot;&quot;</span>
+        <span class="c1"># default resolution depends on mode</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dpi</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">dpi</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># fax</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dpi</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># greyscale</span>
+        <span class="c1"># image size (on paper)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span> <span class="o">/</span> <span class="n">dpi</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">72</span><span class="p">)</span> <span class="o">/</span> <span class="n">dpi</span>
+        <span class="c1"># max allowed size</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">xmax</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">xmax</span> <span class="o">/</span> <span class="n">x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">xmax</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">ymax</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">ymax</span> <span class="o">/</span> <span class="n">y</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">ymax</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="p">(</span><span class="n">ymax</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;gsave</span><span class="se">\n</span><span class="si">%f</span><span class="s2"> </span><span class="si">%f</span><span class="s2"> translate</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="c1"># EpsImagePlugin._save prints the image at (0,0,xsize,ysize)</span>
+            <span class="n">sx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sy</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> </span><span class="si">%f</span><span class="s2"> scale</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">))</span>
+        <span class="n">EpsImagePlugin</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fp_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">grestore</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Postscript driver</span>
+
+<span class="c1">#</span>
+<span class="c1"># EDROFF.PS -- Postscript driver for Edroff 2</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 94-01-25 fl: created (edroff 2.04)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) Fredrik Lundh 1994.</span>
+<span class="c1">#</span>
+
+
+<span class="n">EDROFF_PS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">/S { show } bind def</span>
+<span class="s2">/P { moveto show } bind def</span>
+<span class="s2">/M { moveto } bind def</span>
+<span class="s2">/X { 0 rmoveto } bind def</span>
+<span class="s2">/Y { 0 exch rmoveto } bind def</span>
+<span class="s2">/E {    findfont</span>
+<span class="s2">        dup maxlength dict begin</span>
+<span class="s2">        {</span>
+<span class="s2">                1 index /FID ne { def } { pop pop } ifelse</span>
+<span class="s2">        } forall</span>
+<span class="s2">        /Encoding exch def</span>
+<span class="s2">        dup /FontName exch def</span>
+<span class="s2">        currentdict end definefont pop</span>
+<span class="s2">} bind def</span>
+<span class="s2">/F {    findfont exch scalefont dup setfont</span>
+<span class="s2">        [ exch /setfont cvx ] cvx bind def</span>
+<span class="s2">} bind def</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#</span>
+<span class="c1"># VDI.PS -- Postscript driver for VDI meta commands</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 94-01-25 fl: created (edroff 2.04)</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) Fredrik Lundh 1994.</span>
+<span class="c1">#</span>
+
+<span class="n">VDI_PS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">/Vm { moveto } bind def</span>
+<span class="s2">/Va { newpath arcn stroke } bind def</span>
+<span class="s2">/Vl { moveto lineto stroke } bind def</span>
+<span class="s2">/Vc { newpath 0 360 arc closepath } bind def</span>
+<span class="s2">/Vr {   exch dup 0 rlineto</span>
+<span class="s2">        exch dup neg 0 exch rlineto</span>
+<span class="s2">        exch neg 0 rlineto</span>
+<span class="s2">        0 exch rlineto</span>
+<span class="s2">        100 div setgray fill 0 setgray } bind def</span>
+<span class="s2">/Tm matrix def</span>
+<span class="s2">/Ve {   Tm currentmatrix pop</span>
+<span class="s2">        translate scale newpath 0 0 .5 0 360 arc closepath</span>
+<span class="s2">        Tm setmatrix</span>
+<span class="s2">} bind def</span>
+<span class="s2">/Vf { currentgray exch setgray fill setgray } bind def</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#</span>
+<span class="c1"># ERROR.PS -- Error handler</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 89-11-21 fl: created (pslist 1.10)</span>
+<span class="c1">#</span>
+
+<span class="n">ERROR_PS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">/landscape false def</span>
+<span class="s2">/errorBUF 200 string def</span>
+<span class="s2">/errorNL { currentpoint 10 sub exch pop 72 exch moveto } def</span>
+<span class="s2">errordict begin /handleerror {</span>
+<span class="s2">    initmatrix /Courier findfont 10 scalefont setfont</span>
+<span class="s2">    newpath 72 720 moveto $error begin /newerror false def</span>
+<span class="s2">    (PostScript Error) show errorNL errorNL</span>
+<span class="s2">    (Error: ) show</span>
+<span class="s2">        /errorname load errorBUF cvs show errorNL errorNL</span>
+<span class="s2">    (Command: ) show</span>
+<span class="s2">        /command load dup type /stringtype ne { errorBUF cvs } if show</span>
+<span class="s2">        errorNL errorNL</span>
+<span class="s2">    (VMstatus: ) show</span>
+<span class="s2">        vmstatus errorBUF cvs show ( bytes available, ) show</span>
+<span class="s2">        errorBUF cvs show ( bytes used at level ) show</span>
+<span class="s2">        errorBUF cvs show errorNL errorNL</span>
+<span class="s2">    (Operand stargck: ) show errorNL /ostargck load {</span>
+<span class="s2">        dup type /stringtype ne { errorBUF cvs } if 72 0 rmoveto show errorNL</span>
+<span class="s2">    } forall errorNL</span>
+<span class="s2">    (Execution stargck: ) show errorNL /estargck load {</span>
+<span class="s2">        dup type /stringtype ne { errorBUF cvs } if 72 0 rmoveto show errorNL</span>
+<span class="s2">    } forall</span>
+<span class="s2">    end showpage</span>
+<span class="s2">} def end</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

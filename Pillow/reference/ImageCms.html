@@ -1,0 +1,1776 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageCms Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageDraw Module" href="ImageDraw.html" />
+    <link rel="prev" title="ImageColor Module" href="ImageColor.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cmsprofile">CmsProfile</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageCms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageCms"></span><div class="section" id="imagecms-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageCms</span></code> Module<a class="headerlink" href="#imagecms-module" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageCms</span></code> module provides color profile management
+support using the LittleCMS2 color management engine, based on Kevin
+Cazabon’s PyCMS library.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">PIL.ImageCms.</code><code class="descname">ImageCmsTransform</code><span class="sig-paren">(</span><em>input</em>, <em>output</em>, <em>input_mode</em>, <em>output_mode</em>, <em>intent=0</em>, <em>proof=None</em>, <em>proof_intent=3</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#ImageCmsTransform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transform.  This can be used with the procedural API, or with the standard
+Image.point() method.</p>
+<p>Will return the output profile in the output.info[‘icc_profile’].</p>
+</dd></dl>
+
+<dl class="exception">
+<dt>
+<em class="property">exception </em><code class="descclassname">PIL.ImageCms.</code><code class="descname">PyCMSError</code><a class="reference internal" href="../_modules/PIL/ImageCms.html#PyCMSError"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Exception class.
+This is used for all errors in the pyCMS API.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">applyTransform</code><span class="sig-paren">(</span><em>im</em>, <em>transform</em>, <em>inPlace=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#applyTransform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Applies a transform to a given image.</p>
+<p>If im.mode != transform.inMode, a PyCMSError is raised.</p>
+<p>If inPlace == TRUE and transform.inMode != transform.outMode, a
+PyCMSError is raised.</p>
+<p>If im.mode, transfer.inMode, or transfer.outMode is not supported by
+pyCMSdll or the profiles you used for the transform, a PyCMSError is
+raised.</p>
+<p>If an error occurs while the transform is being applied, a PyCMSError
+is raised.</p>
+<p>This function applies a pre-calculated transform (from
+ImageCms.buildTransform() or ImageCms.buildTransformFromOpenProfiles())
+to an image.  The transform can be used for multiple images, saving
+considerable calculation time if doing the same conversion multiple times.</p>
+<p>If you want to modify im in-place instead of receiving a new image as
+the return value, set inPlace to TRUE.  This can only be done if
+transform.inMode and transform.outMode are the same, because we can’t
+change the mode in-place (the buffer sizes for some modes are
+different).  The  default behavior is to return a new Image object of
+the same dimensions in mode transform.outMode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im</strong> – A PIL Image object, and im.mode must be the same as the inMode
+supported by the transform.</li>
+<li><strong>transform</strong> – A valid CmsTransform class object</li>
+<li><strong>inPlace</strong> – Bool (1 == True, 0 or None == False).  If True, im is
+modified in place and None is returned, if False, a new Image object
+with the transform applied is returned (and im is not changed). The
+default is False.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Either None, or a new PIL Image object, depending on the value of
+inPlace. The profile will be returned in the image’s
+info[‘icc_profile’].</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">buildProofTransform</code><span class="sig-paren">(</span><em>inputProfile</em>, <em>outputProfile</em>, <em>proofProfile</em>, <em>inMode</em>, <em>outMode</em>, <em>renderingIntent=0</em>, <em>proofRenderingIntent=3</em>, <em>flags=16384</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#buildProofTransform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Builds an ICC transform mapping from the inputProfile to the
+outputProfile, but tries to simulate the result that would be
+obtained on the proofProfile device.</p>
+<p>If the input, output, or proof profiles specified are not valid
+filenames, a PyCMSError will be raised.</p>
+<p>If an error occurs during creation of the transform, a PyCMSError will
+be raised.</p>
+<p>If inMode or outMode are not a mode supported by the outputProfile
+(or by pyCMS), a PyCMSError will be raised.</p>
+<p>This function builds and returns an ICC transform from the inputProfile
+to the outputProfile, but tries to simulate the result that would be
+obtained on the proofProfile device using renderingIntent and
+proofRenderingIntent to determine what to do with out-of-gamut
+colors.  This is known as “soft-proofing”.  It will ONLY work for
+converting images that are in inMode to images that are in outMode
+color format (PIL mode, i.e. “RGB”, “RGBA”, “CMYK”, etc.).</p>
+<p>Usage of the resulting transform object is exactly the same as with
+ImageCms.buildTransform().</p>
+<p>Proof profiling is generally used when using an output device to get a
+good idea of what the final printed/displayed image would look like on
+the proofProfile device when it’s quicker and easier to use the
+output device for judging color.  Generally, this means that the
+output device is a monitor, or a dye-sub printer (etc.), and the simulated
+device is something more expensive, complicated, or time consuming
+(making it difficult to make a real print for color judgement purposes).</p>
+<p>Soft-proofing basically functions by adjusting the colors on the
+output device to match the colors of the device being simulated. However,
+when the simulated device has a much wider gamut than the output
+device, you may obtain marginal results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputProfile</strong> – String, as a valid filename path to the ICC input
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>outputProfile</strong> – String, as a valid filename path to the ICC output
+(monitor, usually) profile you wish to use for this transform, or a
+profile object</li>
+<li><strong>proofProfile</strong> – String, as a valid filename path to the ICC proof
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>inMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>outMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>renderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for the input-&gt;proof (simulated) transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>proofRenderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for proof-&gt;output transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>flags</strong> – Integer (0-…) specifying additional flags</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A CmsTransform class object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">buildProofTransformFromOpenProfiles</code><span class="sig-paren">(</span><em>inputProfile</em>, <em>outputProfile</em>, <em>proofProfile</em>, <em>inMode</em>, <em>outMode</em>, <em>renderingIntent=0</em>, <em>proofRenderingIntent=3</em>, <em>flags=16384</em><span class="sig-paren">)</span></dt>
+<dd><p>(pyCMS) Builds an ICC transform mapping from the inputProfile to the
+outputProfile, but tries to simulate the result that would be
+obtained on the proofProfile device.</p>
+<p>If the input, output, or proof profiles specified are not valid
+filenames, a PyCMSError will be raised.</p>
+<p>If an error occurs during creation of the transform, a PyCMSError will
+be raised.</p>
+<p>If inMode or outMode are not a mode supported by the outputProfile
+(or by pyCMS), a PyCMSError will be raised.</p>
+<p>This function builds and returns an ICC transform from the inputProfile
+to the outputProfile, but tries to simulate the result that would be
+obtained on the proofProfile device using renderingIntent and
+proofRenderingIntent to determine what to do with out-of-gamut
+colors.  This is known as “soft-proofing”.  It will ONLY work for
+converting images that are in inMode to images that are in outMode
+color format (PIL mode, i.e. “RGB”, “RGBA”, “CMYK”, etc.).</p>
+<p>Usage of the resulting transform object is exactly the same as with
+ImageCms.buildTransform().</p>
+<p>Proof profiling is generally used when using an output device to get a
+good idea of what the final printed/displayed image would look like on
+the proofProfile device when it’s quicker and easier to use the
+output device for judging color.  Generally, this means that the
+output device is a monitor, or a dye-sub printer (etc.), and the simulated
+device is something more expensive, complicated, or time consuming
+(making it difficult to make a real print for color judgement purposes).</p>
+<p>Soft-proofing basically functions by adjusting the colors on the
+output device to match the colors of the device being simulated. However,
+when the simulated device has a much wider gamut than the output
+device, you may obtain marginal results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputProfile</strong> – String, as a valid filename path to the ICC input
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>outputProfile</strong> – String, as a valid filename path to the ICC output
+(monitor, usually) profile you wish to use for this transform, or a
+profile object</li>
+<li><strong>proofProfile</strong> – String, as a valid filename path to the ICC proof
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>inMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>outMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>renderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for the input-&gt;proof (simulated) transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>proofRenderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for proof-&gt;output transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>flags</strong> – Integer (0-…) specifying additional flags</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A CmsTransform class object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">buildTransform</code><span class="sig-paren">(</span><em>inputProfile</em>, <em>outputProfile</em>, <em>inMode</em>, <em>outMode</em>, <em>renderingIntent=0</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#buildTransform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Builds an ICC transform mapping from the inputProfile to the
+outputProfile.  Use applyTransform to apply the transform to a given
+image.</p>
+<p>If the input or output profiles specified are not valid filenames, a
+PyCMSError will be raised.  If an error occurs during creation of the
+transform, a PyCMSError will be raised.</p>
+<p>If inMode or outMode are not a mode supported by the outputProfile (or
+by pyCMS), a PyCMSError will be raised.</p>
+<p>This function builds and returns an ICC transform from the inputProfile
+to the outputProfile using the renderingIntent to determine what to do
+with out-of-gamut colors.  It will ONLY work for converting images that
+are in inMode to images that are in outMode color format (PIL mode,
+i.e. “RGB”, “RGBA”, “CMYK”, etc.).</p>
+<p>Building the transform is a fair part of the overhead in
+ImageCms.profileToProfile(), so if you’re planning on converting multiple
+images using the same input/output settings, this can save you time.
+Once you have a transform object, it can be used with
+ImageCms.applyProfile() to convert images without the need to re-compute
+the lookup table for the transform.</p>
+<p>The reason pyCMS returns a class object rather than a handle directly
+to the transform is that it needs to keep track of the PIL input/output
+modes that the transform is meant for.  These attributes are stored in
+the “inMode” and “outMode” attributes of the object (which can be
+manually overridden if you really want to, but I don’t know of any
+time that would be of use, or would even work).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputProfile</strong> – String, as a valid filename path to the ICC input
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>outputProfile</strong> – String, as a valid filename path to the ICC output
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>inMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>outMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>renderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for the transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>flags</strong> – Integer (0-…) specifying additional flags</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A CmsTransform class object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">buildTransformFromOpenProfiles</code><span class="sig-paren">(</span><em>inputProfile</em>, <em>outputProfile</em>, <em>inMode</em>, <em>outMode</em>, <em>renderingIntent=0</em>, <em>flags=0</em><span class="sig-paren">)</span></dt>
+<dd><p>(pyCMS) Builds an ICC transform mapping from the inputProfile to the
+outputProfile.  Use applyTransform to apply the transform to a given
+image.</p>
+<p>If the input or output profiles specified are not valid filenames, a
+PyCMSError will be raised.  If an error occurs during creation of the
+transform, a PyCMSError will be raised.</p>
+<p>If inMode or outMode are not a mode supported by the outputProfile (or
+by pyCMS), a PyCMSError will be raised.</p>
+<p>This function builds and returns an ICC transform from the inputProfile
+to the outputProfile using the renderingIntent to determine what to do
+with out-of-gamut colors.  It will ONLY work for converting images that
+are in inMode to images that are in outMode color format (PIL mode,
+i.e. “RGB”, “RGBA”, “CMYK”, etc.).</p>
+<p>Building the transform is a fair part of the overhead in
+ImageCms.profileToProfile(), so if you’re planning on converting multiple
+images using the same input/output settings, this can save you time.
+Once you have a transform object, it can be used with
+ImageCms.applyProfile() to convert images without the need to re-compute
+the lookup table for the transform.</p>
+<p>The reason pyCMS returns a class object rather than a handle directly
+to the transform is that it needs to keep track of the PIL input/output
+modes that the transform is meant for.  These attributes are stored in
+the “inMode” and “outMode” attributes of the object (which can be
+manually overridden if you really want to, but I don’t know of any
+time that would be of use, or would even work).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputProfile</strong> – String, as a valid filename path to the ICC input
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>outputProfile</strong> – String, as a valid filename path to the ICC output
+profile you wish to use for this transform, or a profile object</li>
+<li><strong>inMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>outMode</strong> – String, as a valid PIL mode that the appropriate profile
+also supports (i.e. “RGB”, “RGBA”, “CMYK”, etc.)</li>
+<li><strong>renderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for the transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>flags</strong> – Integer (0-…) specifying additional flags</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A CmsTransform class object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">createProfile</code><span class="sig-paren">(</span><em>colorSpace</em>, <em>colorTemp=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#createProfile"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Creates a profile.</p>
+<p>If colorSpace not in [“LAB”, “XYZ”, “sRGB”], a PyCMSError is raised</p>
+<p>If using LAB and colorTemp != a positive integer, a PyCMSError is raised.</p>
+<p>If an error occurs while creating the profile, a PyCMSError is raised.</p>
+<p>Use this function to create common profiles on-the-fly instead of
+having to supply a profile on disk and knowing the path to it.  It
+returns a normal CmsProfile object that can be passed to
+ImageCms.buildTransformFromOpenProfiles() to create a transform to apply
+to images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>colorSpace</strong> – String, the color space of the profile you wish to
+create.
+Currently only “LAB”, “XYZ”, and “sRGB” are supported.</li>
+<li><strong>colorTemp</strong> – Positive integer for the white point for the profile, in
+degrees Kelvin (i.e. 5000, 6500, 9600, etc.).  The default is for D50
+illuminant if omitted (5000k).  colorTemp is ONLY applied to LAB
+profiles, and is ignored for XYZ and sRGB.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A CmsProfile class object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getDefaultIntent</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getDefaultIntent"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the default intent name for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the default intent, a
+PyCMSError is raised.</p>
+<p>Use this function to determine the default (and usually best optimized)
+rendering intent for this profile.  Most profiles support multiple
+rendering intents, but are intended mostly for one type of conversion.
+If you wish to use a different intent than returned, use
+ImageCms.isIntentSupported() to verify it will work first.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Integer 0-3 specifying the default rendering intent for this
+profile.<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<dl class="docutils">
+<dt>see the pyCMS documentation for details on rendering intents and what</dt>
+<dd>they do.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getOpenProfile</code><span class="sig-paren">(</span><em>profileFilename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getOpenProfile"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Opens an ICC profile file.</p>
+<p>The PyCMSProfile object can be passed back into pyCMS for use in creating
+transforms and such (as in ImageCms.buildTransformFromOpenProfiles()).</p>
+<p>If profileFilename is not a valid filename for an ICC profile, a PyCMSError
+will be raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profileFilename</strong> – String, as a valid filename path to the ICC profile
+you wish to open, or a file-like object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A CmsProfile class object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileCopyright</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileCopyright"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the copyright for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the copyright tag, a PyCMSError
+is raised</p>
+<p>Use this function to obtain the information stored in the profile’s
+copyright tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal profile information stored in
+an ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileDescription</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileDescription"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the description for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the description tag, a PyCMSError
+is raised</p>
+<p>Use this function to obtain the information stored in the profile’s
+description tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal profile information stored in an
+ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileInfo</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileInfo"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the internal product information for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the info tag, a PyCMSError
+is raised</p>
+<p>Use this function to obtain the information stored in the profile’s
+info tag.  This often contains details about the profile, and how it
+was created, as supplied by the creator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal profile information stored in
+an ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileManufacturer</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileManufacturer"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the manufacturer for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the manufacturer tag, a
+PyCMSError is raised</p>
+<p>Use this function to obtain the information stored in the profile’s
+manufacturer tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal profile information stored in
+an ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileModel</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileModel"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the model for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised.</p>
+<p>If an error occurs while trying to obtain the model tag, a PyCMSError
+is raised</p>
+<p>Use this function to obtain the information stored in the profile’s
+model tag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal profile information stored in
+an ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">getProfileName</code><span class="sig-paren">(</span><em>profile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#getProfileName"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Gets the internal product name for the given profile.</p>
+<p>If profile isn’t a valid CmsProfile object or filename to a profile,
+a PyCMSError is raised If an error occurs while trying to obtain the
+name tag, a PyCMSError is raised.</p>
+<p>Use this function to obtain the INTERNAL name of the profile (stored
+in an ICC tag in the profile itself), usually the one used when the
+profile was originally created.  Sometimes this tag also contains
+additional information supplied by the creator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing the internal name of the profile as stored
+in an ICC tag.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>PyCMSError</strong> – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">get_display_profile</code><span class="sig-paren">(</span><em>handle=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#get_display_profile"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(experimental) Fetches the profile for the current display device.
+:returns: None if the profile is not known.</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">isIntentSupported</code><span class="sig-paren">(</span><em>profile</em>, <em>intent</em>, <em>direction</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#isIntentSupported"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Checks if a given intent is supported.</p>
+<p>Use this function to verify that you can use your desired
+renderingIntent with profile, and that profile can be used for the
+input/output/proof profile as you desire.</p>
+<p>Some profiles are created specifically for one “direction”, can cannot
+be used for others.  Some profiles can only be used for certain
+rendering intents… so it’s best to either verify this before trying
+to create a transform with them (using this function), or catch the
+potential PyCMSError that will occur if they don’t support the modes
+you select.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>profile</strong> – EITHER a valid CmsProfile object, OR a string of the
+filename of an ICC profile.</li>
+<li><strong>intent</strong> – <p>Integer (0-3) specifying the rendering intent you wish to
+use with this profile</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<dl class="docutils">
+<dt>see the pyCMS documentation for details on rendering intents and what</dt>
+<dd>they do.</dd>
+</dl>
+</li>
+<li><strong>direction</strong> – <p>Integer specifying if the profile is to be used for input,
+output, or proof</p>
+<blockquote>
+<div>INPUT  = 0 (or use ImageCms.DIRECTION_INPUT)
+OUTPUT = 1 (or use ImageCms.DIRECTION_OUTPUT)
+PROOF  = 2 (or use ImageCms.DIRECTION_PROOF)</div></blockquote>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">1 if the intent/direction are supported, -1 if they are not.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">profileToProfile</code><span class="sig-paren">(</span><em>im</em>, <em>inputProfile</em>, <em>outputProfile</em>, <em>renderingIntent=0</em>, <em>outputMode=None</em>, <em>inPlace=0</em>, <em>flags=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#profileToProfile"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Applies an ICC transformation to a given image, mapping from
+inputProfile to outputProfile.</p>
+<p>If the input or output profiles specified are not valid filenames, a
+PyCMSError will be raised.  If inPlace == TRUE and outputMode != im.mode,
+a PyCMSError will be raised.  If an error occurs during application of
+the profiles, a PyCMSError will be raised.  If outputMode is not a mode
+supported by the outputProfile (or by pyCMS), a PyCMSError will be
+raised.</p>
+<p>This function applies an ICC transformation to im from inputProfile’s
+color space to outputProfile’s color space using the specified rendering
+intent to decide how to handle out-of-gamut colors.</p>
+<p>OutputMode can be used to specify that a color mode conversion is to
+be done using these profiles, but the specified profiles must be able
+to handle that mode.  I.e., if converting im from RGB to CMYK using
+profiles, the input profile must handle RGB data, and the output
+profile must handle CMYK data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im</strong> – An open PIL image object (i.e. Image.new(…) or
+Image.open(…), etc.)</li>
+<li><strong>inputProfile</strong> – String, as a valid filename path to the ICC input
+profile you wish to use for this image, or a profile object</li>
+<li><strong>outputProfile</strong> – String, as a valid filename path to the ICC output
+profile you wish to use for this image, or a profile object</li>
+<li><strong>renderingIntent</strong> – <p>Integer (0-3) specifying the rendering intent you
+wish to use for the transform</p>
+<blockquote>
+<div>INTENT_PERCEPTUAL            = 0 (DEFAULT) (ImageCms.INTENT_PERCEPTUAL)
+INTENT_RELATIVE_COLORIMETRIC = 1 (ImageCms.INTENT_RELATIVE_COLORIMETRIC)
+INTENT_SATURATION            = 2 (ImageCms.INTENT_SATURATION)
+INTENT_ABSOLUTE_COLORIMETRIC = 3 (ImageCms.INTENT_ABSOLUTE_COLORIMETRIC)</div></blockquote>
+<p>see the pyCMS documentation for details on rendering intents and what
+they do.</p>
+</li>
+<li><strong>outputMode</strong> – A valid PIL mode for the output image (i.e. “RGB”,
+“CMYK”, etc.).  Note: if rendering the image “inPlace”, outputMode
+MUST be the same mode as the input, or omitted completely.  If
+omitted, the outputMode will be the same as the mode of the input
+image (im.mode)</li>
+<li><strong>inPlace</strong> – Boolean (1 = True, None or 0 = False).  If True, the
+original image is modified in-place, and None is returned.  If False
+(default), a new Image object is returned with the transform applied.</li>
+<li><strong>flags</strong> – Integer (0-…) specifying additional flags</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Either None or a new PIL image object, depending on value of
+inPlace</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>PyCMSError</strong> – </p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">PIL.ImageCms.</code><code class="descname">versions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageCms.html#versions"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>(pyCMS) Fetches versions.</p>
+</dd></dl>
+
+<div class="section" id="cmsprofile">
+<h2>CmsProfile<a class="headerlink" href="#cmsprofile" title="Permalink to this headline">¶</a></h2>
+<p>The ICC color profiles are wrapped in an instance of the class
+<a class="reference internal" href="#PIL.ImageCms.CmsProfile" title="PIL.ImageCms.CmsProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">CmsProfile</span></code></a>.  The specification ICC.1:2010 contains more
+information about the meaning of the values in ICC profiles.</p>
+<p>For convenience, all XYZ-values are also given as xyY-values (so they
+can be easily displayed in a chromaticity diagram, for example).</p>
+<dl class="class">
+<dt id="PIL.ImageCms.CmsProfile">
+<em class="property">class </em><code class="descclassname">PIL.ImageCms.</code><code class="descname">CmsProfile</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.creation_date">
+<code class="descname">creation_date</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.creation_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Date and time this profile was first created (see 7.2.1 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime.datetime</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.version">
+<code class="descname">version</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>The version number of the ICC standard that this profile follows
+(e.g. <cite>2.0</cite>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#float" title="float"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.icc_version">
+<code class="descname">icc_version</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.icc_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <cite>version</cite>, but in encoded format (see 7.2.4 of ICC.1:2010).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.device_class">
+<code class="descname">device_class</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.device_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string identifying the profile class.  One of
+<code class="docutils literal notranslate"><span class="pre">scnr</span></code>, <code class="docutils literal notranslate"><span class="pre">mntr</span></code>, <code class="docutils literal notranslate"><span class="pre">prtr</span></code>, <code class="docutils literal notranslate"><span class="pre">link</span></code>, <code class="docutils literal notranslate"><span class="pre">spac</span></code>, <code class="docutils literal notranslate"><span class="pre">abst</span></code>,
+<code class="docutils literal notranslate"><span class="pre">nmcl</span></code> (see 7.2.5 of ICC.1:2010 for details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.xcolor_space">
+<code class="descname">xcolor_space</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.xcolor_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the color
+space, e.g. <code class="docutils literal notranslate"><span class="pre">XYZ␣</span></code>, <code class="docutils literal notranslate"><span class="pre">RGB␣</span></code> or <code class="docutils literal notranslate"><span class="pre">CMYK</span></code> (see 7.2.6 of
+ICC.1:2010 for details).</p>
+<p>Note that the deprecated attribute <code class="docutils literal notranslate"><span class="pre">color_space</span></code> contains an
+interpreted (non-padded) variant of this (but can be empty on
+unknown input).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.connection_space">
+<code class="descname">connection_space</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.connection_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the color
+space on the B-side of the transform (see 7.2.7 of ICC.1:2010 for
+details).</p>
+<p>Note that the deprecated attribute <code class="docutils literal notranslate"><span class="pre">pcs</span></code> contains an interpreted
+(non-padded) variant of this (but can be empty on unknown input).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.header_flags">
+<code class="descname">header_flags</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.header_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>The encoded header flags of the profile (see 7.2.11 of ICC.1:2010
+for details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.header_manufacturer">
+<code class="descname">header_manufacturer</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.header_manufacturer" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the device
+manufacturer, which shall match the signature contained in the
+appropriate section of the ICC signature registry found at
+www.color.org (see 7.2.12 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.header_model">
+<code class="descname">header_model</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.header_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the device
+model, which shall match the signature contained in the
+appropriate section of the ICC signature registry found at
+www.color.org (see 7.2.13 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.attributes">
+<code class="descname">attributes</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flags used to identify attributes unique to the particular device
+setup for which the profile is applicable (see 7.2.14 of
+ICC.1:2010 for details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.rendering_intent">
+<code class="descname">rendering_intent</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.rendering_intent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The rendering intent to use when combining this profile with
+another profile (usually overridden at run-time, but provided here
+for DeviceLink and embedded source profiles, see 7.2.15 of ICC.1:2010).</p>
+<p>One of <code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_ABSOLUTE_COLORIMETRIC</span></code>, <code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_PERCEPTUAL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_RELATIVE_COLORIMETRIC</span></code> and <code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_SATURATION</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.profile_id">
+<code class="descname">profile_id</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.profile_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A sequence of 16 bytes identifying the profile (via a specially
+constructed MD5 sum), or 16 binary zeroes if the profile ID has
+not been calculated (see 7.2.18 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.copyright">
+<code class="descname">copyright</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.copyright" title="Permalink to this definition">¶</a></dt>
+<dd><p>The text copyright information for the profile (see 9.2.21 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.manufacturer">
+<code class="descname">manufacturer</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.manufacturer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The (english) display string for the device manufacturer (see
+9.2.22 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.model">
+<code class="descname">model</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>The (english) display string for the device model of the device
+for which this profile is created (see 9.2.23 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.profile_description">
+<code class="descname">profile_description</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.profile_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>The (english) display string for the profile description (see
+9.2.41 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.target">
+<code class="descname">target</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the registered characterization data set, or the
+measurement data for a characterization target (see 9.2.14 of
+ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.red_colorant">
+<code class="descname">red_colorant</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.red_colorant" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first column in the matrix used in matrix/TRC transforms (see 9.2.44 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.green_colorant">
+<code class="descname">green_colorant</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.green_colorant" title="Permalink to this definition">¶</a></dt>
+<dd><p>The second column in the matrix used in matrix/TRC transforms (see 9.2.30 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.blue_colorant">
+<code class="descname">blue_colorant</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.blue_colorant" title="Permalink to this definition">¶</a></dt>
+<dd><p>The third column in the matrix used in matrix/TRC transforms (see 9.2.4 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.luminance">
+<code class="descname">luminance</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.luminance" title="Permalink to this definition">¶</a></dt>
+<dd><p>The absolute luminance of emissive devices in candelas per square
+metre as described by the Y channel (see 9.2.32 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.chromaticity">
+<code class="descname">chromaticity</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.chromaticity" title="Permalink to this definition">¶</a></dt>
+<dd><p>The data of the phosphor/colorant chromaticity set used (red,
+green and blue channels, see 9.2.16 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((x,</span> <span class="pre">y,</span> <span class="pre">Y),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.chromatic_adaption">
+<code class="descname">chromatic_adaption</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.chromatic_adaption" title="Permalink to this definition">¶</a></dt>
+<dd><p>The chromatic adaption matrix converts a color measured using the
+actual illumination conditions and relative to the actual adopted
+white, to an color relative to the PCS adopted white, with
+complete adaptation from the actual adopted white chromaticity to
+the PCS adopted white chromaticity (see 9.2.15 of ICC.1:2010).</p>
+<p>Two matrices are returned, one in (X, Y, Z) space and one in (x, y, Y) space.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">2-tuple of 3-tuple, the first with (X, Y, Z) and the second with (x, y, Y) values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.colorant_table">
+<code class="descname">colorant_table</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.colorant_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>This tag identifies the colorants used in the profile by a unique
+name and set of PCSXYZ or PCSLAB values (see 9.2.19 of
+ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.colorant_table_out">
+<code class="descname">colorant_table_out</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.colorant_table_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>This tag identifies the colorants used in the profile by a unique
+name and set of PCSLAB values (for DeviceLink profiles only, see
+9.2.19 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.colorimetric_intent">
+<code class="descname">colorimetric_intent</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.colorimetric_intent" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the image
+state of PCS colorimetry produced using the colorimetric intent
+transforms (see 9.2.20 of ICC.1:2010 for details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.perceptual_rendering_intent_gamut">
+<code class="descname">perceptual_rendering_intent_gamut</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.perceptual_rendering_intent_gamut" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the (one)
+standard reference medium gamut (see 9.2.37 of ICC.1:2010 for
+details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.saturation_rendering_intent_gamut">
+<code class="descname">saturation_rendering_intent_gamut</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.saturation_rendering_intent_gamut" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the (one)
+standard reference medium gamut (see 9.2.37 of ICC.1:2010 for
+details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.technology">
+<code class="descname">technology</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.technology" title="Permalink to this definition">¶</a></dt>
+<dd><p>4-character string (padded with whitespace) identifying the device
+technology (see 9.2.47 of ICC.1:2010 for details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.media_black_point">
+<code class="descname">media_black_point</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.media_black_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>This tag specifies the media black point and is used for
+generating absolute colorimetry.</p>
+<p>This tag was available in ICC 3.2, but it is removed from
+version 4.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.media_white_point_temperature">
+<code class="descname">media_white_point_temperature</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.media_white_point_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the white point temperature (see the LCMS documentation
+for more information).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#float" title="float"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.viewing_condition">
+<code class="descname">viewing_condition</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.viewing_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>The (english) display string for the viewing conditions (see
+9.2.48 of ICC.1:2010).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.screening_description">
+<code class="descname">screening_description</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.screening_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>The (english) display string for the screening conditions.</p>
+<p>This tag was available in ICC 3.2, but it is removed from
+version 4.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">unicode</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.red_primary">
+<code class="descname">red_primary</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.red_primary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The XYZ-transformed of the RGB primary color red (1, 0, 0).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.green_primary">
+<code class="descname">green_primary</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.green_primary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The XYZ-transformed of the RGB primary color green (0, 1, 0).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.blue_primary">
+<code class="descname">blue_primary</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.blue_primary" title="Permalink to this definition">¶</a></dt>
+<dd><p>The XYZ-transformed of the RGB primary color blue (0, 0, 1).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">((X,</span> <span class="pre">Y,</span> <span class="pre">Z),</span> <span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">Y))</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.is_matrix_shaper">
+<code class="descname">is_matrix_shaper</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.is_matrix_shaper" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if this profile is implemented as a matrix shaper (see
+documentation on LCMS).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.clut">
+<code class="descname">clut</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.clut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of all supported intents and directions for
+the CLUT model.</p>
+<p>The dictionary is indexed by intents
+(<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_ABSOLUTE_COLORIMETRIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_PERCEPTUAL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_RELATIVE_COLORIMETRIC</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_SATURATION</span></code>).</p>
+<p>The values are 3-tuples indexed by directions
+(<code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_INPUT</span></code>, <code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_OUTPUT</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_PROOF</span></code>).</p>
+<p>The elements of the tuple are booleans.  If the value is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+that intent is supported for that direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> of boolean 3-tuples</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.intent_supported">
+<code class="descname">intent_supported</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.intent_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of all supported intents and directions.</p>
+<p>The dictionary is indexed by intents
+(<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_ABSOLUTE_COLORIMETRIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_PERCEPTUAL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_RELATIVE_COLORIMETRIC</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_SATURATION</span></code>).</p>
+<p>The values are 3-tuples indexed by directions
+(<code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_INPUT</span></code>, <code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_OUTPUT</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_PROOF</span></code>).</p>
+<p>The elements of the tuple are booleans.  If the value is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+that intent is supported for that direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> of boolean 3-tuples</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.color_space">
+<code class="descname">color_space</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.color_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+Interpreted value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.xcolor_space" title="PIL.ImageCms.CmsProfile.xcolor_space"><code class="xref py py-attr docutils literal notranslate"><span class="pre">xcolor_space</span></code></a>.  May be the
+empty string if value could not be decoded.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.pcs">
+<code class="descname">pcs</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.pcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+Interpreted value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.connection_space" title="PIL.ImageCms.CmsProfile.connection_space"><code class="xref py py-attr docutils literal notranslate"><span class="pre">connection_space</span></code></a>.  May be
+the empty string if value could not be decoded.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.product_model">
+<code class="descname">product_model</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.product_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+ASCII-encoded value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.model" title="PIL.ImageCms.CmsProfile.model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">model</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.product_manufacturer">
+<code class="descname">product_manufacturer</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.product_manufacturer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+ASCII-encoded value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.manufacturer" title="PIL.ImageCms.CmsProfile.manufacturer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">manufacturer</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.product_copyright">
+<code class="descname">product_copyright</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.product_copyright" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+ASCII-encoded value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.copyright" title="PIL.ImageCms.CmsProfile.copyright"><code class="xref py py-attr docutils literal notranslate"><span class="pre">copyright</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.product_description">
+<code class="descname">product_description</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.product_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+ASCII-encoded value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.profile_description" title="PIL.ImageCms.CmsProfile.profile_description"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profile_description</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.ImageCms.CmsProfile.product_desc">
+<code class="descname">product_desc</code><a class="headerlink" href="#PIL.ImageCms.CmsProfile.product_desc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated but retained for backwards compatibility.
+ASCII-encoded value of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.profile_description" title="PIL.ImageCms.CmsProfile.profile_description"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profile_description</span></code></a>.</p>
+<p>This alias of <a class="reference internal" href="#PIL.ImageCms.CmsProfile.product_description" title="PIL.ImageCms.CmsProfile.product_description"><code class="xref py py-attr docutils literal notranslate"><span class="pre">product_description</span></code></a> used to
+contain a derived informative string about the profile,
+depending on the value of the description, copyright,
+manufacturer and model fields).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>There is one function defined on the class:</p>
+<dl class="method">
+<dt id="PIL.ImageCms.CmsProfile.is_intent_supported">
+<code class="descname">is_intent_supported</code><span class="sig-paren">(</span><em>intent</em>, <em>direction</em><span class="sig-paren">)</span><a class="headerlink" href="#PIL.ImageCms.CmsProfile.is_intent_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the intent is supported for the given direction.</p>
+<p>Note that you can also get this information for all intents and directions
+with <a class="reference internal" href="#PIL.ImageCms.CmsProfile.intent_supported" title="PIL.ImageCms.CmsProfile.intent_supported"><code class="xref py py-attr docutils literal notranslate"><span class="pre">intent_supported</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>intent</strong> – One of <code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_ABSOLUTE_COLORIMETRIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_PERCEPTUAL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_RELATIVE_COLORIMETRIC</span></code>
+and <code class="docutils literal notranslate"><span class="pre">ImageCms.INTENT_SATURATION</span></code>.</li>
+<li><strong>direction</strong> – One of <code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_INPUT</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_OUTPUT</span></code>
+and <code class="docutils literal notranslate"><span class="pre">ImageCms.DIRECTION_PROOF</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Boolean if the intent and direction is supported.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageDraw.html" class="btn btn-neutral float-right" title="ImageDraw Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageColor.html" class="btn btn-neutral" title="ImageColor Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

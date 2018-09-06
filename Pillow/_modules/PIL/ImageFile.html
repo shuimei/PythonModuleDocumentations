@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageFile &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageFile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageFile</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># base class for image file handlers</span>
+<span class="c1">#</span>
+<span class="c1"># history:</span>
+<span class="c1"># 1995-09-09 fl   Created</span>
+<span class="c1"># 1996-03-11 fl   Fixed load mechanism.</span>
+<span class="c1"># 1996-04-15 fl   Added pcx/xbm decoders.</span>
+<span class="c1"># 1996-04-30 fl   Added encoders.</span>
+<span class="c1"># 1996-12-14 fl   Added load helpers</span>
+<span class="c1"># 1997-01-11 fl   Use encode_to_file where possible</span>
+<span class="c1"># 1997-08-27 fl   Flush output in _save</span>
+<span class="c1"># 1998-03-05 fl   Use memory mapping for some modes</span>
+<span class="c1"># 1999-02-04 fl   Use memory mapping also for &quot;I;16&quot; and &quot;I;16B&quot;</span>
+<span class="c1"># 1999-05-31 fl   Added image parser</span>
+<span class="c1"># 2000-10-12 fl   Set readonly flag on memory-mapped images</span>
+<span class="c1"># 2002-03-20 fl   Use better messages for common decoder errors</span>
+<span class="c1"># 2003-04-21 fl   Fall back on mmap/map_buffer if map is not available</span>
+<span class="c1"># 2003-10-30 fl   Added StubImageFile class</span>
+<span class="c1"># 2004-02-25 fl   Made incremental parser more robust</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2004 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 1995-2004 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">isPath</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">MAXBLOCK</span> <span class="o">=</span> <span class="mi">65536</span>
+
+<span class="n">SAFEBLOCK</span> <span class="o">=</span> <span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span>
+
+<span class="n">LOAD_TRUNCATED_IMAGES</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">ERRORS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;image buffer overrun error&quot;</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;decoding error&quot;</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;unknown error&quot;</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;bad configuration&quot;</span><span class="p">,</span>
+    <span class="o">-</span><span class="mi">9</span><span class="p">:</span> <span class="s2">&quot;out of memory error&quot;</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">raise_ioerror</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">getcodecstatus</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">ERRORS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">message</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;decoder error </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">error</span>
+    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">message</span> <span class="o">+</span> <span class="s2">&quot; when reading image file&quot;</span><span class="p">)</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Helpers</span>
+
+<span class="k">def</span> <span class="nf">_tilesort</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="c1"># sort on offset</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># ImageFile base class</span>
+
+<span class="k">class</span> <span class="nc">ImageFile</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
+    <span class="s2">&quot;Base class for image file format handlers.&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_frame</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># until we know better</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decodermaxblock</span> <span class="o">=</span> <span class="n">MAXBLOCK</span>
+
+        <span class="k">if</span> <span class="n">isPath</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+            <span class="c1"># filename</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">fp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exclusive_fp</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># stream</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="c1"># can be overridden</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exclusive_fp</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span>  <span class="c1"># end of data</span>
+                <span class="ne">TypeError</span><span class="p">,</span>  <span class="c1"># end of data (ord)</span>
+                <span class="ne">KeyError</span><span class="p">,</span>  <span class="c1"># unsupported mode</span>
+                <span class="ne">EOFError</span><span class="p">,</span>  <span class="c1"># got header but not the first frame</span>
+                <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">)</span> <span class="k">as</span> <span class="n">v</span><span class="p">:</span>
+            <span class="c1"># close the file only if we have opened it this constructor</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusive_fp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not identified by this driver&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="s2">&quot;Set draft mode&quot;</span>
+
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">get_format_mimetype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">MIME</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">verify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Check file integrity&quot;</span>
+
+        <span class="c1"># raise exception if something&#39;s wrong.  must be called</span>
+        <span class="c1"># directly after open, and closes file when finished.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusive_fp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Load image data based on tile list&quot;</span>
+
+        <span class="n">pixel</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot load this image&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pixel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">use_mmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="c1"># As of pypy 2.1.0, memory mapping was failing here.</span>
+        <span class="n">use_mmap</span> <span class="o">=</span> <span class="n">use_mmap</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;pypy_version_info&#39;</span><span class="p">)</span>
+
+        <span class="n">readonly</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># look for read/seek overrides</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_read</span>
+            <span class="c1"># don&#39;t use mmap if there are custom read/seek functions</span>
+            <span class="n">use_mmap</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">read</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">seek</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_seek</span>
+            <span class="n">use_mmap</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">seek</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span>
+
+        <span class="k">if</span> <span class="n">use_mmap</span><span class="p">:</span>
+            <span class="c1"># try memory mapping</span>
+            <span class="n">decoder_name</span><span class="p">,</span> <span class="n">extents</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">decoder_name</span> <span class="o">==</span> <span class="s2">&quot;raw&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> \
+               <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">Image</span><span class="o">.</span><span class="n">_MAPMODES</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="p">,</span> <span class="s2">&quot;map&quot;</span><span class="p">):</span>
+                        <span class="c1"># use built-in mapper  WIN32 only</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">readimage</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># use mmap, if possible</span>
+                        <span class="kn">import</span> <span class="nn">mmap</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">access</span><span class="o">=</span><span class="n">mmap</span><span class="o">.</span><span class="n">ACCESS_READ</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">map_buffer</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">decoder_name</span><span class="p">,</span> <span class="n">extents</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">args</span>
+                            <span class="p">)</span>
+                    <span class="n">readonly</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="c1"># After trashing self.im, we might need to reload the palette data.</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">EnvironmentError</span><span class="p">,</span> <span class="ne">ImportError</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_prepare</span><span class="p">()</span>
+        <span class="n">err_code</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span>  <span class="c1"># initialize to unknown error</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">:</span>
+            <span class="c1"># sort tiles in file order</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">_tilesort</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># FIXME: This is a hack to handle TIFF&#39;s JpegTables tag.</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile_prefix</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+            <span class="k">for</span> <span class="n">decoder_name</span><span class="p">,</span> <span class="n">extents</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">:</span>
+                <span class="n">decoder</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">_getdecoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">decoder_name</span><span class="p">,</span>
+                                            <span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+                    <span class="n">decoder</span><span class="o">.</span><span class="n">setimage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">extents</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">decoder</span><span class="o">.</span><span class="n">pulls_fd</span><span class="p">:</span>
+                        <span class="n">decoder</span><span class="o">.</span><span class="n">setfd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">)</span>
+                        <span class="n">status</span><span class="p">,</span> <span class="n">err_code</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">b</span> <span class="o">=</span> <span class="n">prefix</span>
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">s</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decodermaxblock</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">):</span>  <span class="c1"># truncated png/gif</span>
+                                <span class="k">if</span> <span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;image file is truncated&quot;</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>  <span class="c1"># truncated jpeg</span>
+                                <span class="k">if</span> <span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+                                    <span class="k">break</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span>
+                                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;image file is truncated &quot;</span>
+                                                  <span class="s2">&quot;(</span><span class="si">%d</span><span class="s2"> bytes not processed)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+
+                            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">s</span>
+                            <span class="n">n</span><span class="p">,</span> <span class="n">err_code</span> <span class="o">=</span> <span class="n">decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="k">break</span>
+                            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="c1"># Need to cleanup here to prevent leaks</span>
+                    <span class="n">decoder</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span> <span class="o">=</span> <span class="n">readonly</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_end</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exclusive_fp</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_close_exclusive_fp_after_loading</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">LOAD_TRUNCATED_IMAGES</span> <span class="ow">and</span> <span class="n">err_code</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># still raised if decoder fails to return anything</span>
+            <span class="n">raise_ioerror</span><span class="p">(</span><span class="n">err_code</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># create image memory if necessary</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="ow">or</span>\
+           <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="c1"># create palette (optional)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="n">Image</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># may be overridden</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># may be defined for contained formats</span>
+    <span class="c1"># def load_seek(self, pos):</span>
+    <span class="c1">#     pass</span>
+
+    <span class="c1"># may be defined for blocked formats (e.g. PNG)</span>
+    <span class="c1"># def load_read(self, bytes):</span>
+    <span class="c1">#     pass</span>
+
+    <span class="k">def</span> <span class="nf">_seek_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">frame</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_frame</span> <span class="ow">or</span>
+            <span class="c1"># Only check upper limit on frames if additional seek operations</span>
+            <span class="c1"># are not required to do so</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_n_frames&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span>
+             <span class="n">frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_frame</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;attempt to seek outside sequence&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">!=</span> <span class="n">frame</span>
+
+
+<span class="k">class</span> <span class="nc">StubImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for stub image loaders.</span>
+
+<span class="sd">    A stub loader is an image loader that can identify files of a</span>
+<span class="sd">    certain format, but relies on external code to load the file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;StubImageFile subclass must implement _open&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">loader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot find loader for this </span><span class="si">%s</span><span class="s2"> file&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="c1"># become the other object (!)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="vm">__class__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="vm">__dict__</span>
+
+    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;(Hook) Find actual image loader.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;StubImageFile subclass must implement _load&quot;</span>
+            <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Parser"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.Parser">[docs]</a><span class="k">class</span> <span class="nc">Parser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Incremental image parser.  This class implements the standard</span>
+<span class="sd">    feed/close consumer interface.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">incremental</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">decoder</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">finished</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="Parser.reset"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.Parser.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Consumer) Reset the parser.  Note that you can only call this</span>
+<span class="sd">        method immediately after you&#39;ve created a parser; parser</span>
+<span class="sd">        instances cannot be reused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;cannot reuse parsers&quot;</span></div>
+
+<div class="viewcode-block" id="Parser.feed"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.Parser.feed">[docs]</a>    <span class="k">def</span> <span class="nf">feed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Consumer) Feed data to the parser.</span>
+
+<span class="sd">        :param data: A string buffer.</span>
+<span class="sd">        :exception IOError: If the parser failed to parse the image file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># collect data</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="n">data</span>
+
+        <span class="c1"># parse what we have</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># skip header</span>
+                <span class="n">skip</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">skip</span><span class="p">:]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="n">skip</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="k">return</span>
+
+            <span class="n">n</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># end of stream</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">finished</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">e</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># decoding error</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">raise_ioerror</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># end of image</span>
+                    <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">:</span>
+
+            <span class="c1"># if we end up here with no decoder, this file cannot</span>
+            <span class="c1"># be incrementally parsed.  wait until we&#39;ve gotten all</span>
+            <span class="c1"># available data</span>
+            <span class="k">pass</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># attempt to open this file</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="c1"># traceback.print_exc()</span>
+                <span class="k">pass</span>  <span class="c1"># not enough data</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s2">&quot;load_seek&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s2">&quot;load_read&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">flag</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">tile</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># custom load code, or multiple tiles</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">decode</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># initialize decoder</span>
+                    <span class="n">im</span><span class="o">.</span><span class="n">load_prepare</span><span class="p">()</span>
+                    <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">im</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">_getdecoder</span><span class="p">(</span>
+                        <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">decoderconfig</span>
+                        <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">setimage</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+                    <span class="c1"># calculate decoder offset</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">o</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">:]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">im</span></div>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Parser.close"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.Parser.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (Consumer) Close the stream.</span>
+
+<span class="sd">        :returns: An image object.</span>
+<span class="sd">        :exception IOError: If the parser failed to parse the image file either</span>
+<span class="sd">                            because it cannot be identified or cannot be</span>
+<span class="sd">                            decoded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># finish decoding</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">:</span>
+            <span class="c1"># get rid of what&#39;s left in the buffers</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feed</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">finished</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;image was incomplete&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot parse this image&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="c1"># incremental parsing not possible; reopen the file</span>
+            <span class="c1"># not that we have all data</span>
+            <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span></div></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">tile</span><span class="p">,</span> <span class="n">bufsize</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper to save image based on tile list</span>
+
+<span class="sd">    :param im: Image object.</span>
+<span class="sd">    :param fp: File object.</span>
+<span class="sd">    :param tile: Tile list.</span>
+<span class="sd">    :param bufsize: Optional buffer size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s2">&quot;encoderconfig&quot;</span><span class="p">):</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">tile</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">_tilesort</span><span class="p">)</span>
+    <span class="c1"># FIXME: make MAXBLOCK a configuration parameter</span>
+    <span class="c1"># It would be great if we could have the encoder specify what it needs</span>
+    <span class="c1"># But, it would need at least the image size in most cases. RawEncode is</span>
+    <span class="c1"># a tricky case.</span>
+    <span class="n">bufsize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">MAXBLOCK</span><span class="p">,</span> <span class="n">bufsize</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># see RawEncode.c</span>
+    <span class="k">if</span> <span class="n">fp</span> <span class="o">==</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fh</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">UnsupportedOperation</span><span class="p">):</span>
+        <span class="c1"># compress to Python file-compatible object</span>
+        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tile</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">_getencoder</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">setimage</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">pushes_fd</span><span class="p">:</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">setfd</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+                <span class="n">l</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">encode_to_pyfd</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">l</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">bufsize</span><span class="p">)</span>
+                    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">s</span><span class="p">:</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;encoder error </span><span class="si">%d</span><span class="s2"> when writing image file&quot;</span> <span class="o">%</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># slight speedup: compress to real file object</span>
+        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tile</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">_getencoder</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">setimage</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">pushes_fd</span><span class="p">:</span>
+                <span class="n">e</span><span class="o">.</span><span class="n">setfd</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+                <span class="n">l</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">encode_to_pyfd</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">encode_to_file</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">bufsize</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;encoder error </span><span class="si">%d</span><span class="s2"> when writing image file&quot;</span> <span class="o">%</span> <span class="n">s</span><span class="p">)</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;flush&quot;</span><span class="p">):</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_safe_read</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads large blocks in a safe way.  Unlike fp.read(n), this function</span>
+<span class="sd">    doesn&#39;t trust the user.  If the requested size is larger than</span>
+<span class="sd">    SAFEBLOCK, the file is read block by block.</span>
+
+<span class="sd">    :param fp: File handle.  Must implement a &lt;b&gt;read&lt;/b&gt; method.</span>
+<span class="sd">    :param size: Number of bytes to read.</span>
+<span class="sd">    :returns: A string containing up to &lt;i&gt;size&lt;/i&gt; bytes of data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="n">SAFEBLOCK</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">SAFEBLOCK</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">block</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">PyCodecState</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xsize</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ysize</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xoff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yoff</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">extents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xoff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoff</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xoff</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">xsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoff</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">ysize</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PyDecoder"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder">[docs]</a><span class="k">class</span> <span class="nc">PyDecoder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Python implementation of a format decoder. Override this class and</span>
+<span class="sd">    add the decoding logic in the `decode` method.</span>
+
+<span class="sd">    See :ref:`Writing Your Own File Decoder in Python&lt;file-decoders-py&gt;`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_pulls_fd</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PyCodecState</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PyDecoder.init"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override to perform decoder specific initialization</span>
+
+<span class="sd">        :param args: Array of args items from the tile entry</span>
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pulls_fd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pulls_fd</span>
+
+<div class="viewcode-block" id="PyDecoder.decode"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override to perform the decoding process.</span>
+
+<span class="sd">        :param buffer: A bytes object with the data to be decoded.  If `handles_eof`</span>
+<span class="sd">             is set, then `buffer` will be empty and `self.fd` will be set.</span>
+<span class="sd">        :returns: A tuple of (bytes consumed, errcode). If finished with decoding</span>
+<span class="sd">             return &lt;0 for the bytes consumed. Err codes are from `ERRORS`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PyDecoder.cleanup"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Override to perform decoder specific cleanup</span>
+
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="PyDecoder.setfd"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.setfd">[docs]</a>    <span class="k">def</span> <span class="nf">setfd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fd</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called from ImageFile to set the python file-like object</span>
+
+<span class="sd">        :param fd: A python file-like object</span>
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span></div>
+
+<div class="viewcode-block" id="PyDecoder.setimage"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.setimage">[docs]</a>    <span class="k">def</span> <span class="nf">setimage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">extents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called from ImageFile to set the core output image for the decoder</span>
+
+<span class="sd">        :param im: A core image object</span>
+<span class="sd">        :param extents: a 4 tuple of (x0, y0, x1, y1) defining the rectangle</span>
+<span class="sd">            for this tile</span>
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># following c code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">im</span>
+
+        <span class="k">if</span> <span class="n">extents</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="o">=</span> <span class="n">extents</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">x0</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">x1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xoff</span> <span class="o">=</span> <span class="n">x0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">yoff</span> <span class="o">=</span> <span class="n">y0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Size cannot be negative&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xsize</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">xoff</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">ysize</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">yoff</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tile cannot extend outside image&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PyDecoder.set_as_raw"><a class="viewcode-back" href="../../reference/ImageFile.html#PIL.ImageFile.PyDecoder.set_as_raw">[docs]</a>    <span class="k">def</span> <span class="nf">set_as_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rawmode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convenience method to set the internal image from a stream of raw data</span>
+
+<span class="sd">        :param data: Bytes to be set</span>
+<span class="sd">        :param rawmode: The rawmode to be used for the decoder. If not specified,</span>
+<span class="sd">             it will default to the mode of the image</span>
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">rawmode</span><span class="p">:</span>
+            <span class="n">rawmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">_getdecoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">rawmode</span><span class="p">))</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">setimage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">extents</span><span class="p">())</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;not enough image data&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot decode image data&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

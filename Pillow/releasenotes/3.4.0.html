@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.4.0 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3.2" href="3.3.2.html" />
+    <link rel="prev" title="4.0.0" href="4.0.0.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.4.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-resizing-filters">New resizing filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deprecation-warning-when-saving-jpegs">Deprecation Warning when Saving JPEGs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-dds-decoders">New DDS Decoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#append-images-to-gif">Append images to GIF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#save-multiple-frame-tiff">Save multiple frame TIFF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#image-core-open-ppm-removed">Image.core.open_ppm removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>3.4.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/3.4.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>3.4.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="new-resizing-filters">
+<h2>New resizing filters<a class="headerlink" href="#new-resizing-filters" title="Permalink to this headline">¶</a></h2>
+<p>Two new filters available for <code class="docutils literal notranslate"><span class="pre">Image.resize()</span></code> and <code class="docutils literal notranslate"><span class="pre">Image.thumbnail()</span></code>
+functions: <code class="docutils literal notranslate"><span class="pre">BOX</span></code> and <code class="docutils literal notranslate"><span class="pre">HAMMING</span></code>. <code class="docutils literal notranslate"><span class="pre">BOX</span></code> is the high-performance filter with
+two times shorter window than <code class="docutils literal notranslate"><span class="pre">BILINEAR</span></code>. It can be used for image reduction
+3 and more times and produces a sharper result than <code class="docutils literal notranslate"><span class="pre">BILINEAR</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">HAMMING</span></code> filter has the same performance as <code class="docutils literal notranslate"><span class="pre">BILINEAR</span></code> filter while
+providing the image downscaling quality comparable to <code class="docutils literal notranslate"><span class="pre">BICUBIC</span></code>.
+Both new filters don’t show good quality for the image upscaling.</p>
+</div>
+<div class="section" id="deprecation-warning-when-saving-jpegs">
+<h2>Deprecation Warning when Saving JPEGs<a class="headerlink" href="#deprecation-warning-when-saving-jpegs" title="Permalink to this headline">¶</a></h2>
+<p>JPEG images cannot contain an alpha channel. Pillow prior to 3.4.0
+silently drops the alpha channel. With this release Pillow will now
+issue a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> when attempting to save a <code class="docutils literal notranslate"><span class="pre">RGBA</span></code> mode
+image as a JPEG. This will become an error in Pillow 4.2.</p>
+</div>
+<div class="section" id="new-dds-decoders">
+<h2>New DDS Decoders<a class="headerlink" href="#new-dds-decoders" title="Permalink to this headline">¶</a></h2>
+<p>Pillow can now decode DXT3 images, as well as the previously supported
+DXT1 and DXT5 formats. All three formats are now decoded in C code for
+better performance.</p>
+</div>
+<div class="section" id="append-images-to-gif">
+<h2>Append images to GIF<a class="headerlink" href="#append-images-to-gif" title="Permalink to this headline">¶</a></h2>
+<p>Additional frames can now be appended when saving a GIF file, through the
+<code class="docutils literal notranslate"><span class="pre">append_images</span></code> argument. The new frames are passed in as a list of images,
+which may be have multiple frames themselves.</p>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">append_images</span></code> argument is only used if <code class="docutils literal notranslate"><span class="pre">save_all</span></code> is also
+in effect, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">append_images</span><span class="o">=</span><span class="p">[</span><span class="n">im1</span><span class="p">,</span> <span class="n">im2</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="save-multiple-frame-tiff">
+<h2>Save multiple frame TIFF<a class="headerlink" href="#save-multiple-frame-tiff" title="Permalink to this headline">¶</a></h2>
+<p>Multiple frames can now be saved in a TIFF file by using the <code class="docutils literal notranslate"><span class="pre">save_all</span></code> option.
+e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;filename.tiff&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;TIFF&quot;</span><span class="p">,</span> <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="image-core-open-ppm-removed">
+<h2>Image.core.open_ppm removed<a class="headerlink" href="#image-core-open-ppm-removed" title="Permalink to this headline">¶</a></h2>
+<p>The nominally private/debugging function <code class="docutils literal notranslate"><span class="pre">Image.core.open_ppm</span></code> has
+been removed. If you were using this function, please use
+<code class="docutils literal notranslate"><span class="pre">Image.open</span></code> instead.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="3.3.2.html" class="btn btn-neutral float-right" title="3.3.2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="4.0.0.html" class="btn btn-neutral" title="4.0.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

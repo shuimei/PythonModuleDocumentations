@@ -1,0 +1,1015 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.JpegImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.JpegImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.JpegImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># JPEG (JFIF) file handling</span>
+<span class="c1">#</span>
+<span class="c1"># See &quot;Digital Compression and Coding of Continuous-Tone Still Images,</span>
+<span class="c1"># Part 1, Requirements and Guidelines&quot; (CCITT T.81 / ISO 10918-1)</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 1995-09-09 fl   Created</span>
+<span class="c1"># 1995-09-13 fl   Added full parser</span>
+<span class="c1"># 1996-03-25 fl   Added hack to use the IJG command line utilities</span>
+<span class="c1"># 1996-05-05 fl   Workaround Photoshop 2.5 CMYK polarity bug</span>
+<span class="c1"># 1996-05-28 fl   Added draft support, JFIF version (0.1)</span>
+<span class="c1"># 1996-12-30 fl   Added encoder options, added progression property (0.2)</span>
+<span class="c1"># 1997-08-27 fl   Save mode 1 images as BW (0.3)</span>
+<span class="c1"># 1998-07-12 fl   Added YCbCr to draft and save methods (0.4)</span>
+<span class="c1"># 1998-10-19 fl   Don&#39;t hang on files using 16-bit DQT&#39;s (0.4.1)</span>
+<span class="c1"># 2001-04-16 fl   Extract DPI settings from JFIF files (0.4.2)</span>
+<span class="c1"># 2002-07-01 fl   Skip pad bytes before markers; identify Exif files (0.4.3)</span>
+<span class="c1"># 2003-04-25 fl   Added experimental EXIF decoder (0.5)</span>
+<span class="c1"># 2003-06-06 fl   Added experimental EXIF GPSinfo decoder</span>
+<span class="c1"># 2003-09-13 fl   Extract COM markers</span>
+<span class="c1"># 2009-09-06 fl   Added icc_profile support (from Florian Hoech)</span>
+<span class="c1"># 2009-03-06 fl   Changed CMYK handling; always use Adobe polarity (0.6)</span>
+<span class="c1"># 2009-03-08 fl   Added subsampling support (from Justin Huff).</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2003 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 1995-1996 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">array</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span><span class="p">,</span> <span class="n">TiffImagePlugin</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">i8</span><span class="p">,</span> <span class="n">o8</span><span class="p">,</span> <span class="n">i16be</span> <span class="k">as</span> <span class="n">i16</span>
+<span class="kn">from</span> <span class="nn">.JpegPresets</span> <span class="k">import</span> <span class="n">presets</span>
+<span class="kn">from</span> <span class="nn">._util</span> <span class="k">import</span> <span class="n">isStringType</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.6&quot;</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># Parser</span>
+
+<div class="viewcode-block" id="Skip"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.Skip">[docs]</a><span class="k">def</span> <span class="nf">Skip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="APP"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.APP">[docs]</a><span class="k">def</span> <span class="nf">APP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Application marker.  Store these in the APP dictionary.</span>
+    <span class="c1"># Also look for well-known application markers.</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="s2">&quot;APP</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">marker</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="n">app</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># compatibility</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">applist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">app</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFE0</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;JFIF&quot;</span><span class="p">:</span>
+        <span class="c1"># extract JFIF information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;jfif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;jfif_version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+        <span class="c1"># extract JFIF properties</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">jfif_unit</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+            <span class="n">jfif_density</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jfif_unit</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jfif_density</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;jfif_unit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jfif_unit</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;jfif_density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jfif_density</span>
+    <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFE1</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;Exif</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;exif&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="c1"># extract Exif information (incomplete)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;exif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># FIXME: value will change</span>
+    <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFE2</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;FPXR</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="c1"># extract FlashPix information (incomplete)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;flashpix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># FIXME: value will change</span>
+    <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFE2</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">12</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;ICC_PROFILE</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="c1"># Since an ICC profile can be larger than the maximum size of</span>
+        <span class="c1"># a JPEG marker (64K), we need provisions to split it into</span>
+        <span class="c1"># multiple markers. The format defined by the ICC specifies</span>
+        <span class="c1"># one or more APP2 markers containing the following data:</span>
+        <span class="c1">#   Identifying string      ASCII &quot;ICC_PROFILE\0&quot;  (12 bytes)</span>
+        <span class="c1">#   Marker sequence number  1, 2, etc (1 byte)</span>
+        <span class="c1">#   Number of markers       Total of APP2&#39;s used (1 byte)</span>
+        <span class="c1">#   Profile data            (remainder of APP2 data)</span>
+        <span class="c1"># Decoders should use the marker sequence numbers to</span>
+        <span class="c1"># reassemble the profile, rather than assuming that the APP2</span>
+        <span class="c1"># markers appear in the correct sequence.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFEE</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;Adobe&quot;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;adobe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="c1"># extract Adobe custom properties</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">adobe_transform</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;adobe_transform&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adobe_transform</span>
+    <span class="k">elif</span> <span class="n">marker</span> <span class="o">==</span> <span class="mh">0xFFE2</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;MPF</span><span class="se">\0</span><span class="s2">&quot;</span><span class="p">:</span>
+        <span class="c1"># extract MPO information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;mp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="c1"># offset is current location minus buffer size</span>
+        <span class="c1"># plus constant header size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;mpoffset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">4</span>
+
+    <span class="c1"># If DPI isn&#39;t in JPEG header, fetch from EXIF</span>
+    <span class="k">if</span> <span class="s2">&quot;dpi&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="ow">and</span> <span class="s2">&quot;exif&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getexif</span><span class="p">()</span>
+            <span class="n">resolution_unit</span> <span class="o">=</span> <span class="n">exif</span><span class="p">[</span><span class="mh">0x0128</span><span class="p">]</span>
+            <span class="n">x_resolution</span> <span class="o">=</span> <span class="n">exif</span><span class="p">[</span><span class="mh">0x011A</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dpi</span> <span class="o">=</span> <span class="n">x_resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">x_resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">dpi</span> <span class="o">=</span> <span class="n">x_resolution</span>
+            <span class="k">if</span> <span class="n">resolution_unit</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># cm</span>
+                <span class="c1"># 1 dpcm = 2.54 dpi</span>
+                <span class="n">dpi</span> <span class="o">*=</span> <span class="mf">2.54</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dpi</span><span class="p">,</span> <span class="n">dpi</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">SyntaxError</span><span class="p">,</span> <span class="ne">ZeroDivisionError</span><span class="p">):</span>
+            <span class="c1"># SyntaxError for invalid/unreadable exif</span>
+            <span class="c1"># KeyError for dpi not included</span>
+            <span class="c1"># ZeroDivisionError for invalid dpi rational value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">72</span></div>
+
+
+<div class="viewcode-block" id="COM"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.COM">[docs]</a><span class="k">def</span> <span class="nf">COM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Comment marker.  Store these in the APP dictionary.</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s2">&quot;COM&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># compatibility</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">applist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;COM&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SOF"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.SOF">[docs]</a><span class="k">def</span> <span class="nf">SOF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Start of frame marker.  Defines the size and mode of the</span>
+    <span class="c1"># image.  JPEG is colour blind, so we use some simple</span>
+    <span class="c1"># heuristics to map the number of layers to an appropriate</span>
+    <span class="c1"># mode.  Note that this could be made a bit brighter, by</span>
+    <span class="c1"># looking for JFIF and Adobe APP markers.</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">:]),</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;cannot handle </span><span class="si">%d</span><span class="s2">-bit layers&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;CMYK&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;cannot handle </span><span class="si">%d</span><span class="s2">-layer images&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">marker</span> <span class="ow">in</span> <span class="p">[</span><span class="mh">0xFFC2</span><span class="p">,</span> <span class="mh">0xFFC6</span><span class="p">,</span> <span class="mh">0xFFCA</span><span class="p">,</span> <span class="mh">0xFFCE</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;progressive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;progression&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="p">:</span>
+        <span class="c1"># fixup icc profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>  <span class="c1"># sort by sequence number</span>
+        <span class="k">if</span> <span class="n">i8</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">13</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span><span class="p">:</span>
+                <span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">14</span><span class="p">:])</span>
+            <span class="n">icc_profile</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">icc_profile</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># wrong number of fragments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icc_profile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># 4-tuples: id, vsamp, hsamp, qtable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i8</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">//</span><span class="mi">16</span><span class="p">,</span> <span class="n">i8</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">,</span> <span class="n">i8</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span></div>
+
+
+<div class="viewcode-block" id="DQT"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.DQT">[docs]</a><span class="k">def</span> <span class="nf">DQT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Define quantization table.  Support baseline 8-bit tables</span>
+    <span class="c1"># only.  Note that there might be more than one table in</span>
+    <span class="c1"># each marker.</span>
+
+    <span class="c1"># FIXME: The quantization tables can be used to estimate the</span>
+    <span class="c1"># compression quality.</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="mi">2</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">_safe_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">65</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;bad quantization table marker&quot;</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">//</span><span class="mi">16</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">quantization</span><span class="p">[</span><span class="n">v</span> <span class="o">&amp;</span> <span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">65</span><span class="p">])</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">65</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># FIXME: add code to read 16-bit tables!</span></div>
+            <span class="c1"># raise SyntaxError, &quot;bad quantization table element size&quot;</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># JPEG marker table</span>
+
+<span class="n">MARKER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mh">0xFFC0</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF0&quot;</span><span class="p">,</span> <span class="s2">&quot;Baseline DCT&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC1</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF1&quot;</span><span class="p">,</span> <span class="s2">&quot;Extended Sequential DCT&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC2</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF2&quot;</span><span class="p">,</span> <span class="s2">&quot;Progressive DCT&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC3</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF3&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial lossless&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC4</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DHT&quot;</span><span class="p">,</span> <span class="s2">&quot;Define Huffman table&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFC5</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF5&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential sequential DCT&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC6</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF6&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential progressive DCT&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC7</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF7&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential spatial&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFC8</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFC9</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF9&quot;</span><span class="p">,</span> <span class="s2">&quot;Extended sequential DCT (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFCA</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF10&quot;</span><span class="p">,</span> <span class="s2">&quot;Progressive DCT (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFCB</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF11&quot;</span><span class="p">,</span> <span class="s2">&quot;Spatial lossless DCT (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFCC</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DAC&quot;</span><span class="p">,</span> <span class="s2">&quot;Define arithmetic coding conditioning&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFCD</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF13&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential sequential DCT (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFCE</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF14&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential progressive DCT (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFCF</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOF15&quot;</span><span class="p">,</span> <span class="s2">&quot;Differential spatial (AC)&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFD0</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST0&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 0&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD1</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST1&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD2</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST2&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 2&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD3</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST3&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 3&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD4</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST4&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 4&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD5</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST5&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 5&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD6</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST6&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 6&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD7</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;RST7&quot;</span><span class="p">,</span> <span class="s2">&quot;Restart 7&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD8</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOI&quot;</span><span class="p">,</span> <span class="s2">&quot;Start of image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFD9</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EOI&quot;</span><span class="p">,</span> <span class="s2">&quot;End of image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFDA</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;SOS&quot;</span><span class="p">,</span> <span class="s2">&quot;Start of scan&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFDB</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DQT&quot;</span><span class="p">,</span> <span class="s2">&quot;Define quantization table&quot;</span><span class="p">,</span> <span class="n">DQT</span><span class="p">),</span>
+    <span class="mh">0xFFDC</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DNL&quot;</span><span class="p">,</span> <span class="s2">&quot;Define number of lines&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFDD</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DRI&quot;</span><span class="p">,</span> <span class="s2">&quot;Define restart interval&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFDE</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;DHP&quot;</span><span class="p">,</span> <span class="s2">&quot;Define hierarchical progression&quot;</span><span class="p">,</span> <span class="n">SOF</span><span class="p">),</span>
+    <span class="mh">0xFFDF</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;EXP&quot;</span><span class="p">,</span> <span class="s2">&quot;Expand reference component&quot;</span><span class="p">,</span> <span class="n">Skip</span><span class="p">),</span>
+    <span class="mh">0xFFE0</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP0&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 0&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE1</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP1&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 1&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE2</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP2&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 2&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE3</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP3&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 3&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE4</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP4&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 4&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE5</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP5&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 5&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE6</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP6&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 6&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE7</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP7&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 7&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE8</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP8&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 8&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFE9</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP9&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 9&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFEA</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP10&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 10&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFEB</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP11&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 11&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFEC</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP12&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 12&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFED</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP13&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 13&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFEE</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP14&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 14&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFEF</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;APP15&quot;</span><span class="p">,</span> <span class="s2">&quot;Application segment 15&quot;</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
+    <span class="mh">0xFFF0</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG0&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 0&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF1</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG1&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 1&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF2</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG2&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 2&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF3</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG3&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 3&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF4</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG4&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 4&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF5</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG5&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 5&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF6</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG6&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 6&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF7</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG7&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 7&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF8</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG8&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 8&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFF9</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG9&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 9&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFFA</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG10&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 10&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFFB</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG11&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 11&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFFC</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG12&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 12&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFFD</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;JPG13&quot;</span><span class="p">,</span> <span class="s2">&quot;Extension 13&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="mh">0xFFFE</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;COM&quot;</span><span class="p">,</span> <span class="s2">&quot;Comment&quot;</span><span class="p">,</span> <span class="n">COM</span><span class="p">)</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\377</span><span class="s2">&quot;</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for JPEG and JFIF images.</span>
+
+<div class="viewcode-block" id="JpegImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.JpegImageFile">[docs]</a><span class="k">class</span> <span class="nc">JpegImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;JPEG&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;JPEG (ISO 10918)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">255</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a JPEG file&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># JPEG specifics (internal)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">huffman_dc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">huffman_ac</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quantization</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># compatibility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">applist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icclist</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i8</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mh">0xFF</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">i16</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Skip non-0xFF junk</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">MARKER</span><span class="p">:</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">handler</span> <span class="o">=</span> <span class="n">MARKER</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="c1"># print(hex(i), name, description)</span>
+                <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mh">0xFFDA</span><span class="p">:</span>  <span class="c1"># start of scan</span>
+                    <span class="n">rawmode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;CMYK&quot;</span><span class="p">:</span>
+                        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;CMYK;I&quot;</span>  <span class="c1"># assume adobe conventions</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;jpeg&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                                 <span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))]</span>
+                    <span class="c1"># self.__offset = self.fp.tell()</span>
+                    <span class="k">break</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="mh">0xFFFF</span><span class="p">:</span>
+                <span class="c1"># padded marker or junk; move on</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\xff</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mh">0xFF00</span><span class="p">:</span>  <span class="c1"># Skip extraneous data (escaped 0xFF)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;no marker found&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="JpegImageFile.load_read"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.JpegImageFile.load_read">[docs]</a>    <span class="k">def</span> <span class="nf">load_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_bytes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        internal: read more image data</span>
+<span class="sd">        For premature EOF and LOAD_TRUNCATED_IMAGES adds EOI marker</span>
+<span class="sd">        so libjpeg can finish decoding</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">read_bytes</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span> <span class="ow">and</span> <span class="n">ImageFile</span><span class="o">.</span><span class="n">LOAD_TRUNCATED_IMAGES</span><span class="p">:</span>
+            <span class="c1"># Premature EOF.</span>
+            <span class="c1"># Pretend file is finished adding EOI marker</span>
+            <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\xFF\xD9</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">s</span></div>
+
+<div class="viewcode-block" id="JpegImageFile.draft"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.JpegImageFile.draft">[docs]</a>    <span class="k">def</span> <span class="nf">draft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Protect from second call</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;YCbCr&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">mode</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">size</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="n">s</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">s</span><span class="o">+</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">-</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">s</span><span class="o">+</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">s</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">s</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">a</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoderconfig</span> <span class="o">=</span> <span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="JpegImageFile.load_djpeg"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.JpegImageFile.load_djpeg">[docs]</a>    <span class="k">def</span> <span class="nf">load_djpeg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># ALTERNATIVE: handle JPEGs via the IJG command line utilities</span>
+
+        <span class="kn">import</span> <span class="nn">subprocess</span>
+        <span class="kn">import</span> <span class="nn">tempfile</span>
+        <span class="kn">import</span> <span class="nn">os</span>
+        <span class="n">f</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">):</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;djpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;-outfile&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid Filename&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">_im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">im</span> <span class="o">=</span> <span class="n">_im</span><span class="o">.</span><span class="n">im</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+    <span class="k">def</span> <span class="nf">_getexif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_getexif</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getmp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_getmp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_fixup_dict</span><span class="p">(</span><span class="n">src_dict</span><span class="p">):</span>
+    <span class="c1"># Helper function for _getexif()</span>
+    <span class="c1"># returns a dict with any single item tuples/lists as individual values</span>
+    <span class="k">def</span> <span class="nf">_fixup</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_fixup</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">src_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<span class="k">def</span> <span class="nf">_getexif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Extract EXIF information.  This method is highly experimental,</span>
+    <span class="c1"># and is likely to be replaced with something better in a future</span>
+    <span class="c1"># version.</span>
+
+    <span class="c1"># The EXIF record consists of a TIFF file embedded in a JPEG</span>
+    <span class="c1"># application marker (!).</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;exif&quot;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># process dictionary</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">TiffImagePlugin</span><span class="o">.</span><span class="n">ImageFileDirectory_v1</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+    <span class="n">info</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">exif</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_fixup_dict</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+    <span class="c1"># get exif extension</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># exif field 0x8769 is an offset pointer to the location</span>
+        <span class="c1"># of the nested embedded exif ifd.</span>
+        <span class="c1"># It should be a long, but may be corrupted.</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">exif</span><span class="p">[</span><span class="mh">0x8769</span><span class="p">])</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">TiffImagePlugin</span><span class="o">.</span><span class="n">ImageFileDirectory_v1</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">exif</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_fixup_dict</span><span class="p">(</span><span class="n">info</span><span class="p">))</span>
+    <span class="c1"># get gpsinfo extension</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># exif field 0x8825 is an offset pointer to the location</span>
+        <span class="c1"># of the nested embedded gps exif ifd.</span>
+        <span class="c1"># It should be a long, but may be corrupted.</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">exif</span><span class="p">[</span><span class="mh">0x8825</span><span class="p">])</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">TiffImagePlugin</span><span class="o">.</span><span class="n">ImageFileDirectory_v1</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">exif</span><span class="p">[</span><span class="mh">0x8825</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fixup_dict</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">exif</span>
+
+
+<span class="k">def</span> <span class="nf">_getmp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Extract MP information.  This method was inspired by the &quot;highly</span>
+    <span class="c1"># experimental&quot; _getexif version that&#39;s been in use for years now,</span>
+    <span class="c1"># itself based on the ImageFileDirectory class in the TIFF plug-in.</span>
+
+    <span class="c1"># The MP record essentially consists of a TIFF file embedded in a JPEG</span>
+    <span class="c1"># application marker.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;mp&quot;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">file_contents</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">file_contents</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="k">if</span> <span class="n">head</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x4d\x4d\x00\x2a</span><span class="s1">&#39;</span> <span class="k">else</span> <span class="s1">&#39;&lt;&#39;</span>
+    <span class="c1"># process dictionary</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">TiffImagePlugin</span><span class="o">.</span><span class="n">ImageFileDirectory_v2</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file_contents</span><span class="p">)</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;malformed MP Index (unreadable directory)&quot;</span><span class="p">)</span>
+    <span class="c1"># it&#39;s an error not to have a number of images</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">quant</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="mh">0xB001</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;malformed MP Index (no number of images)&quot;</span><span class="p">)</span>
+    <span class="c1"># get MP entries</span>
+    <span class="n">mpentries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rawmpentries</span> <span class="o">=</span> <span class="n">mp</span><span class="p">[</span><span class="mh">0xB002</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">entrynum</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">quant</span><span class="p">):</span>
+            <span class="n">unpackedentry</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">LLLHH&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">endianness</span><span class="p">),</span> <span class="n">rawmpentries</span><span class="p">,</span> <span class="n">entrynum</span> <span class="o">*</span> <span class="mi">16</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Attribute&#39;</span><span class="p">,</span> <span class="s1">&#39;Size&#39;</span><span class="p">,</span> <span class="s1">&#39;DataOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;EntryNo1&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;EntryNo2&#39;</span><span class="p">)</span>
+            <span class="n">mpentry</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">unpackedentry</span><span class="p">))</span>
+            <span class="n">mpentryattr</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;DependentParentImageFlag&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span>
+                                                 <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">)),</span>
+                <span class="s1">&#39;DependentChildImageFlag&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span>
+                                                <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">30</span><span class="p">)),</span>
+                <span class="s1">&#39;RepresentativeImageFlag&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span>
+                                                <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">29</span><span class="p">)),</span>
+                <span class="s1">&#39;Reserved&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="mi">27</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="mi">27</span><span class="p">,</span>
+                <span class="s1">&#39;ImageDataFormat&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">7</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">,</span>
+                <span class="s1">&#39;MPType&#39;</span><span class="p">:</span> <span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x00FFFFFF</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">mpentryattr</span><span class="p">[</span><span class="s1">&#39;ImageDataFormat&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">mpentryattr</span><span class="p">[</span><span class="s1">&#39;ImageDataFormat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;JPEG&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;unsupported picture format in MPO&quot;</span><span class="p">)</span>
+            <span class="n">mptypemap</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="mh">0x000000</span><span class="p">:</span> <span class="s1">&#39;Undefined&#39;</span><span class="p">,</span>
+                <span class="mh">0x010001</span><span class="p">:</span> <span class="s1">&#39;Large Thumbnail (VGA Equivalent)&#39;</span><span class="p">,</span>
+                <span class="mh">0x010002</span><span class="p">:</span> <span class="s1">&#39;Large Thumbnail (Full HD Equivalent)&#39;</span><span class="p">,</span>
+                <span class="mh">0x020001</span><span class="p">:</span> <span class="s1">&#39;Multi-Frame Image (Panorama)&#39;</span><span class="p">,</span>
+                <span class="mh">0x020002</span><span class="p">:</span> <span class="s1">&#39;Multi-Frame Image: (Disparity)&#39;</span><span class="p">,</span>
+                <span class="mh">0x020003</span><span class="p">:</span> <span class="s1">&#39;Multi-Frame Image: (Multi-Angle)&#39;</span><span class="p">,</span>
+                <span class="mh">0x030000</span><span class="p">:</span> <span class="s1">&#39;Baseline MP Primary Image&#39;</span>
+            <span class="p">}</span>
+            <span class="n">mpentryattr</span><span class="p">[</span><span class="s1">&#39;MPType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mptypemap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mpentryattr</span><span class="p">[</span><span class="s1">&#39;MPType&#39;</span><span class="p">],</span>
+                                                  <span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+            <span class="n">mpentry</span><span class="p">[</span><span class="s1">&#39;Attribute&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpentryattr</span>
+            <span class="n">mpentries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpentry</span><span class="p">)</span>
+        <span class="n">mp</span><span class="p">[</span><span class="mh">0xB002</span><span class="p">]</span> <span class="o">=</span> <span class="n">mpentries</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;malformed MP Index (bad MP Entry)&quot;</span><span class="p">)</span>
+    <span class="c1"># Next we should try and parse the individual image unique ID list;</span>
+    <span class="c1"># we don&#39;t because I&#39;ve never seen this actually used in a real MPO</span>
+    <span class="c1"># file and so can&#39;t test it.</span>
+    <span class="k">return</span> <span class="n">mp</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># stuff to save JPEG files</span>
+
+<span class="n">RAWMODE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RGB&quot;</span><span class="p">:</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RGBX&quot;</span><span class="p">:</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CMYK&quot;</span><span class="p">:</span> <span class="s2">&quot;CMYK;I&quot;</span><span class="p">,</span>  <span class="c1"># assume adobe conventions</span>
+    <span class="s2">&quot;YCbCr&quot;</span><span class="p">:</span> <span class="s2">&quot;YCbCr&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">zigzag_index</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span>
+                <span class="mi">2</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span>
+                <span class="mi">3</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span>
+                <span class="mi">9</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span>
+               <span class="mi">10</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span>
+               <span class="mi">20</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span>
+               <span class="mi">21</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span>
+               <span class="mi">35</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="mi">63</span><span class="p">)</span>
+
+<span class="n">samplings</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+             <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+             <span class="p">}</span>
+
+
+<div class="viewcode-block" id="convert_dict_qtables"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.convert_dict_qtables">[docs]</a><span class="k">def</span> <span class="nf">convert_dict_qtables</span><span class="p">(</span><span class="n">qtables</span><span class="p">):</span>
+    <span class="n">qtables</span> <span class="o">=</span> <span class="p">[</span><span class="n">qtables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qtables</span><span class="p">))</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">qtables</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qtables</span><span class="p">):</span>
+        <span class="n">qtables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">zigzag_index</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">qtables</span></div>
+
+
+<div class="viewcode-block" id="get_sampling"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.get_sampling">[docs]</a><span class="k">def</span> <span class="nf">get_sampling</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
+    <span class="c1"># There&#39;s no subsampling when image have only 1 layer</span>
+    <span class="c1"># (grayscale images) or when they are CMYK (4 layers),</span>
+    <span class="c1"># so set subsampling to default value.</span>
+    <span class="c1">#</span>
+    <span class="c1"># NOTE: currently Pillow can&#39;t encode JPEG to YCCK format.</span>
+    <span class="c1"># If YCCK support is added in the future, subsampling code will have</span>
+    <span class="c1"># to be updated (here and in JpegEncode.c) to deal with 4 layers.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s1">&#39;layers&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">im</span><span class="o">.</span><span class="n">layers</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">sampling</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">im</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">im</span><span class="o">.</span><span class="n">layer</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">samplings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sampling</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="n">RAWMODE</span><span class="p">[</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write mode </span><span class="si">%s</span><span class="s2"> as JPEG&quot;</span> <span class="o">%</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="n">info</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span>
+
+    <span class="n">dpi</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dpi&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+
+    <span class="n">quality</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;quality&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">subsampling</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subsampling&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">qtables</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;qtables&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">quality</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="n">quality</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="s2">&quot;keep&quot;</span>
+        <span class="n">qtables</span> <span class="o">=</span> <span class="s2">&quot;keep&quot;</span>
+    <span class="k">elif</span> <span class="n">quality</span> <span class="ow">in</span> <span class="n">presets</span><span class="p">:</span>
+        <span class="n">preset</span> <span class="o">=</span> <span class="n">presets</span><span class="p">[</span><span class="n">quality</span><span class="p">]</span>
+        <span class="n">quality</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="n">preset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subsampling&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">qtables</span> <span class="o">=</span> <span class="n">preset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantization&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quality</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid quality setting&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">subsampling</span> <span class="ow">in</span> <span class="n">presets</span><span class="p">:</span>
+            <span class="n">subsampling</span> <span class="o">=</span> <span class="n">presets</span><span class="p">[</span><span class="n">subsampling</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subsampling&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isStringType</span><span class="p">(</span><span class="n">qtables</span><span class="p">)</span> <span class="ow">and</span> <span class="n">qtables</span> <span class="ow">in</span> <span class="n">presets</span><span class="p">:</span>
+            <span class="n">qtables</span> <span class="o">=</span> <span class="n">presets</span><span class="p">[</span><span class="n">qtables</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;quantization&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">subsampling</span> <span class="o">==</span> <span class="s2">&quot;4:4:4&quot;</span><span class="p">:</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">subsampling</span> <span class="o">==</span> <span class="s2">&quot;4:2:2&quot;</span><span class="p">:</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">subsampling</span> <span class="o">==</span> <span class="s2">&quot;4:2:0&quot;</span><span class="p">:</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">subsampling</span> <span class="o">==</span> <span class="s2">&quot;4:1:1&quot;</span><span class="p">:</span>
+        <span class="c1"># For compatibility. Before Pillow 4.3, 4:1:1 actually meant 4:2:0.</span>
+        <span class="c1"># Set 4:2:0 if someone is still using that value.</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">subsampling</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">format</span> <span class="o">!=</span> <span class="s2">&quot;JPEG&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot use &#39;keep&#39; when original image is not a JPEG&quot;</span><span class="p">)</span>
+        <span class="n">subsampling</span> <span class="o">=</span> <span class="n">get_sampling</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate_qtables</span><span class="p">(</span><span class="n">qtables</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">qtables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">qtables</span>
+        <span class="k">if</span> <span class="n">isStringType</span><span class="p">(</span><span class="n">qtables</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">qtables</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+                         <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid quantization table&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">qtables</span> <span class="o">=</span> <span class="p">[</span><span class="n">lines</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">s</span><span class="o">+</span><span class="mi">64</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="mi">64</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qtables</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qtables</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">qtables</span> <span class="o">=</span> <span class="n">convert_dict_qtables</span><span class="p">(</span><span class="n">qtables</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">qtables</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">qtables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qtables</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">qtables</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;None or too many quantization tables&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qtables</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">64</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span>
+                    <span class="n">table</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid quantization table&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">qtables</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">qtables</span>
+
+    <span class="k">if</span> <span class="n">qtables</span> <span class="o">==</span> <span class="s2">&quot;keep&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">format</span> <span class="o">!=</span> <span class="s2">&quot;JPEG&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot use &#39;keep&#39; when original image is not a JPEG&quot;</span><span class="p">)</span>
+        <span class="n">qtables</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="s2">&quot;quantization&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">qtables</span> <span class="o">=</span> <span class="n">validate_qtables</span><span class="p">(</span><span class="n">qtables</span><span class="p">)</span>
+
+    <span class="n">extra</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+    <span class="n">icc_profile</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">icc_profile</span><span class="p">:</span>
+        <span class="n">ICC_OVERHEAD_LEN</span> <span class="o">=</span> <span class="mi">14</span>
+        <span class="n">MAX_BYTES_IN_MARKER</span> <span class="o">=</span> <span class="mi">65533</span>
+        <span class="n">MAX_DATA_BYTES_IN_MARKER</span> <span class="o">=</span> <span class="n">MAX_BYTES_IN_MARKER</span> <span class="o">-</span> <span class="n">ICC_OVERHEAD_LEN</span>
+        <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">icc_profile</span><span class="p">:</span>
+            <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">icc_profile</span><span class="p">[:</span><span class="n">MAX_DATA_BYTES_IN_MARKER</span><span class="p">])</span>
+            <span class="n">icc_profile</span> <span class="o">=</span> <span class="n">icc_profile</span><span class="p">[</span><span class="n">MAX_DATA_BYTES_IN_MARKER</span><span class="p">:]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&gt;H&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ICC_OVERHEAD_LEN</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">marker</span><span class="p">))</span>
+            <span class="n">extra</span> <span class="o">+=</span> <span class="p">(</span><span class="sa">b</span><span class="s2">&quot;</span><span class="se">\xFF\xE2</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">size</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;ICC_PROFILE</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">o8</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span>
+                      <span class="n">o8</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">))</span> <span class="o">+</span> <span class="n">marker</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># &quot;progressive&quot; is the official name, but older documentation</span>
+    <span class="c1"># says &quot;progression&quot;</span>
+    <span class="c1"># FIXME: issue a warning if the wrong form is used (post-1.1.7)</span>
+    <span class="n">progressive</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;progressive&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span>
+                   <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;progression&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+    <span class="n">optimize</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;optimize&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># get keyword arguments</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">encoderconfig</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">quality</span><span class="p">,</span>
+        <span class="n">progressive</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;smooth&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">optimize</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streamtype&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">dpi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dpi</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">subsampling</span><span class="p">,</span>
+        <span class="n">qtables</span><span class="p">,</span>
+        <span class="n">extra</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exif&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c1"># if we optimize, libjpeg needs a buffer big enough to hold the whole image</span>
+    <span class="c1"># in a shot. Guessing on the size, at im.size bytes. (raw pixel size is</span>
+    <span class="c1"># channels*size, this is a value that&#39;s been used in a django patch.</span>
+    <span class="c1"># https://github.com/matthewwithanm/django-imagekit/issues/50</span>
+    <span class="n">bufsize</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">optimize</span> <span class="ow">or</span> <span class="n">progressive</span><span class="p">:</span>
+        <span class="c1"># CMYK can be bigger</span>
+        <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;CMYK&#39;</span><span class="p">:</span>
+            <span class="n">bufsize</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># keep sets quality to 0, but the actual value may be high.</span>
+        <span class="k">elif</span> <span class="n">quality</span> <span class="o">&gt;=</span> <span class="mi">95</span> <span class="ow">or</span> <span class="n">quality</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bufsize</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bufsize</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># The exif info needs to be written as one block, + APP1, + one spare byte.</span>
+    <span class="c1"># Ensure that our buffer is big enough. Same with the icc_profile block.</span>
+    <span class="n">bufsize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">MAXBLOCK</span><span class="p">,</span> <span class="n">bufsize</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exif&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span>
+                  <span class="nb">len</span><span class="p">(</span><span class="n">extra</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;jpeg&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rawmode</span><span class="p">)],</span> <span class="n">bufsize</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_save_cjpeg</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># ALTERNATIVE: handle JPEGs via the IJG command line utilities.</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
+    <span class="n">tempfile</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">_dump</span><span class="p">()</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;cjpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;-outfile&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tempfile</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
+<span class="c1">##</span>
+<span class="c1"># Factory for making JPEG and MPO instances</span>
+<div class="viewcode-block" id="jpeg_factory"><a class="viewcode-back" href="../../reference/plugins.html#PIL.JpegImagePlugin.jpeg_factory">[docs]</a><span class="k">def</span> <span class="nf">jpeg_factory</span><span class="p">(</span><span class="n">fp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">JpegImageFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">mpheader</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">_getmp</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mpheader</span><span class="p">[</span><span class="mi">45057</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># It&#39;s actually an MPO</span>
+            <span class="kn">from</span> <span class="nn">.MpoImagePlugin</span> <span class="k">import</span> <span class="n">MpoImageFile</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">MpoImageFile</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+        <span class="c1"># It is really a JPEG</span>
+        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Image appears to be a malformed MPO file, it will be &quot;</span>
+                      <span class="s2">&quot;interpreted as a base JPEG file&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">im</span></div>
+
+
+<span class="c1"># -------------------------------------------------------------------q-</span>
+<span class="c1"># Registry stuff</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">JpegImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">jpeg_factory</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">JpegImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extensions</span><span class="p">(</span><span class="n">JpegImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;.jfif&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpe&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpg&quot;</span><span class="p">,</span> <span class="s2">&quot;.jpeg&quot;</span><span class="p">])</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">JpegImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;image/jpeg&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

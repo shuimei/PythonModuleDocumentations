@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.3.0 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.2.1" href="4.2.1.html" />
+    <link rel="prev" title="5.0.0" href="5.0.0.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.3.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#deprecations">Deprecations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tiff-metadata-changes">TIFF Metadata Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-image-api-changes">Core Image API Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-additions">API Additions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get-one-channel-from-image">Get One Channel From Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#box-blur">Box Blur</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#partial-resampling">Partial Resampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#new-transpose-operation">New Transpose Operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multiband-filters">Multiband Filters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#other-changes">Other Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#loading-16-bit-tiff-images">Loading 16-bit TIFF Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sgi-images">SGI Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance">Performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cmyk-conversion">CMYK Conversion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>4.3.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/4.3.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>4.3.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="api-changes">
+<h2>API Changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deprecations">
+<h3>Deprecations<a class="headerlink" href="#deprecations" title="Permalink to this headline">¶</a></h3>
+<p>Several undocumented functions in ImageOps have been deprecated:
+<code class="docutils literal notranslate"><span class="pre">gaussian_blur</span></code>, <code class="docutils literal notranslate"><span class="pre">gblur</span></code>, <code class="docutils literal notranslate"><span class="pre">unsharp_mask</span></code>, <code class="docutils literal notranslate"><span class="pre">usm</span></code> and
+<code class="docutils literal notranslate"><span class="pre">box_blur</span></code>. Use the equivalent operations in ImageFilter
+instead. These functions will be removed in a future release.</p>
+</div>
+<div class="section" id="tiff-metadata-changes">
+<h3>TIFF Metadata Changes<a class="headerlink" href="#tiff-metadata-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>TIFF tags with unknown type/quantity now default to being bare
+values if they are 1 element, where previously they would be a
+single element tuple. This is only with the new api, not the legacy
+api. This normalizes the handling of fields, so that the metadata
+with inferred or image specified counts are handled the same as
+metadata with count specified in the TIFF spec.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">PhotoshopInfo</span></code>, <code class="docutils literal notranslate"><span class="pre">XMP</span></code>, and <code class="docutils literal notranslate"><span class="pre">JPEGTables</span></code> tags now have a
+defined type (bytes) and a count of 1.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">ImageJMetaDataByteCounts</span></code> tag now has an arbitrary number of
+items, as there can be multiple items, one for UTF-8, and one for
+UTF-16.</li>
+</ul>
+</div>
+<div class="section" id="core-image-api-changes">
+<h3>Core Image API Changes<a class="headerlink" href="#core-image-api-changes" title="Permalink to this headline">¶</a></h3>
+<p>These are internal functions that should not have been used by user
+code, but they were accessible from the python layer.</p>
+<p>Debugging code within <code class="docutils literal notranslate"><span class="pre">Image.core.grabclipboard</span></code> was removed. It had been
+marked as <code class="docutils literal notranslate"><span class="pre">will</span> <span class="pre">be</span> <span class="pre">removed</span> <span class="pre">in</span> <span class="pre">future</span> <span class="pre">versions</span></code> since PIL. When enabled, it
+identified the format of the clipboard data.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">PIL.Image.core.copy</span></code> and <code class="docutils literal notranslate"><span class="pre">PIL.Image.Image.im.copy2</span></code> methods
+have been removed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">PIL.Image.core.getcount</span></code> methods have been removed, use
+<code class="docutils literal notranslate"><span class="pre">PIL.Image.core.get_stats()['new_count']</span></code> property instead.</p>
+</div>
+</div>
+<div class="section" id="api-additions">
+<h2>API Additions<a class="headerlink" href="#api-additions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="get-one-channel-from-image">
+<h3>Get One Channel From Image<a class="headerlink" href="#get-one-channel-from-image" title="Permalink to this headline">¶</a></h3>
+<p>A new method <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.getchannel" title="PIL.Image.Image.getchannel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.getchannel()</span></code></a> has been added to
+return a single channel by index or name. For example,
+<code class="docutils literal notranslate"><span class="pre">image.getchannel(&quot;A&quot;)</span></code> will return alpha channel as separate image.
+<code class="docutils literal notranslate"><span class="pre">getchannel</span></code> should work up to 6 times faster than
+<code class="docutils literal notranslate"><span class="pre">image.split()[0]</span></code> in previous Pillow versions.</p>
+</div>
+<div class="section" id="box-blur">
+<h3>Box Blur<a class="headerlink" href="#box-blur" title="Permalink to this headline">¶</a></h3>
+<p>A new filter, <a class="reference internal" href="../reference/ImageFilter.html#PIL.ImageFilter.BoxBlur" title="PIL.ImageFilter.BoxBlur"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.ImageFilter.BoxBlur</span></code></a>, has been
+added. This is a filter with similar results to a Gaussian blur, but
+is much faster.</p>
+</div>
+<div class="section" id="partial-resampling">
+<h3>Partial Resampling<a class="headerlink" href="#partial-resampling" title="Permalink to this headline">¶</a></h3>
+<p>Added new argument <code class="docutils literal notranslate"><span class="pre">box</span></code> for <a class="reference internal" href="../reference/Image.html#PIL.Image.Image.resize" title="PIL.Image.Image.resize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.resize()</span></code></a>. This
+argument defines a source rectangle from within the source image to be
+resized.  This is very similar to the <code class="docutils literal notranslate"><span class="pre">image.crop(box).resize(size)</span></code>
+sequence except that <code class="docutils literal notranslate"><span class="pre">box</span></code> can be specified with subpixel accuracy.</p>
+</div>
+<div class="section" id="new-transpose-operation">
+<h3>New Transpose Operation<a class="headerlink" href="#new-transpose-operation" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Image.TRANSVERSE</span></code> operation has been added to
+<a class="reference internal" href="../reference/Image.html#PIL.Image.Image.transpose" title="PIL.Image.Image.transpose"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PIL.Image.Image.transpose()</span></code></a>. This is equivalent to a transpose
+operation about the opposite diagonal.</p>
+</div>
+<div class="section" id="multiband-filters">
+<h3>Multiband Filters<a class="headerlink" href="#multiband-filters" title="Permalink to this headline">¶</a></h3>
+<p>There is a new <code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.ImageFilter.MultibandFilter</span></code> base class
+for image filters that can run on all channels of an image in one
+operation. The original <code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.ImageFilter.Filter</span></code> class
+remains for image filters that can process only single band images, or
+require splitting of channels prior to filtering.</p>
+</div>
+</div>
+<div class="section" id="other-changes">
+<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="loading-16-bit-tiff-images">
+<h3>Loading 16-bit TIFF Images<a class="headerlink" href="#loading-16-bit-tiff-images" title="Permalink to this headline">¶</a></h3>
+<p>Pillow now can read 16-bit multichannel TIFF files including files
+with alpha transparency. The image data is truncated to 8-bit
+precision.</p>
+<p>Pillow now can read 16-bit signed integer single channel TIFF
+files. The image data is promoted to 32-bit for storage and
+processing.</p>
+</div>
+<div class="section" id="sgi-images">
+<h3>SGI Images<a class="headerlink" href="#sgi-images" title="Permalink to this headline">¶</a></h3>
+<p>Pillow can now read and write uncompressed 16-bit multichannel SGI
+images to and from RGB and RGBA formats. The image data is truncated
+to 8-bit precision.</p>
+<p>Pillow can now read RLE encoded SGI images in both 8 and 16-bit
+precision.</p>
+</div>
+<div class="section" id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h3>
+<p>This release contains several performance improvements:</p>
+<ul class="simple">
+<li>Many memory bandwidth-bounded operations such as crop, image allocation,
+conversion, split into bands and merging from bands are up to 2x faster.</li>
+<li>Upscaling of multichannel images (such as RGB) is accelerated by 5-10%</li>
+<li>JPEG loading is accelerated up to 15% and JPEG saving up to 20% when
+using a recent version of libjpeg-turbo.</li>
+<li><code class="docutils literal notranslate"><span class="pre">Image.transpose</span></code> has been accelerated 15% or more by using a cache
+friendly algorithm.</li>
+<li>ImageFilters based on Kernel convolution are significantly faster
+due to the new MultibandFilter feature.</li>
+<li>All memory allocation for images is now done in blocks, rather than
+falling back to an allocation for each scan line for images larger
+than the block size.</li>
+</ul>
+</div>
+<div class="section" id="cmyk-conversion">
+<h3>CMYK Conversion<a class="headerlink" href="#cmyk-conversion" title="Permalink to this headline">¶</a></h3>
+<p>The basic CMYK-&gt;RGB conversion has been tweaked to match the formula
+from Google Chrome. This produces an image that is generally lighter
+than the previous formula, and more in line with what color managed
+applications produce.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="4.2.1.html" class="btn btn-neutral float-right" title="4.2.1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5.0.0.html" class="btn btn-neutral" title="5.0.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

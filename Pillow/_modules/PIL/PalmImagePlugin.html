@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.PalmImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.PalmImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.PalmImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for Palm pixmap images (output only).</span>
+<span class="c1">##</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span>
+<span class="kn">from</span> <span class="nn">._binary</span> <span class="k">import</span> <span class="n">o8</span><span class="p">,</span> <span class="n">o16be</span> <span class="k">as</span> <span class="n">o16b</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;1.0&quot;</span>
+
+<span class="n">_Palm8BitColormapValues</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>  <span class="p">(</span><span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">204</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">153</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">51</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>  <span class="p">(</span><span class="mi">17</span><span class="p">,</span>  <span class="mi">17</span><span class="p">,</span>  <span class="mi">17</span><span class="p">),</span>
+     <span class="p">(</span><span class="mi">34</span><span class="p">,</span>  <span class="mi">34</span><span class="p">,</span>  <span class="mi">34</span><span class="p">),</span>  <span class="p">(</span><span class="mi">68</span><span class="p">,</span>  <span class="mi">68</span><span class="p">,</span>  <span class="mi">68</span><span class="p">),</span>  <span class="p">(</span><span class="mi">85</span><span class="p">,</span>  <span class="mi">85</span><span class="p">,</span>  <span class="mi">85</span><span class="p">),</span> <span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">119</span><span class="p">,</span> <span class="mi">119</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">136</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="mi">136</span><span class="p">),</span> <span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span> <span class="p">(</span><span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">,</span> <span class="mi">187</span><span class="p">),</span> <span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">221</span><span class="p">,</span> <span class="mi">221</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">238</span><span class="p">,</span> <span class="mi">238</span><span class="p">,</span> <span class="mi">238</span><span class="p">),</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>
+      <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">),</span>   <span class="p">(</span><span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span>   <span class="mi">0</span><span class="p">))</span>
+
+
+<span class="c1"># so build a prototype image to be used for palette resampling</span>
+<div class="viewcode-block" id="build_prototype_image"><a class="viewcode-back" href="../../reference/plugins.html#PIL.PalmImagePlugin.build_prototype_image">[docs]</a><span class="k">def</span> <span class="nf">build_prototype_image</span><span class="p">():</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">_Palm8BitColormapValues</span><span class="p">)))</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">putdata</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_Palm8BitColormapValues</span><span class="p">))))</span>
+    <span class="n">palettedata</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="k">for</span> <span class="n">colormapValue</span> <span class="ow">in</span> <span class="n">_Palm8BitColormapValues</span><span class="p">:</span>
+        <span class="n">palettedata</span> <span class="o">+=</span> <span class="n">colormapValue</span>
+    <span class="n">palettedata</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">256</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">_Palm8BitColormapValues</span><span class="p">))</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">putpalette</span><span class="p">(</span><span class="n">palettedata</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<span class="n">Palm8BitColormapImage</span> <span class="o">=</span> <span class="n">build_prototype_image</span><span class="p">()</span>
+
+<span class="c1"># OK, we now have in Palm8BitColormapImage,</span>
+<span class="c1"># a &quot;P&quot;-mode image with the right palette</span>
+<span class="c1">#</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="n">_FLAGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;custom-colormap&quot;</span><span class="p">:</span> <span class="mh">0x4000</span><span class="p">,</span>
+    <span class="s2">&quot;is-compressed&quot;</span><span class="p">:</span>   <span class="mh">0x8000</span><span class="p">,</span>
+    <span class="s2">&quot;has-transparent&quot;</span><span class="p">:</span> <span class="mh">0x2000</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_COMPRESSION_TYPES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;none&quot;</span><span class="p">:</span>     <span class="mh">0xFF</span><span class="p">,</span>
+    <span class="s2">&quot;rle&quot;</span><span class="p">:</span>      <span class="mh">0x01</span><span class="p">,</span>
+    <span class="s2">&quot;scanline&quot;</span><span class="p">:</span> <span class="mh">0x00</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="c1">##</span>
+<span class="c1"># (Internal) Image save plugin for the Palm format.</span>
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+
+        <span class="c1"># we assume this is a color Palm image with the standard colormap,</span>
+        <span class="c1"># unless the &quot;info&quot; dict has a &quot;custom-colormap&quot; field</span>
+
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
+        <span class="n">bpp</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">elif</span> <span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span> <span class="ow">and</span>
+          <span class="s2">&quot;bpp&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span> <span class="ow">and</span>
+          <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="p">[</span><span class="s2">&quot;bpp&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)):</span>
+
+        <span class="c1"># this is 8-bit grayscale, so we shift it to get the high-order bits,</span>
+        <span class="c1"># and invert it because</span>
+        <span class="c1"># Palm does greyscale from white (0) to black (1)</span>
+        <span class="n">bpp</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="p">[</span><span class="s2">&quot;bpp&quot;</span><span class="p">]</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">point</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mi">8</span><span class="o">-</span><span class="n">bpp</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bpp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">maxval</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span><span class="p">))</span>
+        <span class="c1"># we ignore the palette here</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;P;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bpp</span><span class="p">)</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">elif</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;L&quot;</span> <span class="ow">and</span> <span class="s2">&quot;bpp&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span> <span class="ow">and</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;bpp&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+
+        <span class="c1"># here we assume that even though the inherent mode is 8-bit grayscale,</span>
+        <span class="c1"># only the lower bpp bits are significant.</span>
+        <span class="c1"># We invert them to match the Palm.</span>
+        <span class="n">bpp</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;bpp&quot;</span><span class="p">]</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bpp</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">maxval</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">maxval</span><span class="p">))</span>
+        <span class="c1"># we ignore the palette here</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;P;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bpp</span><span class="p">)</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">elif</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+
+        <span class="c1"># monochrome -- write it inverted, as is the Palm standard</span>
+        <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;1;I&quot;</span>
+        <span class="n">bpp</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write mode </span><span class="si">%s</span><span class="s2"> as Palm&quot;</span> <span class="o">%</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># make sure image data is available</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+    <span class="c1"># write header</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">rowbytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">cols</span> <span class="o">+</span> <span class="p">(</span><span class="mi">16</span><span class="o">//</span><span class="n">bpp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">16</span> <span class="o">//</span> <span class="n">bpp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">transparent_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">compression_type</span> <span class="o">=</span> <span class="n">_COMPRESSION_TYPES</span><span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">]</span>
+
+    <span class="n">flags</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span> <span class="ow">and</span> <span class="s2">&quot;custom-colormap&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">_FLAGS</span><span class="p">[</span><span class="s2">&quot;custom-colormap&quot;</span><span class="p">]</span>
+        <span class="n">colormapsize</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">256</span> <span class="o">+</span> <span class="mi">2</span>
+        <span class="n">colormapmode</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">colormap</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">getdata</span><span class="p">()</span><span class="o">.</span><span class="n">getpalette</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">colormapsize</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="s2">&quot;offset&quot;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">rowbytes</span> <span class="o">*</span> <span class="n">rows</span> <span class="o">+</span> <span class="mi">16</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">colormapsize</span><span class="p">)</span> <span class="o">//</span> <span class="mi">4</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o16b</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">+</span> <span class="n">o16b</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">+</span> <span class="n">o16b</span><span class="p">(</span><span class="n">rowbytes</span><span class="p">)</span> <span class="o">+</span> <span class="n">o16b</span><span class="p">(</span><span class="n">flags</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">bpp</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o16b</span><span class="p">(</span><span class="n">offset</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">transparent_index</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">compression_type</span><span class="p">))</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o16b</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>   <span class="c1"># reserved by Palm</span>
+
+    <span class="c1"># now write colormap if necessary</span>
+
+    <span class="k">if</span> <span class="n">colormapsize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o16b</span><span class="p">(</span><span class="mi">256</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">o8</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">colormapmode</span> <span class="o">==</span> <span class="s1">&#39;RGB&#39;</span><span class="p">:</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="n">colormapmode</span> <span class="o">==</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">:</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">4</span> <span class="o">*</span> <span class="n">i</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">4</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">o8</span><span class="p">(</span><span class="n">colormap</span><span class="p">[</span><span class="mi">4</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
+
+    <span class="c1"># now convert data to raw form</span>
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span>
+        <span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="n">rowbytes</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;flush&quot;</span><span class="p">):</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+
+<span class="c1">#</span>
+<span class="c1"># --------------------------------------------------------------------</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="s2">&quot;Palm&quot;</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="s2">&quot;Palm&quot;</span><span class="p">,</span> <span class="s2">&quot;.palm&quot;</span><span class="p">)</span>
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="s2">&quot;Palm&quot;</span><span class="p">,</span> <span class="s2">&quot;image/palm&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.SpiderImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.SpiderImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.SpiderImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1">#</span>
+<span class="c1"># SPIDER image file handling</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 2004-08-02    Created BB</span>
+<span class="c1"># 2006-03-02    added save method</span>
+<span class="c1"># 2006-03-13    added support for stack images</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2004 by Health Research Inc. (HRI) RENSSELAER, NY 12144.</span>
+<span class="c1"># Copyright (c) 2004 by William Baxter.</span>
+<span class="c1"># Copyright (c) 2004 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 2004 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+
+<span class="c1">##</span>
+<span class="c1"># Image plugin for the Spider image format.  This format is is used</span>
+<span class="c1"># by the SPIDER software, in processing image data from electron</span>
+<span class="c1"># microscopy and tomography.</span>
+<span class="c1">##</span>
+
+<span class="c1">#</span>
+<span class="c1"># SpiderImagePlugin.py</span>
+<span class="c1">#</span>
+<span class="c1"># The Spider image format is used by SPIDER software, in processing</span>
+<span class="c1"># image data from electron microscopy and tomography.</span>
+<span class="c1">#</span>
+<span class="c1"># Spider home page:</span>
+<span class="c1"># https://spider.wadsworth.org/spider_doc/spider/docs/spider.html</span>
+<span class="c1">#</span>
+<span class="c1"># Details about the Spider image format:</span>
+<span class="c1"># https://spider.wadsworth.org/spider_doc/spider/docs/image_doc.html</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="isInt"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.isInt">[docs]</a><span class="k">def</span> <span class="nf">isInt</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">-</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<span class="n">iforms</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">21</span><span class="p">,</span> <span class="o">-</span><span class="mi">22</span><span class="p">]</span>
+
+
+<span class="c1"># There is no magic number to identify Spider files, so just check a</span>
+<span class="c1"># series of header locations to see if they have reasonable values.</span>
+<span class="c1"># Returns no. of bytes in the header, if it is a valid Spider header,</span>
+<span class="c1"># otherwise returns 0</span>
+
+<div class="viewcode-block" id="isSpiderHeader"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.isSpiderHeader">[docs]</a><span class="k">def</span> <span class="nf">isSpiderHeader</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="mi">99</span><span class="p">,)</span> <span class="o">+</span> <span class="n">t</span>   <span class="c1"># add 1 value so can use spider header index start=1</span>
+    <span class="c1"># header values 1,2,5,12,13,22,23 should be integers</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isInt</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># check iform</span>
+    <span class="n">iform</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">iform</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">iforms</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># check other header values</span>
+    <span class="n">labrec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">13</span><span class="p">])</span>   <span class="c1"># no. records in file header</span>
+    <span class="n">labbyt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">22</span><span class="p">])</span>   <span class="c1"># total no. of bytes in header</span>
+    <span class="n">lenbyt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">23</span><span class="p">])</span>   <span class="c1"># record length in bytes</span>
+    <span class="c1"># print(&quot;labrec = %d, labbyt = %d, lenbyt = %d&quot; % (labrec,labbyt,lenbyt))</span>
+    <span class="k">if</span> <span class="n">labbyt</span> <span class="o">!=</span> <span class="p">(</span><span class="n">labrec</span> <span class="o">*</span> <span class="n">lenbyt</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="c1"># looks like a valid header</span>
+    <span class="k">return</span> <span class="n">labbyt</span></div>
+
+
+<div class="viewcode-block" id="isSpiderImage"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.isSpiderImage">[docs]</a><span class="k">def</span> <span class="nf">isSpiderImage</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">92</span><span class="p">)</span>   <span class="c1"># read 23 * 4 bytes</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;23f&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>  <span class="c1"># try big-endian first</span>
+    <span class="n">hdrlen</span> <span class="o">=</span> <span class="n">isSpiderHeader</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hdrlen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;23f&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>  <span class="c1"># little-endian</span>
+        <span class="n">hdrlen</span> <span class="o">=</span> <span class="n">isSpiderHeader</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hdrlen</span></div>
+
+
+<div class="viewcode-block" id="SpiderImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.SpiderImageFile">[docs]</a><span class="k">class</span> <span class="nc">SpiderImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;SPIDER&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;Spider 2D image&quot;</span>
+    <span class="n">_close_exclusive_fp_after_loading</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># check header</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">27</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># read 27 float values</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bigendian</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;27f&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>  <span class="c1"># try big-endian first</span>
+            <span class="n">hdrlen</span> <span class="o">=</span> <span class="n">isSpiderHeader</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hdrlen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bigendian</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;27f&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>  <span class="c1"># little-endian</span>
+                <span class="n">hdrlen</span> <span class="o">=</span> <span class="n">isSpiderHeader</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hdrlen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a valid Spider file&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a valid Spider file&quot;</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="mi">99</span><span class="p">,)</span> <span class="o">+</span> <span class="n">t</span>   <span class="c1"># add 1 value : spider header index starts at 1</span>
+        <span class="n">iform</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">iform</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;not a Spider 2D image&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">12</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>  <span class="c1"># size in pixels (width, height)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">24</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">27</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># stk=0, img=0: a regular 2D image</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">hdrlen</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nimages</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># stk&gt;0, img=0: Opening the stack for the first time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgbytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hdrlen</span> <span class="o">=</span> <span class="n">hdrlen</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nimages</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="mi">26</span><span class="p">])</span>
+            <span class="c1"># Point to the first image in the stack</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">hdrlen</span> <span class="o">*</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># stk=0, img&gt;0: an image within the stack</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">hdrlen</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">stkoffset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># So Image knows it&#39;s still a stack</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;inconsistent stack header values&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bigendian</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;F;32BF&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;F;32F&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rawmode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span>  <span class="c1"># FIXME: hack</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nimages</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nimages</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+    <span class="c1"># 1st image index is zero (although SPIDER imgnumber starts at 1)</span>
+<div class="viewcode-block" id="SpiderImageFile.tell"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.SpiderImageFile.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgnumber</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="SpiderImageFile.seek"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.SpiderImageFile.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">istack</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;attempt to seek in a non-stack file&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seek_check</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stkoffset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hdrlen</span> <span class="o">+</span> <span class="n">frame</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hdrlen</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgbytes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stkoffset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">()</span></div>
+
+    <span class="c1"># returns a byte image after rescaling to 0..255</span>
+<div class="viewcode-block" id="SpiderImageFile.convert2byte"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.SpiderImageFile.convert2byte">[docs]</a>    <span class="k">def</span> <span class="nf">convert2byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">255</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getextrema</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">maximum</span> <span class="o">!=</span> <span class="n">minimum</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">depth</span> <span class="o">/</span> <span class="p">(</span><span class="n">maximum</span><span class="o">-</span><span class="n">minimum</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="o">-</span><span class="n">m</span> <span class="o">*</span> <span class="n">minimum</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">:</span> <span class="n">i</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">)</span></div>
+
+    <span class="c1"># returns a ImageTk.PhotoImage object, after rescaling to 0..255</span>
+<div class="viewcode-block" id="SpiderImageFile.tkPhotoImage"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.SpiderImageFile.tkPhotoImage">[docs]</a>    <span class="k">def</span> <span class="nf">tkPhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">ImageTk</span>
+        <span class="k">return</span> <span class="n">ImageTk</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert2byte</span><span class="p">(),</span> <span class="n">palette</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Image series</span>
+
+<span class="c1"># given a list of filenames, return a list of images</span>
+<div class="viewcode-block" id="loadImageSeries"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.loadImageSeries">[docs]</a><span class="k">def</span> <span class="nf">loadImageSeries</span><span class="p">(</span><span class="n">filelist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;create a list of Image.images for use in montage&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filelist</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">filelist</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">imglist</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">filelist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;unable to find </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">img</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="o">.</span><span class="n">convert2byte</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isSpiderImage</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">img</span> <span class="o">+</span> <span class="s2">&quot; is not a Spider image file&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="n">imglist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">imglist</span></div>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># For saving images in Spider format</span>
+
+<div class="viewcode-block" id="makeSpiderHeader"><a class="viewcode-back" href="../../reference/plugins.html#PIL.SpiderImagePlugin.makeSpiderHeader">[docs]</a><span class="k">def</span> <span class="nf">makeSpiderHeader</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
+    <span class="n">nsam</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">lenbyt</span> <span class="o">=</span> <span class="n">nsam</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># There are labrec records in the header</span>
+    <span class="n">labrec</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">/</span> <span class="n">lenbyt</span>
+    <span class="k">if</span> <span class="mi">1024</span> <span class="o">%</span> <span class="n">lenbyt</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">labrec</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">labbyt</span> <span class="o">=</span> <span class="n">labrec</span> <span class="o">*</span> <span class="n">lenbyt</span>
+    <span class="n">hdr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">nvalues</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">labbyt</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nvalues</span><span class="p">):</span>
+        <span class="n">hdr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">23</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1"># NB these are Fortran indices</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>             <span class="c1"># nslice (=1 for an image)</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nrow</span><span class="p">)</span>     <span class="c1"># number of rows per slice</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>             <span class="c1"># iform for 2D image</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nsam</span><span class="p">)</span>    <span class="c1"># number of pixels per line</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">labrec</span><span class="p">)</span>  <span class="c1"># number of records in file header</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">22</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">labbyt</span><span class="p">)</span>  <span class="c1"># total number of bytes in header</span>
+    <span class="n">hdr</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">lenbyt</span><span class="p">)</span>  <span class="c1"># record length in bytes</span>
+
+    <span class="c1"># adjust for Fortran indexing</span>
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">hdr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="c1"># pack binary data into a string</span>
+    <span class="n">hdrstr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">hdr</span><span class="p">:</span>
+        <span class="n">hdrstr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">hdrstr</span></div>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+
+    <span class="n">hdr</span> <span class="o">=</span> <span class="n">makeSpiderHeader</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdr</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Error creating Spider header&quot;</span><span class="p">)</span>
+
+    <span class="c1"># write the SPIDER header</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">hdr</span><span class="p">)</span>
+
+    <span class="n">rawmode</span> <span class="o">=</span> <span class="s2">&quot;F;32NF&quot;</span>  <span class="c1"># 32-bit native floating point</span>
+    <span class="n">ImageFile</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">rawmode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+
+
+<span class="k">def</span> <span class="nf">_save_spider</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># get the filename extension and register it with Image</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">SpiderImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+    <span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">SpiderImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">SpiderImageFile</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">SpiderImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save_spider</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Syntax: python SpiderImagePlugin.py [infile] [outfile]&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">isSpiderImage</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input image must be in Spider format&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;image: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">im</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;format: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">format</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;size: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mode: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max, min: &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">getextrema</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># perform some image operation</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">FLIP_LEFT_RIGHT</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;saving a flipped version of </span><span class="si">%s</span><span class="s2"> as </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span>
+            <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">outfile</span><span class="p">))</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">SpiderImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

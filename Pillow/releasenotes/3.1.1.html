@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.1.1 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.1.0" href="3.1.0.html" />
+    <link rel="prev" title="3.1.2" href="3.1.2.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.0.0.html">5.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.1.1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cve-2016-0740-buffer-overflow-in-tiffdecode-c">CVE-2016-0740 – Buffer overflow in TiffDecode.c</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cve-2016-0775-buffer-overflow-in-flidecode-c">CVE-2016-0775 – Buffer overflow in FliDecode.c</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cve-2016-2533-buffer-overflow-in-pcddecode-c">CVE-2016-2533 – Buffer overflow in PcdDecode.c</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integer-overflow-in-resample-c">Integer overflow in Resample.c</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>3.1.1</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/3.1.1.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>3.1.1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cve-2016-0740-buffer-overflow-in-tiffdecode-c">
+<h2>CVE-2016-0740 – Buffer overflow in TiffDecode.c<a class="headerlink" href="#cve-2016-0740-buffer-overflow-in-tiffdecode-c" title="Permalink to this headline">¶</a></h2>
+<p>Pillow 3.1.0 and earlier when linked against libtiff &gt;= 4.0.0 on x64
+may overflow a buffer when reading a specially crafted tiff file.</p>
+<p>Specifically, libtiff &gt;= 4.0.0 changed the return type of
+<code class="docutils literal notranslate"><span class="pre">TIFFScanlineSize</span></code> from <code class="docutils literal notranslate"><span class="pre">int32</span></code> to machine dependent
+<code class="docutils literal notranslate"><span class="pre">int32|64</span></code>. If the scanline is sized so that it overflows an
+<code class="docutils literal notranslate"><span class="pre">int32</span></code>, it may be interpreted as a negative number, which will then
+pass the size check in <code class="docutils literal notranslate"><span class="pre">TiffDecode.c</span></code> line 236. To do this, the
+logical scanline size has to be &gt; 2gb, and for the test file, the
+allocated buffer size is 64k against a roughly 4gb scan line size. Any
+image data over 64k is written over the heap, causing a segfault.</p>
+<p>This issue was found by security researcher FourOne.</p>
+</div>
+<div class="section" id="cve-2016-0775-buffer-overflow-in-flidecode-c">
+<h2>CVE-2016-0775 – Buffer overflow in FliDecode.c<a class="headerlink" href="#cve-2016-0775-buffer-overflow-in-flidecode-c" title="Permalink to this headline">¶</a></h2>
+<p>In all versions of Pillow, dating back at least to the last PIL 1.1.7
+release, FliDecode.c has a buffer overflow error.</p>
+<p>Around line 192:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="mi">16</span><span class="p">:</span>
+    <span class="o">/*</span> <span class="n">COPY</span> <span class="n">chunk</span> <span class="o">*/</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">state</span><span class="o">-&gt;</span><span class="n">ysize</span><span class="p">;</span> <span class="n">y</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">UINT8</span><span class="o">*</span> <span class="n">buf</span> <span class="o">=</span> <span class="p">(</span><span class="n">UINT8</span><span class="o">*</span><span class="p">)</span> <span class="n">im</span><span class="o">-&gt;</span><span class="n">image</span><span class="p">[</span><span class="n">y</span><span class="p">];</span>
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">buf</span><span class="o">+</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">state</span><span class="o">-&gt;</span><span class="n">xsize</span><span class="p">);</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">state</span><span class="o">-&gt;</span><span class="n">xsize</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">break</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The memcpy has error where <code class="docutils literal notranslate"><span class="pre">x</span></code> is added to the target buffer
+address. <code class="docutils literal notranslate"><span class="pre">X</span></code> is used in several internal temporary variable roles,
+but can take a value up to the width of the image.  <code class="docutils literal notranslate"><span class="pre">Im-&gt;image[y]</span></code>
+is a set of row pointers to segments of memory that are the size of
+the row.  At the max <code class="docutils literal notranslate"><span class="pre">y</span></code>, this will write the contents of the line
+off the end of the memory buffer, causing a segfault.</p>
+<p>This issue was found by Alyssa Besseling at Atlassian</p>
+</div>
+<div class="section" id="cve-2016-2533-buffer-overflow-in-pcddecode-c">
+<h2>CVE-2016-2533 – Buffer overflow in PcdDecode.c<a class="headerlink" href="#cve-2016-2533-buffer-overflow-in-pcddecode-c" title="Permalink to this headline">¶</a></h2>
+<p>In all versions of Pillow, dating back at least to the last PIL 1.1.7
+release, <code class="docutils literal notranslate"><span class="pre">PcdDecode.c</span></code> has a buffer overflow error.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">state.buffer</span></code> for <code class="docutils literal notranslate"><span class="pre">PcdDecode.c</span></code> is allocated based on a 3
+bytes per pixel sizing, where <code class="docutils literal notranslate"><span class="pre">PcdDecode.c</span></code> wrote into the buffer
+assuming 4 bytes per pixel. This writes 768 bytes beyond the end of
+the buffer into other Python object storage. In some cases, this
+causes a segfault, in others an internal Python malloc error.</p>
+</div>
+<div class="section" id="integer-overflow-in-resample-c">
+<h2>Integer overflow in Resample.c<a class="headerlink" href="#integer-overflow-in-resample-c" title="Permalink to this headline">¶</a></h2>
+<p>If a large value was passed into the new size for an image, it is
+possible to overflow an int32 value passed into malloc.</p>
+<blockquote>
+<div>kk = malloc(xsize * kmax * sizeof(float));
+…
+xbounds = malloc(xsize * 2 * sizeof(int));</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">xsize</span></code> is trusted user input. These multiplications can overflow,
+leading the malloc’d buffer to be undersized. These allocations are
+followed by a loop that writes out of bounds. This can lead to
+corruption on the heap of the Python process with attacker controlled
+float data.</p>
+<p>This issue was found by Ned Williamson.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="3.1.0.html" class="btn btn-neutral float-right" title="3.1.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="3.1.2.html" class="btn btn-neutral" title="3.1.2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

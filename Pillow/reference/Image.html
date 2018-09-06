@@ -1,0 +1,1883 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Image Module &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ImageChops (“Channel Operations”) Module" href="ImageChops.html" />
+    <link rel="prev" title="Reference" href="index.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#open-rotate-and-display-an-image-using-the-default-viewer">Open, rotate, and display an image (using the default viewer)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-thumbnails">Create thumbnails</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image-processing">Image processing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constructing-images">Constructing images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#registering-plugins">Registering plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-image-class">The Image Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#attributes">Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageWin.html"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/Image.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.Image"></span><div class="section" id="image-module">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">Image</span></code> Module<a class="headerlink" href="#image-module" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-PIL.Image" title="PIL.Image"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Image</span></code></a> module provides a class with the same name which is
+used to represent a PIL image. The module also provides a number of factory
+functions, including functions to load images from files, and to create new
+images.</p>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="open-rotate-and-display-an-image-using-the-default-viewer">
+<h3>Open, rotate, and display an image (using the default viewer)<a class="headerlink" href="#open-rotate-and-display-an-image-using-the-default-viewer" title="Permalink to this headline">¶</a></h3>
+<p>The following script loads an image, rotates it 45 degrees, and displays it
+using an external viewer (usually xv on Unix, and the paint program on
+Windows).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;bride.jpg&quot;</span><span class="p">)</span>
+<span class="n">im</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-thumbnails">
+<h3>Create thumbnails<a class="headerlink" href="#create-thumbnails" title="Permalink to this headline">¶</a></h3>
+<p>The following script creates nice thumbnails of all JPEG images in the
+current directory preserving aspect ratios with 128x128 max resolution.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">os</span>
+
+<span class="n">size</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span>
+
+<span class="k">for</span> <span class="n">infile</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.jpg&quot;</span><span class="p">):</span>
+    <span class="nb">file</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="nb">file</span> <span class="o">+</span> <span class="s2">&quot;.thumbnail&quot;</span><span class="p">,</span> <span class="s2">&quot;JPEG&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="PIL.Image.open">
+<code class="descclassname">PIL.Image.</code><code class="descname">open</code><span class="sig-paren">(</span><em>fp</em>, <em>mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens and identifies the given image file.</p>
+<p>This is a lazy operation; this function identifies the file, but
+the file remains open and the actual image data is not read from
+the file until you try to process the data (or call the
+<a class="reference internal" href="#PIL.Image.Image.load" title="PIL.Image.Image.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> method).  See
+<a class="reference internal" href="#PIL.Image.new" title="PIL.Image.new"><code class="xref py py-func docutils literal notranslate"><span class="pre">new()</span></code></a>. See <a class="reference internal" href="open_files.html#file-handling"><span class="std std-ref">File Handling in Pillow</span></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> – A filename (string), pathlib.Path object or a file object.
+The file object must implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code>, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">tell()</span></code> methods,
+and be opened in binary mode.</li>
+<li><strong>mode</strong> – The mode.  If given, this argument must be “r”.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>IOError</strong> – If the file cannot be found, or the image cannot be
+opened and identified.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To protect against potential DOS attacks caused by “<a class="reference external" href="https://en.wikipedia.org/wiki/Zip_bomb">decompression bombs</a>” (i.e. malicious files
+which decompress into a huge amount of data and are designed to crash or cause disruption by using up
+a lot of memory), Pillow will issue a <cite>DecompressionBombWarning</cite> if the image is over a certain
+limit. If desired, the warning can be turned into an error with
+<code class="docutils literal notranslate"><span class="pre">warnings.simplefilter('error',</span> <span class="pre">Image.DecompressionBombWarning)</span></code> or suppressed entirely with
+<code class="docutils literal notranslate"><span class="pre">warnings.simplefilter('ignore',</span> <span class="pre">Image.DecompressionBombWarning)</span></code>. See also <a class="reference external" href="https://docs.python.org/3/library/logging.html#integration-with-the-warnings-module">the logging
+documentation</a> to have warnings output to the logging facility instead of stderr.</p>
+</div>
+</dd></dl>
+
+<div class="section" id="image-processing">
+<h3>Image processing<a class="headerlink" href="#image-processing" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="PIL.Image.alpha_composite">
+<code class="descclassname">PIL.Image.</code><code class="descname">alpha_composite</code><span class="sig-paren">(</span><em>im1</em>, <em>im2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#alpha_composite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.alpha_composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alpha composite im2 over im1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im1</strong> – The first image. Must have mode RGBA.</li>
+<li><strong>im2</strong> – The second image.  Must have mode RGBA, and the same size as
+the first image.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.blend">
+<code class="descclassname">PIL.Image.</code><code class="descname">blend</code><span class="sig-paren">(</span><em>im1</em>, <em>im2</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#blend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.blend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new image by interpolating between two input images, using
+a constant alpha.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">image1</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">+</span> <span class="n">image2</span> <span class="o">*</span> <span class="n">alpha</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>im1</strong> – The first image.</li>
+<li><strong>im2</strong> – The second image.  Must have the same mode and size as
+the first image.</li>
+<li><strong>alpha</strong> – The interpolation alpha factor.  If alpha is 0.0, a
+copy of the first image is returned. If alpha is 1.0, a copy of
+the second image is returned. There are no restrictions on the
+alpha value. If necessary, the result is clipped to fit into
+the allowed output range.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.composite">
+<code class="descclassname">PIL.Image.</code><code class="descname">composite</code><span class="sig-paren">(</span><em>image1</em>, <em>image2</em>, <em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#composite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create composite image by blending images using a transparency mask.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image1</strong> – The first image.</li>
+<li><strong>image2</strong> – The second image.  Must have the same mode and
+size as the first image.</li>
+<li><strong>mask</strong> – A mask image.  This image can have mode
+“1”, “L”, or “RGBA”, and must have the same size as the
+other two images.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.eval">
+<code class="descclassname">PIL.Image.</code><code class="descname">eval</code><span class="sig-paren">(</span><em>image</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the function (which should take one argument) to each pixel
+in the given image. If the image has more than one band, the same
+function is applied to each band. Note that the function is
+evaluated once for each possible pixel value, so you cannot use
+random components or other generators.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> – The input image.</li>
+<li><strong>function</strong> – A function object, taking one integer argument.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.merge">
+<code class="descclassname">PIL.Image.</code><code class="descname">merge</code><span class="sig-paren">(</span><em>mode</em>, <em>bands</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge a set of single band images into a new multiband image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – The mode to use for the output image. See:
+<a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+<li><strong>bands</strong> – A sequence containing one single-band image for
+each band in the output image.  All bands must have the
+same size.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="constructing-images">
+<h3>Constructing images<a class="headerlink" href="#constructing-images" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="PIL.Image.new">
+<code class="descclassname">PIL.Image.</code><code class="descname">new</code><span class="sig-paren">(</span><em>mode</em>, <em>size</em>, <em>color=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new image with the given mode and size.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – The mode to use for the new image. See:
+<a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+<li><strong>size</strong> – A 2-tuple, containing (width, height) in pixels.</li>
+<li><strong>color</strong> – What color to use for the image.  Default is black.
+If given, this should be a single integer or floating point value
+for single-band modes, and a tuple for multi-band modes (one value
+per band).  When creating RGB images, you can also use color
+strings as supported by the ImageColor module.  If the color is
+None, the image is not initialised.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.fromarray">
+<code class="descclassname">PIL.Image.</code><code class="descname">fromarray</code><span class="sig-paren">(</span><em>obj</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#fromarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.fromarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an image memory from an object exporting the array interface
+(using the buffer protocol).</p>
+<p>If obj is not contiguous, then the tobytes method is called
+and <a class="reference internal" href="#PIL.Image.frombuffer" title="PIL.Image.frombuffer"><code class="xref py py-func docutils literal notranslate"><span class="pre">frombuffer()</span></code></a> is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>obj</strong> – Object with array interface</li>
+<li><strong>mode</strong> – Mode to use (will be determined from type if None)
+See: <a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An image object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.frombytes">
+<code class="descclassname">PIL.Image.</code><code class="descname">frombytes</code><span class="sig-paren">(</span><em>mode</em>, <em>size</em>, <em>data</em>, <em>decoder_name='raw'</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#frombytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.frombytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a copy of an image memory from pixel data in a buffer.</p>
+<p>In its simplest form, this function takes three arguments
+(mode, size, and unpacked pixel data).</p>
+<p>You can also use any pixel decoder supported by PIL.  For more
+information on available decoders, see the section
+<a class="reference internal" href="../handbook/writing-your-own-file-decoder.html#file-decoders"><span class="std std-ref">Writing Your Own File Decoder</span></a>.</p>
+<p>Note that this function decodes pixel data only, not entire images.
+If you have an entire image in a string, wrap it in a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BytesIO</span></code> object, and use <a class="reference internal" href="#PIL.Image.open" title="PIL.Image.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> to load
+it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – The image mode. See: <a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+<li><strong>size</strong> – The image size.</li>
+<li><strong>data</strong> – A byte buffer containing raw data for the given mode.</li>
+<li><strong>decoder_name</strong> – What decoder to use.</li>
+<li><strong>args</strong> – Additional parameters for the given decoder.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.fromstring">
+<code class="descclassname">PIL.Image.</code><code class="descname">fromstring</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#fromstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.fromstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.frombuffer">
+<code class="descclassname">PIL.Image.</code><code class="descname">frombuffer</code><span class="sig-paren">(</span><em>mode</em>, <em>size</em>, <em>data</em>, <em>decoder_name='raw'</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#frombuffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.frombuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an image memory referencing pixel data in a byte buffer.</p>
+<p>This function is similar to <a class="reference internal" href="#PIL.Image.frombytes" title="PIL.Image.frombytes"><code class="xref py py-func docutils literal notranslate"><span class="pre">frombytes()</span></code></a>, but uses data
+in the byte buffer, where possible.  This means that changes to the
+original buffer object are reflected in this image).  Not all modes can
+share memory; supported modes include “L”, “RGBX”, “RGBA”, and “CMYK”.</p>
+<p>Note that this function decodes pixel data only, not entire images.
+If you have an entire image file in a string, wrap it in a
+<strong>BytesIO</strong> object, and use <a class="reference internal" href="#PIL.Image.open" title="PIL.Image.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> to load it.</p>
+<p>In the current version, the default parameters used for the “raw” decoder
+differs from that used for <a class="reference internal" href="#PIL.Image.frombytes" title="PIL.Image.frombytes"><code class="xref py py-func docutils literal notranslate"><span class="pre">frombytes()</span></code></a>.  This is a
+bug, and will probably be fixed in a future release.  The current release
+issues a warning if you do this; to disable the warning, you should provide
+the full set of parameters.  See below for details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – The image mode. See: <a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+<li><strong>size</strong> – The image size.</li>
+<li><strong>data</strong> – A bytes or other buffer object containing raw
+data for the given mode.</li>
+<li><strong>decoder_name</strong> – What decoder to use.</li>
+<li><strong>args</strong> – <p>Additional parameters for the given decoder.  For the
+default encoder (“raw”), it’s recommended that you provide the
+full set of parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frombuffer</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.1.4.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="registering-plugins">
+<h3>Registering plugins<a class="headerlink" href="#registering-plugins" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These functions are for use by plugin authors. Application authors can
+ignore them.</p>
+</div>
+<dl class="function">
+<dt id="PIL.Image.register_open">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_open</code><span class="sig-paren">(</span><em>id</em>, <em>factory</em>, <em>accept=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register an image file plugin.  This function should not be used
+in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> – An image format identifier.</li>
+<li><strong>factory</strong> – An image file factory method.</li>
+<li><strong>accept</strong> – An optional function that can be used to quickly
+reject images having another format.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.register_decoder">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_decoder</code><span class="sig-paren">(</span><em>name</em>, <em>decoder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_decoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_decoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an image decoder.  This function should not be
+used in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – The name of the decoder</li>
+<li><strong>decoder</strong> – A callable(mode, args) that returns an
+ImageFile.PyDecoder object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.register_mime">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_mime</code><span class="sig-paren">(</span><em>id</em>, <em>mimetype</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_mime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_mime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an image MIME type.  This function should not be used
+in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> – An image format identifier.</li>
+<li><strong>mimetype</strong> – The image MIME type for this format.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.register_save">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_save</code><span class="sig-paren">(</span><em>id</em>, <em>driver</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an image save function.  This function should not be
+used in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> – An image format identifier.</li>
+<li><strong>driver</strong> – A function to save images in this format.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.register_encoder">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_encoder</code><span class="sig-paren">(</span><em>name</em>, <em>encoder</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_encoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_encoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an image encoder.  This function should not be
+used in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> – The name of the encoder</li>
+<li><strong>encoder</strong> – A callable(mode, args) that returns an
+ImageFile.PyEncoder object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PIL.Image.register_extension">
+<code class="descclassname">PIL.Image.</code><code class="descname">register_extension</code><span class="sig-paren">(</span><em>id</em>, <em>extension</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#register_extension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.register_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an image extension.  This function should not be
+used in application code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> – An image format identifier.</li>
+<li><strong>extension</strong> – An extension used for this format.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="the-image-class">
+<h2>The Image Class<a class="headerlink" href="#the-image-class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PIL.Image.Image">
+<em class="property">class </em><code class="descclassname">PIL.Image.</code><code class="descname">Image</code><a class="reference internal" href="../_modules/PIL/Image.html#Image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents an image object.  To create
+<a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> objects, use the appropriate factory
+functions.  There’s hardly ever any reason to call the Image constructor
+directly.</p>
+<ul class="simple">
+<li><a class="reference internal" href="#PIL.Image.open" title="PIL.Image.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a></li>
+<li><a class="reference internal" href="#PIL.Image.new" title="PIL.Image.new"><code class="xref py py-func docutils literal notranslate"><span class="pre">new()</span></code></a></li>
+<li><a class="reference internal" href="#PIL.Image.frombytes" title="PIL.Image.frombytes"><code class="xref py py-func docutils literal notranslate"><span class="pre">frombytes()</span></code></a></li>
+</ul>
+</dd></dl>
+
+<p>An instance of the <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> class has the following
+methods. Unless otherwise stated, all methods return a new instance of the
+<a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> class, holding the resulting image.</p>
+<dl class="method">
+<dt id="PIL.Image.Image.alpha_composite">
+<code class="descclassname">Image.</code><code class="descname">alpha_composite</code><span class="sig-paren">(</span><em>im</em>, <em>dest=(0</em>, <em>0)</em>, <em>source=(0</em>, <em>0)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.alpha_composite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.alpha_composite" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘In-place’ analog of Image.alpha_composite. Composites an image
+onto this image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>im</strong> – image to composite over this one</li>
+<li><strong>dest</strong> – Optional 2 tuple (left, top) specifying the upper
+left corner in this (destination) image.</li>
+<li><strong>source</strong> – Optional 2 (left, top) tuple for the upper left
+corner in the overlay source image, or 4 tuple (left, top, right,
+bottom) for the bounds of the source rectangle</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Performance Note: Not currently implemented in-place in the core layer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.convert">
+<code class="descclassname">Image.</code><code class="descname">convert</code><span class="sig-paren">(</span><em>mode=None</em>, <em>matrix=None</em>, <em>dither=None</em>, <em>palette=0</em>, <em>colors=256</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a converted copy of this image. For the “P” mode, this
+method translates pixels through the palette.  If mode is
+omitted, a mode is chosen so that all information in the image
+and the palette can be represented without a palette.</p>
+<p>The current version supports all possible conversions between
+“L”, “RGB” and “CMYK.” The <strong>matrix</strong> argument only supports “L”
+and “RGB”.</p>
+<p>When translating a color image to black and white (mode “L”),
+the library uses the ITU-R 601-2 luma transform:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="mi">299</span><span class="o">/</span><span class="mi">1000</span> <span class="o">+</span> <span class="n">G</span> <span class="o">*</span> <span class="mi">587</span><span class="o">/</span><span class="mi">1000</span> <span class="o">+</span> <span class="n">B</span> <span class="o">*</span> <span class="mi">114</span><span class="o">/</span><span class="mi">1000</span>
+</pre></div>
+</div>
+<p>The default method of converting a greyscale (“L”) or “RGB”
+image into a bilevel (mode “1”) image uses Floyd-Steinberg
+dither to approximate the original image luminosity levels. If
+dither is NONE, all non-zero values are set to 255 (white). To
+use other thresholds, use the <a class="reference internal" href="#PIL.Image.Image.point" title="PIL.Image.Image.point"><code class="xref py py-meth docutils literal notranslate"><span class="pre">point()</span></code></a>
+method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mode</strong> – The requested mode. See: <a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a>.</li>
+<li><strong>matrix</strong> – An optional conversion matrix.  If given, this
+should be 4- or 12-tuple containing floating point values.</li>
+<li><strong>dither</strong> – Dithering method, used when converting from
+mode “RGB” to “P” or from “RGB” or “L” to “1”.
+Available methods are NONE or FLOYDSTEINBERG (default).</li>
+<li><strong>palette</strong> – Palette to use when converting from mode “RGB”
+to “P”.  Available palettes are WEB or ADAPTIVE.</li>
+<li><strong>colors</strong> – Number of colors to use for the ADAPTIVE palette.
+Defaults to 256.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The following example converts an RGB image (linearly calibrated according to
+ITU-R 709, using the D65 luminant) to the CIE XYZ color space:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rgb2xyz</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="mf">0.412453</span><span class="p">,</span> <span class="mf">0.357580</span><span class="p">,</span> <span class="mf">0.180423</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="mf">0.212671</span><span class="p">,</span> <span class="mf">0.715160</span><span class="p">,</span> <span class="mf">0.072169</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="mf">0.019334</span><span class="p">,</span> <span class="mf">0.119193</span><span class="p">,</span> <span class="mf">0.950227</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">rgb2xyz</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="PIL.Image.Image.copy">
+<code class="descclassname">Image.</code><code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies this image. Use this method if you wish to paste things
+into an image, but still retain the original.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.crop">
+<code class="descclassname">Image.</code><code class="descname">crop</code><span class="sig-paren">(</span><em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rectangular region from this image. The box is a
+4-tuple defining the left, upper, right, and lower pixel
+coordinate. See <a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>.</p>
+<p>Note: Prior to Pillow 3.4.0, this was a lazy operation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> – The crop rectangle, as a (left, upper, right, lower)-tuple.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.draft">
+<code class="descclassname">Image.</code><code class="descname">draft</code><span class="sig-paren">(</span><em>mode</em>, <em>size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.draft"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.draft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the image file loader so it returns a version of the
+image that as closely as possible matches the given mode and
+size.  For example, you can use this method to convert a color
+JPEG to greyscale while loading it, or to extract a 128x192
+version from a PCD file.</p>
+<p>Note that this method modifies the <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object
+in place.  If the image has already been loaded, this method has no
+effect.</p>
+<p>Note: This method is not implemented for most images. It is
+currently implemented only for JPEG and PCD images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mode</strong> – The requested mode.</li>
+<li><strong>size</strong> – The requested size.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.filter">
+<code class="descclassname">Image.</code><code class="descname">filter</code><span class="sig-paren">(</span><em>filter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters this image using the given filter.  For a list of
+available filters, see the <a class="reference internal" href="ImageFilter.html#module-PIL.ImageFilter" title="PIL.ImageFilter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageFilter</span></code></a> module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filter</strong> – Filter kernel.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getbands">
+<code class="descclassname">Image.</code><code class="descname">getbands</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getbands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getbands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tuple containing the name of each band in this image.
+For example, <strong>getbands</strong> on an RGB image returns (“R”, “G”, “B”).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tuple containing band names.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getbbox">
+<code class="descclassname">Image.</code><code class="descname">getbbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getbbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getbbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the bounding box of the non-zero regions in the
+image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The bounding box is returned as a 4-tuple defining the
+left, upper, right, and lower pixel coordinate. See
+<a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>. If the image is completely empty, this
+method returns None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getcolors">
+<code class="descclassname">Image.</code><code class="descname">getcolors</code><span class="sig-paren">(</span><em>maxcolors=256</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getcolors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getcolors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of colors used in this image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>maxcolors</strong> – Maximum number of colors.  If this number is
+exceeded, this method returns None.  The default limit is
+256 colors.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An unsorted list of (count, pixel) values.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getdata">
+<code class="descclassname">Image.</code><code class="descname">getdata</code><span class="sig-paren">(</span><em>band=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the contents of this image as a sequence object
+containing pixel values.  The sequence object is flattened, so
+that values for line one follow directly after the values of
+line zero, and so on.</p>
+<p>Note that the sequence object returned by this method is an
+internal PIL data type, which only supports certain sequence
+operations.  To convert it to an ordinary sequence (e.g. for
+printing), use <strong>list(im.getdata())</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>band</strong> – What band to return.  The default is to return
+all bands.  To return a single band, pass in the index
+value (e.g. 0 to get the “R” band from an “RGB” image).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A sequence-like object.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getextrema">
+<code class="descclassname">Image.</code><code class="descname">getextrema</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getextrema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getextrema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the the minimum and maximum pixel values for each band in
+the image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">For a single-band image, a 2-tuple containing the
+minimum and maximum pixel value.  For a multi-band image,
+a tuple containing one 2-tuple for each band.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getpalette">
+<code class="descclassname">Image.</code><code class="descname">getpalette</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getpalette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getpalette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image palette as a list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of color values [r, g, b, …], or None if the
+image has no palette.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getpixel">
+<code class="descclassname">Image.</code><code class="descname">getpixel</code><span class="sig-paren">(</span><em>xy</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getpixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getpixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pixel value at a given position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xy</strong> – The coordinate, given as (x, y). See
+<a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The pixel value.  If the image is a multi-layer image,
+this method returns a tuple.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.histogram">
+<code class="descclassname">Image.</code><code class="descname">histogram</code><span class="sig-paren">(</span><em>mask=None</em>, <em>extrema=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a histogram for the image. The histogram is returned as
+a list of pixel counts, one for each pixel value in the source
+image. If the image has more than one band, the histograms for
+all bands are concatenated (for example, the histogram for an
+“RGB” image contains 768 values).</p>
+<p>A bilevel image (mode “1”) is treated as a greyscale (“L”) image
+by this method.</p>
+<p>If a mask is provided, the method returns a histogram for those
+parts of the image where the mask image is non-zero. The mask
+image must have the same size as the image, and be either a
+bi-level image (mode “1”) or a greyscale image (“L”).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mask</strong> – An optional mask.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list containing pixel counts.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.offset">
+<code class="descclassname">Image.</code><code class="descname">offset</code><span class="sig-paren">(</span><em>xoffset</em>, <em>yoffset=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.paste">
+<code class="descclassname">Image.</code><code class="descname">paste</code><span class="sig-paren">(</span><em>im</em>, <em>box=None</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.paste"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.paste" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pastes another image into this image. The box argument is either
+a 2-tuple giving the upper left corner, a 4-tuple defining the
+left, upper, right, and lower pixel coordinate, or None (same as
+(0, 0)). See <a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>. If a 4-tuple is given, the size
+of the pasted image must match the size of the region.</p>
+<p>If the modes don’t match, the pasted image is converted to the mode of
+this image (see the <a class="reference internal" href="#PIL.Image.Image.convert" title="PIL.Image.Image.convert"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert()</span></code></a> method for
+details).</p>
+<p>Instead of an image, the source can be a integer or tuple
+containing pixel values.  The method then fills the region
+with the given color.  When creating RGB images, you can
+also use color strings as supported by the ImageColor module.</p>
+<p>If a mask is given, this method updates only the regions
+indicated by the mask.  You can use either “1”, “L” or “RGBA”
+images (in the latter case, the alpha band is used as mask).
+Where the mask is 255, the given image is copied as is.  Where
+the mask is 0, the current value is preserved.  Intermediate
+values will mix the two images together, including their alpha
+channels if they have them.</p>
+<p>See <a class="reference internal" href="#PIL.Image.Image.alpha_composite" title="PIL.Image.Image.alpha_composite"><code class="xref py py-meth docutils literal notranslate"><span class="pre">alpha_composite()</span></code></a> if you want to
+combine images with respect to their alpha channels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>im</strong> – Source image or pixel value (integer or tuple).</li>
+<li><strong>box</strong> – <p>An optional 4-tuple giving the region to paste into.
+If a 2-tuple is used instead, it’s treated as the upper left
+corner.  If omitted or None, the source is pasted into the
+upper left corner.</p>
+<p>If an image is given as the second argument and there is no
+third, the box defaults to (0, 0), and the second argument
+is interpreted as a mask image.</p>
+</li>
+<li><strong>mask</strong> – An optional mask image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.point">
+<code class="descclassname">Image.</code><code class="descname">point</code><span class="sig-paren">(</span><em>lut</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps this image through a lookup table or function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lut</strong> – A lookup table, containing 256 (or 65536 if
+self.mode==”I” and mode == “L”) values per band in the
+image.  A function can be used instead, it should take a
+single argument. The function is called once for each
+possible pixel value, and the resulting table is applied to
+all bands of the image.</li>
+<li><strong>mode</strong> – Output mode (default is same as input).  In the
+current version, this can only be used if the source image
+has mode “L” or “P”, and the output has mode “1” or the
+source image mode is “I” and the output mode is “L”.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.putalpha">
+<code class="descclassname">Image.</code><code class="descname">putalpha</code><span class="sig-paren">(</span><em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.putalpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.putalpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds or replaces the alpha layer in this image.  If the image
+does not have an alpha layer, it’s converted to “LA” or “RGBA”.
+The new layer must be either “L” or “1”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>alpha</strong> – The new alpha layer.  This can either be an “L” or “1”
+image having the same size as this image, or an integer or
+other color value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.putdata">
+<code class="descclassname">Image.</code><code class="descname">putdata</code><span class="sig-paren">(</span><em>data</em>, <em>scale=1.0</em>, <em>offset=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.putdata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.putdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies pixel data to this image.  This method copies data from a
+sequence object into the image, starting at the upper left
+corner (0, 0), and continuing until either the image or the
+sequence ends.  The scale and offset values are used to adjust
+the sequence values: <strong>pixel = value*scale + offset</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – A sequence object.</li>
+<li><strong>scale</strong> – An optional scale value.  The default is 1.0.</li>
+<li><strong>offset</strong> – An optional offset value.  The default is 0.0.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.putpalette">
+<code class="descclassname">Image.</code><code class="descname">putpalette</code><span class="sig-paren">(</span><em>data</em>, <em>rawmode='RGB'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.putpalette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.putpalette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attaches a palette to this image.  The image must be a “P” or
+“L” image, and the palette sequence must contain 768 integer
+values, where each group of three values represent the red,
+green, and blue values for the corresponding pixel
+index. Instead of an integer sequence, you can use an 8-bit
+string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> – A palette sequence (either a list or a string).</li>
+<li><strong>rawmode</strong> – The raw mode of the palette.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.putpixel">
+<code class="descclassname">Image.</code><code class="descname">putpixel</code><span class="sig-paren">(</span><em>xy</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.putpixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.putpixel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modifies the pixel at the given position. The color is given as
+a single numerical value for single-band images, and a tuple for
+multi-band images.</p>
+<p>Note that this method is relatively slow.  For more extensive changes,
+use <a class="reference internal" href="#PIL.Image.Image.paste" title="PIL.Image.Image.paste"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paste()</span></code></a> or the <a class="reference internal" href="ImageDraw.html#module-PIL.ImageDraw" title="PIL.ImageDraw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageDraw</span></code></a>
+module instead.</p>
+<p>See:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#PIL.Image.Image.paste" title="PIL.Image.Image.paste"><code class="xref py py-meth docutils literal notranslate"><span class="pre">paste()</span></code></a></li>
+<li><a class="reference internal" href="#PIL.Image.Image.putdata" title="PIL.Image.Image.putdata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">putdata()</span></code></a></li>
+<li><a class="reference internal" href="ImageDraw.html#module-PIL.ImageDraw" title="PIL.ImageDraw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageDraw</span></code></a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xy</strong> – The pixel coordinate, given as (x, y). See
+<a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>.</li>
+<li><strong>value</strong> – The pixel value.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.quantize">
+<code class="descclassname">Image.</code><code class="descname">quantize</code><span class="sig-paren">(</span><em>colors=256</em>, <em>method=None</em>, <em>kmeans=0</em>, <em>palette=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.quantize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.quantize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the image to ‘P’ mode with the specified number
+of colors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>colors</strong> – The desired number of colors, &lt;= 256</li>
+<li><strong>method</strong> – 0 = median cut
+1 = maximum coverage
+2 = fast octree
+3 = libimagequant</li>
+<li><strong>kmeans</strong> – Integer</li>
+<li><strong>palette</strong> – Quantize to the palette of given <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.Image.Image</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new image</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.resize">
+<code class="descclassname">Image.</code><code class="descname">resize</code><span class="sig-paren">(</span><em>size</em>, <em>resample=0</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.resize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a resized copy of this image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>size</strong> – The requested size in pixels, as a 2-tuple:
+(width, height).</li>
+<li><strong>resample</strong> – An optional resampling filter.  This can be
+one of <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BOX</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BILINEAR</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.HAMMING</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BICUBIC</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.LANCZOS</span></code>.
+If omitted, or if the image has mode “1” or “P”, it is
+set <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code>.
+See: <a class="reference internal" href="../handbook/concepts.html#concept-filters"><span class="std std-ref">Filters</span></a>.</li>
+<li><strong>box</strong> – An optional 4-tuple of floats giving the region
+of the source image which should be scaled.
+The values should be within (0, 0, width, height) rectangle.
+If omitted or None, the entire source is used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.remap_palette">
+<code class="descclassname">Image.</code><code class="descname">remap_palette</code><span class="sig-paren">(</span><em>dest_map</em>, <em>source_palette=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.remap_palette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.remap_palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rewrites the image to reorder the palette.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dest_map</strong> – A list of indexes into the original palette.
+e.g. [1,0] would swap a two item palette, and list(range(255))
+is the identity transform.</li>
+<li><strong>source_palette</strong> – Bytes or None.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.rotate">
+<code class="descclassname">Image.</code><code class="descname">rotate</code><span class="sig-paren">(</span><em>angle</em>, <em>resample=0</em>, <em>expand=0</em>, <em>center=None</em>, <em>translate=None</em>, <em>fillcolor=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rotated copy of this image.  This method returns a
+copy of this image, rotated the given number of degrees counter
+clockwise around its centre.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> – In degrees counter clockwise.</li>
+<li><strong>resample</strong> – An optional resampling filter.  This can be
+one of <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code> (use nearest neighbour),
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BILINEAR</span></code> (linear interpolation in a 2x2
+environment), or <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BICUBIC</span></code>
+(cubic spline interpolation in a 4x4 environment).
+If omitted, or if the image has mode “1” or “P”, it is
+set <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code>. See <a class="reference internal" href="../handbook/concepts.html#concept-filters"><span class="std std-ref">Filters</span></a>.</li>
+<li><strong>expand</strong> – Optional expansion flag.  If true, expands the output
+image to make it large enough to hold the entire rotated image.
+If false or omitted, make the output image the same size as the
+input image.  Note that the expand flag assumes rotation around
+the center and no translation.</li>
+<li><strong>center</strong> – Optional center of rotation (a 2-tuple).  Origin is
+the upper left corner.  Default is the center of the image.</li>
+<li><strong>translate</strong> – An optional post-rotate translation (a 2-tuple).</li>
+<li><strong>fillcolor</strong> – An optional color for area outside the rotated image.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.save">
+<code class="descclassname">Image.</code><code class="descname">save</code><span class="sig-paren">(</span><em>fp</em>, <em>format=None</em>, <em>**params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves this image under the given filename.  If no format is
+specified, the format to use is determined from the filename
+extension, if possible.</p>
+<p>Keyword options can be used to provide additional instructions
+to the writer. If a writer doesn’t recognise an option, it is
+silently ignored. The available options are described in the
+<a class="reference internal" href="../handbook/image-file-formats.html"><span class="doc">image format documentation</span></a> for each writer.</p>
+<p>You can use a file object instead of a filename. In this case,
+you must always specify the format. The file object must
+implement the <code class="docutils literal notranslate"><span class="pre">seek</span></code>, <code class="docutils literal notranslate"><span class="pre">tell</span></code>, and <code class="docutils literal notranslate"><span class="pre">write</span></code>
+methods, and be opened in binary mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> – A filename (string), pathlib.Path object or file object.</li>
+<li><strong>format</strong> – Optional format override.  If omitted, the
+format to use is determined from the filename extension.
+If a file object was used instead of a filename, this
+parameter should always be used.</li>
+<li><strong>params</strong> – Extra parameters to the image writer.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">None</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><strong>KeyError</strong> – If the output format could not be determined
+from the file name.  Use the format option to solve this.</li>
+<li><strong>IOError</strong> – If the file could not be written.  The file
+may have been created, and may contain partial data.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.seek">
+<code class="descclassname">Image.</code><code class="descname">seek</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.seek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seeks to the given frame in this sequence file. If you seek
+beyond the end of the sequence, the method raises an
+<strong>EOFError</strong> exception. When a sequence file is opened, the
+library automatically seeks to frame 0.</p>
+<p>Note that in the current version of the library, most sequence
+formats only allows you to seek to the next frame.</p>
+<p>See <a class="reference internal" href="#PIL.Image.Image.tell" title="PIL.Image.Image.tell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tell()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – Frame number, starting at 0.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>EOFError</strong> – If the call attempts to seek beyond the end
+of the sequence.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.show">
+<code class="descclassname">Image.</code><code class="descname">show</code><span class="sig-paren">(</span><em>title=None</em>, <em>command=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays this image. This method is mainly intended for
+debugging purposes.</p>
+<p>On Unix platforms, this method saves the image to a temporary
+PPM file, and calls either the <strong>xv</strong> utility or the <strong>display</strong>
+utility, depending on which one can be found.</p>
+<p>On macOS, this method saves the image to a temporary BMP file, and
+opens it with the native Preview application.</p>
+<p>On Windows, it saves the image to a temporary BMP file, and uses
+the standard BMP display utility to show it (usually Paint).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>title</strong> – Optional title to use for the image window,
+where possible.</li>
+<li><strong>command</strong> – command used to show the image</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.split">
+<code class="descclassname">Image.</code><code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split this image into individual bands. This method returns a
+tuple of individual image bands from an image. For example,
+splitting an “RGB” image creates three new images each
+containing a copy of one of the original bands (red, green,
+blue).</p>
+<p>If you need only one band, <a class="reference internal" href="#PIL.Image.Image.getchannel" title="PIL.Image.Image.getchannel"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getchannel()</span></code></a>
+method can be more convenient and faster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A tuple containing bands.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.getchannel">
+<code class="descclassname">Image.</code><code class="descname">getchannel</code><span class="sig-paren">(</span><em>channel</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.getchannel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.getchannel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an image containing a single channel of the source image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>channel</strong> – What channel to return. Could be index
+(0 for “R” channel of “RGB”) or channel name
+(“A” for alpha channel of “RGBA”).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An image in “L” mode.</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.3.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.tell">
+<code class="descclassname">Image.</code><code class="descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.tell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the current frame number. See <a class="reference internal" href="#PIL.Image.Image.seek" title="PIL.Image.Image.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frame number, starting with 0.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.thumbnail">
+<code class="descclassname">Image.</code><code class="descname">thumbnail</code><span class="sig-paren">(</span><em>size</em>, <em>resample=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.thumbnail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.thumbnail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this image into a thumbnail.  This method modifies the
+image to contain a thumbnail version of itself, no larger than
+the given size.  This method calculates an appropriate thumbnail
+size to preserve the aspect of the image, calls the
+<a class="reference internal" href="#PIL.Image.Image.draft" title="PIL.Image.Image.draft"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draft()</span></code></a> method to configure the file reader
+(where applicable), and finally resizes the image.</p>
+<p>Note that this function modifies the <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a>
+object in place.  If you need to use the full resolution image as well,
+apply this method to a <a class="reference internal" href="#PIL.Image.Image.copy" title="PIL.Image.Image.copy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">copy()</span></code></a> of the original
+image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>size</strong> – Requested size.</li>
+<li><strong>resample</strong> – Optional resampling filter.  This can be one
+of <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BILINEAR</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BICUBIC</span></code>, or <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.LANCZOS</span></code>.
+If omitted, it defaults to <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BICUBIC</span></code>.
+(was <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code> prior to version 2.5.0)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.tobitmap">
+<code class="descclassname">Image.</code><code class="descname">tobitmap</code><span class="sig-paren">(</span><em>name='image'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.tobitmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.tobitmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the image converted to an X11 bitmap.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method only works for mode “1” images.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – The name prefix to use for the bitmap variables.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string containing an X11 bitmap.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>ValueError</strong> – If the mode is not “1”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.tobytes">
+<code class="descclassname">Image.</code><code class="descname">tobytes</code><span class="sig-paren">(</span><em>encoder_name='raw'</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.tobytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.tobytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return image as a bytes object.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This method returns the raw image data from the internal
+storage.  For compressed image data (e.g. PNG, JPEG) use
+<a class="reference internal" href="#PIL.Image.Image.save" title="PIL.Image.Image.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a>, with a BytesIO parameter for in-memory
+data.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>encoder_name</strong> – What encoder to use.  The default is to
+use the standard “raw” encoder.</li>
+<li><strong>args</strong> – Extra arguments to the encoder.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A bytes object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.tostring">
+<code class="descclassname">Image.</code><code class="descname">tostring</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.tostring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.tostring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.transform">
+<code class="descclassname">Image.</code><code class="descname">transform</code><span class="sig-paren">(</span><em>size</em>, <em>method</em>, <em>data=None</em>, <em>resample=0</em>, <em>fill=1</em>, <em>fillcolor=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms this image.  This method creates a new image with the
+given size, and the same mode as the original, and copies data
+to the new image using the given transform.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>size</strong> – The output size.</li>
+<li><strong>method</strong> – <p>The transformation method.  This is one of
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.EXTENT</span></code> (cut out a rectangular subregion),
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.AFFINE</span></code> (affine transform),
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.PERSPECTIVE</span></code> (perspective transform),
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.QUAD</span></code> (map a quadrilateral to a rectangle), or
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.MESH</span></code> (map a number of source quadrilaterals
+in one operation).</p>
+<p>It may also be an <code class="xref py py-class docutils literal notranslate"><span class="pre">ImageTransformHandler</span></code>
+object:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Example</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">ImageTransformHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">resample</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Return result</span>
+</pre></div>
+</div>
+<p>It may also be an object with a <code class="xref py py-meth docutils literal notranslate"><span class="pre">getdata()</span></code> method
+that returns a tuple supplying new <strong>method</strong> and <strong>data</strong> values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Example</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getdata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">EXTENT</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">method</span><span class="p">,</span> <span class="n">data</span>
+</pre></div>
+</div>
+</li>
+<li><strong>data</strong> – Extra data to the transformation method.</li>
+<li><strong>resample</strong> – Optional resampling filter.  It can be one of
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code> (use nearest neighbour),
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BILINEAR</span></code> (linear interpolation in a 2x2
+environment), or <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.BICUBIC</span></code> (cubic spline
+interpolation in a 4x4 environment). If omitted, or if the image
+has mode “1” or “P”, it is set to <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.NEAREST</span></code>.</li>
+<li><strong>fill</strong> – If <strong>method</strong> is an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ImageTransformHandler</span></code> object, this is one of
+the arguments passed to it. Otherwise, it is unused.</li>
+<li><strong>fillcolor</strong> – Optional fill color for the area outside the transform
+in the output image.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">An <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.transpose">
+<code class="descclassname">Image.</code><code class="descname">transpose</code><span class="sig-paren">(</span><em>method</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.transpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transpose image (flip or rotate in 90 degree steps)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>method</strong> – One of <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.FLIP_LEFT_RIGHT</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.FLIP_TOP_BOTTOM</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_90</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_180</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.ROTATE_270</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.TRANSPOSE</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">PIL.Image.TRANSVERSE</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns a flipped or rotated copy of this image.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.verify">
+<code class="descclassname">Image.</code><code class="descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verifies the contents of a file. For data read from a file, this
+method attempts to determine if the file is broken, without
+actually decoding the image data.  If this method finds any
+problems, it raises suitable exceptions.  If you need to load
+the image after using this method, you must reopen the image
+file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.fromstring">
+<code class="descclassname">Image.</code><code class="descname">fromstring</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.fromstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.fromstring" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.load">
+<code class="descclassname">Image.</code><code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocates storage for the image and loads the pixel data.  In
+normal cases, you don’t need to call this method, since the
+Image class automatically loads an opened image when it is
+accessed for the first time.</p>
+<p>This method will close the file associated with the image. See
+<a class="reference internal" href="open_files.html#file-handling"><span class="std std-ref">File Handling in Pillow</span></a> for more information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An image access object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="PixelAccess.html#pixelaccess"><span class="std std-ref">PixelAccess Class</span></a> or <a class="reference internal" href="PyAccess.html#module-PIL.PyAccess" title="PIL.PyAccess"><code class="xref py py-class docutils literal notranslate"><span class="pre">PIL.PyAccess</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.Image.Image.close">
+<code class="descclassname">Image.</code><code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/Image.html#Image.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.Image.Image.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the file pointer, if possible.</p>
+<p>This operation will destroy the image core and release its memory.
+The image data will be unusable afterward.</p>
+<p>This function is only required to close images that have not
+had their file read and closed by the
+<a class="reference internal" href="#PIL.Image.Image.load" title="PIL.Image.Image.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> method. See
+<a class="reference internal" href="open_files.html#file-handling"><span class="std std-ref">File Handling in Pillow</span></a> for more information.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<p>Instances of the <a class="reference internal" href="#PIL.Image.Image" title="PIL.Image.Image"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image</span></code></a> class have the following attributes:</p>
+<dl class="attribute">
+<dt id="PIL.Image.filename">
+<code class="descclassname">PIL.Image.</code><code class="descname">filename</code><a class="headerlink" href="#PIL.Image.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>The filename or path of the source file. Only images created with the
+factory function <cite>open</cite> have a filename attribute. If the input is a
+file like object, the filename attribute is set to an empty string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">:py:class: <cite>string</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.format">
+<code class="descclassname">PIL.Image.</code><code class="descname">format</code><a class="headerlink" href="#PIL.Image.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>The file format of the source file. For images created by the library
+itself (via a factory function, or by running a method on an existing
+image), this attribute is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.mode">
+<code class="descclassname">PIL.Image.</code><code class="descname">mode</code><a class="headerlink" href="#PIL.Image.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image mode. This is a string specifying the pixel format used by the image.
+Typical values are “1”, “L”, “RGB”, or “CMYK.” See
+<a class="reference internal" href="../handbook/concepts.html#concept-modes"><span class="std std-ref">Modes</span></a> for a full list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">string</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.size">
+<code class="descclassname">PIL.Image.</code><code class="descname">size</code><a class="headerlink" href="#PIL.Image.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image size, in pixels. The size is given as a 2-tuple (width, height).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.width">
+<code class="descclassname">PIL.Image.</code><code class="descname">width</code><a class="headerlink" href="#PIL.Image.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image width, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.height">
+<code class="descclassname">PIL.Image.</code><code class="descname">height</code><a class="headerlink" href="#PIL.Image.height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image height, in pixels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImageMath.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.palette">
+<code class="descclassname">PIL.Image.</code><code class="descname">palette</code><a class="headerlink" href="#PIL.Image.palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colour palette table, if any. If mode is “P”, this should be an instance of
+the <a class="reference internal" href="ImagePalette.html#PIL.ImagePalette.ImagePalette" title="PIL.ImagePalette.ImagePalette"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImagePalette</span></code></a> class. Otherwise, it should
+be set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="ImagePalette.html#PIL.ImagePalette.ImagePalette" title="PIL.ImagePalette.ImagePalette"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImagePalette</span></code></a> or <code class="docutils literal notranslate"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PIL.Image.info">
+<code class="descclassname">PIL.Image.</code><code class="descname">info</code><a class="headerlink" href="#PIL.Image.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary holding data associated with the image. This dictionary is
+used by file handlers to pass on various non-image information read from
+the file. See documentation for the various file handlers for details.</p>
+<p>Most methods ignore the dictionary when returning new images; since the
+keys are not standardized, it’s not possible for a method to know if the
+operation affects the dictionary. If you need the information later on,
+keep a reference to the info dictionary returned from the open method.</p>
+<p>Unless noted elsewhere, this dictionary does not affect saving files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ImageChops.html" class="btn btn-neutral float-right" title="ImageChops (“Channel Operations”) Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

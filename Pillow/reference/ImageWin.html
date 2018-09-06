@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ImageWin Module (Windows-only) &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ExifTags Module" href="ExifTags.html" />
+    <link rel="prev" title="ImageTk Module" href="ImageTk.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Image.html"><code class="docutils literal notranslate"><span class="pre">Image</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageChops.html"><code class="docutils literal notranslate"><span class="pre">ImageChops</span></code> (“Channel Operations”) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageColor.html"><code class="docutils literal notranslate"><span class="pre">ImageColor</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageCms.html"><code class="docutils literal notranslate"><span class="pre">ImageCms</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageDraw.html"><code class="docutils literal notranslate"><span class="pre">ImageDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageEnhance.html"><code class="docutils literal notranslate"><span class="pre">ImageEnhance</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFile.html"><code class="docutils literal notranslate"><span class="pre">ImageFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFilter.html"><code class="docutils literal notranslate"><span class="pre">ImageFilter</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageFont.html"><code class="docutils literal notranslate"><span class="pre">ImageFont</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageGrab.html"><code class="docutils literal notranslate"><span class="pre">ImageGrab</span></code> Module (macOS and Windows only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMath.html"><code class="docutils literal notranslate"><span class="pre">ImageMath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageMorph.html"><code class="docutils literal notranslate"><span class="pre">ImageMorph</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageOps.html"><code class="docutils literal notranslate"><span class="pre">ImageOps</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePalette.html"><code class="docutils literal notranslate"><span class="pre">ImagePalette</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImagePath.html"><code class="docutils literal notranslate"><span class="pre">ImagePath</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageQt.html"><code class="docutils literal notranslate"><span class="pre">ImageQt</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageSequence.html"><code class="docutils literal notranslate"><span class="pre">ImageSequence</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageStat.html"><code class="docutils literal notranslate"><span class="pre">ImageStat</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ImageTk.html"><code class="docutils literal notranslate"><span class="pre">ImageTk</span></code> Module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExifTags.html"><code class="docutils literal notranslate"><span class="pre">ExifTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TiffTags.html"><code class="docutils literal notranslate"><span class="pre">TiffTags</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSDraw.html"><code class="docutils literal notranslate"><span class="pre">PSDraw</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PixelAccess.html"><code class="docutils literal notranslate"><span class="pre">PixelAccess</span></code> Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyAccess.html"><code class="docutils literal notranslate"><span class="pre">PyAccess</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../PIL.html">PIL Package (autodoc of remaining modules)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html">Plugin reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internal_design.html">Internal Reference Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li><code class="docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/reference/ImageWin.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-PIL.ImageWin"></span><div class="section" id="imagewin-module-windows-only">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageWin</span></code> Module (Windows-only)<a class="headerlink" href="#imagewin-module-windows-only" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ImageWin</span></code> module contains support to create and display images on
+Windows.</p>
+<p>ImageWin can be used with PythonWin and other user interface toolkits that
+provide access to Windows device contexts or window handles. For example,
+Tkinter makes the window handle available via the winfo_id method:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">ImageWin</span>
+
+<span class="n">dib</span> <span class="o">=</span> <span class="n">ImageWin</span><span class="o">.</span><span class="n">Dib</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="n">hwnd</span> <span class="o">=</span> <span class="n">ImageWin</span><span class="o">.</span><span class="n">HWND</span><span class="p">(</span><span class="n">widget</span><span class="o">.</span><span class="n">winfo_id</span><span class="p">())</span>
+<span class="n">dib</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">hwnd</span><span class="p">,</span> <span class="n">xy</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="class">
+<dt id="PIL.ImageWin.Dib">
+<em class="property">class </em><code class="descclassname">PIL.ImageWin.</code><code class="descname">Dib</code><span class="sig-paren">(</span><em>image</em>, <em>size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Windows bitmap with the given mode and size.  The mode can be one of “1”,
+“L”, “P”, or “RGB”.</p>
+<p>If the display requires a palette, this constructor creates a suitable
+palette and associates it with the image. For an “L” image, 128 greylevels
+are allocated. For an “RGB” image, a 6x6x6 colour cube is used, together
+with 20 greylevels.</p>
+<p>To make sure that palettes work properly under Windows, you must call the
+<strong>palette</strong> method upon certain events from Windows.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>image</strong> – Either a PIL image, or a mode string. If a mode string is
+used, a size must also be given.  The mode can be one of “1”,
+“L”, “P”, or “RGB”.</li>
+<li><strong>size</strong> – If the first argument is a mode string, this
+defines the size of the image.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.draw">
+<code class="descname">draw</code><span class="sig-paren">(</span><em>handle</em>, <em>dst</em>, <em>src=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as expose, but allows you to specify where to draw the image, and
+what part of it to draw.</p>
+<p>The destination and source areas are given as 4-tuple rectangles. If
+the source is omitted, the entire image is copied. If the source and
+the destination have different sizes, the image is resized as
+necessary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.expose">
+<code class="descname">expose</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.expose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.expose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the bitmap contents to a device context.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handle</strong> – Device context (HDC), cast to a Python integer, or an
+HDC or HWND instance.  In PythonWin, you can use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">CDC.GetHandleAttrib()</span></code> to get a suitable handle.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.frombytes">
+<code class="descname">frombytes</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.frombytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.frombytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load display memory contents from byte data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> – A buffer containing display data (usually
+data returned from &lt;b&gt;tobytes&lt;/b&gt;)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.paste">
+<code class="descname">paste</code><span class="sig-paren">(</span><em>im</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.paste"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.paste" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paste a PIL image into the bitmap image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>im</strong> – A PIL image.  The size must match the target region.
+If the mode does not match, the image is converted to the
+mode of the bitmap image.</li>
+<li><strong>box</strong> – A 4-tuple defining the left, upper, right, and
+lower pixel coordinate.  See <a class="reference internal" href="../handbook/concepts.html#coordinate-system"><span class="std std-ref">Coordinate System</span></a>. If
+None is given instead of a tuple, all of the image is
+assumed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.query_palette">
+<code class="descname">query_palette</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.query_palette"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.query_palette" title="Permalink to this definition">¶</a></dt>
+<dd><p>Installs the palette associated with the image in the given device
+context.</p>
+<p>This method should be called upon <strong>QUERYNEWPALETTE</strong> and
+<strong>PALETTECHANGED</strong> events from Windows. If this method returns a
+non-zero value, one or more display palette entries were changed, and
+the image should be redrawn.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handle</strong> – Device context (HDC), cast to a Python integer, or an
+HDC or HWND instance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A true value if one or more entries were changed (this
+indicates that the image should be redrawn).</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PIL.ImageWin.Dib.tobytes">
+<code class="descname">tobytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#Dib.tobytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.Dib.tobytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy display memory contents to bytes object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A bytes object containing display data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageWin.HDC">
+<em class="property">class </em><code class="descclassname">PIL.ImageWin.</code><code class="descname">HDC</code><span class="sig-paren">(</span><em>dc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#HDC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.HDC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps an HDC integer. The resulting object can be passed to the
+<a class="reference internal" href="#PIL.ImageWin.Dib.draw" title="PIL.ImageWin.Dib.draw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw()</span></code></a> and <a class="reference internal" href="#PIL.ImageWin.Dib.expose" title="PIL.ImageWin.Dib.expose"><code class="xref py py-meth docutils literal notranslate"><span class="pre">expose()</span></code></a>
+methods.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="PIL.ImageWin.HWND">
+<em class="property">class </em><code class="descclassname">PIL.ImageWin.</code><code class="descname">HWND</code><span class="sig-paren">(</span><em>wnd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/PIL/ImageWin.html#HWND"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PIL.ImageWin.HWND" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps an HWND integer. The resulting object can be passed to the
+<a class="reference internal" href="#PIL.ImageWin.Dib.draw" title="PIL.ImageWin.Dib.draw"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw()</span></code></a> and <a class="reference internal" href="#PIL.ImageWin.Dib.expose" title="PIL.ImageWin.Dib.expose"><code class="xref py py-meth docutils literal notranslate"><span class="pre">expose()</span></code></a>
+methods, instead of a DC.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ExifTags.html" class="btn btn-neutral float-right" title="ExifTags Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ImageTk.html" class="btn btn-neutral" title="ImageTk Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

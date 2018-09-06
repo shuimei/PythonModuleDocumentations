@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.0.0 &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.3.0" href="4.3.0.html" />
+    <link rel="prev" title="5.1.0" href="5.1.0.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="5.3.0.html">5.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.2.0.html">5.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.1.0.html">5.1.0</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.0.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#backwards-incompatible-changes">Backwards Incompatible Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-3-3-dropped">Python 3.3 Dropped</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#decompression-bombs-now-raise-exceptions">Decompression Bombs now raise Exceptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scripts">Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#olefileio-py">OleFileIO.py</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#check-parameter-on-save">Check parameter on _save</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-additions">API Additions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#image-transform">Image.transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gif-disposal">GIF Disposal</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#other-changes">Other Changes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compressed-tiff-images">Compressed TIFF Images</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#libraqm-is-now-dynamically-linked">Libraqm is now Dynamically Linked</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#source-layout-changes">Source Layout Changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setup-py-changes">Setup.py Changes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.0.html">4.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">4.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.0.html">4.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">4.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.1.0.html">4.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.0.0.html">4.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.4.0.html">3.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.2.html">3.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.3.0.html">3.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.2.0.html">3.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">3.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">3.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.0.html">3.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.0.0.html">3.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.8.0.html">2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.7.0.html">2.7.0</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Release Notes</a> &raquo;</li>
+        
+      <li>5.0.0</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/releasenotes/5.0.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="id1">
+<h1>5.0.0<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="backwards-incompatible-changes">
+<h2>Backwards Incompatible Changes<a class="headerlink" href="#backwards-incompatible-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="python-3-3-dropped">
+<h3>Python 3.3 Dropped<a class="headerlink" href="#python-3-3-dropped" title="Permalink to this headline">¶</a></h3>
+<p>Python 3.3 is EOL and no longer supported due to moving testing from nose,
+which is deprecated, to pytest, which doesn’t support Python 3.3. We will not
+be creating binaries, testing, or retaining compatibility with this version.
+The final version of Pillow for Python 3.3 is 4.3.0.</p>
+</div>
+<div class="section" id="decompression-bombs-now-raise-exceptions">
+<h3>Decompression Bombs now raise Exceptions<a class="headerlink" href="#decompression-bombs-now-raise-exceptions" title="Permalink to this headline">¶</a></h3>
+<p>Pillow has previously emitted warnings for images that are
+unexpectedly large and may be a denial of service. These warnings are
+now upgraded to <code class="docutils literal notranslate"><span class="pre">DecompressionBombError</span></code>s for images that are twice
+the size of images that trigger the <code class="docutils literal notranslate"><span class="pre">DecompressionBombWarning</span></code>. The
+default threshold is 128Mpx, or 0.5GB for an <code class="docutils literal notranslate"><span class="pre">RGB</span></code> or <code class="docutils literal notranslate"><span class="pre">RGBA</span></code>
+image. This can be disabled or changed by setting
+<code class="docutils literal notranslate"><span class="pre">Image.MAX_IMAGE_PIXELS</span> <span class="pre">=</span> <span class="pre">None</span></code>.</p>
+</div>
+<div class="section" id="scripts">
+<h3>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h3>
+<p>The scripts formerly installed by Pillow have been split into a
+separate package, pillow-scripts, living at
+<a class="reference external" href="https://github.com/python-pillow/pillow-scripts">https://github.com/python-pillow/pillow-scripts</a> .</p>
+</div>
+</div>
+<div class="section" id="api-changes">
+<h2>API Changes<a class="headerlink" href="#api-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="olefileio-py">
+<h3>OleFileIO.py<a class="headerlink" href="#olefileio-py" title="Permalink to this headline">¶</a></h3>
+<p>The olefile module is no longer a required dependency when installing Pillow.
+Support for plugins requiring olefile will not be loaded if it is not
+installed. This allows library consumers to avoid installing this dependency
+if they choose. Some library consumers have little interest in the format
+support and would like to keep dependencies to a minimum.</p>
+<p>Further, the vendored version was removed in Pillow 4.0.0 and replaced with a
+deprecation warning that PIL.OleFileIO would be removed in a future version.
+This warning has been upgraded to an import error pending future removal.</p>
+</div>
+<div class="section" id="check-parameter-on-save">
+<h3>Check parameter on _save<a class="headerlink" href="#check-parameter-on-save" title="Permalink to this headline">¶</a></h3>
+<p>Several image plugins supported a named <code class="docutils literal notranslate"><span class="pre">check</span></code> parameter on their
+nominally private <code class="docutils literal notranslate"><span class="pre">_save</span></code> method to preflight if the image could be
+saved in that format. That parameter has been removed.</p>
+</div>
+</div>
+<div class="section" id="api-additions">
+<h2>API Additions<a class="headerlink" href="#api-additions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="image-transform">
+<h3>Image.transform<a class="headerlink" href="#image-transform" title="Permalink to this headline">¶</a></h3>
+<p>A new named parameter, <code class="docutils literal notranslate"><span class="pre">fillcolor</span></code>, has been added to
+<code class="docutils literal notranslate"><span class="pre">Image.transform</span></code>. This color specifies the background color to use in
+the area outside the transformed area in the output image. This
+parameter takes the same color specifications as used in <code class="docutils literal notranslate"><span class="pre">Image.new</span></code>.</p>
+</div>
+<div class="section" id="gif-disposal">
+<h3>GIF Disposal<a class="headerlink" href="#gif-disposal" title="Permalink to this headline">¶</a></h3>
+<p>Multiframe GIF images now take an optional disposal parameter to
+specify the disposal option for changed pixels.</p>
+</div>
+</div>
+<div class="section" id="other-changes">
+<h2>Other Changes<a class="headerlink" href="#other-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="compressed-tiff-images">
+<h3>Compressed TIFF Images<a class="headerlink" href="#compressed-tiff-images" title="Permalink to this headline">¶</a></h3>
+<p>Previously, there were some compression modes (JPEG, Packbits, and
+LZW) that were supported with Pillow’s internal TIFF decoder. All
+compressed TIFFs are now read using the <code class="docutils literal notranslate"><span class="pre">libtiff</span></code> decoder, as it
+implements the compression schemes more correctly.</p>
+</div>
+<div class="section" id="libraqm-is-now-dynamically-linked">
+<h3>Libraqm is now Dynamically Linked<a class="headerlink" href="#libraqm-is-now-dynamically-linked" title="Permalink to this headline">¶</a></h3>
+<p>The libraqm dependency for complex text scripts is now linked
+dynamically at runtime rather than at packaging time. This allows us
+to release binaries with support for libraqm if it is installed on the
+user’s machine.</p>
+</div>
+<div class="section" id="source-layout-changes">
+<h3>Source Layout Changes<a class="headerlink" href="#source-layout-changes" title="Permalink to this headline">¶</a></h3>
+<p>The Pillow source is now stored within the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory of the
+distribution. This prevents accidental imports of the PIL directory
+when running Python from the project directory.</p>
+</div>
+<div class="section" id="setup-py-changes">
+<h3>Setup.py Changes<a class="headerlink" href="#setup-py-changes" title="Permalink to this headline">¶</a></h3>
+<p>Multiarch support on Linux should be more robust, especially on Debian
+derivatives on ARM platforms. Debian’s multiarch platform
+configuration is run in preference to the sniffing of machine platform
+and architecture.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="4.3.0.html" class="btn btn-neutral float-right" title="4.3.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5.1.0.html" class="btn btn-neutral" title="5.1.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

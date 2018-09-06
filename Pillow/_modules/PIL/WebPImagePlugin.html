@@ -1,0 +1,527 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.WebPImagePlugin &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.WebPImagePlugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.WebPImagePlugin</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageFile</span><span class="p">,</span> <span class="n">_webp</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+
+
+<span class="n">_VALID_WEBP_MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;RGBX&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;RGBA&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_VALID_WEBP_LEGACY_MODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;RGB&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;RGBA&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="n">_VP8_MODES_BY_IDENTIFIER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sa">b</span><span class="s2">&quot;VP8 &quot;</span><span class="p">:</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span>
+    <span class="sa">b</span><span class="s2">&quot;VP8X&quot;</span><span class="p">:</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">,</span>
+    <span class="sa">b</span><span class="s2">&quot;VP8L&quot;</span><span class="p">:</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">,</span>  <span class="c1"># lossless</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">_accept</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="n">is_riff_file_format</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;RIFF&quot;</span>
+    <span class="n">is_webp_file</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;WEBP&quot;</span>
+    <span class="n">is_valid_vp8_mode</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_VP8_MODES_BY_IDENTIFIER</span>
+
+    <span class="k">return</span> <span class="n">is_riff_file_format</span> <span class="ow">and</span> <span class="n">is_webp_file</span> <span class="ow">and</span> <span class="n">is_valid_vp8_mode</span>
+
+
+<div class="viewcode-block" id="WebPImageFile"><a class="viewcode-back" href="../../reference/plugins.html#PIL.WebPImagePlugin.WebPImageFile">[docs]</a><span class="k">class</span> <span class="nc">WebPImageFile</span><span class="p">(</span><span class="n">ImageFile</span><span class="o">.</span><span class="n">ImageFile</span><span class="p">):</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;WEBP&quot;</span>
+    <span class="n">format_description</span> <span class="o">=</span> <span class="s2">&quot;WebP image&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_webp</span><span class="o">.</span><span class="n">HAVE_WEBPANIM</span><span class="p">:</span>
+            <span class="c1"># Legacy mode</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">icc_profile</span><span class="p">,</span> <span class="n">exif</span> <span class="o">=</span> \
+                <span class="n">_webp</span><span class="o">.</span><span class="n">WebPDecode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">icc_profile</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icc_profile</span>
+            <span class="k">if</span> <span class="n">exif</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;exif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exif</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Use the newer AnimDecoder API to parse the (possibly) animated file,</span>
+        <span class="c1"># and access muxed chunks like ICC/EXIF/XMP.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="n">_webp</span><span class="o">.</span><span class="n">WebPAnimDecoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+        <span class="c1"># Get info from decoder</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">loop_count</span><span class="p">,</span> <span class="n">bgcolor</span><span class="p">,</span> <span class="n">frame_count</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">get_info</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;loop&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loop_count</span>
+        <span class="n">bg_a</span><span class="p">,</span> <span class="n">bg_r</span><span class="p">,</span> <span class="n">bg_g</span><span class="p">,</span> <span class="n">bg_b</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">bgcolor</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">,</span> \
+            <span class="p">(</span><span class="n">bgcolor</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">,</span> \
+            <span class="p">(</span><span class="n">bgcolor</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">,</span> \
+            <span class="n">bgcolor</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;background&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">bg_r</span><span class="p">,</span> <span class="n">bg_g</span><span class="p">,</span> <span class="n">bg_b</span><span class="p">,</span> <span class="n">bg_a</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="n">frame_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Attempt to read ICC / EXIF / XMP chunks from file</span>
+        <span class="n">icc_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">get_chunk</span><span class="p">(</span><span class="s2">&quot;ICCP&quot;</span><span class="p">)</span>
+        <span class="n">exif</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">get_chunk</span><span class="p">(</span><span class="s2">&quot;EXIF&quot;</span><span class="p">)</span>
+        <span class="n">xmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">get_chunk</span><span class="p">(</span><span class="s2">&quot;XMP &quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">icc_profile</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">icc_profile</span>
+        <span class="k">if</span> <span class="n">exif</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;exif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exif</span>
+        <span class="k">if</span> <span class="n">xmp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;xmp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">xmp</span>
+
+        <span class="c1"># Initialize seek state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getexif</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.JpegImagePlugin</span> <span class="k">import</span> <span class="n">_getexif</span>
+        <span class="k">return</span> <span class="n">_getexif</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="WebPImageFile.seek"><a class="viewcode-back" href="../../reference/plugins.html#PIL.WebPImagePlugin.WebPImageFile.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_webp</span><span class="o">.</span><span class="n">HAVE_WEBPANIM</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># Perform some simple checks first</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;attempted to seek beyond end of sequence&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;negative frame index is not valid&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set logical frame to requested position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__logical_frame</span> <span class="o">=</span> <span class="n">frame</span></div>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__physical_frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__loaded</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_get_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Get next frame</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">get_next</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__physical_frame</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Check if an error occurred</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>   <span class="c1"># Reset just to be safe</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="s2">&quot;failed to decode next frame in WebP file&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Compute duration</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">ret</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__timestamp</span> <span class="o">=</span> <span class="n">timestamp</span>
+
+        <span class="c1"># libwebp gives frame end, adjust to start of frame</span>
+        <span class="n">timestamp</span> <span class="o">-=</span> <span class="n">duration</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">duration</span>
+
+    <span class="k">def</span> <span class="nf">_seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__physical_frame</span> <span class="o">==</span> <span class="n">frame</span><span class="p">:</span>
+            <span class="k">return</span>              <span class="c1"># Nothing to do</span>
+        <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__physical_frame</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>       <span class="c1"># Rewind to beginning</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__physical_frame</span> <span class="o">&lt;</span> <span class="n">frame</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_next</span><span class="p">()</span>    <span class="c1"># Advance to the requested frame</span>
+
+<div class="viewcode-block" id="WebPImageFile.load"><a class="viewcode-back" href="../../reference/plugins.html#PIL.WebPImagePlugin.WebPImageFile.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_webp</span><span class="o">.</span><span class="n">HAVE_WEBPANIM</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__loaded</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logical_frame</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logical_frame</span><span class="p">)</span>
+
+                <span class="c1"># We need to load the image data for this frame</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_next</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">timestamp</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__loaded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logical_frame</span>
+
+                <span class="c1"># Set tile</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tile</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WebPImageFile.tell"><a class="viewcode-back" href="../../reference/plugins.html#PIL.WebPImagePlugin.WebPImageFile.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_webp</span><span class="o">.</span><span class="n">HAVE_WEBPANIM</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logical_frame</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_save_all</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="n">encoderinfo</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">append_images</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;append_images&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+
+    <span class="c1"># If total frame count is 1, then save using the legacy API, which</span>
+    <span class="c1"># will preserve non-alpha modes</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ims</span> <span class="ow">in</span> <span class="p">[</span><span class="n">im</span><span class="p">]</span><span class="o">+</span><span class="n">append_images</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s2">&quot;n_frames&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">ims</span><span class="o">.</span><span class="n">n_frames</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">background</span> <span class="o">=</span> <span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;background&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;loop&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">minimize_size</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;minimize_size&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">kmin</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kmin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">kmax</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kmax&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">allow_mixed</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;allow_mixed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">lossless</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lossless&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">quality</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;quality&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">icc_profile</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">exif</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exif&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">xmp</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xmp&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">allow_mixed</span><span class="p">:</span>
+        <span class="n">lossless</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Sensible keyframe defaults are from gif2webp.c script</span>
+    <span class="k">if</span> <span class="n">kmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kmin</span> <span class="o">=</span> <span class="mi">9</span> <span class="k">if</span> <span class="n">lossless</span> <span class="k">else</span> <span class="mi">3</span>
+    <span class="k">if</span> <span class="n">kmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kmax</span> <span class="o">=</span> <span class="mi">17</span> <span class="k">if</span> <span class="n">lossless</span> <span class="k">else</span> <span class="mi">5</span>
+
+    <span class="c1"># Validate background color</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">background</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">background</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span> <span class="ow">or</span>
+            <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">256</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">background</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Background color is not an RGBA tuple clamped &quot;</span>
+                      <span class="s2">&quot;to (0-255): </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">background</span><span class="p">))</span>
+
+    <span class="c1"># Convert to packed uint</span>
+    <span class="n">bg_r</span><span class="p">,</span> <span class="n">bg_g</span><span class="p">,</span> <span class="n">bg_b</span><span class="p">,</span> <span class="n">bg_a</span> <span class="o">=</span> <span class="n">background</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="p">(</span><span class="n">bg_a</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bg_r</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bg_g</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">bg_b</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Setup the WebP animation encoder</span>
+    <span class="n">enc</span> <span class="o">=</span> <span class="n">_webp</span><span class="o">.</span><span class="n">WebPAnimEncoder</span><span class="p">(</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">background</span><span class="p">,</span>
+        <span class="n">loop</span><span class="p">,</span>
+        <span class="n">minimize_size</span><span class="p">,</span>
+        <span class="n">kmin</span><span class="p">,</span> <span class="n">kmax</span><span class="p">,</span>
+        <span class="n">allow_mixed</span><span class="p">,</span>
+        <span class="n">verbose</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Add each frame</span>
+    <span class="n">frame_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cur_idx</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ims</span> <span class="ow">in</span> <span class="p">[</span><span class="n">im</span><span class="p">]</span><span class="o">+</span><span class="n">append_images</span><span class="p">:</span>
+            <span class="c1"># Get # of frames in this image</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ims</span><span class="p">,</span> <span class="s2">&quot;n_frames&quot;</span><span class="p">):</span>
+                <span class="n">nfr</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nfr</span> <span class="o">=</span> <span class="n">ims</span><span class="o">.</span><span class="n">n_frames</span>
+
+            <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nfr</span><span class="p">):</span>
+                <span class="n">ims</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                <span class="n">ims</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+                <span class="c1"># Make sure image mode is supported</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">ims</span>
+                <span class="k">if</span> <span class="n">ims</span><span class="o">.</span><span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_VALID_WEBP_MODES</span><span class="p">:</span>
+                    <span class="n">alpha</span> <span class="o">=</span> <span class="n">ims</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span> <span class="ow">and</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">ims</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">getpalettemode</span><span class="p">()</span>
+                    <span class="n">frame</span> <span class="o">=</span> <span class="n">ims</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span> <span class="k">if</span> <span class="n">alpha</span> <span class="k">else</span> <span class="s1">&#39;RGBX&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Append the frame to the animation encoder</span>
+                <span class="n">enc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                    <span class="n">frame</span><span class="o">.</span><span class="n">tobytes</span><span class="p">(),</span>
+                    <span class="n">timestamp</span><span class="p">,</span>
+                    <span class="n">frame</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frame</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">frame</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                    <span class="n">lossless</span><span class="p">,</span>
+                    <span class="n">quality</span><span class="p">,</span>
+                    <span class="n">method</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Update timestamp and frame index</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                    <span class="n">timestamp</span> <span class="o">+=</span> <span class="n">duration</span><span class="p">[</span><span class="n">frame_idx</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">timestamp</span> <span class="o">+=</span> <span class="n">duration</span>
+                <span class="n">frame_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">cur_idx</span><span class="p">)</span>
+
+    <span class="c1"># Force encoder to flush frames</span>
+    <span class="n">enc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timestamp</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">lossless</span><span class="p">,</span> <span class="n">quality</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get the final output from the encoder</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">enc</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="n">icc_profile</span><span class="p">,</span> <span class="n">exif</span><span class="p">,</span> <span class="n">xmp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write file as WebP (encoder returned None)&quot;</span><span class="p">)</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="n">lossless</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lossless&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">quality</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;quality&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">icc_profile</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;icc_profile&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">exif</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exif&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">xmp</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">encoderinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xmp&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_VALID_WEBP_LEGACY_MODES</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;P&#39;</span> <span class="ow">and</span> <span class="s1">&#39;A&#39;</span> <span class="ow">in</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">getpalettemode</span><span class="p">()</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span> <span class="k">if</span> <span class="n">alpha</span> <span class="k">else</span> <span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">_webp</span><span class="o">.</span><span class="n">WebPEncode</span><span class="p">(</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">tobytes</span><span class="p">(),</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">lossless</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">quality</span><span class="p">),</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+        <span class="n">icc_profile</span><span class="p">,</span>
+        <span class="n">exif</span><span class="p">,</span>
+        <span class="n">xmp</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;cannot write file as WebP (encoder returned None)&quot;</span><span class="p">)</span>
+
+    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="n">Image</span><span class="o">.</span><span class="n">register_open</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">WebPImageFile</span><span class="p">,</span> <span class="n">_accept</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_save</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">_webp</span><span class="o">.</span><span class="n">HAVE_WEBPANIM</span><span class="p">:</span>
+    <span class="n">Image</span><span class="o">.</span><span class="n">register_save_all</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">_save_all</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_extension</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;.webp&quot;</span><span class="p">)</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">register_mime</span><span class="p">(</span><span class="n">WebPImageFile</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="s2">&quot;image/webp&quot;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

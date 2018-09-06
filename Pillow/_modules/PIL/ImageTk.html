@@ -1,0 +1,514 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageTk &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageTk</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageTk</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># a Tk display interface</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 96-04-08 fl   Created</span>
+<span class="c1"># 96-09-06 fl   Added getimage method</span>
+<span class="c1"># 96-11-01 fl   Rewritten, removed image attribute and crop method</span>
+<span class="c1"># 97-05-09 fl   Use PyImagingPaste method instead of image type</span>
+<span class="c1"># 97-05-12 fl   Minor tweaks to match the IFUNC95 interface</span>
+<span class="c1"># 97-05-17 fl   Support the &quot;pilbitmap&quot; booster patch</span>
+<span class="c1"># 97-06-05 fl   Added file= and data= argument to image constructors</span>
+<span class="c1"># 98-03-09 fl   Added width and height methods to Image classes</span>
+<span class="c1"># 98-07-02 fl   Use default mode for &quot;P&quot; images without palette attribute</span>
+<span class="c1"># 98-07-02 fl   Explicitly destroy Tkinter image objects</span>
+<span class="c1"># 99-07-24 fl   Support multiple Tk interpreters (from Greg Couch)</span>
+<span class="c1"># 99-07-26 fl   Automatically hook into Tkinter (if possible)</span>
+<span class="c1"># 99-08-15 fl   Hook uses _imagingtk instead of _imaging</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-1999 by Secret Labs AB</span>
+<span class="c1"># Copyright (c) 1996-1997 by Fredrik Lundh</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">tkinter</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">Tkinter</span> <span class="k">as</span> <span class="nn">tkinter</span>
+
+<span class="c1"># required for pypy, which always has cffi installed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cffi</span> <span class="k">import</span> <span class="n">FFI</span>
+    <span class="n">ffi</span> <span class="o">=</span> <span class="n">FFI</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># Check for Tkinter interface hooks</span>
+
+<span class="n">_pilbitmap_ok</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_pilbitmap_check</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_pilbitmap_ok</span>
+    <span class="k">if</span> <span class="n">_pilbitmap_ok</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">tkinter</span><span class="o">.</span><span class="n">BitmapImage</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="s2">&quot;PIL:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">_pilbitmap_ok</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+            <span class="n">_pilbitmap_ok</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">_pilbitmap_ok</span>
+
+
+<span class="k">def</span> <span class="nf">_get_image_from_kw</span><span class="p">(</span><span class="n">kw</span><span class="p">):</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">&quot;file&quot;</span> <span class="ow">in</span> <span class="n">kw</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">kw</span><span class="p">:</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">source</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># PhotoImage</span>
+
+<div class="viewcode-block" id="PhotoImage"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.PhotoImage">[docs]</a><span class="k">class</span> <span class="nc">PhotoImage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Tkinter-compatible photo image.  This can be used</span>
+<span class="sd">    everywhere Tkinter expects an image object.  If the image is an RGBA</span>
+<span class="sd">    image, pixels having alpha 0 are treated as transparent.</span>
+
+<span class="sd">    The constructor takes either a PIL image, or a mode and a size.</span>
+<span class="sd">    Alternatively, you can use the **file** or **data** options to initialize</span>
+<span class="sd">    the photo image object.</span>
+
+<span class="sd">    :param image: Either a PIL image, or a mode string.  If a mode string is</span>
+<span class="sd">                  used, a size must also be given.</span>
+<span class="sd">    :param size: If the first argument is a mode string, this defines the size</span>
+<span class="sd">                 of the image.</span>
+<span class="sd">    :keyword file: A filename to load the image from (using</span>
+<span class="sd">                   ``Image.open(file)``).</span>
+<span class="sd">    :keyword data: An 8-bit string containing image data (as loaded from an</span>
+<span class="sd">                   image file).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+        <span class="c1"># Tk compatibility: file or data</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">_get_image_from_kw</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">):</span>
+            <span class="c1"># got an image instead of a mode</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+                <span class="c1"># palette mapped data</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">mode</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span>  <span class="c1"># default</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="s2">&quot;RGBA&quot;</span><span class="p">]:</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">getmodebase</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">PhotoImage</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">tk</span>
+        <span class="k">if</span> <span class="n">image</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">paste</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># ignore internal errors</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the Tkinter photo image identifier.  This method is automatically</span>
+<span class="sd">        called by Tkinter whenever a PhotoImage object is passed to a Tkinter</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        :return: A Tkinter photo image identifier (a string).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhotoImage.width"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.PhotoImage.width">[docs]</a>    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the width of the image.</span>
+
+<span class="sd">        :return: The width, in pixels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PhotoImage.height"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.PhotoImage.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the height of the image.</span>
+
+<span class="sd">        :return: The height, in pixels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PhotoImage.paste"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.PhotoImage.paste">[docs]</a>    <span class="k">def</span> <span class="nf">paste</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Paste a PIL image into the photo image.  Note that this can</span>
+<span class="sd">        be very slow if the photo image is displayed.</span>
+
+<span class="sd">        :param im: A PIL image. The size must match the target region.  If the</span>
+<span class="sd">                   mode does not match, the image is converted to the mode of</span>
+<span class="sd">                   the bitmap image.</span>
+<span class="sd">        :param box: A 4-tuple defining the left, upper, right, and lower pixel</span>
+<span class="sd">                    coordinate. See :ref:`coordinate-system`. If None is given</span>
+<span class="sd">                    instead of a tuple, all of the image is assumed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># convert to blittable</span>
+        <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">im</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">isblock</span><span class="p">()</span> <span class="ow">and</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mode</span><span class="p">:</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">new_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__mode</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">convert2</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>  <span class="c1"># convert directly between buffers</span>
+
+        <span class="n">tk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">tk</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;PyImagingPhoto&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">:</span>
+            <span class="c1"># activate Tkinter hook</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_imagingtk</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tk</span><span class="p">,</span> <span class="s1">&#39;interp&#39;</span><span class="p">):</span>
+                        <span class="c1"># Pypy is using a ffi cdata element</span>
+                        <span class="c1"># (Pdb) self.tk.interp</span>
+                        <span class="c1">#  &lt;cdata &#39;Tcl_Interp *&#39; 0x3061b50&gt;</span>
+                        <span class="n">_imagingtk</span><span class="o">.</span><span class="n">tkinit</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;uintptr_t&quot;</span><span class="p">,</span> <span class="n">tk</span><span class="o">.</span><span class="n">interp</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_imagingtk</span><span class="o">.</span><span class="n">tkinit</span><span class="p">(</span><span class="n">tk</span><span class="o">.</span><span class="n">interpaddr</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">_imagingtk</span><span class="o">.</span><span class="n">tkinit</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">tk</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;PyImagingPhoto&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">TclError</span><span class="p">):</span>
+                <span class="k">raise</span>  <span class="c1"># configuration problem; cannot attach to Tkinter</span></div></div>
+
+<span class="c1"># --------------------------------------------------------------------</span>
+<span class="c1"># BitmapImage</span>
+
+
+<div class="viewcode-block" id="BitmapImage"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.BitmapImage">[docs]</a><span class="k">class</span> <span class="nc">BitmapImage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Tkinter-compatible bitmap image.  This can be used everywhere Tkinter</span>
+<span class="sd">    expects an image object.</span>
+
+<span class="sd">    The given image must have mode &quot;1&quot;.  Pixels having value 0 are treated as</span>
+<span class="sd">    transparent.  Options, if any, are passed on to Tkinter.  The most commonly</span>
+<span class="sd">    used option is **foreground**, which is used to specify the color for the</span>
+<span class="sd">    non-transparent parts.  See the Tkinter documentation for information on</span>
+<span class="sd">    how to specify colours.</span>
+
+<span class="sd">    :param image: A PIL image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+        <span class="c1"># Tk compatibility: file or data</span>
+        <span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">_get_image_from_kw</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__mode</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__size</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">if</span> <span class="n">_pilbitmap_check</span><span class="p">():</span>
+            <span class="c1"># fast way (requires the pilbitmap booster patch)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PIL:</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">image</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__im</span> <span class="o">=</span> <span class="n">image</span>  <span class="c1"># must keep a reference</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># slow but safe way</span>
+            <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">tobitmap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">BitmapImage</span><span class="p">(</span><span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># ignore internal errors</span>
+
+<div class="viewcode-block" id="BitmapImage.width"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.BitmapImage.width">[docs]</a>    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the width of the image.</span>
+
+<span class="sd">        :return: The width, in pixels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BitmapImage.height"><a class="viewcode-back" href="../../reference/ImageTk.html#PIL.ImageTk.BitmapImage.height">[docs]</a>    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the height of the image.</span>
+
+<span class="sd">        :return: The height, in pixels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the Tkinter bitmap image identifier.  This method is automatically</span>
+<span class="sd">        called by Tkinter whenever a BitmapImage object is passed to a Tkinter</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        :return: A Tkinter bitmap image identifier (a string).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__photo</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">getimage</span><span class="p">(</span><span class="n">photo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; This function is unimplemented &quot;&quot;&quot;</span>
+
+    <span class="sd">&quot;&quot;&quot;Copies the contents of a PhotoImage to a PIL image memory.&quot;&quot;&quot;</span>
+    <span class="n">photo</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s2">&quot;PyImagingPhotoGet&quot;</span><span class="p">,</span> <span class="n">photo</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_show</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper for the Image.show method.&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">UI</span><span class="p">(</span><span class="n">tkinter</span><span class="o">.</span><span class="n">Label</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="n">im</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">BitmapImage</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">foreground</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="n">master</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">PhotoImage</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">master</span><span class="o">=</span><span class="n">master</span><span class="p">)</span>
+            <span class="n">tkinter</span><span class="o">.</span><span class="n">Label</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">master</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+                                   <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">bd</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">_default_root</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;tkinter not initialized&quot;</span><span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Toplevel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+        <span class="n">top</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">UI</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

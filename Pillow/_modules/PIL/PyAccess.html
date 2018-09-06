@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.PyAccess &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.PyAccess</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.PyAccess</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library</span>
+<span class="c1"># Pillow fork</span>
+<span class="c1">#</span>
+<span class="c1"># Python implementation of the PixelAccess Object</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2009 by Secret Labs AB.  All rights reserved.</span>
+<span class="c1"># Copyright (c) 1995-2009 by Fredrik Lundh.</span>
+<span class="c1"># Copyright (c) 2013 Eric Soroos</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution</span>
+<span class="c1">#</span>
+
+<span class="c1"># Notes:</span>
+<span class="c1">#</span>
+<span class="c1">#  * Implements the pixel access object following Access.</span>
+<span class="c1">#  * Does not implement the line functions, as they don&#39;t appear to be used</span>
+<span class="c1">#  * Taking only the tuple form, which is used from python.</span>
+<span class="c1">#    * Fill.c uses the integer form, but it&#39;s still going to use the old</span>
+<span class="c1">#      Access.c implementation.</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">cffi</span> <span class="k">import</span> <span class="n">FFI</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="n">defs</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">struct Pixel_RGBA {</span>
+<span class="s2">    unsigned char r,g,b,a;</span>
+<span class="s2">};</span>
+<span class="s2">struct Pixel_I16 {</span>
+<span class="s2">    unsigned char l,r;</span>
+<span class="s2">};</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">ffi</span> <span class="o">=</span> <span class="n">FFI</span><span class="p">()</span>
+<span class="n">ffi</span><span class="o">.</span><span class="n">cdef</span><span class="p">(</span><span class="n">defs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PyAccess"><a class="viewcode-back" href="../../reference/PyAccess.html#PIL.PyAccess.PyAccess">[docs]</a><span class="k">class</span> <span class="nc">PyAccess</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">unsafe_ptrs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span> <span class="o">=</span> <span class="n">readonly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image8</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;unsigned char **&#39;</span><span class="p">,</span> <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;image8&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image32</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;int **&#39;</span><span class="p">,</span> <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;image32&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;unsigned char **&#39;</span><span class="p">,</span> <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ysize</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">im</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="c1"># Keep pointer to im object to prevent dereferencing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_im</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">im</span>
+
+        <span class="c1"># Debugging is polluting test traces, only useful here</span>
+        <span class="c1"># when hacking on PyAccess</span>
+        <span class="c1"># logger.debug(&quot;%s&quot;, vals)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_init</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Modifies the pixel at x,y. The color is given as a single</span>
+<span class="sd">        numerical value for single band images, and a tuple for</span>
+<span class="sd">        multi-band images</span>
+
+<span class="sd">        :param xy: The pixel coordinate, given as (x, y). See</span>
+<span class="sd">           :ref:`coordinate-system`.</span>
+<span class="sd">        :param color: The pixel value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Attempt to putpixel a read only image&#39;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_xy</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the pixel at x,y. The pixel is returned as a single</span>
+<span class="sd">        value for single band images or a tuple for multiple band</span>
+<span class="sd">        images</span>
+
+<span class="sd">        :param xy: The pixel coordinate, given as (x, y). See</span>
+<span class="sd">          :ref:`coordinate-system`.</span>
+<span class="sd">        :returns: a pixel value for single band images, a tuple of</span>
+<span class="sd">          pixel values for multiband images.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_xy</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="n">putpixel</span> <span class="o">=</span> <span class="fm">__setitem__</span>
+    <span class="n">getpixel</span> <span class="o">=</span> <span class="fm">__getitem__</span>
+
+    <span class="k">def</span> <span class="nf">check_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">):</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">xy</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">xsize</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ysize</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;pixel location out of range&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xy</span></div>
+
+
+<span class="k">class</span> <span class="nc">_PyAccess32_2</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PA, LA, stored in first and last bytes of a 32 bit word &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;struct Pixel_RGBA **&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pixel</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="c1"># tuple</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccess32_3</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; RGB and friends, stored in the first three bytes of a 32 bit word &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;struct Pixel_RGBA **&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pixel</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="c1"># tuple</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">255</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccess32_4</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; RGBA etc, all 4 bytes of a 32 bit word &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">&quot;struct Pixel_RGBA **&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">pixel</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">pixel</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="c1"># tuple</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccess8</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 1, L, P, 8 bit images stored as uint8 &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image8</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># integer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># tuple</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">255</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessI16_N</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; I;16 access, native bitendian without conversion &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;unsigned short **&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># integer</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="mi">65535</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># tuple</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">65535</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessI16_L</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; I;16L access, with conversion &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;struct Pixel_I16 **&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pixel</span><span class="o">.</span><span class="n">l</span> <span class="o">+</span> <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="mi">256</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="mi">65535</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">65535</span><span class="p">)</span>
+
+        <span class="n">pixel</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">color</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessI16_B</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; I;16B access, with conversion &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;struct Pixel_I16 **&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pixel</span><span class="o">.</span><span class="n">l</span> <span class="o">*</span> <span class="mi">256</span> <span class="o">+</span> <span class="n">pixel</span><span class="o">.</span><span class="n">r</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="n">pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="mi">65535</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">65535</span><span class="p">)</span>
+
+        <span class="n">pixel</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">color</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span>
+        <span class="n">pixel</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">color</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessI32_N</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Signed Int32 access, native endian &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessI32_Swap</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; I;32L/B access, with byteswapping conversion &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span>
+
+    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">orig</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;int *&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">chars</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;unsigned char *&#39;</span><span class="p">,</span> <span class="n">orig</span><span class="p">)</span>
+        <span class="n">chars</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">chars</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">chars</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">chars</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">chars</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">chars</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> \
+            <span class="n">chars</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">chars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;int *&#39;</span><span class="p">,</span> <span class="n">chars</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_PyAccessF</span><span class="p">(</span><span class="n">PyAccess</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; 32 bit float access &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span> <span class="o">=</span> <span class="n">ffi</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s1">&#39;float **&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">set_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># not a tuple</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># tuple</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixels</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="n">mode_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="n">_PyAccess8</span><span class="p">,</span>
+            <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="n">_PyAccess8</span><span class="p">,</span>
+            <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="n">_PyAccess8</span><span class="p">,</span>
+            <span class="s1">&#39;LA&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_2</span><span class="p">,</span>
+            <span class="s1">&#39;La&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_2</span><span class="p">,</span>
+            <span class="s1">&#39;PA&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_2</span><span class="p">,</span>
+            <span class="s1">&#39;RGB&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_3</span><span class="p">,</span>
+            <span class="s1">&#39;LAB&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_3</span><span class="p">,</span>
+            <span class="s1">&#39;HSV&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_3</span><span class="p">,</span>
+            <span class="s1">&#39;YCbCr&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_3</span><span class="p">,</span>
+            <span class="s1">&#39;RGBA&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_4</span><span class="p">,</span>
+            <span class="s1">&#39;RGBa&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_4</span><span class="p">,</span>
+            <span class="s1">&#39;RGBX&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_4</span><span class="p">,</span>
+            <span class="s1">&#39;CMYK&#39;</span><span class="p">:</span> <span class="n">_PyAccess32_4</span><span class="p">,</span>
+            <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="n">_PyAccessF</span><span class="p">,</span>
+            <span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="n">_PyAccessI32_N</span><span class="p">,</span>
+            <span class="p">}</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span> <span class="o">==</span> <span class="s1">&#39;little&#39;</span><span class="p">:</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_N</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16L&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_N</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_B</span>
+
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;32L&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI32_N</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;32B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI32_Swap</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_L</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16L&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_L</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;16B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI16_N</span>
+
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;32L&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI32_Swap</span>
+    <span class="n">mode_map</span><span class="p">[</span><span class="s1">&#39;I;32B&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PyAccessI32_N</span>
+
+
+<span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">access_type</span> <span class="o">=</span> <span class="n">mode_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">access_type</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;PyAccess Not Implemented: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">img</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">access_type</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">readonly</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

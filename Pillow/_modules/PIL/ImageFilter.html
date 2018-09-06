@@ -1,0 +1,697 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PIL.ImageFilter &mdash; Pillow (PIL Fork) 5.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Pillow (PIL Fork)
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../handbook/index.html">Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/index.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../porting.html">Porting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../releasenotes/index.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pillow (PIL Fork)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>PIL.ImageFilter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for PIL.ImageFilter</h1><div class="highlight"><pre>
+<span></span><span class="c1">#</span>
+<span class="c1"># The Python Imaging Library.</span>
+<span class="c1"># $Id$</span>
+<span class="c1">#</span>
+<span class="c1"># standard filters</span>
+<span class="c1">#</span>
+<span class="c1"># History:</span>
+<span class="c1"># 1995-11-27 fl   Created</span>
+<span class="c1"># 2002-06-08 fl   Added rank and mode filters</span>
+<span class="c1"># 2003-09-15 fl   Fixed rank calculation in rank filter; added expand call</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 1997-2003 by Secret Labs AB.</span>
+<span class="c1"># Copyright (c) 1995-2002 by Fredrik Lundh.</span>
+<span class="c1">#</span>
+<span class="c1"># See the README file for information on usage and redistribution.</span>
+<span class="c1">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">numpy</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">MultibandFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="Kernel"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.Kernel">[docs]</a><span class="k">class</span> <span class="nc">Kernel</span><span class="p">(</span><span class="n">MultibandFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a convolution kernel.  The current version only</span>
+<span class="sd">    supports 3x3 and 5x5 integer and floating point kernels.</span>
+
+<span class="sd">    In the current version, kernels can only be applied to</span>
+<span class="sd">    &quot;L&quot; and &quot;RGB&quot; images.</span>
+
+<span class="sd">    :param size: Kernel size, given as (width, height). In the current</span>
+<span class="sd">                    version, this must be (3,3) or (5,5).</span>
+<span class="sd">    :param kernel: A sequence containing kernel weights.</span>
+<span class="sd">    :param scale: Scale factor. If given, the result for each pixel is</span>
+<span class="sd">                    divided by this value.  the default is the sum of the</span>
+<span class="sd">                    kernel weights.</span>
+<span class="sd">    :param offset: Offset. If given, this value is added to the result,</span>
+<span class="sd">                    after it has been divided by the scale factor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Kernel&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># default scale is sum of kernel</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;not enough coefficients in kernel&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filterargs</span> <span class="o">=</span> <span class="n">size</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">kernel</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot filter palette images&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">filterargs</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">BuiltinFilter</span><span class="p">(</span><span class="n">Kernel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="RankFilter"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.RankFilter">[docs]</a><span class="k">class</span> <span class="nc">RankFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a rank filter.  The rank filter sorts all pixels in</span>
+<span class="sd">    a window of the given size, and returns the **rank**&#39;th value.</span>
+
+<span class="sd">    :param size: The kernel size, in pixels.</span>
+<span class="sd">    :param rank: What pixel value to pick.  Use 0 for a min filter,</span>
+<span class="sd">                 ``size * size / 2`` for a median filter, ``size * size - 1``</span>
+<span class="sd">                 for a max filter, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Rank&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">rank</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot filter palette images&quot;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">rankfilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MedianFilter"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.MedianFilter">[docs]</a><span class="k">class</span> <span class="nc">MedianFilter</span><span class="p">(</span><span class="n">RankFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a median filter. Picks the median pixel value in a window with the</span>
+<span class="sd">    given size.</span>
+
+<span class="sd">    :param size: The kernel size, in pixels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Median&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">size</span><span class="o">*</span><span class="n">size</span><span class="o">//</span><span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="MinFilter"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.MinFilter">[docs]</a><span class="k">class</span> <span class="nc">MinFilter</span><span class="p">(</span><span class="n">RankFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a min filter.  Picks the lowest pixel value in a window with the</span>
+<span class="sd">    given size.</span>
+
+<span class="sd">    :param size: The kernel size, in pixels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Min&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="MaxFilter"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.MaxFilter">[docs]</a><span class="k">class</span> <span class="nc">MaxFilter</span><span class="p">(</span><span class="n">RankFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a max filter.  Picks the largest pixel value in a window with the</span>
+<span class="sd">    given size.</span>
+
+<span class="sd">    :param size: The kernel size, in pixels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Max&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">size</span><span class="o">*</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="ModeFilter"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.ModeFilter">[docs]</a><span class="k">class</span> <span class="nc">ModeFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a mode filter. Picks the most frequent pixel value in a box with the</span>
+<span class="sd">    given size.  Pixel values that occur only once or twice are ignored; if no</span>
+<span class="sd">    pixel value occurs more than twice, the original pixel value is preserved.</span>
+
+<span class="sd">    :param size: The kernel size, in pixels.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Mode&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">modefilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GaussianBlur"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.GaussianBlur">[docs]</a><span class="k">class</span> <span class="nc">GaussianBlur</span><span class="p">(</span><span class="n">MultibandFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian blur filter.</span>
+
+<span class="sd">    :param radius: Blur radius.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;GaussianBlur&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">gaussian_blur</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BoxBlur"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.BoxBlur">[docs]</a><span class="k">class</span> <span class="nc">BoxBlur</span><span class="p">(</span><span class="n">MultibandFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Blurs the image by setting each pixel to the average value of the pixels</span>
+<span class="sd">    in a square box extending radius pixels in each direction.</span>
+<span class="sd">    Supports float radius of arbitrary size. Uses an optimized implementation</span>
+<span class="sd">    which runs in linear time relative to the size of the image</span>
+<span class="sd">    for any radius value.</span>
+
+<span class="sd">    :param radius: Size of the box in one direction. Radius 0 does not blur,</span>
+<span class="sd">                   returns an identical image. Radius 1 takes 1 pixel</span>
+<span class="sd">                   in each direction, i.e. 9 pixels in total.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;BoxBlur&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">box_blur</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UnsharpMask"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.UnsharpMask">[docs]</a><span class="k">class</span> <span class="nc">UnsharpMask</span><span class="p">(</span><span class="n">MultibandFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unsharp mask filter.</span>
+
+<span class="sd">    See Wikipedia&#39;s entry on `digital unsharp masking`_ for an explanation of</span>
+<span class="sd">    the parameters.</span>
+
+<span class="sd">    :param radius: Blur Radius</span>
+<span class="sd">    :param percent: Unsharp strength, in percent</span>
+<span class="sd">    :param threshold: Threshold controls the minimum brightness change that</span>
+<span class="sd">      will be sharpened</span>
+
+<span class="sd">    .. _digital unsharp masking: https://en.wikipedia.org/wiki/Unsharp_masking#Digital_unsharp_masking</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;UnsharpMask&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">percent</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percent</span> <span class="o">=</span> <span class="n">percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">unsharp_mask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">percent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">BLUR</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Blur&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">CONTOUR</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Contour&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">DETAIL</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Detail&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">EDGE_ENHANCE</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Edge-enhance&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">EDGE_ENHANCE_MORE</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Edge-enhance More&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">EMBOSS</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Emboss&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">FIND_EDGES</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Find Edges&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SHARPEN</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Sharpen&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SMOOTH</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Smooth&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SMOOTH_MORE</span><span class="p">(</span><span class="n">BuiltinFilter</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Smooth More&quot;</span>
+    <span class="n">filterargs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="Color3DLUT"><a class="viewcode-back" href="../../reference/ImageFilter.html#PIL.ImageFilter.Color3DLUT">[docs]</a><span class="k">class</span> <span class="nc">Color3DLUT</span><span class="p">(</span><span class="n">MultibandFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Three-dimensional color lookup table.</span>
+
+<span class="sd">    Transforms 3-channel pixels using the values of the channels as coordinates</span>
+<span class="sd">    in the 3D lookup table and interpolating the nearest elements.</span>
+
+<span class="sd">    This method allows you to apply almost any color transformation</span>
+<span class="sd">    in constant time by using pre-calculated decimated tables.</span>
+
+<span class="sd">    .. versionadded:: 5.2.0</span>
+
+<span class="sd">    :param size: Size of the table. One int or tuple of (int, int, int).</span>
+<span class="sd">                 Minimal size in any dimension is 2, maximum is 65.</span>
+<span class="sd">    :param table: Flat lookup table. A list of ``channels * size**3``</span>
+<span class="sd">                  float elements or a list of ``size**3`` channels-sized</span>
+<span class="sd">                  tuples with floats. Channels are changed first,</span>
+<span class="sd">                  then first dimension, then second, then third.</span>
+<span class="sd">                  Value 0.0 corresponds lowest value of output, 1.0 highest.</span>
+<span class="sd">    :param channels: Number of channels in the table. Could be 3 or 4.</span>
+<span class="sd">                     Default is 3.</span>
+<span class="sd">    :param target_mode: A mode for the result image. Should have not less</span>
+<span class="sd">                        than ``channels`` channels. Default is ``None``,</span>
+<span class="sd">                        which means that mode wouldn&#39;t be changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Color 3D LUT&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">target_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only 3 or 4 output channels are supported&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_size</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">target_mode</span>
+
+        <span class="c1"># Hidden flag `_copy_table=False` could be used to avoid extra copying</span>
+        <span class="c1"># of the table if the table is specially made for the constructor.</span>
+        <span class="n">copy_table</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_copy_table&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">wrong_size</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">numpy</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">copy_table</span><span class="p">:</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">shape</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">items</span> <span class="o">*</span> <span class="n">channels</span><span class="p">,),</span> <span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">channels</span><span class="p">),</span>
+                               <span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">channels</span><span class="p">)]:</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">items</span> <span class="o">*</span> <span class="n">channels</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wrong_size</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">copy_table</span><span class="p">:</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+
+            <span class="c1"># Convert to a flat list</span>
+            <span class="k">if</span> <span class="n">table</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="n">table</span><span class="p">,</span> <span class="n">raw_table</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">table</span>
+                <span class="k">for</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="n">raw_table</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixel</span><span class="p">)</span> <span class="o">!=</span> <span class="n">channels</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;The elements of the table should &quot;</span>
+                            <span class="s2">&quot;have a length of </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channels</span><span class="p">))</span>
+                    <span class="n">table</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pixel</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">wrong_size</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">!=</span> <span class="n">items</span> <span class="o">*</span> <span class="n">channels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The table should have either channels * size**3 float items &quot;</span>
+                <span class="s2">&quot;or size**3 items of channels-sized tuples with floats. &quot;</span>
+                <span class="s2">&quot;Table should be: </span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">x</span><span class="si">{}</span><span class="s2">. Actual length: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">channels</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_size</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Size should be either an integer or &quot;</span>
+                             <span class="s2">&quot;a tuple of three integers.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">size</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">size1D</span> <span class="ow">in</span> <span class="n">size</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">size1D</span> <span class="o">&lt;=</span> <span class="mi">65</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Size should be in [2, 65] range.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">size</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">target_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates new LUT using provided callback.</span>
+
+<span class="sd">        :param size: Size of the table. Passed to the constructor.</span>
+<span class="sd">        :param callback: Function with three parameters which correspond</span>
+<span class="sd">                         three color channels. Will be called ``size**3``</span>
+<span class="sd">                         times with values from 0.0 to 1.0 and should return</span>
+<span class="sd">                         a tuple with ``channels`` elements.</span>
+<span class="sd">        :param channels: The number of channels which should return callback.</span>
+<span class="sd">        :param target_mode: Passed to the constructor of the resulting</span>
+<span class="sd">                            lookup table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size1D</span><span class="p">,</span> <span class="n">size2D</span><span class="p">,</span> <span class="n">size3D</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_size</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only 3 or 4 output channels are supported&quot;</span><span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size1D</span> <span class="o">*</span> <span class="n">size2D</span> <span class="o">*</span> <span class="n">size3D</span> <span class="o">*</span> <span class="n">channels</span><span class="p">)</span>
+        <span class="n">idx_out</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size3D</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size2D</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size1D</span><span class="p">):</span>
+                    <span class="n">table</span><span class="p">[</span><span class="n">idx_out</span><span class="p">:</span><span class="n">idx_out</span> <span class="o">+</span> <span class="n">channels</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span>
+                        <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="n">size1D</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">size2D</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="n">size3D</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="n">idx_out</span> <span class="o">+=</span> <span class="n">channels</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">((</span><span class="n">size1D</span><span class="p">,</span> <span class="n">size2D</span><span class="p">,</span> <span class="n">size3D</span><span class="p">),</span> <span class="n">table</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+                   <span class="n">target_mode</span><span class="o">=</span><span class="n">target_mode</span><span class="p">,</span> <span class="n">_copy_table</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">with_normals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">target_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transforms the table values using provided callback and returns</span>
+<span class="sd">        a new LUT with altered values.</span>
+
+<span class="sd">        :param callback: A function which takes old lookup table values</span>
+<span class="sd">                         and returns a new set of values. The number</span>
+<span class="sd">                         of arguments which function should take is</span>
+<span class="sd">                         ``self.channels`` or ``3 + self.channels``</span>
+<span class="sd">                         if ``with_normals`` flag is set.</span>
+<span class="sd">                         Should return a tuple of ``self.channels`` or</span>
+<span class="sd">                         ``channels`` elements if it is set.</span>
+<span class="sd">        :param with_normals: If true, ``callback`` will be called with</span>
+<span class="sd">                             coordinates in the color cube as the first</span>
+<span class="sd">                             three arguments. Otherwise, ``callback``</span>
+<span class="sd">                             will be called only with actual color values.</span>
+<span class="sd">        :param channels: The number of channels in the resulting lookup table.</span>
+<span class="sd">        :param target_mode: Passed to the constructor of the resulting</span>
+<span class="sd">                            lookup table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only 3 or 4 output channels are supported&quot;</span><span class="p">)</span>
+        <span class="n">ch_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span>
+        <span class="n">ch_out</span> <span class="o">=</span> <span class="n">channels</span> <span class="ow">or</span> <span class="n">ch_in</span>
+        <span class="n">size1D</span><span class="p">,</span> <span class="n">size2D</span><span class="p">,</span> <span class="n">size3D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size1D</span> <span class="o">*</span> <span class="n">size2D</span> <span class="o">*</span> <span class="n">size3D</span> <span class="o">*</span> <span class="n">ch_out</span><span class="p">)</span>
+        <span class="n">idx_in</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">idx_out</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size3D</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size2D</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size1D</span><span class="p">):</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="n">idx_in</span><span class="p">:</span><span class="n">idx_in</span> <span class="o">+</span> <span class="n">ch_in</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">with_normals</span><span class="p">:</span>
+                        <span class="n">values</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="n">size1D</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">size2D</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                                          <span class="n">b</span> <span class="o">/</span> <span class="p">(</span><span class="n">size3D</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">*</span><span class="n">values</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">values</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+                    <span class="n">table</span><span class="p">[</span><span class="n">idx_out</span><span class="p">:</span><span class="n">idx_out</span> <span class="o">+</span> <span class="n">ch_out</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+                    <span class="n">idx_in</span> <span class="o">+=</span> <span class="n">ch_in</span>
+                    <span class="n">idx_out</span> <span class="o">+=</span> <span class="n">ch_out</span>
+
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">ch_out</span><span class="p">,</span>
+                          <span class="n">target_mode</span><span class="o">=</span><span class="n">target_mode</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                          <span class="n">_copy_table</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
+            <span class="s2">&quot;size=</span><span class="si">{:d}</span><span class="s2">x</span><span class="si">{:d}</span><span class="s2">x</span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+            <span class="s2">&quot;channels=</span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;target_mode=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Image</span>
+
+        <span class="k">return</span> <span class="n">image</span><span class="o">.</span><span class="n">color_lut_3d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">or</span> <span class="n">image</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 1995-2011 Fredrik Lundh, 2010-2018 Alex Clark and Contributors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'5.2.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
