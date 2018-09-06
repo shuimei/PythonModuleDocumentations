@@ -1,0 +1,318 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>XGBoost JVM Package &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting Started with XGBoost4J" href="java_intro.html" />
+    <link rel="prev" title="Understand your dataset with XGBoost" href="../R-package/discoverYourData.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="java_intro.html" title="Getting Started with XGBoost4J"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../R-package/discoverYourData.html" title="Understand your dataset with XGBoost"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R-package/index.html">R package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">JVM package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html">Getting Started with XGBoost4J</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xgboost4j_spark_tutorial.html">XGBoost4J-Spark Tutorial</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/jvm-packages/xgboost4j-example">Code Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadocs/index.html">XGBoost4J Java API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j/index.html">XGBoost4J Scala API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j-spark/index.html">XGBoost4J-Spark Scala API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j-flink/index.html">XGBoost4J-Flink Scala API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+              <li>XGBoost JVM Package</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="xgboost-jvm-package">
+<h1>XGBoost JVM Package<a class="headerlink" href="#xgboost-jvm-package" title="Permalink to this headline">¶</a></h1>
+<a href="https://travis-ci.org/dmlc/xgboost">
+<img alt="Build Status" src="https://travis-ci.org/dmlc/xgboost.svg?branch=master">
+</a>
+<a href="https://github.com/dmlc/xgboost/blob/master/LICENSE">
+<img alt="GitHub license" src="http://dmlc.github.io/img/apache2.svg">
+</a><p>You have found the XGBoost JVM Package!</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installation-from-source">
+<h3>Installation from source<a class="headerlink" href="#installation-from-source" title="Permalink to this headline">¶</a></h3>
+<p>Building XGBoost4J using Maven requires Maven 3 or newer, Java 7+ and CMake 3.2+ for compiling the JNI bindings.</p>
+<p>Before you install XGBoost4J, you need to define environment variable <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> as your JDK directory to ensure that your compiler can find <code class="docutils literal notranslate"><span class="pre">jni.h</span></code> correctly, since XGBoost4J relies on JNI to implement the interaction between the JVM and native libraries.</p>
+<p>After your <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code> is defined correctly, it is as simple as run <code class="docutils literal notranslate"><span class="pre">mvn</span> <span class="pre">package</span></code> under jvm-packages directory to install XGBoost4J. You can also skip the tests by running <code class="docutils literal notranslate"><span class="pre">mvn</span> <span class="pre">-DskipTests=true</span> <span class="pre">package</span></code>, if you are sure about the correctness of your local setup.</p>
+<p>To publish the artifacts to your local maven repository, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mvn install
+</pre></div>
+</div>
+<p>Or, if you would like to skip tests, run</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mvn -DskipTests install
+</pre></div>
+</div>
+<p>This command will publish the xgboost binaries, the compiled java classes as well as the java sources to your local repository. Then you can use XGBoost4J in your Java projects by including the following dependency in <code class="docutils literal notranslate"><span class="pre">pom.xml</span></code>:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>ml.dmlc<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>xgboost4j<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>latest_source_version_num<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+<p>For sbt, please add the repository and dependency in build.sbt as following:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;Local Maven Repository&quot;</span> <span class="n">at</span> <span class="s">&quot;file://&quot;</span><span class="o">+</span><span class="nc">Path</span><span class="o">.</span><span class="n">userHome</span><span class="o">.</span><span class="n">absolutePath</span><span class="o">+</span><span class="s">&quot;/.m2/repository&quot;</span>
+
+<span class="s">&quot;ml.dmlc&quot;</span> <span class="o">%</span> <span class="s">&quot;xgboost4j&quot;</span> <span class="o">%</span> <span class="s">&quot;latest_source_version_num&quot;</span>
+</pre></div>
+</div>
+<p>If you want to use XGBoost4J-Spark, replace <code class="docutils literal notranslate"><span class="pre">xgboost4j</span></code> with <code class="docutils literal notranslate"><span class="pre">xgboost4j-spark</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>XGBoost4J-Spark requires Spark 2.3+</p>
+<p class="last">XGBoost4J-Spark now requires Spark 2.3+. Latest versions of XGBoost4J-Spark uses facilities of <cite>org.apache.spark.ml.param.shared</cite> extensively to provide for a tight integration with Spark MLLIB framework, and these facilities are not fully available on earlier versions of Spark.</p>
+</div>
+</div>
+<div class="section" id="installation-from-maven-repo">
+<h3>Installation from maven repo<a class="headerlink" href="#installation-from-maven-repo" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="access-release-version">
+<h4>Access release version<a class="headerlink" href="#access-release-version" title="Permalink to this headline">¶</a></h4>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">maven</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>ml.dmlc<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>xgboost4j<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>latest_version_num<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">sbt</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;ml.dmlc&quot;</span> <span class="o">%</span> <span class="s">&quot;xgboost4j&quot;</span> <span class="o">%</span> <span class="s">&quot;latest_version_num&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>This will checkout the latest stable version from the Maven Central.</p>
+<p>For the latest release version number, please check <a class="reference external" href="https://github.com/dmlc/xgboost/releases">here</a>.</p>
+<p>if you want to use XGBoost4J-Spark, replace <code class="docutils literal notranslate"><span class="pre">xgboost4j</span></code> with <code class="docutils literal notranslate"><span class="pre">xgboost4j-spark</span></code>.</p>
+</div>
+<div class="section" id="access-snapshot-version">
+<h4>Access SNAPSHOT version<a class="headerlink" href="#access-snapshot-version" title="Permalink to this headline">¶</a></h4>
+<p>You need to add GitHub as repo:</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">maven</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;repository&gt;</span>
+  <span class="nt">&lt;id&gt;</span>GitHub Repo<span class="nt">&lt;/id&gt;</span>
+  <span class="nt">&lt;name&gt;</span>GitHub Repo<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;url&gt;</span>https://raw.githubusercontent.com/CodingCat/xgboost/maven-repo/<span class="nt">&lt;/url&gt;</span>
+<span class="nt">&lt;/repository&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">sbt</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;GitHub Repo&quot;</span> <span class="n">at</span> <span class="s">&quot;https://raw.githubusercontent.com/CodingCat/xgboost/maven-repo/&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Then add dependency as following:</p>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">maven</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>ml.dmlc<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>xgboost4j<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>latest_version_num<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">sbt</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;ml.dmlc&quot;</span> <span class="o">%</span> <span class="s">&quot;xgboost4j&quot;</span> <span class="o">%</span> <span class="s">&quot;latest_version_num&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>For the latest release version number, please check <a class="reference external" href="https://github.com/CodingCat/xgboost/tree/maven-repo/ml/dmlc/xgboost4j">here</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Windows not supported by published JARs</p>
+<p class="last">The published JARs from the Maven Central and GitHub currently only supports Linux and MacOS. Windows users should consider building XGBoost4J / XGBoost4J-Spark from the source. Alternatively, checkout pre-built JARs from <a class="reference external" href="https://github.com/criteo-forks/xgboost-jars">criteo-forks/xgboost-jars</a>.</p>
+</div>
+</div>
+<div class="section" id="enabling-openmp-for-mac-os">
+<h4>Enabling OpenMP for Mac OS<a class="headerlink" href="#enabling-openmp-for-mac-os" title="Permalink to this headline">¶</a></h4>
+<p>If you are on Mac OS and using a compiler that supports OpenMP, you need to go to the file <code class="docutils literal notranslate"><span class="pre">xgboost/jvm-packages/create_jni.py</span></code> and comment out the line</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG</span><span class="p">[</span><span class="s2">&quot;USE_OPENMP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;OFF&quot;</span>
+</pre></div>
+</div>
+<p>in order to get the benefit of multi-threading.</p>
+</div>
+</div>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="java_intro.html">Getting Started with XGBoost4J</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html#data-interface">Data Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html#setting-parameters">Setting Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html#prediction">Prediction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost4j_spark_tutorial.html">XGBoost4J-Spark Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xgboost4j_spark_tutorial.html#build-an-ml-application-with-xgboost4j-spark">Build an ML Application with XGBoost4J-Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xgboost4j_spark_tutorial.html#building-a-ml-pipeline-with-xgboost4j-spark">Building a ML Pipeline with XGBoost4J-Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xgboost4j_spark_tutorial.html#run-xgboost4j-spark-in-production">Run XGBoost4J-Spark in Production</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/jvm-packages/xgboost4j-example">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="javadocs/index.html">XGBoost4J Java API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scaladocs/xgboost4j/index.html">XGBoost4J Scala API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scaladocs/xgboost4j-spark/index.html">XGBoost4J-Spark Scala API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scaladocs/xgboost4j-flink/index.html">XGBoost4J-Flink Scala API</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="../R-package/discoverYourData.html" title="previous chapter (use the left arrow)">Understand your dataset with XGBoost</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="java_intro.html" title="next chapter (use the right arrow)">Getting Started with XGBoost4J</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="java_intro.html" title="Getting Started with XGBoost4J"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../R-package/discoverYourData.html" title="Understand your dataset with XGBoost"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

@@ -1,0 +1,527 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Installation Guide &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Get Started with XGBoost" href="get_started.html" />
+    <link rel="prev" title="XGBoost Documentation" href="index.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="get_started.html" title="Get Started with XGBoost"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost Documentation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Installation Guide</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="installation-guide">
+<h1>Installation Guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Pre-built binary wheel for Python</p>
+<p>If you are planning to use Python, consider installing XGBoost from a pre-built binary wheel, available from Python Package Index (PyPI). You may download and install it by running</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure that you are downloading one of the following:</span>
+<span class="c1">#   * xgboost-{version}-py2.py3-none-manylinux1_x86_64.whl</span>
+<span class="c1">#   * xgboost-{version}-py2.py3-none-win_amd64.whl</span>
+pip3 install xgboost
+</pre></div>
+</div>
+<ul class="last simple">
+<li>The binary wheel will support GPU algorithms (<cite>gpu_exact</cite>, <cite>gpu_hist</cite>) on machines with NVIDIA GPUs. <strong>However, it will not support multi-GPU training; only single GPU will be used.</strong> To enable multi-GPU training, download and install the binary wheel from <a class="reference external" href="https://s3-us-west-2.amazonaws.com/xgboost-wheels/list.html">this page</a>.</li>
+<li>Currently, we provide binary wheels for 64-bit Linux and Windows.</li>
+</ul>
+</div>
+<div class="section" id="building-xgboost-from-source">
+<h2>Building XGBoost from source<a class="headerlink" href="#building-xgboost-from-source" title="Permalink to this headline">¶</a></h2>
+<p>This page gives instructions on how to build and install XGBoost from scratch on various systems. It consists of two steps:</p>
+<ol class="arabic simple">
+<li>First build the shared library from the C++ codes (<code class="docutils literal notranslate"><span class="pre">libxgboost.so</span></code> for Linux/OSX and <code class="docutils literal notranslate"><span class="pre">xgboost.dll</span></code> for Windows).
+(For R-package installation, please directly refer to <a class="reference internal" href="#r-package-installation">R Package Installation</a>.)</li>
+<li>Then install the language packages (e.g. Python Package).</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Use of Git submodules</p>
+<p>XGBoost uses Git submodules to manage dependencies. So when you clone the repo, remember to specify <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option:</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/dmlc/xgboost
+</pre></div>
+</div>
+</div>
+<p>For windows users who use github tools, you can open the git shell and type the following command:</p>
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>git submodule init
+git submodule update
+</pre></div>
+</div>
+<p>Please refer to <a class="reference internal" href="#trouble-shooting">Trouble Shooting</a> section first if you have any problem
+during installation. If the instructions do not work for you, please feel free
+to ask questions at <a class="reference external" href="https://discuss.xgboost.ai">the user forum</a>.</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="#building-the-shared-library">Building the Shared Library</a><ul>
+<li><a class="reference internal" href="#building-on-ubuntu-debian">Building on Ubuntu/Debian</a></li>
+<li><a class="reference internal" href="#building-on-osx">Building on OSX</a></li>
+<li><a class="reference internal" href="#building-on-windows">Building on Windows</a></li>
+<li><a class="reference internal" href="#building-with-gpu-support">Building with GPU support</a></li>
+<li><a class="reference internal" href="#customized-building">Customized Building</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#python-package-installation">Python Package Installation</a></li>
+<li><a class="reference internal" href="#r-package-installation">R Package Installation</a></li>
+<li><a class="reference internal" href="#trouble-shooting">Trouble Shooting</a></li>
+</ul>
+</div>
+<div class="section" id="building-the-shared-library">
+<h2>Building the Shared Library<a class="headerlink" href="#building-the-shared-library" title="Permalink to this headline">¶</a></h2>
+<p>Our goal is to build the shared library:</p>
+<ul class="simple">
+<li>On Linux/OSX the target library is <code class="docutils literal notranslate"><span class="pre">libxgboost.so</span></code></li>
+<li>On Windows the target library is <code class="docutils literal notranslate"><span class="pre">xgboost.dll</span></code></li>
+</ul>
+<p>The minimal building requirement is</p>
+<ul class="simple">
+<li>A recent C++ compiler supporting C++11 (g++-4.8 or higher)</li>
+</ul>
+<p>We can edit <code class="docutils literal notranslate"><span class="pre">make/config.mk</span></code> to change the compile options, and then build by
+<code class="docutils literal notranslate"><span class="pre">make</span></code>. If everything goes well, we can go to the specific language installation section.</p>
+<div class="section" id="building-on-ubuntu-debian">
+<h3>Building on Ubuntu/Debian<a class="headerlink" href="#building-on-ubuntu-debian" title="Permalink to this headline">¶</a></h3>
+<p>On Ubuntu, one builds XGBoost by running</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/dmlc/xgboost
+<span class="nb">cd</span> xgboost<span class="p">;</span> make -j4
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-on-osx">
+<h3>Building on OSX<a class="headerlink" href="#building-on-osx" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="install-with-pip-simple-method">
+<h4>Install with pip: simple method<a class="headerlink" href="#install-with-pip-simple-method" title="Permalink to this headline">¶</a></h4>
+<p>First, make sure you obtained <code class="docutils literal notranslate"><span class="pre">gcc-5</span></code> (newer version does not work with this method yet). Note: installation of <code class="docutils literal notranslate"><span class="pre">gcc</span></code> can take a while (~ 30 minutes).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install gcc@5
+</pre></div>
+</div>
+<p>Then install XGBoost with <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install xgboost
+</pre></div>
+</div>
+<p>You might need to run the command with <code class="docutils literal notranslate"><span class="pre">sudo</span></code> if you run into permission errors.</p>
+</div>
+<div class="section" id="build-from-the-source-code-advanced-method">
+<h4>Build from the source code - advanced method<a class="headerlink" href="#build-from-the-source-code-advanced-method" title="Permalink to this headline">¶</a></h4>
+<p>First, obtain <code class="docutils literal notranslate"><span class="pre">gcc-7</span></code> with homebrew (<a class="reference external" href="https://brew.sh/">https://brew.sh/</a>) if you want multi-threaded version. Clang is okay if multithreading is not required. Note: installation of <code class="docutils literal notranslate"><span class="pre">gcc</span></code> can take a while (~ 30 minutes).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install gcc@7
+</pre></div>
+</div>
+<p>Now, clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/dmlc/xgboost
+<span class="nb">cd</span> xgboost<span class="p">;</span> cp make/config.mk ./config.mk
+</pre></div>
+</div>
+<p>Open <code class="docutils literal notranslate"><span class="pre">config.mk</span></code> and uncomment these two lines:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CC</span> <span class="o">=</span> gcc
+<span class="nb">export</span> <span class="nv">CXX</span> <span class="o">=</span> g++
+</pre></div>
+</div>
+<p>and replace these two lines as follows: (specify the GCC version)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">CC</span> <span class="o">=</span> gcc-7
+<span class="nb">export</span> <span class="nv">CXX</span> <span class="o">=</span> g++-7
+</pre></div>
+</div>
+<p>Now, you may build XGBoost using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make -j4
+</pre></div>
+</div>
+<p>You may now continue to <a class="reference internal" href="#python-package-installation">Python Package Installation</a>.</p>
+</div>
+</div>
+<div class="section" id="building-on-windows">
+<h3>Building on Windows<a class="headerlink" href="#building-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>You need to first clone the XGBoost repo with <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> option, to clone the submodules.
+We recommend you use <a class="reference external" href="https://git-for-windows.github.io/">Git for Windows</a>, as it comes with a standard Bash shell. This will highly ease the installation process.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git submodule init
+git submodule update
+</pre></div>
+</div>
+<p>XGBoost support compilation with Microsoft Visual Studio and MinGW.</p>
+<div class="section" id="compile-xgboost-using-mingw">
+<h4>Compile XGBoost using MinGW<a class="headerlink" href="#compile-xgboost-using-mingw" title="Permalink to this headline">¶</a></h4>
+<p>After installing <a class="reference external" href="https://git-for-windows.github.io/">Git for Windows</a>, you should have a shortcut named <code class="docutils literal notranslate"><span class="pre">Git</span> <span class="pre">Bash</span></code>. You should run all subsequent steps in <code class="docutils literal notranslate"><span class="pre">Git</span> <span class="pre">Bash</span></code>.</p>
+<p>In MinGW, <code class="docutils literal notranslate"><span class="pre">make</span></code> command comes with the name <code class="docutils literal notranslate"><span class="pre">mingw32-make</span></code>. You can add the following line into the <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">alias</span> <span class="nv">make</span><span class="o">=</span><span class="s1">&#39;mingw32-make&#39;</span>
+</pre></div>
+</div>
+<p>(On 64-bit Windows, you should get <a class="reference external" href="https://sourceforge.net/projects/mingw-w64/">MinGW64</a> instead.) Make sure
+that the path to MinGW is in the system PATH.</p>
+<p>To build with MinGW, type:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp make/mingw64.mk config.mk<span class="p">;</span> make -j4
+</pre></div>
+</div>
+</div>
+<div class="section" id="compile-xgboost-with-microsoft-visual-studio">
+<h4>Compile XGBoost with Microsoft Visual Studio<a class="headerlink" href="#compile-xgboost-with-microsoft-visual-studio" title="Permalink to this headline">¶</a></h4>
+<p>To build with Visual Studio, we will need CMake. Make sure to install a recent version of CMake. Then run the following from the root of the XGBoost directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -G<span class="s2">&quot;Visual Studio 12 2013 Win64&quot;</span>
+</pre></div>
+</div>
+<p>This specifies an out of source build using the MSVC 12 64 bit generator. Open the <code class="docutils literal notranslate"><span class="pre">.sln</span></code> file in the build directory and build with Visual Studio. To use the Python module you can copy <code class="docutils literal notranslate"><span class="pre">xgboost.dll</span></code> into <code class="docutils literal notranslate"><span class="pre">python-package/xgboost</span></code>.</p>
+<p>After the build process successfully ends, you will find a <code class="docutils literal notranslate"><span class="pre">xgboost.dll</span></code> library file inside <code class="docutils literal notranslate"><span class="pre">./lib/</span></code> folder, copy this file to the the API package folder like <code class="docutils literal notranslate"><span class="pre">python-package/xgboost</span></code> if you are using Python API.</p>
+<p>Unofficial windows binaries and instructions on how to use them are hosted on <a class="reference external" href="http://www.picnet.com.au/blogs/guido/post/2016/09/22/xgboost-windows-x64-binaries-for-download/">Guido Tapia’s blog</a>.</p>
+</div>
+</div>
+<div class="section" id="building-with-gpu-support">
+<span id="build-gpu-support"></span><h3>Building with GPU support<a class="headerlink" href="#building-with-gpu-support" title="Permalink to this headline">¶</a></h3>
+<p>XGBoost can be built with GPU support for both Linux and Windows using CMake. GPU support works with the Python package as well as the CLI version. See <a class="reference internal" href="#installing-r-package-with-gpu-support">Installing R package with GPU support</a> for special instructions for R.</p>
+<p>An up-to-date version of the CUDA toolkit is required.</p>
+<p>From the command line on Linux starting from the XGBoost directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -DUSE_CUDA<span class="o">=</span>ON
+make -j
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Enabling multi-GPU training</p>
+<p>By default, multi-GPU training is disabled and only a single GPU will be used. To enable multi-GPU training, set the option <code class="docutils literal notranslate"><span class="pre">USE_NCCL=ON</span></code>. Multi-GPU training depends on NCCL2, available at <a class="reference external" href="https://developer.nvidia.com/nccl">this link</a>. Since NCCL2 is only available for Linux machines, <strong>multi-GPU training is available only for Linux</strong>.</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -DUSE_CUDA<span class="o">=</span>ON -DUSE_NCCL<span class="o">=</span>ON
+make -j
+</pre></div>
+</div>
+</div>
+<p>On Windows, see what options for generators you have for CMake, and choose one with <code class="docutils literal notranslate"><span class="pre">[arch]</span></code> replaced with Win64:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake -help
+</pre></div>
+</div>
+<p>Then run CMake as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -G<span class="s2">&quot;Visual Studio 14 2015 Win64&quot;</span> -DUSE_CUDA<span class="o">=</span>ON
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Visual Studio 2017 Win64 Generator may not work</p>
+<p>Choosing the Visual Studio 2017 generator may cause compilation failure. When it happens, specify the 2015 compiler by adding the <code class="docutils literal notranslate"><span class="pre">-T</span></code> option:</p>
+<div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span>make .. -G<span class="s2">&quot;Visual Studio 15 2017 Win64&quot;</span> -T v140,cuda<span class="o">=</span><span class="m">8</span>.0 -DR_LIB<span class="o">=</span>ON -DUSE_CUDA<span class="o">=</span>ON
+</pre></div>
+</div>
+</div>
+<p>To speed up compilation, the compute version specific to your GPU could be passed to cmake as, e.g., <code class="docutils literal notranslate"><span class="pre">-DGPU_COMPUTE_VER=50</span></code>.
+The above cmake configuration run will create an <code class="docutils literal notranslate"><span class="pre">xgboost.sln</span></code> solution file in the build directory. Build this solution in release mode as a x64 build, either from Visual studio or from command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake --build . --target xgboost --config Release
+</pre></div>
+</div>
+<p>To speed up compilation, run multiple jobs in parallel by appending option <code class="docutils literal notranslate"><span class="pre">--</span> <span class="pre">/MP</span></code>.</p>
+</div>
+<div class="section" id="customized-building">
+<h3>Customized Building<a class="headerlink" href="#customized-building" title="Permalink to this headline">¶</a></h3>
+<p>The configuration file <code class="docutils literal notranslate"><span class="pre">config.mk</span></code> modifies several compilation flags:
+- Whether to enable support for various distributed filesystems such as HDFS and Amazon S3
+- Which compiler to use
+- And some more</p>
+<p>To customize, first copy <code class="docutils literal notranslate"><span class="pre">make/config.mk</span></code> to the project root and then modify the copy.</p>
+</div>
+<div class="section" id="python-package-installation">
+<h3>Python Package Installation<a class="headerlink" href="#python-package-installation" title="Permalink to this headline">¶</a></h3>
+<p>The python package is located at <code class="docutils literal notranslate"><span class="pre">python-package/</span></code>.
+There are several ways to install the package:</p>
+<ol class="arabic simple">
+<li>Install system-wide, which requires root permission:</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> python-package<span class="p">;</span> sudo python setup.py install
+</pre></div>
+</div>
+<p>You will however need Python <code class="docutils literal notranslate"><span class="pre">distutils</span></code> module for this to
+work. It is often part of the core python package or it can be installed using your
+package manager, e.g. in Debian use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo apt-get install python-setuptools
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Re-compiling XGBoost</p>
+<p class="last">If you recompiled XGBoost, then you need to reinstall it again to make the new library take effect.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Only set the environment variable <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> to tell python where to find
+the library. For example, assume we cloned <cite>xgboost</cite> on the home directory
+<cite>~</cite>. then we can added the following line in <cite>~/.bashrc</cite>.
+This option is <strong>recommended for developers</strong> who change the code frequently. The changes will be immediately reflected once you pulled the code and rebuild the project (no need to call <code class="docutils literal notranslate"><span class="pre">setup</span></code> again)</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span>~/xgboost/python-package
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Install only for the current user.</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> python-package<span class="p">;</span> python setup.py develop --user
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>If you are installing the latest XGBoost version which requires compilation, add MinGW to the system PATH:</li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>import os
+os.environ<span class="o">[</span><span class="s1">&#39;PATH&#39;</span><span class="o">]</span> <span class="o">=</span> os.environ<span class="o">[</span><span class="s1">&#39;PATH&#39;</span><span class="o">]</span> + <span class="s1">&#39;;C:\\Program Files\\mingw-w64\\x86_64-5.3.0-posix-seh-rt_v4-rev0\\mingw64\\bin&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="r-package-installation">
+<h3>R Package Installation<a class="headerlink" href="#r-package-installation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="installing-pre-packaged-version">
+<h4>Installing pre-packaged version<a class="headerlink" href="#installing-pre-packaged-version" title="Permalink to this headline">¶</a></h4>
+<p>You can install xgboost from CRAN just like any other R package:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span>install.packages<span class="p">(</span><span class="s">&quot;xgboost&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or you can install it from our weekly updated drat repo:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span>install.packages<span class="p">(</span><span class="s">&quot;drat&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;https://cran.rstudio.com&quot;</span><span class="p">)</span>
+drat<span class="o">:::</span>addRepo<span class="p">(</span><span class="s">&quot;dmlc&quot;</span><span class="p">)</span>
+install.packages<span class="p">(</span><span class="s">&quot;xgboost&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;http://dmlc.ml/drat/&quot;</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;source&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For OSX users, single threaded version will be installed. To install multi-threaded version,
+first follow <a class="reference internal" href="#building-on-osx">Building on OSX</a> to get the OpenMP enabled compiler. Then</p>
+<ul>
+<li><p class="first">Set the <code class="docutils literal notranslate"><span class="pre">Makevars</span></code> file in highest piority for R.</p>
+<p>The point is, there are three <code class="docutils literal notranslate"><span class="pre">Makevars</span></code> : <code class="docutils literal notranslate"><span class="pre">~/.R/Makevars</span></code>, <code class="docutils literal notranslate"><span class="pre">xgboost/R-package/src/Makevars</span></code>, and <code class="docutils literal notranslate"><span class="pre">/usr/local/Cellar/r/3.2.0/R.framework/Resources/etc/Makeconf</span></code> (the last one obtained by running <code class="docutils literal notranslate"><span class="pre">file.path(R.home(&quot;etc&quot;),</span> <span class="pre">&quot;Makeconf&quot;)</span></code> in R), and <code class="docutils literal notranslate"><span class="pre">SHLIB_OPENMP_CXXFLAGS</span></code> is not set by default!! After trying, it seems that the first one has highest piority (surprise!).</p>
+<p>Then inside R, run</p>
+</li>
+</ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span>install.packages<span class="p">(</span><span class="s">&quot;drat&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;https://cran.rstudio.com&quot;</span><span class="p">)</span>
+drat<span class="o">:::</span>addRepo<span class="p">(</span><span class="s">&quot;dmlc&quot;</span><span class="p">)</span>
+install.packages<span class="p">(</span><span class="s">&quot;xgboost&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;http://dmlc.ml/drat/&quot;</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;source&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-the-development-version">
+<h4>Installing the development version<a class="headerlink" href="#installing-the-development-version" title="Permalink to this headline">¶</a></h4>
+<p>Make sure you have installed git and a recent C++ compiler supporting C++11 (e.g., g++-4.8 or higher).
+On Windows, Rtools must be installed, and its bin directory has to be added to PATH during the installation.
+And see the previous subsection for an OSX tip.</p>
+<p>Due to the use of git-submodules, <code class="docutils literal notranslate"><span class="pre">devtools::install_github</span></code> can no longer be used to install the latest version of R package.
+Thus, one has to run git to check out the code first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/dmlc/xgboost
+<span class="nb">cd</span> xgboost
+git submodule init
+git submodule update
+<span class="nb">cd</span> R-package
+R CMD INSTALL .
+</pre></div>
+</div>
+<p>If the last line fails because of the error <code class="docutils literal notranslate"><span class="pre">R:</span> <span class="pre">command</span> <span class="pre">not</span> <span class="pre">found</span></code>, it means that R was not set up to run from command line.
+In this case, just start R as you would normally do and run the following:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="kp">setwd</span><span class="p">(</span><span class="s">&#39;wherever/you/cloned/it/xgboost/R-package/&#39;</span><span class="p">)</span>
+install.packages<span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> repos <span class="o">=</span> <span class="kc">NULL</span><span class="p">,</span> type<span class="o">=</span><span class="s">&quot;source&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The package could also be built and installed with cmake (and Visual C++ 2015 on Windows) using instructions from the next section, but without GPU support (omit the <code class="docutils literal notranslate"><span class="pre">-DUSE_CUDA=ON</span></code> cmake parameter).</p>
+<p>If all fails, try <a class="reference internal" href="#building-the-shared-library">Building the shared library</a> to see whether a problem is specific to R package or not.</p>
+</div>
+<div class="section" id="installing-r-package-with-gpu-support">
+<h4>Installing R package with GPU support<a class="headerlink" href="#installing-r-package-with-gpu-support" title="Permalink to this headline">¶</a></h4>
+<p>The procedure and requirements are similar as in <a class="reference internal" href="#building-with-gpu-support">Building with GPU support</a>, so make sure to read it first.</p>
+<p>On Linux, starting from the XGBoost directory type:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -DUSE_CUDA<span class="o">=</span>ON -DR_LIB<span class="o">=</span>ON
+make install -j
+</pre></div>
+</div>
+<p>When default target is used, an R package shared library would be built in the <code class="docutils literal notranslate"><span class="pre">build</span></code> area.
+The <code class="docutils literal notranslate"><span class="pre">install</span></code> target, in addition, assembles the package files with this shared library under <code class="docutils literal notranslate"><span class="pre">build/R-package</span></code>, and runs <code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">CMD</span> <span class="pre">INSTALL</span></code>.</p>
+<p>On Windows, cmake with Visual C++ Build Tools (or Visual Studio) has to be used to build an R package with GPU support. Rtools must also be installed (perhaps, some other MinGW distributions with <code class="docutils literal notranslate"><span class="pre">gendef.exe</span></code> and <code class="docutils literal notranslate"><span class="pre">dlltool.exe</span></code> would work, but that was not tested).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. -G<span class="s2">&quot;Visual Studio 14 2015 Win64&quot;</span> -DUSE_CUDA<span class="o">=</span>ON -DR_LIB<span class="o">=</span>ON
+cmake --build . --target install --config Release
+</pre></div>
+</div>
+<p>When <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">xgboost</span></code> is used, an R package dll would be built under <code class="docutils literal notranslate"><span class="pre">build/Release</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">--target</span> <span class="pre">install</span></code>, in addition, assembles the package files with this dll under <code class="docutils literal notranslate"><span class="pre">build/R-package</span></code>, and runs <code class="docutils literal notranslate"><span class="pre">R</span> <span class="pre">CMD</span> <span class="pre">INSTALL</span></code>.</p>
+<p>If cmake can’t find your R during the configuration step, you might provide the location of its executable to cmake like this: <code class="docutils literal notranslate"><span class="pre">-DLIBR_EXECUTABLE=&quot;C:/Program</span> <span class="pre">Files/R/R-3.4.1/bin/x64/R.exe&quot;</span></code>.</p>
+<p>If on Windows you get a “permission denied” error when trying to write to …Program Files/R/… during the package installation, create a <code class="docutils literal notranslate"><span class="pre">.Rprofile</span></code> file in your personal home directory (if you don’t already have one in there), and add a line to it which specifies the location of your R packages user library, like the following:</p>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="m">.</span>libPaths<span class="p">(</span> <span class="kp">unique</span><span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;C:/Users/USERNAME/Documents/R/win-library/3.4&quot;</span><span class="p">,</span> <span class="m">.</span>libPaths<span class="p">())))</span>
+</pre></div>
+</div>
+<p>You might find the exact location by running <code class="docutils literal notranslate"><span class="pre">.libPaths()</span></code> in R GUI or RStudio.</p>
+</div>
+</div>
+<div class="section" id="trouble-shooting">
+<h3>Trouble Shooting<a class="headerlink" href="#trouble-shooting" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p class="first">Compile failed after <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code></p>
+<p>Please first update the submodules, clean all and recompile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git submodule update <span class="o">&amp;&amp;</span> make clean_all <span class="o">&amp;&amp;</span> make -j4
+</pre></div>
+</div>
+</li>
+<li><p class="first">Compile failed after <code class="docutils literal notranslate"><span class="pre">config.mk</span></code> is modified</p>
+<p>Need to clean all first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make clean_all <span class="o">&amp;&amp;</span> make -j4
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">Makefile:</span> <span class="pre">dmlc-core/make/dmlc.mk:</span> <span class="pre">No</span> <span class="pre">such</span> <span class="pre">file</span> <span class="pre">or</span> <span class="pre">directory</span></code></p>
+<p>We need to recursively clone the submodule:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git submodule init
+git submodule update
+</pre></div>
+</div>
+<p>Alternatively, do another clone</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/dmlc/xgboost --recursive
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="index.html" title="previous chapter (use the left arrow)">XGBoost Documentation</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="get_started.html" title="next chapter (use the right arrow)">Get Started with XGBoost</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="get_started.html" title="Get Started with XGBoost"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost Documentation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

@@ -1,0 +1,360 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Introduction to Boosted Trees &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Distributed XGBoost YARN on AWS" href="aws_yarn.html" />
+    <link rel="prev" title="XGBoost Tutorials" href="index.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="aws_yarn.html" title="Distributed XGBoost YARN on AWS"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost Tutorials"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">XGBoost Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XGBoost Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction to Boosted Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aws_yarn.html">Distributed XGBoost with AWS YARN</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://xgboost.readthedocs.io/en/latest/jvm/xgboost4j_spark_tutorial.html">Distributed XGBoost with XGBoost4J-Spark</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dart.html">DART booster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monotonic.html">Monotonic Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_interaction_constraint.html">Feature Interaction Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input_format.html">Text Input Format of DMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="param_tuning.html">Notes on Parameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_memory.html">Using XGBoost External Memory Version (beta)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+                <li><a href="index.html">XGBoost Tutorials</a></li>
+              
+              <li>Introduction to Boosted Trees</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="introduction-to-boosted-trees">
+<h1>Introduction to Boosted Trees<a class="headerlink" href="#introduction-to-boosted-trees" title="Permalink to this headline">¶</a></h1>
+<p>XGBoost stands for “Extreme Gradient Boosting”, where the term “Gradient Boosting” originates from the paper <em>Greedy Function Approximation: A Gradient Boosting Machine</em>, by Friedman.
+This is a tutorial on gradient boosted trees, and most of the content is based on <a class="reference external" href="http://homes.cs.washington.edu/~tqchen/pdf/BoostedTree.pdf">these slides</a> by Tianqi Chen, the original author of XGBoost.</p>
+<p>The <strong>gradient boosted trees</strong> has been around for a while, and there are a lot of materials on the topic.
+This tutorial will explain boosted trees in a self-contained and principled way using the elements of supervised learning.
+We think this explanation is cleaner, more formal, and motivates the model formulation used in XGBoost.</p>
+<div class="section" id="elements-of-supervised-learning">
+<h2>Elements of Supervised Learning<a class="headerlink" href="#elements-of-supervised-learning" title="Permalink to this headline">¶</a></h2>
+<p>XGBoost is used for supervised learning problems, where we use the training data (with multiple features) <span class="math notranslate nohighlight">\(x_i\)</span> to predict a target variable <span class="math notranslate nohighlight">\(y_i\)</span>.
+Before we learn about trees specifically, let us start by reviewing the basic elements in supervised learning.</p>
+<div class="section" id="model-and-parameters">
+<h3>Model and Parameters<a class="headerlink" href="#model-and-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>model</strong> in supervised learning usually refers to the mathematical structure of by which the prediction <span class="math notranslate nohighlight">\(y_i\)</span> is made from the input <span class="math notranslate nohighlight">\(x_i\)</span>.
+A common example is a <em>linear model</em>, where the prediction is given as <span class="math notranslate nohighlight">\(\hat{y}_i = \sum_j \theta_j x_{ij}\)</span>, a linear combination of weighted input features.
+The prediction value can have different interpretations, depending on the task, i.e., regression or classification.
+For example, it can be logistic transformed to get the probability of positive class in logistic regression, and it can also be used as a ranking score when we want to rank the outputs.</p>
+<p>The <strong>parameters</strong> are the undetermined part that we need to learn from data. In linear regression problems, the parameters are the coefficients <span class="math notranslate nohighlight">\(\theta\)</span>.
+Usually we will use <span class="math notranslate nohighlight">\(\theta\)</span> to denote the parameters (there are many parameters in a model, our definition here is sloppy).</p>
+</div>
+<div class="section" id="objective-function-training-loss-regularization">
+<h3>Objective Function: Training Loss + Regularization<a class="headerlink" href="#objective-function-training-loss-regularization" title="Permalink to this headline">¶</a></h3>
+<p>With judicious choices for <span class="math notranslate nohighlight">\(y_i\)</span>, we may express a variety of tasks, such as regression, classification, and ranking.
+The task of <strong>training</strong> the model amounts to finding the best parameters <span class="math notranslate nohighlight">\(\theta\)</span> that best fit the training data <span class="math notranslate nohighlight">\(x_i\)</span> and labels <span class="math notranslate nohighlight">\(y_i\)</span>. In order to train the model, we need to define the <strong>objective function</strong>
+to measure how well the model fit the training data.</p>
+<p>A salient characteristic of objective functions is that they consist two parts: <strong>training loss</strong> and <strong>regularization term</strong>:</p>
+<div class="math notranslate nohighlight">
+\[\text{obj}(\theta) = L(\theta) + \Omega(\theta)\]</div>
+<p>where <span class="math notranslate nohighlight">\(L\)</span> is the training loss function, and <span class="math notranslate nohighlight">\(\Omega\)</span> is the regularization term. The training loss measures how <em>predictive</em> our model is with respect to the training data.
+A common choice of <span class="math notranslate nohighlight">\(L\)</span> is the <em>mean squared error</em>, which is given by</p>
+<div class="math notranslate nohighlight">
+\[L(\theta) = \sum_i (y_i-\hat{y}_i)^2\]</div>
+<p>Another commonly used loss function is logistic loss, to be used for logistic regression:</p>
+<div class="math notranslate nohighlight">
+\[L(\theta) = \sum_i[ y_i\ln (1+e^{-\hat{y}_i}) + (1-y_i)\ln (1+e^{\hat{y}_i})]\]</div>
+<p>The <strong>regularization term</strong> is what people usually forget to add. The regularization term controls the complexity of the model, which helps us to avoid overfitting.
+This sounds a bit abstract, so let us consider the following problem in the following picture. You are asked to <em>fit</em> visually a step function given the input data points
+on the upper left corner of the image.
+Which solution among the three do you think is the best fit?</p>
+<img alt="step functions to fit data points, illustrating bias-variance tradeoff" src="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/step_fit.png" />
+<p>The correct answer is marked in red. Please consider if this visually seems a reasonable fit to you. The general principle is we want both a <em>simple</em> and <em>predictive</em> model.
+The tradeoff between the two is also referred as <strong>bias-variance tradeoff</strong> in machine learning.</p>
+</div>
+<div class="section" id="why-introduce-the-general-principle">
+<h3>Why introduce the general principle?<a class="headerlink" href="#why-introduce-the-general-principle" title="Permalink to this headline">¶</a></h3>
+<p>The elements introduced above form the basic elements of supervised learning, and they are natural building blocks of machine learning toolkits.
+For example, you should be able to describe the differences and commonalities between gradient boosted trees and random forests.
+Understanding the process in a formalized way also helps us to understand the objective that we are learning and the reason behind the heuristics such as
+pruning and smoothing.</p>
+</div>
+</div>
+<div class="section" id="decision-tree-ensembles">
+<h2>Decision Tree Ensembles<a class="headerlink" href="#decision-tree-ensembles" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have introduced the elements of supervised learning, let us get started with real trees.
+To begin with, let us first learn about the model choice of XGBoost: <strong>decision tree ensembles</strong>.
+The tree ensemble model consists of a set of classification and regression trees (CART). Here’s a simple example of a CART
+that classifies whether someone will like computer games.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/cart.png"><img alt="a toy example for CART" src="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/cart.png" style="width: 100%;" /></a>
+<p>We classify the members of a family into different leaves, and assign them the score on the corresponding leaf.
+A CART is a bit different from decision trees, in which the leaf only contains decision values. In CART, a real score
+is associated with each of the leaves, which gives us richer interpretations that go beyond classification.
+This also allows for a pricipled, unified approach to optimization, as we will see in a later part of this tutorial.</p>
+<p>Usually, a single tree is not strong enough to be used in practice. What is actually used is the ensemble model,
+which sums the prediction of multiple trees together.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/twocart.png"><img alt="a toy example for tree ensemble, consisting of two CARTs" src="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/twocart.png" style="width: 100%;" /></a>
+<p>Here is an example of a tree ensemble of two trees. The prediction scores of each individual tree are summed up to get the final score.
+If you look at the example, an important fact is that the two trees try to <em>complement</em> each other.
+Mathematically, we can write our model in the form</p>
+<div class="math notranslate nohighlight">
+\[\hat{y}_i = \sum_{k=1}^K f_k(x_i), f_k \in \mathcal{F}\]</div>
+<p>where <span class="math notranslate nohighlight">\(K\)</span> is the number of trees, <span class="math notranslate nohighlight">\(f\)</span> is a function in the functional space <span class="math notranslate nohighlight">\(\mathcal{F}\)</span>, and <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> is the set of all possible CARTs. The objective function to be optimized is given by</p>
+<div class="math notranslate nohighlight">
+\[\text{obj}(\theta) = \sum_i^n l(y_i, \hat{y}_i) + \sum_{k=1}^K \Omega(f_k)\]</div>
+<p>Now here comes a trick question: what is the <em>model</em> used in random forests? Tree ensembles! So random forests and boosted trees are really the same models; the
+difference arises from how we train them. This means that, if you write a predictive service for tree ensembles, you only need to write one and it should work
+for both random forests and gradient boosted trees. (See <a class="reference external" href="http://treelite.io">Treelite</a> for an actual example.) One example of why elements of supervised learning rock.</p>
+</div>
+<div class="section" id="tree-boosting">
+<h2>Tree Boosting<a class="headerlink" href="#tree-boosting" title="Permalink to this headline">¶</a></h2>
+<p>Now that we introduced the model, let us turn to training: How should we learn the trees?
+The answer is, as is always for all supervised learning models: <em>define an objective function and optimize it</em>!</p>
+<p>Let the following be the objective function (remember it always needs to contain training loss and regularization):</p>
+<div class="math notranslate nohighlight">
+\[\text{obj} = \sum_{i=1}^n l(y_i, \hat{y}_i^{(t)}) + \sum_{i=1}^t\Omega(f_i)\]</div>
+<div class="section" id="additive-training">
+<h3>Additive Training<a class="headerlink" href="#additive-training" title="Permalink to this headline">¶</a></h3>
+<p>The first question we want to ask: what are the <strong>parameters</strong> of trees?
+You can find that what we need to learn are those functions <span class="math notranslate nohighlight">\(f_i\)</span>, each containing the structure
+of the tree and the leaf scores. Learning tree structure is much harder than traditional optimization problem where you can simply take the gradient.
+It is intractable to learn all the trees at once.
+Instead, we use an additive strategy: fix what we have learned, and add one new tree at a time.
+We write the prediction value at step <span class="math notranslate nohighlight">\(t\)</span> as <span class="math notranslate nohighlight">\(\hat{y}_i^{(t)}\)</span>. Then we have</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\hat{y}_i^{(0)} &amp;= 0\\
+\hat{y}_i^{(1)} &amp;= f_1(x_i) = \hat{y}_i^{(0)} + f_1(x_i)\\
+\hat{y}_i^{(2)} &amp;= f_1(x_i) + f_2(x_i)= \hat{y}_i^{(1)} + f_2(x_i)\\
+&amp;\dots\\
+\hat{y}_i^{(t)} &amp;= \sum_{k=1}^t f_k(x_i)= \hat{y}_i^{(t-1)} + f_t(x_i)\end{split}\]</div>
+<p>It remains to ask: which tree do we want at each step?  A natural thing is to add the one that optimizes our objective.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{obj}^{(t)} &amp; = \sum_{i=1}^n l(y_i, \hat{y}_i^{(t)}) + \sum_{i=1}^t\Omega(f_i) \\
+          &amp; = \sum_{i=1}^n l(y_i, \hat{y}_i^{(t-1)} + f_t(x_i)) + \Omega(f_t) + \mathrm{constant}\end{split}\]</div>
+<p>If we consider using mean squared error (MSE) as our loss function, the objective becomes</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{obj}^{(t)} &amp; = \sum_{i=1}^n (y_i - (\hat{y}_i^{(t-1)} + f_t(x_i)))^2 + \sum_{i=1}^t\Omega(f_i) \\
+          &amp; = \sum_{i=1}^n [2(\hat{y}_i^{(t-1)} - y_i)f_t(x_i) + f_t(x_i)^2] + \Omega(f_t) + \mathrm{constant}\end{split}\]</div>
+<p>The form of MSE is friendly, with a first order term (usually called the residual) and a quadratic term.
+For other losses of interest (for example, logistic loss), it is not so easy to get such a nice form.
+So in the general case, we take the <em>Taylor expansion of the loss function up to the second order</em>:</p>
+<div class="math notranslate nohighlight">
+\[\text{obj}^{(t)} = \sum_{i=1}^n [l(y_i, \hat{y}_i^{(t-1)}) + g_i f_t(x_i) + \frac{1}{2} h_i f_t^2(x_i)] + \Omega(f_t) + \mathrm{constant}\]</div>
+<p>where the <span class="math notranslate nohighlight">\(g_i\)</span> and <span class="math notranslate nohighlight">\(h_i\)</span> are defined as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}g_i &amp;= \partial_{\hat{y}_i^{(t-1)}} l(y_i, \hat{y}_i^{(t-1)})\\
+h_i &amp;= \partial_{\hat{y}_i^{(t-1)}}^2 l(y_i, \hat{y}_i^{(t-1)})\end{split}\]</div>
+<p>After we remove all the constants, the specific objective at step <span class="math notranslate nohighlight">\(t\)</span> becomes</p>
+<div class="math notranslate nohighlight">
+\[\sum_{i=1}^n [g_i f_t(x_i) + \frac{1}{2} h_i f_t^2(x_i)] + \Omega(f_t)\]</div>
+<p>This becomes our optimization goal for the new tree. One important advantage of this definition is that
+the value of the objective function only depends on <span class="math notranslate nohighlight">\(g_i\)</span> and <span class="math notranslate nohighlight">\(h_i\)</span>. This is how XGBoost supports custom loss functions.
+We can optimize every loss function, including logistic regression and pairwise ranking, using exactly
+the same solver that takes <span class="math notranslate nohighlight">\(g_i\)</span> and <span class="math notranslate nohighlight">\(h_i\)</span> as input!</p>
+</div>
+<div class="section" id="model-complexity">
+<h3>Model Complexity<a class="headerlink" href="#model-complexity" title="Permalink to this headline">¶</a></h3>
+<p>We have introduced the training step, but wait, there is one important thing, the <strong>regularization term</strong>!
+We need to define the complexity of the tree <span class="math notranslate nohighlight">\(\Omega(f)\)</span>. In order to do so, let us first refine the definition of the tree <span class="math notranslate nohighlight">\(f(x)\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[f_t(x) = w_{q(x)}, w \in R^T, q:R^d\rightarrow \{1,2,\cdots,T\} .\]</div>
+<p>Here <span class="math notranslate nohighlight">\(w\)</span> is the vector of scores on leaves, <span class="math notranslate nohighlight">\(q\)</span> is a function assigning each data point to the corresponding leaf, and <span class="math notranslate nohighlight">\(T\)</span> is the number of leaves.
+In XGBoost, we define the complexity as</p>
+<div class="math notranslate nohighlight">
+\[\Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^T w_j^2\]</div>
+<p>Of course, there is more than one way to define the complexity, but this one works well in practice. The regularization is one part most tree packages treat
+less carefully, or simply ignore. This was because the traditional treatment of tree learning only emphasized improving impurity, while the complexity control was left to heuristics.
+By defining it formally, we can get a better idea of what we are learning and obtain models that perform well in the wild.</p>
+</div>
+<div class="section" id="the-structure-score">
+<h3>The Structure Score<a class="headerlink" href="#the-structure-score" title="Permalink to this headline">¶</a></h3>
+<p>Here is the magical part of the derivation. After re-formulating the tree model, we can write the objective value with the <span class="math notranslate nohighlight">\(t\)</span>-th tree as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{obj}^{(t)} &amp;\approx \sum_{i=1}^n [g_i w_{q(x_i)} + \frac{1}{2} h_i w_{q(x_i)}^2] + \gamma T + \frac{1}{2}\lambda \sum_{j=1}^T w_j^2\\
+&amp;= \sum^T_{j=1} [(\sum_{i\in I_j} g_i) w_j + \frac{1}{2} (\sum_{i\in I_j} h_i + \lambda) w_j^2 ] + \gamma T\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(I_j = \{i|q(x_i)=j\}\)</span> is the set of indices of data points assigned to the <span class="math notranslate nohighlight">\(j\)</span>-th leaf.
+Notice that in the second line we have changed the index of the summation because all the data points on the same leaf get the same score.
+We could further compress the expression by defining <span class="math notranslate nohighlight">\(G_j = \sum_{i\in I_j} g_i\)</span> and <span class="math notranslate nohighlight">\(H_j = \sum_{i\in I_j} h_i\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\text{obj}^{(t)} = \sum^T_{j=1} [G_jw_j + \frac{1}{2} (H_j+\lambda) w_j^2] +\gamma T\]</div>
+<p>In this equation, <span class="math notranslate nohighlight">\(w_j\)</span> are independent with respect to each other, the form <span class="math notranslate nohighlight">\(G_jw_j+\frac{1}{2}(H_j+\lambda)w_j^2\)</span> is quadratic and the best <span class="math notranslate nohighlight">\(w_j\)</span> for a given structure <span class="math notranslate nohighlight">\(q(x)\)</span> and the best objective reduction we can get is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}w_j^\ast &amp;= -\frac{G_j}{H_j+\lambda}\\
+\text{obj}^\ast &amp;= -\frac{1}{2} \sum_{j=1}^T \frac{G_j^2}{H_j+\lambda} + \gamma T\end{split}\]</div>
+<p>The last equation measures <em>how good</em> a tree structure <span class="math notranslate nohighlight">\(q(x)\)</span> is.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/struct_score.png"><img alt="illustration of structure score (fitness)" src="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/struct_score.png" style="width: 100%;" /></a>
+<p>If all this sounds a bit complicated, let’s take a look at the picture, and see how the scores can be calculated.
+Basically, for a given tree structure, we push the statistics <span class="math notranslate nohighlight">\(g_i\)</span> and <span class="math notranslate nohighlight">\(h_i\)</span> to the leaves they belong to,
+sum the statistics together, and use the formula to calculate how good the tree is.
+This score is like the impurity measure in a decision tree, except that it also takes the model complexity into account.</p>
+</div>
+<div class="section" id="learn-the-tree-structure">
+<h3>Learn the tree structure<a class="headerlink" href="#learn-the-tree-structure" title="Permalink to this headline">¶</a></h3>
+<p>Now that we have a way to measure how good a tree is, ideally we would enumerate all possible trees and pick the best one.
+In practice this is intractable, so we will try to optimize one level of the tree at a time.
+Specifically we try to split a leaf into two leaves, and the score it gains is</p>
+<div class="math notranslate nohighlight">
+\[Gain = \frac{1}{2} \left[\frac{G_L^2}{H_L+\lambda}+\frac{G_R^2}{H_R+\lambda}-\frac{(G_L+G_R)^2}{H_L+H_R+\lambda}\right] - \gamma\]</div>
+<p>This formula can be decomposed as 1) the score on the new left leaf 2) the score on the new right leaf 3) The score on the original leaf 4) regularization on the additional leaf.
+We can see an important fact here: if the gain is smaller than <span class="math notranslate nohighlight">\(\gamma\)</span>, we would do better not to add that branch. This is exactly the <strong>pruning</strong> techniques in tree based
+models! By using the principles of supervised learning, we can naturally come up with the reason these techniques work :)</p>
+<p>For real valued data, we usually want to search for an optimal split. To efficiently do so, we place all the instances in sorted order, like the following picture.</p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/split_find.png"><img alt="Schematic of choosing the best split" src="https://raw.githubusercontent.com/dmlc/web-data/master/xgboost/model/split_find.png" style="width: 100%;" /></a>
+<p>A left to right scan is sufficient to calculate the structure score of all possible split solutions, and we can find the best split efficiently.</p>
+</div>
+</div>
+<div class="section" id="final-words-on-xgboost">
+<h2>Final words on XGBoost<a class="headerlink" href="#final-words-on-xgboost" title="Permalink to this headline">¶</a></h2>
+<p>Now that you understand what boosted trees are, you may ask, where is the introduction for XGBoost?
+XGBoost is exactly a tool motivated by the formal principle introduced in this tutorial!
+More importantly, it is developed with both deep consideration in terms of <strong>systems optimization</strong> and <strong>principles in machine learning</strong>.
+The goal of this library is to push the extreme of the computation limits of machines to provide a <strong>scalable</strong>, <strong>portable</strong> and <strong>accurate</strong> library.
+Make sure you try it out, and most importantly, contribute your piece of wisdom (code, examples, tutorials) to the community!</p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="index.html" title="previous chapter (use the left arrow)">XGBoost Tutorials</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="aws_yarn.html" title="next chapter (use the right arrow)">Distributed XGBoost YARN on AWS</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="aws_yarn.html" title="Distributed XGBoost YARN on AWS"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost Tutorials"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >XGBoost Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

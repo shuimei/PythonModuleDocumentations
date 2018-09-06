@@ -1,0 +1,292 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>DART booster &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Monotonic Constraints" href="monotonic.html" />
+    <link rel="prev" title="Distributed XGBoost YARN on AWS" href="aws_yarn.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="monotonic.html" title="Monotonic Constraints"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="aws_yarn.html" title="Distributed XGBoost YARN on AWS"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">XGBoost Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">XGBoost Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="model.html">Introduction to Boosted Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aws_yarn.html">Distributed XGBoost with AWS YARN</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://xgboost.readthedocs.io/en/latest/jvm/xgboost4j_spark_tutorial.html">Distributed XGBoost with XGBoost4J-Spark</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DART booster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monotonic.html">Monotonic Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_interaction_constraint.html">Feature Interaction Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input_format.html">Text Input Format of DMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="param_tuning.html">Notes on Parameter Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_memory.html">Using XGBoost External Memory Version (beta)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+                <li><a href="index.html">XGBoost Tutorials</a></li>
+              
+              <li>DART booster</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="dart-booster">
+<h1>DART booster<a class="headerlink" href="#dart-booster" title="Permalink to this headline">¶</a></h1>
+<p>XGBoost mostly combines a huge number of regression trees with a small learning rate.
+In this situation, trees added early are significant and trees added late are unimportant.</p>
+<p>Vinayak and Gilad-Bachrach proposed a new method to add dropout techniques from the deep neural net community to boosted trees, and reported better results in some situations.</p>
+<p>This is a instruction of new tree booster <code class="docutils literal notranslate"><span class="pre">dart</span></code>.</p>
+<div class="section" id="original-paper">
+<h2>Original paper<a class="headerlink" href="#original-paper" title="Permalink to this headline">¶</a></h2>
+<p>Rashmi Korlakai Vinayak, Ran Gilad-Bachrach. “DART: Dropouts meet Multiple Additive Regression Trees.” <a class="reference external" href="http://www.jmlr.org/proceedings/papers/v38/korlakaivinayak15.pdf">JMLR</a>.</p>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Drop trees in order to solve the over-fitting.<ul>
+<li>Trivial trees (to correct trivial errors) may be prevented.</li>
+</ul>
+</li>
+</ul>
+<p>Because of the randomness introduced in the training, expect the following few differences:</p>
+<ul class="simple">
+<li>Training can be slower than <code class="docutils literal notranslate"><span class="pre">gbtree</span></code> because the random dropout prevents usage of the prediction buffer.</li>
+<li>The early stop might not be stable, due to the randomness.</li>
+</ul>
+</div>
+<div class="section" id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>In <span class="math notranslate nohighlight">\(m\)</span>-th training round, suppose <span class="math notranslate nohighlight">\(k\)</span> trees are selected to be dropped.</li>
+<li>Let <span class="math notranslate nohighlight">\(D = \sum_{i \in \mathbf{K}} F_i\)</span> be the leaf scores of dropped trees and <span class="math notranslate nohighlight">\(F_m = \eta \tilde{F}_m\)</span> be the leaf scores of a new tree.</li>
+<li>The objective function is as follows:</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\mathrm{Obj}
+= \sum_{j=1}^n L \left( y_j, \hat{y}_j^{m-1} - D_j + \tilde{F}_m \right)
++ \Omega \left( \tilde{F}_m \right).\]</div>
+<ul class="simple">
+<li><span class="math notranslate nohighlight">\(D\)</span> and <span class="math notranslate nohighlight">\(F_m\)</span> are overshooting, so using scale factor</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\hat{y}_j^m = \sum_{i \not\in \mathbf{K}} F_i + a \left( \sum_{i \in \mathbf{K}} F_i + b F_m \right) .\]</div>
+</div>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>The booster <code class="docutils literal notranslate"><span class="pre">dart</span></code> inherits <code class="docutils literal notranslate"><span class="pre">gbtree</span></code> booster, so it supports all parameters that <code class="docutils literal notranslate"><span class="pre">gbtree</span></code> does, such as <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> etc.</p>
+<p>Additional parameters are noted below:</p>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">sample_type</span></code>: type of sampling algorithm.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">uniform</span></code>: (default) dropped trees are selected uniformly.</li>
+<li><code class="docutils literal notranslate"><span class="pre">weighted</span></code>: dropped trees are selected in proportion to weight.</li>
+</ul>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">normalize_type</span></code>: type of normalization algorithm.</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">tree</span></code>: (default) New trees have the same weight of each of dropped trees.</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}a \left( \sum_{i \in \mathbf{K}} F_i + \frac{1}{k} F_m \right)
+&amp;= a \left( \sum_{i \in \mathbf{K}} F_i + \frac{\eta}{k} \tilde{F}_m \right) \\
+&amp;\sim a \left( 1 + \frac{\eta}{k} \right) D \\
+&amp;= a \frac{k + \eta}{k} D = D , \\
+&amp;\quad a = \frac{k}{k + \eta}\end{split}\]</div>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">forest</span></code>: New trees have the same weight of sum of dropped trees (forest).</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}a \left( \sum_{i \in \mathbf{K}} F_i + F_m \right)
+&amp;= a \left( \sum_{i \in \mathbf{K}} F_i + \eta \tilde{F}_m \right) \\
+&amp;\sim a \left( 1 + \eta \right) D \\
+&amp;= a (1 + \eta) D = D , \\
+&amp;\quad a = \frac{1}{1 + \eta} .\end{split}\]</div>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">rate_drop</span></code>: dropout rate.</p>
+<ul class="simple">
+<li>range: [0.0, 1.0]</li>
+</ul>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">skip_drop</span></code>: probability of skipping dropout.</p>
+<ul class="simple">
+<li>If a dropout is skipped, new trees are added in the same manner as gbtree.</li>
+<li>range: [0.0, 1.0]</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="sample-script">
+<h2>Sample Script<a class="headerlink" href="#sample-script" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xgboost</span> <span class="kn">as</span> <span class="nn">xgb</span>
+<span class="c1"># read in data</span>
+<span class="n">dtrain</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="s1">&#39;demo/data/agaricus.txt.train&#39;</span><span class="p">)</span>
+<span class="n">dtest</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="s1">&#39;demo/data/agaricus.txt.test&#39;</span><span class="p">)</span>
+<span class="c1"># specify parameters via map</span>
+<span class="n">param</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;booster&#39;</span><span class="p">:</span> <span class="s1">&#39;dart&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+         <span class="s1">&#39;objective&#39;</span><span class="p">:</span> <span class="s1">&#39;binary:logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;silent&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+         <span class="s1">&#39;sample_type&#39;</span><span class="p">:</span> <span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;normalize_type&#39;</span><span class="p">:</span> <span class="s1">&#39;tree&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;rate_drop&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+         <span class="s1">&#39;skip_drop&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}</span>
+<span class="n">num_round</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">bst</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">dtrain</span><span class="p">,</span> <span class="n">num_round</span><span class="p">)</span>
+<span class="c1"># make prediction</span>
+<span class="c1"># ntree_limit must not be 0</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Specify <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> when predicting with test sets</p>
+<p class="last">By default, <code class="docutils literal notranslate"><span class="pre">bst.predict()</span></code> will perform dropouts on trees. To obtain
+correct results on test sets, disable dropouts by specifying
+a nonzero value for <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="aws_yarn.html" title="previous chapter (use the left arrow)">Distributed XGBoost YARN on AWS</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="monotonic.html" title="next chapter (use the right arrow)">Monotonic Constraints</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="monotonic.html" title="Monotonic Constraints"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="aws_yarn.html" title="Distributed XGBoost YARN on AWS"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >XGBoost Tutorials</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

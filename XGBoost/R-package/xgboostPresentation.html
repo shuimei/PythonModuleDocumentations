@@ -1,0 +1,622 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>XGBoost R Tutorial &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Understand your dataset with XGBoost" href="discoverYourData.html" />
+    <link rel="prev" title="XGBoost R Package" href="index.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="discoverYourData.html" title="Understand your dataset with XGBoost"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost R Package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">XGBoost R Package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">R package</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction to XGBoost in R</a></li>
+<li class="toctree-l2"><a class="reference internal" href="discoverYourData.html">Understanding your dataset with XGBoost</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+                <li><a href="index.html">XGBoost R Package</a></li>
+              
+              <li>XGBoost R Tutorial</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="xgboost-r-tutorial">
+<span id="xgboost-r-tutorial"></span><h1>XGBoost R Tutorial<a class="headerlink" href="#xgboost-r-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<span id="introduction"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><strong>Xgboost</strong> is short for e<strong>X</strong>treme <strong>G</strong>radient <strong>Boost</strong>ing package.</p>
+<p>The purpose of this Vignette is to show you how to use <strong>Xgboost</strong> to build a model and make predictions.</p>
+<p>It is an efficient and scalable implementation of gradient boosting framework by &#64;friedman2000additive and &#64;friedman2001greedy. Two solvers are included:</p>
+<ul class="simple">
+<li><em>linear</em> model ;</li>
+<li><em>tree learning</em> algorithm.</li>
+</ul>
+<p>It supports various objective functions, including <em>regression</em>, <em>classification</em> and <em>ranking</em>. The package is made to be extendible, so that users are also allowed to define their own objective functions easily.</p>
+<p>It has been <a class="reference external" href="https://github.com/dmlc/xgboost">used</a> to win several <a class="reference external" href="http://www.kaggle.com">Kaggle</a> competitions.</p>
+<p>It has several features:</p>
+<ul class="simple">
+<li>Speed: it can automatically do parallel computation on <em>Windows</em> and <em>Linux</em>, with <em>OpenMP</em>. It is generally over 10 times faster than the classical <code class="docutils literal notranslate"><span class="pre">gbm</span></code>.</li>
+<li>Input Type: it takes several types of input data:<ul>
+<li><em>Dense</em> Matrix: <em>R</em>’s <em>dense</em> matrix, i.e. <code class="docutils literal notranslate"><span class="pre">matrix</span></code> ;</li>
+<li><em>Sparse</em> Matrix: <em>R</em>’s <em>sparse</em> matrix, i.e. <code class="docutils literal notranslate"><span class="pre">Matrix::dgCMatrix</span></code> ;</li>
+<li>Data File: local data files ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code>: its own class (recommended).</li>
+</ul>
+</li>
+<li>Sparsity: it accepts <em>sparse</em> input for both <em>tree booster</em>  and <em>linear booster</em>, and is optimized for <em>sparse</em> input ;</li>
+<li>Customization: it supports customized objective functions and evaluation functions.</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<span id="installation"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="github-version">
+<span id="github-version"></span><h3>Github version<a class="headerlink" href="#github-version" title="Permalink to this headline">¶</a></h3>
+<p>For weekly updated version (highly recommended), install from <em>Github</em>:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>install.packages<span class="p">(</span><span class="s">&quot;drat&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;https://cran.rstudio.com&quot;</span><span class="p">)</span>
+drat<span class="o">:::</span>addRepo<span class="p">(</span><span class="s">&quot;dmlc&quot;</span><span class="p">)</span>
+install.packages<span class="p">(</span><span class="s">&quot;xgboost&quot;</span><span class="p">,</span> repos<span class="o">=</span><span class="s">&quot;http://dmlc.ml/drat/&quot;</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;source&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div><em>Windows</em> user will need to install <a class="reference external" href="http://cran.r-project.org/bin/windows/Rtools/">Rtools</a> first.</div></blockquote>
+</div>
+<div class="section" id="cran-version">
+<span id="cran-version"></span><h3>CRAN version<a class="headerlink" href="#cran-version" title="Permalink to this headline">¶</a></h3>
+<p>The version 0.4-2 is on CRAN, and you can install it by:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>install.packages<span class="p">(</span><span class="s">&quot;xgboost&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Formerly available versions can be obtained from the CRAN <a class="reference external" href="http://cran.r-project.org/src/contrib/Archive/xgboost">archive</a></p>
+</div>
+</div>
+<div class="section" id="learning">
+<span id="learning"></span><h2>Learning<a class="headerlink" href="#learning" title="Permalink to this headline">¶</a></h2>
+<p>For the purpose of this tutorial we will load <strong>XGBoost</strong> package.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kn">require</span><span class="p">(</span>xgboost<span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="dataset-presentation">
+<span id="dataset-presentation"></span><h3>Dataset presentation<a class="headerlink" href="#dataset-presentation" title="Permalink to this headline">¶</a></h3>
+<p>In this example, we are aiming to predict whether a mushroom can be eaten or not (like in many tutorials, example data are the same as you will use on in your every day life :-).</p>
+<p>Mushroom data is cited from UCI Machine Learning Repository. &#64;Bache+Lichman:2013.</p>
+</div>
+<div class="section" id="dataset-loading">
+<span id="dataset-loading"></span><h3>Dataset loading<a class="headerlink" href="#dataset-loading" title="Permalink to this headline">¶</a></h3>
+<p>We will load the <code class="docutils literal notranslate"><span class="pre">agaricus</span></code> datasets embedded with the package and will link them to variables.</p>
+<p>The datasets are already split in:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">train</span></code>: will be used to build the model ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">test</span></code>: will be used to assess the quality of our model.</li>
+</ul>
+<p>Why <em>split</em> the dataset in two parts?</p>
+<p>In the first part we will build our model. In the second part we will want to test it and assess its quality. Without dividing the dataset we would test the model on the data which the algorithm have already seen.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>data<span class="p">(</span>agaricus.train<span class="p">,</span> package<span class="o">=</span><span class="s">&#39;xgboost&#39;</span><span class="p">)</span>
+data<span class="p">(</span>agaricus.test<span class="p">,</span> package<span class="o">=</span><span class="s">&#39;xgboost&#39;</span><span class="p">)</span>
+train <span class="o">&lt;-</span> agaricus.train
+test <span class="o">&lt;-</span> agaricus.test
+</pre></div>
+</div>
+<blockquote>
+<div>In the real world, it would be up to you to make this division between <code class="docutils literal notranslate"><span class="pre">train</span></code> and <code class="docutils literal notranslate"><span class="pre">test</span></code> data. The way to do it is out of the purpose of this article, however <code class="docutils literal notranslate"><span class="pre">caret</span></code> package may <a class="reference external" href="http://topepo.github.io/caret/splitting.html">help</a>.</div></blockquote>
+<p>Each variable is a <code class="docutils literal notranslate"><span class="pre">list</span></code> containing two things, <code class="docutils literal notranslate"><span class="pre">label</span></code> and <code class="docutils literal notranslate"><span class="pre">data</span></code>:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>str<span class="p">(</span>train<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## List of 2</span>
+<span class="c1">##  $ data :Formal class &#39;dgCMatrix&#39; [package &quot;Matrix&quot;] with 6 slots</span>
+<span class="c1">##   .. ..@ i       : int [1:143286] 2 6 8 11 18 20 21 24 28 32 ...</span>
+<span class="c1">##   .. ..@ p       : int [1:127] 0 369 372 3306 5845 6489 6513 8380 8384 10991 ...</span>
+<span class="c1">##   .. ..@ Dim     : int [1:2] 6513 126</span>
+<span class="c1">##   .. ..@ Dimnames:List of 2</span>
+<span class="c1">##   .. .. ..$ : NULL</span>
+<span class="c1">##   .. .. ..$ : chr [1:126] &quot;cap-shape=bell&quot; &quot;cap-shape=conical&quot; &quot;cap-shape=convex&quot; &quot;cap-shape=flat&quot; ...</span>
+<span class="c1">##   .. ..@ x       : num [1:143286] 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="c1">##   .. ..@ factors : list()</span>
+<span class="c1">##  $ label: num [1:6513] 1 0 0 1 0 0 0 1 0 0 ...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">label</span></code> is the outcome of our dataset meaning it is the binary <em>classification</em> we will try to predict.</p>
+<p>Let’s discover the dimensionality of our datasets.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kp">dim</span><span class="p">(</span>train<span class="o">$</span>data<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] 6513  126</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kp">dim</span><span class="p">(</span>test<span class="o">$</span>data<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] 1611  126</span>
+</pre></div>
+</div>
+<p>This dataset is very small to not make the <strong>R</strong> package too heavy, however <strong>XGBoost</strong> is built to manage huge dataset very efficiently.</p>
+<p>As seen below, the <code class="docutils literal notranslate"><span class="pre">data</span></code> are stored in a <code class="docutils literal notranslate"><span class="pre">dgCMatrix</span></code> which is a <em>sparse</em> matrix and <code class="docutils literal notranslate"><span class="pre">label</span></code> vector is a <code class="docutils literal notranslate"><span class="pre">numeric</span></code> vector (<code class="docutils literal notranslate"><span class="pre">{0,1}</span></code>):</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kp">class</span><span class="p">(</span>train<span class="o">$</span>data<span class="p">)[</span><span class="m">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;dgCMatrix&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="kp">class</span><span class="p">(</span>train<span class="o">$</span>label<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;numeric&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="basic-training-using-xgboost">
+<span id="basic-training-using-xgboost"></span><h3>Basic Training using XGBoost<a class="headerlink" href="#basic-training-using-xgboost" title="Permalink to this headline">¶</a></h3>
+<p>This step is the most critical part of the process for the quality of our model.</p>
+<div class="section" id="basic-training">
+<span id="basic-training"></span><h4>Basic training<a class="headerlink" href="#basic-training" title="Permalink to this headline">¶</a></h4>
+<p>We are using the <code class="docutils literal notranslate"><span class="pre">train</span></code> data. As explained above, both <code class="docutils literal notranslate"><span class="pre">data</span></code> and <code class="docutils literal notranslate"><span class="pre">label</span></code> are stored in a <code class="docutils literal notranslate"><span class="pre">list</span></code>.</p>
+<p>In a <em>sparse</em> matrix, cells containing <code class="docutils literal notranslate"><span class="pre">0</span></code> are not stored in memory. Therefore, in a dataset mainly made of <code class="docutils literal notranslate"><span class="pre">0</span></code>, memory size is reduced. It is very usual to have such dataset.</p>
+<p>We will train decision tree model using the following parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">objective</span> <span class="pre">=</span> <span class="pre">&quot;binary:logistic&quot;</span></code>: we will train a binary classification model ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">max.deph</span> <span class="pre">=</span> <span class="pre">2</span></code>: the trees won’t be deep, because our case is very simple ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">nthread</span> <span class="pre">=</span> <span class="pre">2</span></code>: the number of cpu threads we are going to use;</li>
+<li><code class="docutils literal notranslate"><span class="pre">nrounds</span> <span class="pre">=</span> <span class="pre">2</span></code>: there will be two passes on the data, the second one will enhance the model by further reducing the difference between ground truth and prediction.</li>
+</ul>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>bstSparse <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> train<span class="o">$</span>data<span class="p">,</span> label <span class="o">=</span> train<span class="o">$</span>label<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522</span>
+<span class="c1">## [1]  train-error:0.022263</span>
+</pre></div>
+</div>
+<blockquote>
+<div>More complex the relationship between your features and your <code class="docutils literal notranslate"><span class="pre">label</span></code> is, more passes you need.</div></blockquote>
+</div>
+<div class="section" id="parameter-variations">
+<span id="parameter-variations"></span><h4>Parameter variations<a class="headerlink" href="#parameter-variations" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="dense-matrix">
+<span id="dense-matrix"></span><h5>Dense matrix<a class="headerlink" href="#dense-matrix" title="Permalink to this headline">¶</a></h5>
+<p>Alternatively, you can put your dataset in a <em>dense</em> matrix, i.e. a basic <strong>R</strong> matrix.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>bstDense <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> <span class="kp">as.matrix</span><span class="p">(</span>train<span class="o">$</span>data<span class="p">),</span> label <span class="o">=</span> train<span class="o">$</span>label<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522</span>
+<span class="c1">## [1]  train-error:0.022263</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="xgb-dmatrix">
+<span id="xgb-dmatrix"></span><h5>xgb.DMatrix<a class="headerlink" href="#xgb-dmatrix" title="Permalink to this headline">¶</a></h5>
+<p><strong>XGBoost</strong> offers a way to group them in a <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code>. You can even add other meta data in it. It will be useful for the most advanced features we will discover later.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>dtrain <span class="o">&lt;-</span> xgb.DMatrix<span class="p">(</span>data <span class="o">=</span> train<span class="o">$</span>data<span class="p">,</span> label <span class="o">=</span> train<span class="o">$</span>label<span class="p">)</span>
+bstDMatrix <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> dtrain<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522</span>
+<span class="c1">## [1]  train-error:0.022263</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="verbose-option">
+<span id="verbose-option"></span><h5>Verbose option<a class="headerlink" href="#verbose-option" title="Permalink to this headline">¶</a></h5>
+<p><strong>XGBoost</strong> has several features to help you to view how the learning progress internally. The purpose is to help you to set the best parameters, which is the key of your model quality.</p>
+<p>One of the simplest way to see the training progress is to set the <code class="docutils literal notranslate"><span class="pre">verbose</span></code> option (see below for more advanced technics).</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># verbose = 0, no message</span>
+bst <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> dtrain<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">,</span> verbose <span class="o">=</span> <span class="m">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># verbose = 1, print evaluation metric</span>
+bst <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> dtrain<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">,</span> verbose <span class="o">=</span> <span class="m">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522</span>
+<span class="c1">## [1]  train-error:0.022263</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># verbose = 2, also print information about tree</span>
+bst <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> dtrain<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">,</span> verbose <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [11:41:01] amalgamation/../src/tree/updater_prune.cc:74: tree pruning end, 1 roots, 6 extra nodes, 0 pruned nodes, max_depth=2</span>
+<span class="c1">## [0]  train-error:0.046522</span>
+<span class="c1">## [11:41:01] amalgamation/../src/tree/updater_prune.cc:74: tree pruning end, 1 roots, 4 extra nodes, 0 pruned nodes, max_depth=2</span>
+<span class="c1">## [1]  train-error:0.022263</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="basic-prediction-using-xgboost">
+<span id="basic-prediction-using-xgboost"></span><h2>Basic prediction using XGBoost<a class="headerlink" href="#basic-prediction-using-xgboost" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="perform-the-prediction">
+<span id="perform-the-prediction"></span><h2>Perform the prediction<a class="headerlink" href="#perform-the-prediction" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of the model we have built is to classify new data. As explained before, we will use the <code class="docutils literal notranslate"><span class="pre">test</span></code> dataset for this step.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>pred <span class="o">&lt;-</span> predict<span class="p">(</span>bst<span class="p">,</span> test<span class="o">$</span>data<span class="p">)</span>
+
+<span class="c1"># size of the prediction vector</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">length</span><span class="p">(</span>pred<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] 1611</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># limit display of predictions to the first 10</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">head</span><span class="p">(</span>pred<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] 0.28583017 0.92392391 0.28583017 0.28583017 0.05169873 0.92392391</span>
+</pre></div>
+</div>
+<p>These numbers doesn’t look like <em>binary classification</em> <code class="docutils literal notranslate"><span class="pre">{0,1}</span></code>. We need to perform a simple transformation before being able to use these results.</p>
+</div>
+<div class="section" id="transform-the-regression-in-a-binary-classification">
+<span id="transform-the-regression-in-a-binary-classification"></span><h2>Transform the regression in a binary classification<a class="headerlink" href="#transform-the-regression-in-a-binary-classification" title="Permalink to this headline">¶</a></h2>
+<p>The only thing that <strong>XGBoost</strong> does is a <em>regression</em>. <strong>XGBoost</strong> is using <code class="docutils literal notranslate"><span class="pre">label</span></code> vector to build its <em>regression</em> model.</p>
+<p>How can we use a <em>regression</em> model to perform a binary classification?</p>
+<p>If we think about the meaning of a regression applied to our data, the numbers we get are probabilities that a datum will be classified as <code class="docutils literal notranslate"><span class="pre">1</span></code>. Therefore, we will set the rule that if this probability for a specific datum is <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">0.5</span></code> then the observation is classified as <code class="docutils literal notranslate"><span class="pre">1</span></code> (or <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise).</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>prediction <span class="o">&lt;-</span> <span class="kp">as.numeric</span><span class="p">(</span>pred <span class="o">&gt;</span> <span class="m">0.5</span><span class="p">)</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">head</span><span class="p">(</span>prediction<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] 0 1 0 0 0 1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="measuring-model-performance">
+<span id="measuring-model-performance"></span><h2>Measuring model performance<a class="headerlink" href="#measuring-model-performance" title="Permalink to this headline">¶</a></h2>
+<p>To measure the model performance, we will compute a simple metric, the <em>average error</em>.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>err <span class="o">&lt;-</span> <span class="kp">mean</span><span class="p">(</span><span class="kp">as.numeric</span><span class="p">(</span>pred <span class="o">&gt;</span> <span class="m">0.5</span><span class="p">)</span> <span class="o">!=</span> test<span class="o">$</span>label<span class="p">)</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">paste</span><span class="p">(</span><span class="s">&quot;test-error=&quot;</span><span class="p">,</span> err<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;test-error= 0.0217256362507759&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div>Note that the algorithm has not seen the <code class="docutils literal notranslate"><span class="pre">test</span></code> data during the model construction.</div></blockquote>
+<p>Steps explanation:</p>
+<ol class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">as.numeric(pred</span> <span class="pre">&gt;</span> <span class="pre">0.5)</span></code> applies our rule that when the probability (&lt;=&gt; regression &lt;=&gt; prediction) is <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">0.5</span></code> the observation is classified as <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">0</span></code> otherwise ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">probabilityVectorPreviouslyComputed</span> <span class="pre">!=</span> <span class="pre">test$label</span></code> computes the vector of error between true data and computed probabilities ;</li>
+<li><code class="docutils literal notranslate"><span class="pre">mean(vectorOfErrors)</span></code> computes the <em>average error</em> itself.</li>
+</ol>
+<p>The most important thing to remember is that <strong>to do a classification, you just do a regression to the</strong> <code class="docutils literal notranslate"><span class="pre">label</span></code> <strong>and then apply a threshold</strong>.</p>
+<p><em>Multiclass</em> classification works in a similar way.</p>
+<p>This metric is <strong>0.02</strong> and is pretty low: our yummly mushroom model works well!</p>
+</div>
+<div class="section" id="advanced-features">
+<span id="advanced-features"></span><h2>Advanced features<a class="headerlink" href="#advanced-features" title="Permalink to this headline">¶</a></h2>
+<p>Most of the features below have been implemented to help you to improve your model by offering a better understanding of its content.</p>
+<div class="section" id="dataset-preparation">
+<span id="dataset-preparation"></span><h3>Dataset preparation<a class="headerlink" href="#dataset-preparation" title="Permalink to this headline">¶</a></h3>
+<p>For the following advanced features, we need to put data in <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code> as explained above.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>dtrain <span class="o">&lt;-</span> xgb.DMatrix<span class="p">(</span>data <span class="o">=</span> train<span class="o">$</span>data<span class="p">,</span> label<span class="o">=</span>train<span class="o">$</span>label<span class="p">)</span>
+dtest <span class="o">&lt;-</span> xgb.DMatrix<span class="p">(</span>data <span class="o">=</span> test<span class="o">$</span>data<span class="p">,</span> label<span class="o">=</span>test<span class="o">$</span>label<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="measure-learning-progress-with-xgb-train">
+<span id="measure-learning-progress-with-xgb-train"></span><h3>Measure learning progress with xgb.train<a class="headerlink" href="#measure-learning-progress-with-xgb-train" title="Permalink to this headline">¶</a></h3>
+<p>Both <code class="docutils literal notranslate"><span class="pre">xgboost</span></code> (simple) and <code class="docutils literal notranslate"><span class="pre">xgb.train</span></code> (advanced) functions train models.</p>
+<p>One of the special feature of <code class="docutils literal notranslate"><span class="pre">xgb.train</span></code> is the capacity to follow the progress of the learning after each round. Because of the way boosting works, there is a time when having too many rounds lead to an overfitting. You can see this feature as a cousin of cross-validation method. The following techniques will help you to avoid overfitting or optimizing the learning time in stopping it as soon as possible.</p>
+<p>One way to measure progress in learning of a model is to provide to <strong>XGBoost</strong> a second dataset already classified. Therefore it can learn on the first dataset and test its model on the second one. Some metrics are measured after each round during the learning.</p>
+<blockquote>
+<div>in some way it is similar to what we have done above with the average error. The main difference is that below it was after building the model, and now it is during the construction that we measure errors.</div></blockquote>
+<p>For the purpose of this example, we use <code class="docutils literal notranslate"><span class="pre">watchlist</span></code> parameter. It is a list of <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code>, each of them tagged with a name.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>watchlist <span class="o">&lt;-</span> <span class="kt">list</span><span class="p">(</span>train<span class="o">=</span>dtrain<span class="p">,</span> test<span class="o">=</span>dtest<span class="p">)</span>
+
+bst <span class="o">&lt;-</span> xgb.train<span class="p">(</span>data<span class="o">=</span>dtrain<span class="p">,</span> max.depth<span class="o">=</span><span class="m">2</span><span class="p">,</span> eta<span class="o">=</span><span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds<span class="o">=</span><span class="m">2</span><span class="p">,</span> watchlist<span class="o">=</span>watchlist<span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522    test-error:0.042831</span>
+<span class="c1">## [1]  train-error:0.022263    test-error:0.021726</span>
+</pre></div>
+</div>
+<p><strong>XGBoost</strong> has computed at each round the same average error metric than seen above (we set <code class="docutils literal notranslate"><span class="pre">nrounds</span></code> to 2, that is why we have two lines). Obviously, the <code class="docutils literal notranslate"><span class="pre">train-error</span></code> number is related to the training dataset (the one the algorithm learns from) and the <code class="docutils literal notranslate"><span class="pre">test-error</span></code> number to the test dataset.</p>
+<p>Both training and test error related metrics are very similar, and in some way, it makes sense: what we have learned from the training dataset matches the observations from the test dataset.</p>
+<p>If with your own dataset you have not such results, you should think about how you divided your dataset in training and test. May be there is something to fix. Again, <code class="docutils literal notranslate"><span class="pre">caret</span></code> package may <a class="reference external" href="http://topepo.github.io/caret/splitting.html">help</a>.</p>
+<p>For a better understanding of the learning progression, you may want to have some specific metric or even use multiple evaluation metrics.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>bst <span class="o">&lt;-</span> xgb.train<span class="p">(</span>data<span class="o">=</span>dtrain<span class="p">,</span> max.depth<span class="o">=</span><span class="m">2</span><span class="p">,</span> eta<span class="o">=</span><span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds<span class="o">=</span><span class="m">2</span><span class="p">,</span> watchlist<span class="o">=</span>watchlist<span class="p">,</span> eval.metric <span class="o">=</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> eval.metric <span class="o">=</span> <span class="s">&quot;logloss&quot;</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522    train-logloss:0.233376  test-error:0.042831 test-logloss:0.226686</span>
+<span class="c1">## [1]  train-error:0.022263    train-logloss:0.136658  test-error:0.021726 test-logloss:0.137874</span>
+</pre></div>
+</div>
+<blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">eval.metric</span></code> allows us to monitor two new metrics for each round, <code class="docutils literal notranslate"><span class="pre">logloss</span></code> and <code class="docutils literal notranslate"><span class="pre">error</span></code>.</div></blockquote>
+</div>
+<div class="section" id="linear-boosting">
+<span id="linear-boosting"></span><h3>Linear boosting<a class="headerlink" href="#linear-boosting" title="Permalink to this headline">¶</a></h3>
+<p>Until now, all the learnings we have performed were based on boosting trees. <strong>XGBoost</strong> implements a second algorithm, based on linear boosting. The only difference with previous command is <code class="docutils literal notranslate"><span class="pre">booster</span> <span class="pre">=</span> <span class="pre">&quot;gblinear&quot;</span></code> parameter (and removing <code class="docutils literal notranslate"><span class="pre">eta</span></code> parameter).</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>bst <span class="o">&lt;-</span> xgb.train<span class="p">(</span>data<span class="o">=</span>dtrain<span class="p">,</span> booster <span class="o">=</span> <span class="s">&quot;gblinear&quot;</span><span class="p">,</span> max.depth<span class="o">=</span><span class="m">2</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds<span class="o">=</span><span class="m">2</span><span class="p">,</span> watchlist<span class="o">=</span>watchlist<span class="p">,</span> eval.metric <span class="o">=</span> <span class="s">&quot;error&quot;</span><span class="p">,</span> eval.metric <span class="o">=</span> <span class="s">&quot;logloss&quot;</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.024720    train-logloss:0.184616  test-error:0.022967 test-logloss:0.184234</span>
+<span class="c1">## [1]  train-error:0.004146    train-logloss:0.069885  test-error:0.003724 test-logloss:0.068081</span>
+</pre></div>
+</div>
+<p>In this specific case, <em>linear boosting</em> gets slightly better performance metrics than decision trees based algorithm.</p>
+<p>In simple cases, it will happen because there is nothing better than a linear algorithm to catch a linear link. However, decision trees are much better to catch a non linear link between predictors and outcome. Because there is no silver bullet, we advise you to check both algorithms with your own datasets to have an idea of what to use.</p>
+</div>
+<div class="section" id="manipulating-xgb-dmatrix">
+<span id="manipulating-xgb-dmatrix"></span><h3>Manipulating xgb.DMatrix<a class="headerlink" href="#manipulating-xgb-dmatrix" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="save-load">
+<span id="save-load"></span><h4>Save / Load<a class="headerlink" href="#save-load" title="Permalink to this headline">¶</a></h4>
+<p>Like saving models, <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code> object (which groups both dataset and outcome) can also be saved using <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix.save</span></code> function.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>xgb.DMatrix.save<span class="p">(</span>dtrain<span class="p">,</span> <span class="s">&quot;dtrain.buffer&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] TRUE</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># to load it in, simply call xgb.DMatrix</span>
+dtrain2 <span class="o">&lt;-</span> xgb.DMatrix<span class="p">(</span><span class="s">&quot;dtrain.buffer&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [11:41:01] 6513x126 matrix with 143286 entries loaded from dtrain.buffer</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>bst <span class="o">&lt;-</span> xgb.train<span class="p">(</span>data<span class="o">=</span>dtrain2<span class="p">,</span> max.depth<span class="o">=</span><span class="m">2</span><span class="p">,</span> eta<span class="o">=</span><span class="m">1</span><span class="p">,</span> nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> nrounds<span class="o">=</span><span class="m">2</span><span class="p">,</span> watchlist<span class="o">=</span>watchlist<span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [0]  train-error:0.046522    test-error:0.042831</span>
+<span class="c1">## [1]  train-error:0.022263    test-error:0.021726</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="information-extraction">
+<span id="information-extraction"></span><h4>Information extraction<a class="headerlink" href="#information-extraction" title="Permalink to this headline">¶</a></h4>
+<p>Information can be extracted from <code class="docutils literal notranslate"><span class="pre">xgb.DMatrix</span></code> using <code class="docutils literal notranslate"><span class="pre">getinfo</span></code> function. Hereafter we will extract <code class="docutils literal notranslate"><span class="pre">label</span></code> data.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>label <span class="o">=</span> getinfo<span class="p">(</span>dtest<span class="p">,</span> <span class="s">&quot;label&quot;</span><span class="p">)</span>
+pred <span class="o">&lt;-</span> predict<span class="p">(</span>bst<span class="p">,</span> dtest<span class="p">)</span>
+err <span class="o">&lt;-</span> <span class="kp">as.numeric</span><span class="p">(</span><span class="kp">sum</span><span class="p">(</span><span class="kp">as.integer</span><span class="p">(</span>pred <span class="o">&gt;</span> <span class="m">0.5</span><span class="p">)</span> <span class="o">!=</span> label<span class="p">))</span><span class="o">/</span><span class="kp">length</span><span class="p">(</span>label<span class="p">)</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">paste</span><span class="p">(</span><span class="s">&quot;test-error=&quot;</span><span class="p">,</span> err<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;test-error= 0.0217256362507759&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="view-feature-importance-influence-from-the-learnt-model">
+<span id="view-feature-importance-influence-from-the-learnt-model"></span><h3>View feature importance/influence from the learnt model<a class="headerlink" href="#view-feature-importance-influence-from-the-learnt-model" title="Permalink to this headline">¶</a></h3>
+<p>Feature importance is similar to R gbm package’s relative influence (rel.inf).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">importance_matrix</span> <span class="o">&lt;-</span> <span class="n">xgb</span><span class="o">.</span><span class="n">importance</span><span class="p">(</span><span class="n">model</span> <span class="o">=</span> <span class="n">bst</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">importance_matrix</span><span class="p">)</span>
+<span class="n">xgb</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">importance</span><span class="p">(</span><span class="n">importance_matrix</span> <span class="o">=</span> <span class="n">importance_matrix</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="view-the-trees-from-a-model">
+<span id="view-the-trees-from-a-model"></span><h4>View the trees from a model<a class="headerlink" href="#view-the-trees-from-a-model" title="Permalink to this headline">¶</a></h4>
+<p>You can dump the tree you learned using <code class="docutils literal notranslate"><span class="pre">xgb.dump</span></code> into a text file.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span>xgb.dump<span class="p">(</span>bst<span class="p">,</span> with.stats <span class="o">=</span> <span class="bp">T</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">##  [1] &quot;booster[0]&quot;                                                          </span>
+<span class="c1">##  [2] &quot;0:[f28&lt;-1.00136e-05] yes=1,no=2,missing=1,gain=4000.53,cover=1628.25&quot;</span>
+<span class="c1">##  [3] &quot;1:[f55&lt;-1.00136e-05] yes=3,no=4,missing=3,gain=1158.21,cover=924.5&quot;  </span>
+<span class="c1">##  [4] &quot;3:leaf=1.71218,cover=812&quot;                                            </span>
+<span class="c1">##  [5] &quot;4:leaf=-1.70044,cover=112.5&quot;                                         </span>
+<span class="c1">##  [6] &quot;2:[f108&lt;-1.00136e-05] yes=5,no=6,missing=5,gain=198.174,cover=703.75&quot;</span>
+<span class="c1">##  [7] &quot;5:leaf=-1.94071,cover=690.5&quot;                                         </span>
+<span class="c1">##  [8] &quot;6:leaf=1.85965,cover=13.25&quot;                                          </span>
+<span class="c1">##  [9] &quot;booster[1]&quot;                                                          </span>
+<span class="c1">## [10] &quot;0:[f59&lt;-1.00136e-05] yes=1,no=2,missing=1,gain=832.545,cover=788.852&quot;</span>
+<span class="c1">## [11] &quot;1:[f28&lt;-1.00136e-05] yes=3,no=4,missing=3,gain=569.725,cover=768.39&quot; </span>
+<span class="c1">## [12] &quot;3:leaf=0.784718,cover=458.937&quot;                                       </span>
+<span class="c1">## [13] &quot;4:leaf=-0.96853,cover=309.453&quot;                                       </span>
+<span class="c1">## [14] &quot;2:leaf=-6.23624,cover=20.4624&quot;</span>
+</pre></div>
+</div>
+<p>You can plot the trees from your model using ```xgb.plot.tree``</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xgb</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">tree</span><span class="p">(</span><span class="n">model</span> <span class="o">=</span> <span class="n">bst</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<div>if you provide a path to <code class="docutils literal notranslate"><span class="pre">fname</span></code> parameter you can save the trees to your hard drive.</div></blockquote>
+</div>
+<div class="section" id="save-and-load-models">
+<span id="save-and-load-models"></span><h4>Save and load models<a class="headerlink" href="#save-and-load-models" title="Permalink to this headline">¶</a></h4>
+<p>Maybe your dataset is big, and it takes time to train a model on it? May be you are not a big fan of losing time in redoing the same task again and again? In these very rare cases, you will want to save your model and load it when required.</p>
+<p>Hopefully for you, <strong>XGBoost</strong> implements such functions.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># save model to binary local file</span>
+xgb.save<span class="p">(</span>bst<span class="p">,</span> <span class="s">&quot;xgboost.model&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] TRUE</span>
+</pre></div>
+</div>
+<blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">xgb.save</span></code> function should return TRUE if everything goes well and crashes otherwise.</div></blockquote>
+<p>An interesting test to see how identical our saved model is to the original one would be to compare the two predictions.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># load binary model to R</span>
+bst2 <span class="o">&lt;-</span> xgb.load<span class="p">(</span><span class="s">&quot;xgboost.model&quot;</span><span class="p">)</span>
+pred2 <span class="o">&lt;-</span> predict<span class="p">(</span>bst2<span class="p">,</span> test<span class="o">$</span>data<span class="p">)</span>
+
+<span class="c1"># And now the test</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">paste</span><span class="p">(</span><span class="s">&quot;sum(abs(pred2-pred))=&quot;</span><span class="p">,</span> <span class="kp">sum</span><span class="p">(</span><span class="kp">abs</span><span class="p">(</span>pred2<span class="o">-</span>pred<span class="p">))))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;sum(abs(pred2-pred))= 0&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div>result is <code class="docutils literal notranslate"><span class="pre">0</span></code>? We are good!</div></blockquote>
+<p>In some very specific cases, like when you want to pilot <strong>XGBoost</strong> from <code class="docutils literal notranslate"><span class="pre">caret</span></code> package, you will want to save the model as a <em>R</em> binary vector. See below how to do it.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># save model to R&#39;s raw vector</span>
+rawVec <span class="o">&lt;-</span> xgb.save.raw<span class="p">(</span>bst<span class="p">)</span>
+
+<span class="c1"># print class</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">class</span><span class="p">(</span>rawVec<span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;raw&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># load binary model to R</span>
+bst3 <span class="o">&lt;-</span> xgb.load<span class="p">(</span>rawVec<span class="p">)</span>
+pred3 <span class="o">&lt;-</span> predict<span class="p">(</span>bst3<span class="p">,</span> test<span class="o">$</span>data<span class="p">)</span>
+
+<span class="c1"># pred2 should be identical to pred</span>
+<span class="kp">print</span><span class="p">(</span><span class="kp">paste</span><span class="p">(</span><span class="s">&quot;sum(abs(pred3-pred))=&quot;</span><span class="p">,</span> <span class="kp">sum</span><span class="p">(</span><span class="kp">abs</span><span class="p">(</span>pred2<span class="o">-</span>pred<span class="p">))))</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">## [1] &quot;sum(abs(pred3-pred))= 0&quot;</span>
+</pre></div>
+</div>
+<blockquote>
+<div>Again <code class="docutils literal notranslate"><span class="pre">0</span></code>? It seems that <code class="docutils literal notranslate"><span class="pre">XGBoost</span></code> works pretty well!</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="references">
+<span id="references"></span><h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="index.html" title="previous chapter (use the left arrow)">XGBoost R Package</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="discoverYourData.html" title="next chapter (use the right arrow)">Understand your dataset with XGBoost</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="discoverYourData.html" title="Understand your dataset with XGBoost"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="XGBoost R Package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >XGBoost R Package</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

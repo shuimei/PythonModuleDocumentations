@@ -1,0 +1,431 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Contribute to XGBoost &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="XGBoost Command Line version" href="cli.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cli.html" title="XGBoost Command Line version"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Contribute to XGBoost</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="contribute-to-xgboost">
+<h1>Contribute to XGBoost<a class="headerlink" href="#contribute-to-xgboost" title="Permalink to this headline">¶</a></h1>
+<p>XGBoost has been developed and used by a group of active community members.
+Everyone is more than welcome to contribute. It is a way to make the project better and more accessible to more users.</p>
+<ul class="simple">
+<li>Please add your name to <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/CONTRIBUTORS.md">CONTRIBUTORS.md</a> after your patch has been merged.</li>
+<li>Please also update <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/NEWS.md">NEWS.md</a> to add note on your changes to the API or XGBoost documentation.</li>
+</ul>
+<p><strong>Guidelines</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="#submit-pull-request">Submit Pull Request</a></li>
+<li><a class="reference internal" href="#git-workflow-howtos">Git Workflow Howtos</a><ul>
+<li><a class="reference internal" href="#how-to-resolve-conflict-with-master">How to resolve conflict with master</a></li>
+<li><a class="reference internal" href="#how-to-combine-multiple-commits-into-one">How to combine multiple commits into one</a></li>
+<li><a class="reference internal" href="#what-is-the-consequence-of-force-push">What is the consequence of force push</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documents">Documents</a></li>
+<li><a class="reference internal" href="#testcases">Testcases</a></li>
+<li><a class="reference internal" href="#sanitizers">Sanitizers</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#core-library">Core Library</a></li>
+<li><a class="reference internal" href="#python-package">Python Package</a></li>
+<li><a class="reference internal" href="#r-package">R Package</a></li>
+</ul>
+<div class="section" id="submit-pull-request">
+<h2>Submit Pull Request<a class="headerlink" href="#submit-pull-request" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Before submit, please rebase your code on the most recent version of master, you can do it by</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git remote add upstream https://github.com/dmlc/xgboost
+git fetch upstream
+git rebase upstream/master
+</pre></div>
+</div>
+</li>
+<li><p class="first">If you have multiple small commits,
+it might be good to merge them together(use git rebase then squash) into more meaningful groups.</p>
+</li>
+<li><p class="first">Send the pull request!</p>
+<ul class="simple">
+<li>Fix the problems reported by automatic checks</li>
+<li>If you are contributing a new module, consider add a testcase in <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/tests">tests</a>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="git-workflow-howtos">
+<h2>Git Workflow Howtos<a class="headerlink" href="#git-workflow-howtos" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="how-to-resolve-conflict-with-master">
+<h3>How to resolve conflict with master<a class="headerlink" href="#how-to-resolve-conflict-with-master" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">First rebase to most recent master</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># The first two steps can be skipped after you do it once.</span>
+git remote add upstream https://github.com/dmlc/xgboost
+git fetch upstream
+git rebase upstream/master
+</pre></div>
+</div>
+</li>
+<li><p class="first">The git may show some conflicts it cannot merge, say <code class="docutils literal notranslate"><span class="pre">conflicted.py</span></code>.</p>
+<ul>
+<li><p class="first">Manually modify the file to resolve the conflict.</p>
+</li>
+<li><p class="first">After you resolved the conflict, mark it as resolved by</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git add conflicted.py
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p class="first">Then you can continue rebase by</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git rebase --continue
+</pre></div>
+</div>
+</li>
+<li><p class="first">Finally push to your fork, you may need to force push here.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git push --force
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="how-to-combine-multiple-commits-into-one">
+<h3>How to combine multiple commits into one<a class="headerlink" href="#how-to-combine-multiple-commits-into-one" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes we want to combine multiple commits, especially when later commits are only fixes to previous ones,
+to create a PR with set of meaningful commits. You can do it by following steps.</p>
+<ul>
+<li><p class="first">Before doing so, configure the default editor of git if you haven’t done so before.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git config core.editor the-editor-you-like
+</pre></div>
+</div>
+</li>
+<li><p class="first">Assume we want to merge last 3 commits, type the following commands</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git rebase -i HEAD~3
+</pre></div>
+</div>
+</li>
+<li><p class="first">It will pop up an text editor. Set the first commit as <code class="docutils literal notranslate"><span class="pre">pick</span></code>, and change later ones to <code class="docutils literal notranslate"><span class="pre">squash</span></code>.</p>
+</li>
+<li><p class="first">After you saved the file, it will pop up another text editor to ask you modify the combined commit message.</p>
+</li>
+<li><p class="first">Push the changes to your fork, you need to force push.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git push --force
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="what-is-the-consequence-of-force-push">
+<h3>What is the consequence of force push<a class="headerlink" href="#what-is-the-consequence-of-force-push" title="Permalink to this headline">¶</a></h3>
+<p>The previous two tips requires force push, this is because we altered the path of the commits.
+It is fine to force push to your own fork, as long as the commits changed are only yours.</p>
+</div>
+</div>
+<div class="section" id="documents">
+<h2>Documents<a class="headerlink" href="#documents" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Documentation is built using sphinx.</li>
+<li>Each document is written in <a class="reference external" href="http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html">reStructuredText</a>.</li>
+<li>You can build document locally to see the effect.</li>
+</ul>
+</div>
+<div class="section" id="testcases">
+<h2>Testcases<a class="headerlink" href="#testcases" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All the testcases are in <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/tests">tests</a>.</li>
+<li>We use python nose for python test cases.</li>
+</ul>
+</div>
+<div class="section" id="sanitizers">
+<h2>Sanitizers<a class="headerlink" href="#sanitizers" title="Permalink to this headline">¶</a></h2>
+<p>By default, sanitizers are bundled in GCC and Clang/LLVM. One can enable
+sanitizers with GCC &gt;= 4.8 or LLVM &gt;= 3.1, But some distributions might package
+sanitizers separately.  Here is a list of supported sanitizers with
+corresponding library names:</p>
+<ul class="simple">
+<li>Address sanitizer: libasan</li>
+<li>Leak sanitizer:    liblsan</li>
+<li>Thread sanitizer:  libtsan</li>
+</ul>
+<p>Memory sanitizer is exclusive to LLVM, hence not supported in XGBoost.</p>
+<div class="section" id="how-to-build-xgboost-with-sanitizers">
+<h3>How to build XGBoost with sanitizers<a class="headerlink" href="#how-to-build-xgboost-with-sanitizers" title="Permalink to this headline">¶</a></h3>
+<p>One can build XGBoost with sanitizer support by specifying -DUSE_SANITIZER=ON.
+By default, address sanitizer and leak sanitizer are used when you turn the
+USE_SANITIZER flag on.  You can always change the default by providing a
+semicolon separated list of sanitizers to ENABLED_SANITIZERS.  Note that thread
+sanitizer is not compatible with the other two sanitizers.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake -DUSE_SANITIZER<span class="o">=</span>ON -DENABLED_SANITIZERS<span class="o">=</span><span class="s2">&quot;address;leak&quot;</span> /path/to/xgboost
+</pre></div>
+</div>
+</div></blockquote>
+<p>By default, CMake will search regular system paths for sanitizers, you can also
+supply a specified SANITIZER_PATH.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake -DUSE_SANITIZER<span class="o">=</span>ON -DENABLED_SANITIZERS<span class="o">=</span><span class="s2">&quot;address;leak&quot;</span> <span class="se">\</span>
+-DSANITIZER_PATH<span class="o">=</span>/path/to/sanitizers /path/to/xgboost
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="how-to-use-sanitizers-with-cuda-support">
+<h3>How to use sanitizers with CUDA support<a class="headerlink" href="#how-to-use-sanitizers-with-cuda-support" title="Permalink to this headline">¶</a></h3>
+<p>Runing XGBoost on CUDA with address sanitizer (asan) will raise memory error.
+To use asan with CUDA correctly, you need to configure asan via ASAN_OPTIONS
+environment variable:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ASAN_OPTIONS</span><span class="o">=</span><span class="nv">protect_shadow_gap</span><span class="o">=</span><span class="m">0</span> ../testxgboost
+</pre></div>
+</div>
+</div></blockquote>
+<p>For details, please consult <a class="reference external" href="https://github.com/google/sanitizers/wiki">official documentation</a> for sanitizers.</p>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Usecases and examples will be in <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/demo">demo</a>.</li>
+<li>We are super excited to hear about your story, if you have blogposts,
+tutorials code solutions using XGBoost, please tell us and we will add
+a link in the example pages.</li>
+</ul>
+</div>
+<div class="section" id="core-library">
+<h2>Core Library<a class="headerlink" href="#core-library" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Follow <a class="reference external" href="https://google.github.io/styleguide/cppguide.html">Google style for C++</a>.</li>
+<li>Use C++11 features such as smart pointers, braced initializers, lambda functions, and <code class="docutils literal notranslate"><span class="pre">std::thread</span></code>.</li>
+<li>We use Doxygen to document all the interface code.</li>
+<li>You can reproduce the linter checks by running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code></li>
+</ul>
+</div>
+<div class="section" id="python-package">
+<h2>Python Package<a class="headerlink" href="#python-package" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Always add docstring to the new functions in numpydoc format.</li>
+<li>You can reproduce the linter checks by typing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">lint</span></code></li>
+</ul>
+</div>
+<div class="section" id="r-package">
+<h2>R Package<a class="headerlink" href="#r-package" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="code-style">
+<h3>Code Style<a class="headerlink" href="#code-style" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">We follow Google’s C++ Style guide for C++ code.</p>
+<ul class="simple">
+<li>This is mainly to be consistent with the rest of the project.</li>
+<li>Another reason is we will be able to check style automatically with a linter.</li>
+</ul>
+</li>
+<li><p class="first">You can check the style of the code by typing the following command at root folder.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make rcpplint
+</pre></div>
+</div>
+</li>
+<li><p class="first">When needed, you can disable the linter warning of certain line with <code class="docutils literal notranslate"><span class="pre">`//</span> <span class="pre">NOLINT(*)`</span></code> comments.</p>
+</li>
+<li><p class="first">We use <a class="reference external" href="https://cran.r-project.org/web/packages/roxygen2/vignettes/roxygen2.html">roxygen</a> for documenting the R package.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="rmarkdown-vignettes">
+<h3>Rmarkdown Vignettes<a class="headerlink" href="#rmarkdown-vignettes" title="Permalink to this headline">¶</a></h3>
+<p>Rmarkdown vignettes are placed in <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/R-package/vignettes">R-package/vignettes</a>.
+These Rmarkdown files are not compiled. We host the compiled version on <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/doc/R-package">doc/R-package</a>.</p>
+<p>The following steps are followed to add a new Rmarkdown vignettes:</p>
+<ul>
+<li><p class="first">Add the original rmarkdown to <code class="docutils literal notranslate"><span class="pre">R-package/vignettes</span></code>.</p>
+</li>
+<li><p class="first">Modify <code class="docutils literal notranslate"><span class="pre">doc/R-package/Makefile</span></code> to add the markdown files to be build.</p>
+</li>
+<li><p class="first">Clone the <a class="reference external" href="https://github.com/dmlc/web-data">dmlc/web-data</a> repo to folder <code class="docutils literal notranslate"><span class="pre">doc</span></code>.</p>
+</li>
+<li><p class="first">Now type the following command on <code class="docutils literal notranslate"><span class="pre">doc/R-package</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make the-markdown-to-make.md
+</pre></div>
+</div>
+</li>
+<li><p class="first">This will generate the markdown, as well as the figures in <code class="docutils literal notranslate"><span class="pre">doc/web-data/xgboost/knitr</span></code>.</p>
+</li>
+<li><p class="first">Modify the <code class="docutils literal notranslate"><span class="pre">doc/R-package/index.md</span></code> to point to the generated markdown.</p>
+</li>
+<li><p class="first">Add the generated figure to the <code class="docutils literal notranslate"><span class="pre">dmlc/web-data</span></code> repo.</p>
+<ul class="simple">
+<li>If you already cloned the repo to doc, this means <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code></li>
+</ul>
+</li>
+<li><p class="first">Create PR for both the markdown  and <code class="docutils literal notranslate"><span class="pre">dmlc/web-data</span></code>.</p>
+</li>
+<li><p class="first">You can also build the document locally by typing the following command at the <code class="docutils literal notranslate"><span class="pre">doc</span></code> directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make html
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The reason we do this is to avoid exploded repo size due to generated images.</p>
+</div>
+<div class="section" id="r-package-versioning">
+<h3>R package versioning<a class="headerlink" href="#r-package-versioning" title="Permalink to this headline">¶</a></h3>
+<p>Since version 0.6.4.3, we have adopted a versioning system that uses x.y.z (or <code class="docutils literal notranslate"><span class="pre">core_major.core_minor.cran_release</span></code>)
+format for CRAN releases and an x.y.z.p (or <code class="docutils literal notranslate"><span class="pre">core_major.core_minor.cran_release.patch</span></code>) format for development patch versions.
+This approach is similar to the one described in Yihui Xie’s
+<a class="reference external" href="https://yihui.name/en/2013/06/r-package-versioning/">blog post on R Package Versioning</a>,
+except we need an additional field to accomodate the x.y core library version.</p>
+<p>Each new CRAN release bumps up the 3rd field, while developments in-between CRAN releases
+would be marked by an additional 4th field on the top of an existing CRAN release version.
+Some additional consideration is needed when the core library version changes.
+E.g., after the core changes from 0.6 to 0.7, the R package development version would become 0.7.0.1, working towards
+a 0.7.1 CRAN release. The 0.7.0 would not be released to CRAN, unless it would require almost no additional development.</p>
+</div>
+<div class="section" id="registering-native-routines-in-r">
+<h3>Registering native routines in R<a class="headerlink" href="#registering-native-routines-in-r" title="Permalink to this headline">¶</a></h3>
+<p>According to <a class="reference external" href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Registering-native-routines">R extension manual</a>,
+it is good practice to register native routines and to disable symbol search. When any changes or additions are made to the
+C++ interface of the R package, please make corresponding changes in <code class="docutils literal notranslate"><span class="pre">src/init.c</span></code> as well.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="cli.html" title="previous chapter (use the left arrow)">XGBoost Command Line version</a>
+      </div>
+    
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cli.html" title="XGBoost Command Line version"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

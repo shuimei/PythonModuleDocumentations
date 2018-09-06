@@ -1,0 +1,575 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>XGBoost Parameters &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="XGBoost Python Package" href="python/index.html" />
+    <link rel="prev" title="XGBoost GPU Support" href="gpu/index.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="python/index.html" title="XGBoost Python Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gpu/index.html" title="XGBoost GPU Support"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu/index.html">GPU support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>XGBoost Parameters</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="xgboost-parameters">
+<h1>XGBoost Parameters<a class="headerlink" href="#xgboost-parameters" title="Permalink to this headline">¶</a></h1>
+<p>Before running XGBoost, we must set three types of parameters: general parameters, booster parameters and task parameters.</p>
+<ul class="simple">
+<li><strong>General parameters</strong> relate to which booster we are using to do boosting, commonly tree or linear model</li>
+<li><strong>Booster parameters</strong> depend on which booster you have chosen</li>
+<li><strong>Learning task parameters</strong> decide on the learning scenario. For example, regression tasks may use different parameters with ranking tasks.</li>
+<li><strong>Command line parameters</strong> relate to behavior of CLI version of XGBoost.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Parameters in R package</p>
+<p class="last">In R-package, you can use <code class="docutils literal notranslate"><span class="pre">.</span></code> (dot) to replace underscore in the parameters, for example, you can use <code class="docutils literal notranslate"><span class="pre">max.depth</span></code> to indicate <code class="docutils literal notranslate"><span class="pre">max_depth</span></code>. The underscore parameters are also valid in R.</p>
+</div>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#general-parameters" id="id1">General Parameters</a><ul>
+<li><a class="reference internal" href="#parameters-for-tree-booster" id="id2">Parameters for Tree Booster</a></li>
+<li><a class="reference internal" href="#additional-parameters-for-dart-booster-booster-dart" id="id3">Additional parameters for Dart Booster (<code class="docutils literal notranslate"><span class="pre">booster=dart</span></code>)</a></li>
+<li><a class="reference internal" href="#parameters-for-linear-booster-booster-gblinear" id="id4">Parameters for Linear Booster (<code class="docutils literal notranslate"><span class="pre">booster=gblinear</span></code>)</a></li>
+<li><a class="reference internal" href="#parameters-for-tweedie-regression-objective-reg-tweedie" id="id5">Parameters for Tweedie Regression (<code class="docutils literal notranslate"><span class="pre">objective=reg:tweedie</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#learning-task-parameters" id="id6">Learning Task Parameters</a></li>
+<li><a class="reference internal" href="#command-line-parameters" id="id7">Command Line Parameters</a></li>
+</ul>
+</div>
+<div class="section" id="general-parameters">
+<h2>General Parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">booster</span></code> [default= <code class="docutils literal notranslate"><span class="pre">gbtree</span></code> ]<ul>
+<li>Which booster to use. Can be <code class="docutils literal notranslate"><span class="pre">gbtree</span></code>, <code class="docutils literal notranslate"><span class="pre">gblinear</span></code> or <code class="docutils literal notranslate"><span class="pre">dart</span></code>; <code class="docutils literal notranslate"><span class="pre">gbtree</span></code> and <code class="docutils literal notranslate"><span class="pre">dart</span></code> use tree based models while <code class="docutils literal notranslate"><span class="pre">gblinear</span></code> uses linear functions.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">silent</span></code> [default=0]<ul>
+<li>0 means printing running messages, 1 means silent mode</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">nthread</span></code> [default to maximum number of threads available if not set]<ul>
+<li>Number of parallel threads used to run XGBoost</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">disable_default_eval_metric</span></code> [default=0]<ul>
+<li>Flag to disable default metric. Set to &gt;0 to disable.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">num_pbuffer</span></code> [set automatically by XGBoost, no need to be set by user]<ul>
+<li>Size of prediction buffer, normally set to number of training instances. The buffers are used to save the prediction results of last boosting step.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">num_feature</span></code> [set automatically by XGBoost, no need to be set by user]<ul>
+<li>Feature dimension used in boosting, set to maximum dimension of the feature</li>
+</ul>
+</li>
+</ul>
+<div class="section" id="parameters-for-tree-booster">
+<h3>Parameters for Tree Booster<a class="headerlink" href="#parameters-for-tree-booster" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">eta</span></code> [default=0.3, alias: <code class="docutils literal notranslate"><span class="pre">learning_rate</span></code>]<ul>
+<li>Step size shrinkage used in update to prevents overfitting. After each boosting step, we can directly get the weights of new features, and <code class="docutils literal notranslate"><span class="pre">eta</span></code> shrinks the feature weights to make the boosting process more conservative.</li>
+<li>range: [0,1]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">gamma</span></code> [default=0, alias: <code class="docutils literal notranslate"><span class="pre">min_split_loss</span></code>]<ul>
+<li>Minimum loss reduction required to make a further partition on a leaf node of the tree. The larger <code class="docutils literal notranslate"><span class="pre">gamma</span></code> is, the more conservative the algorithm will be.</li>
+<li>range: [0,∞]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">max_depth</span></code> [default=6]<ul>
+<li>Maximum depth of a tree. Increasing this value will make the model more complex and more likely to overfit. 0 indicates no limit. Note that limit is required when <code class="docutils literal notranslate"><span class="pre">grow_policy</span></code> is set of <code class="docutils literal notranslate"><span class="pre">depthwise</span></code>.</li>
+<li>range: [0,∞]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">min_child_weight</span></code> [default=1]<ul>
+<li>Minimum sum of instance weight (hessian) needed in a child. If the tree partition step results in a leaf node with the sum of instance weight less than <code class="docutils literal notranslate"><span class="pre">min_child_weight</span></code>, then the building process will give up further partitioning. In linear regression task, this simply corresponds to minimum number of instances needed to be in each node. The larger <code class="docutils literal notranslate"><span class="pre">min_child_weight</span></code> is, the more conservative the algorithm will be.</li>
+<li>range: [0,∞]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">max_delta_step</span></code> [default=0]<ul>
+<li>Maximum delta step we allow each leaf output to be. If the value is set to 0, it means there is no constraint. If it is set to a positive value, it can help making the update step more conservative. Usually this parameter is not needed, but it might help in logistic regression when class is extremely imbalanced. Set it to value of 1-10 might help control the update.</li>
+<li>range: [0,∞]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">subsample</span></code> [default=1]<ul>
+<li>Subsample ratio of the training instances. Setting it to 0.5 means that XGBoost would randomly sample half of the training data prior to growing trees. and this will prevent overfitting. Subsampling will occur once in every boosting iteration.</li>
+<li>range: (0,1]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">colsample_bytree</span></code> [default=1]<ul>
+<li>Subsample ratio of columns when constructing each tree. Subsampling will occur once in every boosting iteration.</li>
+<li>range: (0,1]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">colsample_bylevel</span></code> [default=1]<ul>
+<li>Subsample ratio of columns for each split, in each level. Subsampling will occur each time a new split is made. This paramter has no effect when <code class="docutils literal notranslate"><span class="pre">tree_method</span></code> is set to <code class="docutils literal notranslate"><span class="pre">hist</span></code>.</li>
+<li>range: (0,1]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">lambda</span></code> [default=1, alias: <code class="docutils literal notranslate"><span class="pre">reg_lambda</span></code>]<ul>
+<li>L2 regularization term on weights. Increasing this value will make model more conservative.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">alpha</span></code> [default=0, alias: <code class="docutils literal notranslate"><span class="pre">reg_alpha</span></code>]<ul>
+<li>L1 regularization term on weights. Increasing this value will make model more conservative.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">tree_method</span></code> string [default= <code class="docutils literal notranslate"><span class="pre">auto</span></code>]<ul>
+<li>The tree construction algorithm used in XGBoost. See description in the <a class="reference external" href="http://arxiv.org/abs/1603.02754">reference paper</a>.</li>
+<li>Distributed and external memory version only support <code class="docutils literal notranslate"><span class="pre">tree_method=approx</span></code>.</li>
+<li>Choices: <code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">exact</span></code>, <code class="docutils literal notranslate"><span class="pre">approx</span></code>, <code class="docutils literal notranslate"><span class="pre">hist</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_exact</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu_hist</span></code><ul>
+<li><code class="docutils literal notranslate"><span class="pre">auto</span></code>: Use heuristic to choose the fastest method.<ul>
+<li>For small to medium dataset, exact greedy (<code class="docutils literal notranslate"><span class="pre">exact</span></code>) will be used.</li>
+<li>For very large dataset, approximate algorithm (<code class="docutils literal notranslate"><span class="pre">approx</span></code>) will be chosen.</li>
+<li>Because old behavior is always use exact greedy in single machine,
+user will get a message when approximate algorithm is chosen to notify this choice.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">exact</span></code>: Exact greedy algorithm.</li>
+<li><code class="docutils literal notranslate"><span class="pre">approx</span></code>: Approximate greedy algorithm using quantile sketch and gradient histogram.</li>
+<li><code class="docutils literal notranslate"><span class="pre">hist</span></code>: Fast histogram optimized approximate greedy algorithm. It uses some performance improvements such as bins caching.</li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu_exact</span></code>: GPU implementation of <code class="docutils literal notranslate"><span class="pre">exact</span></code> algorithm.</li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu_hist</span></code>: GPU implementation of <code class="docutils literal notranslate"><span class="pre">hist</span></code> algorithm.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">sketch_eps</span></code> [default=0.03]<ul>
+<li>Only used for <code class="docutils literal notranslate"><span class="pre">tree_method=approx</span></code>.</li>
+<li>This roughly translates into <code class="docutils literal notranslate"><span class="pre">O(1</span> <span class="pre">/</span> <span class="pre">sketch_eps)</span></code> number of bins.
+Compared to directly select number of bins, this comes with theoretical guarantee with sketch accuracy.</li>
+<li>Usually user does not have to tune this.
+But consider setting to a lower number for more accurate enumeration of split candidates.</li>
+<li>range: (0, 1)</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">scale_pos_weight</span></code> [default=1]<ul>
+<li>Control the balance of positive and negative weights, useful for unbalanced classes. A typical value to consider: <code class="docutils literal notranslate"><span class="pre">sum(negative</span> <span class="pre">instances)</span> <span class="pre">/</span> <span class="pre">sum(positive</span> <span class="pre">instances)</span></code>. See <a class="reference internal" href="tutorials/param_tuning.html"><span class="doc">Parameters Tuning</span></a> for more discussion. Also, see Higgs Kaggle competition demo for examples: <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/demo/kaggle-higgs/higgs-train.R">R</a>, <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/demo/kaggle-higgs/higgs-numpy.py">py1</a>, <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/demo/kaggle-higgs/higgs-cv.py">py2</a>, <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/demo/guide-python/cross_validation.py">py3</a>.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">updater</span></code> [default= <code class="docutils literal notranslate"><span class="pre">grow_colmaker,prune</span></code>]<ul>
+<li>A comma separated string defining the sequence of tree updaters to run, providing a modular way to construct and to modify the trees. This is an advanced parameter that is usually set automatically, depending on some other parameters. However, it could be also set explicitly by a user. The following updater plugins exist:<ul>
+<li><code class="docutils literal notranslate"><span class="pre">grow_colmaker</span></code>: non-distributed column-based construction of trees.</li>
+<li><code class="docutils literal notranslate"><span class="pre">distcol</span></code>: distributed tree construction with column-based data splitting mode.</li>
+<li><code class="docutils literal notranslate"><span class="pre">grow_histmaker</span></code>: distributed tree construction with row-based data splitting based on global proposal of histogram counting.</li>
+<li><code class="docutils literal notranslate"><span class="pre">grow_local_histmaker</span></code>: based on local histogram counting.</li>
+<li><code class="docutils literal notranslate"><span class="pre">grow_skmaker</span></code>: uses the approximate sketching algorithm.</li>
+<li><code class="docutils literal notranslate"><span class="pre">sync</span></code>: synchronizes trees in all distributed nodes.</li>
+<li><code class="docutils literal notranslate"><span class="pre">refresh</span></code>: refreshes tree’s statistics and/or leaf values based on the current data. Note that no random subsampling of data rows is performed.</li>
+<li><code class="docutils literal notranslate"><span class="pre">prune</span></code>: prunes the splits where loss &lt; min_split_loss (or gamma).</li>
+</ul>
+</li>
+<li>In a distributed setting, the implicit updater sequence value would be adjusted to <code class="docutils literal notranslate"><span class="pre">grow_histmaker,prune</span></code>.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">refresh_leaf</span></code> [default=1]<ul>
+<li>This is a parameter of the <code class="docutils literal notranslate"><span class="pre">refresh</span></code> updater plugin. When this flag is 1, tree leafs as well as tree nodes’ stats are updated. When it is 0, only node stats are updated.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">process_type</span></code> [default= <code class="docutils literal notranslate"><span class="pre">default</span></code>]<ul>
+<li>A type of boosting process to run.</li>
+<li>Choices: <code class="docutils literal notranslate"><span class="pre">default</span></code>, <code class="docutils literal notranslate"><span class="pre">update</span></code><ul>
+<li><code class="docutils literal notranslate"><span class="pre">default</span></code>: The normal boosting process which creates new trees.</li>
+<li><code class="docutils literal notranslate"><span class="pre">update</span></code>: Starts from an existing model and only updates its trees. In each boosting iteration, a tree from the initial model is taken, a specified sequence of updater plugins is run for that tree, and a modified tree is added to the new model. The new model would have either the same or smaller number of trees, depending on the number of boosting iteratons performed. Currently, the following built-in updater plugins could be meaningfully used with this process type: <code class="docutils literal notranslate"><span class="pre">refresh</span></code>, <code class="docutils literal notranslate"><span class="pre">prune</span></code>. With <code class="docutils literal notranslate"><span class="pre">process_type=update</span></code>, one cannot use updater plugins that create new trees.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">grow_policy</span></code> [default= <code class="docutils literal notranslate"><span class="pre">depthwise</span></code>]<ul>
+<li>Controls a way new nodes are added to the tree.</li>
+<li>Currently supported only if <code class="docutils literal notranslate"><span class="pre">tree_method</span></code> is set to <code class="docutils literal notranslate"><span class="pre">hist</span></code>.</li>
+<li>Choices: <code class="docutils literal notranslate"><span class="pre">depthwise</span></code>, <code class="docutils literal notranslate"><span class="pre">`lossguide</span></code><ul>
+<li><code class="docutils literal notranslate"><span class="pre">depthwise</span></code>: split at nodes closest to the root.</li>
+<li><code class="docutils literal notranslate"><span class="pre">lossguide</span></code>: split at nodes with highest loss change.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">max_leaves</span></code> [default=0]<ul>
+<li>Maximum number of nodes to be added. Only relevant when <code class="docutils literal notranslate"><span class="pre">grow_policy=lossguide</span></code> is set.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">max_bin</span></code>, [default=256]<ul>
+<li>Only used if <code class="docutils literal notranslate"><span class="pre">tree_method</span></code> is set to <code class="docutils literal notranslate"><span class="pre">hist</span></code>.</li>
+<li>Maximum number of discrete bins to bucket continuous features.</li>
+<li>Increasing this number improves the optimality of splits at the cost of higher computation time.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">predictor</span></code>, [default=``cpu_predictor``]<ul>
+<li>The type of predictor algorithm to use. Provides the same results but allows the use of GPU or CPU.<ul>
+<li><code class="docutils literal notranslate"><span class="pre">cpu_predictor</span></code>: Multicore CPU prediction algorithm.</li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu_predictor</span></code>: Prediction using GPU. Default when <code class="docutils literal notranslate"><span class="pre">tree_method</span></code> is <code class="docutils literal notranslate"><span class="pre">gpu_exact</span></code> or <code class="docutils literal notranslate"><span class="pre">gpu_hist</span></code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="additional-parameters-for-dart-booster-booster-dart">
+<h3>Additional parameters for Dart Booster (<code class="docutils literal notranslate"><span class="pre">booster=dart</span></code>)<a class="headerlink" href="#additional-parameters-for-dart-booster-booster-dart" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> with DART booster</p>
+<p>If the booster object is DART type, <code class="docutils literal notranslate"><span class="pre">predict()</span></code> will perform dropouts, i.e. only
+some of the trees will be evaluated. This will produce incorrect results if <code class="docutils literal notranslate"><span class="pre">data</span></code> is
+not the training data. To obtain correct results on test sets, set <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> to
+a nonzero value, e.g.</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">sample_type</span></code> [default= <code class="docutils literal notranslate"><span class="pre">uniform</span></code>]<ul>
+<li>Type of sampling algorithm.<ul>
+<li><code class="docutils literal notranslate"><span class="pre">uniform</span></code>: dropped trees are selected uniformly.</li>
+<li><code class="docutils literal notranslate"><span class="pre">weighted</span></code>: dropped trees are selected in proportion to weight.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">normalize_type</span></code> [default= <code class="docutils literal notranslate"><span class="pre">tree</span></code>]<ul>
+<li>Type of normalization algorithm.<ul>
+<li><code class="docutils literal notranslate"><span class="pre">tree</span></code>: new trees have the same weight of each of dropped trees.<ul>
+<li>Weight of new trees are <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">(k</span> <span class="pre">+</span> <span class="pre">learning_rate)</span></code>.</li>
+<li>Dropped trees are scaled by a factor of <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">/</span> <span class="pre">(k</span> <span class="pre">+</span> <span class="pre">learning_rate)</span></code>.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">forest</span></code>: new trees have the same weight of sum of dropped trees (forest).<ul>
+<li>Weight of new trees are <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">(1</span> <span class="pre">+</span> <span class="pre">learning_rate)</span></code>.</li>
+<li>Dropped trees are scaled by a factor of <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">(1</span> <span class="pre">+</span> <span class="pre">learning_rate)</span></code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">rate_drop</span></code> [default=0.0]<ul>
+<li>Dropout rate (a fraction of previous trees to drop during the dropout).</li>
+<li>range: [0.0, 1.0]</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">one_drop</span></code> [default=0]<ul>
+<li>When this flag is enabled, at least one tree is always dropped during the dropout (allows Binomial-plus-one or epsilon-dropout from the original DART paper).</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">skip_drop</span></code> [default=0.0]<ul>
+<li>Probability of skipping the dropout procedure during a boosting iteration.<ul>
+<li>If a dropout is skipped, new trees are added in the same manner as <code class="docutils literal notranslate"><span class="pre">gbtree</span></code>.</li>
+<li>Note that non-zero <code class="docutils literal notranslate"><span class="pre">skip_drop</span></code> has higher priority than <code class="docutils literal notranslate"><span class="pre">rate_drop</span></code> or <code class="docutils literal notranslate"><span class="pre">one_drop</span></code>.</li>
+</ul>
+</li>
+<li>range: [0.0, 1.0]</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="parameters-for-linear-booster-booster-gblinear">
+<h3>Parameters for Linear Booster (<code class="docutils literal notranslate"><span class="pre">booster=gblinear</span></code>)<a class="headerlink" href="#parameters-for-linear-booster-booster-gblinear" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">lambda</span></code> [default=0, alias: <code class="docutils literal notranslate"><span class="pre">reg_lambda</span></code>]<ul>
+<li>L2 regularization term on weights. Increasing this value will make model more conservative. Normalised to number of training examples.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">alpha</span></code> [default=0, alias: <code class="docutils literal notranslate"><span class="pre">reg_alpha</span></code>]<ul>
+<li>L1 regularization term on weights. Increasing this value will make model more conservative. Normalised to number of training examples.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">updater</span></code> [default= <code class="docutils literal notranslate"><span class="pre">shotgun</span></code>]<ul>
+<li>Choice of algorithm to fit linear model<ul>
+<li><code class="docutils literal notranslate"><span class="pre">shotgun</span></code>: Parallel coordinate descent algorithm based on shotgun algorithm. Uses ‘hogwild’ parallelism and therefore produces a nondeterministic solution on each run.</li>
+<li><code class="docutils literal notranslate"><span class="pre">coord_descent</span></code>: Ordinary coordinate descent algorithm. Also multithreaded but still produces a deterministic solution.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="parameters-for-tweedie-regression-objective-reg-tweedie">
+<h3>Parameters for Tweedie Regression (<code class="docutils literal notranslate"><span class="pre">objective=reg:tweedie</span></code>)<a class="headerlink" href="#parameters-for-tweedie-regression-objective-reg-tweedie" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">tweedie_variance_power</span></code> [default=1.5]<ul>
+<li>Parameter that controls the variance of the Tweedie distribution <code class="docutils literal notranslate"><span class="pre">var(y)</span> <span class="pre">~</span> <span class="pre">E(y)^tweedie_variance_power</span></code></li>
+<li>range: (1,2)</li>
+<li>Set closer to 2 to shift towards a gamma distribution</li>
+<li>Set closer to 1 to shift towards a Poisson distribution.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="learning-task-parameters">
+<h2>Learning Task Parameters<a class="headerlink" href="#learning-task-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Specify the learning task and the corresponding learning objective. The objective options are below:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">objective</span></code> [default=reg:linear]<ul>
+<li><code class="docutils literal notranslate"><span class="pre">reg:linear</span></code>: linear regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">reg:logistic</span></code>: logistic regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">binary:logistic</span></code>: logistic regression for binary classification, output probability</li>
+<li><code class="docutils literal notranslate"><span class="pre">binary:logitraw</span></code>: logistic regression for binary classification, output score before logistic transformation</li>
+<li><code class="docutils literal notranslate"><span class="pre">binary:hinge</span></code>: hinge loss for binary classification. This makes predictions of 0 or 1, rather than producing probabilities.</li>
+<li><code class="docutils literal notranslate"><span class="pre">gpu:reg:linear</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu:reg:logistic</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu:binary:logistic</span></code>, <code class="docutils literal notranslate"><span class="pre">gpu:binary:logitraw</span></code>: versions
+of the corresponding objective functions evaluated on the GPU; note that like the GPU histogram algorithm,
+they can only be used when the entire training session uses the same dataset</li>
+<li><code class="docutils literal notranslate"><span class="pre">count:poisson</span></code> –poisson regression for count data, output mean of poisson distribution<ul>
+<li><code class="docutils literal notranslate"><span class="pre">max_delta_step</span></code> is set to 0.7 by default in poisson regression (used to safeguard optimization)</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">survival:cox</span></code>: Cox regression for right censored survival time data (negative values are considered right censored).
+Note that predictions are returned on the hazard ratio scale (i.e., as HR = exp(marginal_prediction) in the proportional hazard function <code class="docutils literal notranslate"><span class="pre">h(t)</span> <span class="pre">=</span> <span class="pre">h0(t)</span> <span class="pre">*</span> <span class="pre">HR</span></code>).</li>
+<li><code class="docutils literal notranslate"><span class="pre">multi:softmax</span></code>: set XGBoost to do multiclass classification using the softmax objective, you also need to set num_class(number of classes)</li>
+<li><code class="docutils literal notranslate"><span class="pre">multi:softprob</span></code>: same as softmax, but output a vector of <code class="docutils literal notranslate"><span class="pre">ndata</span> <span class="pre">*</span> <span class="pre">nclass</span></code>, which can be further reshaped to <code class="docutils literal notranslate"><span class="pre">ndata</span> <span class="pre">*</span> <span class="pre">nclass</span></code> matrix. The result contains predicted probability of each data point belonging to each class.</li>
+<li><code class="docutils literal notranslate"><span class="pre">rank:pairwise</span></code>: set XGBoost to do ranking task by minimizing the pairwise loss</li>
+<li><code class="docutils literal notranslate"><span class="pre">reg:gamma</span></code>: gamma regression with log-link. Output is a mean of gamma distribution. It might be useful, e.g., for modeling insurance claims severity, or for any outcome that might be <a class="reference external" href="https://en.wikipedia.org/wiki/Gamma_distribution#Applications">gamma-distributed</a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">reg:tweedie</span></code>: Tweedie regression with log-link. It might be useful, e.g., for modeling total loss in insurance, or for any outcome that might be <a class="reference external" href="https://en.wikipedia.org/wiki/Tweedie_distribution#Applications">Tweedie-distributed</a>.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">base_score</span></code> [default=0.5]<ul>
+<li>The initial prediction score of all instances, global bias</li>
+<li>For sufficient number of iterations, changing this value will not have too much effect.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">eval_metric</span></code> [default according to objective]<ul>
+<li>Evaluation metrics for validation data, a default metric will be assigned according to objective (rmse for regression, and error for classification, mean average precision for ranking)</li>
+<li>User can add multiple evaluation metrics. Python users: remember to pass the metrics in as list of parameters pairs instead of map, so that latter <code class="docutils literal notranslate"><span class="pre">eval_metric</span></code> won’t override previous one</li>
+<li>The choices are listed below:<ul>
+<li><code class="docutils literal notranslate"><span class="pre">rmse</span></code>: <a class="reference external" href="http://en.wikipedia.org/wiki/Root_mean_square_error">root mean square error</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">mae</span></code>: <a class="reference external" href="https://en.wikipedia.org/wiki/Mean_absolute_error">mean absolute error</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">logloss</span></code>: <a class="reference external" href="http://en.wikipedia.org/wiki/Log-likelihood">negative log-likelihood</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">error</span></code>: Binary classification error rate. It is calculated as <code class="docutils literal notranslate"><span class="pre">#(wrong</span> <span class="pre">cases)/#(all</span> <span class="pre">cases)</span></code>. For the predictions, the evaluation will regard the instances with prediction value larger than 0.5 as positive instances, and the others as negative instances.</li>
+<li><code class="docutils literal notranslate"><span class="pre">error&#64;t</span></code>: a different than 0.5 binary classification threshold value could be specified by providing a numerical value through ‘t’.</li>
+<li><code class="docutils literal notranslate"><span class="pre">merror</span></code>: Multiclass classification error rate. It is calculated as <code class="docutils literal notranslate"><span class="pre">#(wrong</span> <span class="pre">cases)/#(all</span> <span class="pre">cases)</span></code>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">mlogloss</span></code>: <a class="reference external" href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.log_loss.html">Multiclass logloss</a>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">auc</span></code>: <a class="reference external" href="http://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_curve">Area under the curve</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">ndcg</span></code>: <a class="reference external" href="http://en.wikipedia.org/wiki/NDCG">Normalized Discounted Cumulative Gain</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">map</span></code>: <a class="reference external" href="http://en.wikipedia.org/wiki/Mean_average_precision#Mean_average_precision">Mean average precision</a></li>
+<li><code class="docutils literal notranslate"><span class="pre">ndcg&#64;n</span></code>, <code class="docutils literal notranslate"><span class="pre">map&#64;n</span></code>: ‘n’ can be assigned as an integer to cut off the top positions in the lists for evaluation.</li>
+<li><code class="docutils literal notranslate"><span class="pre">ndcg-</span></code>, <code class="docutils literal notranslate"><span class="pre">map-</span></code>, <code class="docutils literal notranslate"><span class="pre">ndcg&#64;n-</span></code>, <code class="docutils literal notranslate"><span class="pre">map&#64;n-</span></code>: In XGBoost, NDCG and MAP will evaluate the score of a list without any positive samples as 1. By adding “-” in the evaluation metric XGBoost will evaluate these score as 0 to be consistent under some conditions.</li>
+<li><code class="docutils literal notranslate"><span class="pre">poisson-nloglik</span></code>: negative log-likelihood for Poisson regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">gamma-nloglik</span></code>: negative log-likelihood for gamma regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">cox-nloglik</span></code>: negative partial log-likelihood for Cox proportional hazards regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">gamma-deviance</span></code>: residual deviance for gamma regression</li>
+<li><code class="docutils literal notranslate"><span class="pre">tweedie-nloglik</span></code>: negative log-likelihood for Tweedie regression (at a specified value of the <code class="docutils literal notranslate"><span class="pre">tweedie_variance_power</span></code> parameter)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">seed</span></code> [default=0]<ul>
+<li>Random number seed.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="command-line-parameters">
+<h2>Command Line Parameters<a class="headerlink" href="#command-line-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The following parameters are only used in the console version of XGBoost</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">num_round</span></code><ul>
+<li>The number of rounds for boosting</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code><ul>
+<li>The path of training data</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">test:data</span></code><ul>
+<li>The path of test data to do prediction</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">save_period</span></code> [default=0]<ul>
+<li>The period to save the model. Setting <code class="docutils literal notranslate"><span class="pre">save_period=10</span></code> means that for every 10 rounds XGBoost will save the model. Setting it to 0 means not saving any model during the training.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">task</span></code> [default= <code class="docutils literal notranslate"><span class="pre">train</span></code>] options: <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">pred</span></code>, <code class="docutils literal notranslate"><span class="pre">eval</span></code>, <code class="docutils literal notranslate"><span class="pre">dump</span></code><ul>
+<li><code class="docutils literal notranslate"><span class="pre">train</span></code>: training using data</li>
+<li><code class="docutils literal notranslate"><span class="pre">pred</span></code>: making prediction for test:data</li>
+<li><code class="docutils literal notranslate"><span class="pre">eval</span></code>: for evaluating statistics specified by <code class="docutils literal notranslate"><span class="pre">eval[name]=filename</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">dump</span></code>: for dump the learned model into text format</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">model_in</span></code> [default=NULL]<ul>
+<li>Path to input model, needed for <code class="docutils literal notranslate"><span class="pre">test</span></code>, <code class="docutils literal notranslate"><span class="pre">eval</span></code>, <code class="docutils literal notranslate"><span class="pre">dump</span></code> tasks. If it is specified in training, XGBoost will continue training from the input model.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">model_out</span></code> [default=NULL]<ul>
+<li>Path to output model after training finishes. If not specified, XGBoost will output files with such names as <code class="docutils literal notranslate"><span class="pre">0003.model</span></code> where <code class="docutils literal notranslate"><span class="pre">0003</span></code> is number of boosting rounds.</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">model_dir</span></code> [default= <code class="docutils literal notranslate"><span class="pre">models/</span></code>]<ul>
+<li>The output directory of the saved models during training</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">fmap</span></code><ul>
+<li>Feature map, used for dumping model</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">dump_format</span></code> [default= <code class="docutils literal notranslate"><span class="pre">text</span></code>] options: <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code><ul>
+<li>Format of model dump file</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">name_dump</span></code> [default= <code class="docutils literal notranslate"><span class="pre">dump.txt</span></code>]<ul>
+<li>Name of model dump file</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">name_pred</span></code> [default= <code class="docutils literal notranslate"><span class="pre">pred.txt</span></code>]<ul>
+<li>Name of prediction file, used in pred mode</li>
+</ul>
+</li>
+<li><code class="docutils literal notranslate"><span class="pre">pred_margin</span></code> [default=0]<ul>
+<li>Predict margin instead of transformed probability</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="gpu/index.html" title="previous chapter (use the left arrow)">XGBoost GPU Support</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="python/index.html" title="next chapter (use the right arrow)">XGBoost Python Package</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="python/index.html" title="XGBoost Python Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gpu/index.html" title="XGBoost GPU Support"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

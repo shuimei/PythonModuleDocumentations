@@ -1,0 +1,2173 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Python API Reference &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="XGBoost R Package" href="../R-package/index.html" />
+    <link rel="prev" title="Python Package Introduction" href="python_intro.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../R-package/index.html" title="XGBoost R Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="python_intro.html" title="Python Package Introduction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">XGBoost Python Package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Python package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="python_intro.html">Python Package Introduction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Python API Reference</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/demo/guide-python">Python examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+                <li><a href="index.html">XGBoost Python Package</a></li>
+              
+              <li>Python API Reference</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="python-api-reference">
+<h1>Python API Reference<a class="headerlink" href="#python-api-reference" title="Permalink to this headline">¶</a></h1>
+<p>This page gives the Python API reference of xgboost, please also refer to Python Package Introduction for more information about python package.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#module-xgboost.core" id="id1">Core Data Structure</a></li>
+<li><a class="reference internal" href="#module-xgboost.training" id="id2">Learning API</a></li>
+<li><a class="reference internal" href="#module-xgboost.sklearn" id="id3">Scikit-Learn API</a></li>
+<li><a class="reference internal" href="#module-xgboost.plotting" id="id4">Plotting API</a></li>
+</ul>
+</div>
+<div class="section" id="module-xgboost.core">
+<span id="core-data-structure"></span><h2>Core Data Structure<a class="headerlink" href="#module-xgboost.core" title="Permalink to this headline">¶</a></h2>
+<p>Core XGBoost Library.</p>
+<dl class="class">
+<dt id="xgboost.DMatrix">
+<em class="property">class </em><code class="descclassname">xgboost.</code><code class="descname">DMatrix</code><span class="sig-paren">(</span><em>data</em>, <em>label=None</em>, <em>missing=None</em>, <em>weight=None</em>, <em>silent=False</em>, <em>feature_names=None</em>, <em>feature_types=None</em>, <em>nthread=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Data Matrix used in XGBoost.</p>
+<p>DMatrix is a internal data structure that used by XGBoost
+which is optimized for both memory efficiency and training speed.
+You can construct DMatrix from numpy.arrays</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<em>string/numpy array/scipy.sparse/pd.DataFrame/DataTable</em>) – Data source of DMatrix.
+When data is string type, it represents the path libsvm format txt file,
+or binary file that xgboost can read from.</li>
+<li><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em> or </em><em>numpy 1-D array</em><em>, </em><em>optional</em>) – Label of the training data.</li>
+<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – Value in the data which needs to be present as a missing value. If
+None, defaults to np.nan.</li>
+<li><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em> or </em><em>numpy 1-D array</em><em> , </em><em>optional</em>) – Weight for each instance.</li>
+<li><strong>silent</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether print messages during construction</li>
+<li><strong>feature_names</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – Set names for features.</li>
+<li><strong>feature_types</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – Set types for features.</li>
+<li><strong>nthread</strong> (<em>integer</em><em>, </em><em>optional</em>) – Number of threads to use for loading data from numpy array. If -1,
+uses maximum threads available on the system.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="xgboost.DMatrix.feature_names">
+<code class="descname">feature_names</code><a class="headerlink" href="#xgboost.DMatrix.feature_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature names (column labels).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>feature_names</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)">list</a> or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xgboost.DMatrix.feature_types">
+<code class="descname">feature_types</code><a class="headerlink" href="#xgboost.DMatrix.feature_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature types (column types).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>feature_types</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)">list</a> or None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.get_base_margin">
+<code class="descname">get_base_margin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.get_base_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the base margin of the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>base_margin</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.get_float_info">
+<code class="descname">get_float_info</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.get_float_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get float property from the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The field name of the information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>info</strong> – a numpy array of float information of the data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.get_label">
+<code class="descname">get_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.get_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the label of the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>label</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.get_uint_info">
+<code class="descname">get_uint_info</code><span class="sig-paren">(</span><em>field</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.get_uint_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get unsigned integer property from the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The field name of the information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>info</strong> – a numpy array of unsigned integer information of the data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.get_weight">
+<code class="descname">get_weight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.get_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the weight of the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>weight</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.num_col">
+<code class="descname">num_col</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.num_col" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of columns (features) in the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>number of columns</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.num_row">
+<code class="descname">num_row</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.num_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of rows in the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>number of rows</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.save_binary">
+<code class="descname">save_binary</code><span class="sig-paren">(</span><em>fname</em>, <em>silent=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.save_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save DMatrix to an XGBoost buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fname</strong> (<em>string</em>) – Name of the output buffer file.</li>
+<li><strong>silent</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> (</em><em>optional; default: True</em><em>)</em>) – If set, the output is suppressed.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_base_margin">
+<code class="descname">set_base_margin</code><span class="sig-paren">(</span><em>margin</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_base_margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set base margin of booster to start from.</p>
+<p>This can be used to specify a prediction value of
+existing model to be base_margin
+However, remember margin is needed, instead of transformed prediction
+e.g. for logistic regression: need to put in value before logistic transformation
+see also example/demo.py</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>margin</strong> (<em>array like</em>) – Prediction margin of each datapoint</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_float_info">
+<code class="descname">set_float_info</code><span class="sig-paren">(</span><em>field</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_float_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set float type property into the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>field</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The field name of the information</li>
+<li><strong>data</strong> (<em>numpy array</em>) – The array of data to be set</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_float_info_npy2d">
+<code class="descname">set_float_info_npy2d</code><span class="sig-paren">(</span><em>field</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_float_info_npy2d" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Set float type property into the DMatrix</dt>
+<dd>for numpy 2d array input</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>field</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The field name of the information</li>
+<li><strong>data</strong> (<em>numpy array</em>) – The array of data to be set</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_group">
+<code class="descname">set_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set group size of DMatrix (used for ranking).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group</strong> (<em>array like</em>) – Group size of each group</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_label">
+<code class="descname">set_label</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set label of dmatrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> (<em>array like</em>) – The label information to be set into DMatrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_label_npy2d">
+<code class="descname">set_label_npy2d</code><span class="sig-paren">(</span><em>label</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_label_npy2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set label of dmatrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> (<em>array like</em>) – The label information to be set into DMatrix
+from numpy 2D array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_uint_info">
+<code class="descname">set_uint_info</code><span class="sig-paren">(</span><em>field</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_uint_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set uint type property into the DMatrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>field</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The field name of the information</li>
+<li><strong>data</strong> (<em>numpy array</em>) – The array of data to be set</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_weight">
+<code class="descname">set_weight</code><span class="sig-paren">(</span><em>weight</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set weight of each instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>weight</strong> (<em>array like</em>) – Weight for each data point</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.set_weight_npy2d">
+<code class="descname">set_weight_npy2d</code><span class="sig-paren">(</span><em>weight</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.set_weight_npy2d" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Set weight of each instance</dt>
+<dd>for numpy 2D array</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>weight</strong> (<em>array like</em>) – Weight for each data point in numpy 2D array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.DMatrix.slice">
+<code class="descname">slice</code><span class="sig-paren">(</span><em>rindex</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.DMatrix.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slice the DMatrix and return a new DMatrix that only contains <cite>rindex</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>rindex</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – List of indices to be selected.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>res</strong> – A new DMatrix containing only selected indices.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix">DMatrix</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xgboost.Booster">
+<em class="property">class </em><code class="descclassname">xgboost.</code><code class="descname">Booster</code><span class="sig-paren">(</span><em>params=None</em>, <em>cache=()</em>, <em>model_file=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A Booster of of XGBoost.</p>
+<p>Booster is the model of xgboost, that contains low level routines for
+training, prediction and evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – Parameters for boosters.</li>
+<li><strong>cache</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – List of cache items.</li>
+<li><strong>model_file</strong> (<em>string</em>) – Path to the model file.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="xgboost.Booster.attr">
+<code class="descname">attr</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get attribute string from the Booster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The key to get attribute from.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>value</strong> – The attribute value of the key, returns None if attribute do not exist.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.attributes">
+<code class="descname">attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get attributes stored in the Booster as a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>result</strong> – Returns an empty dict if there’s no attributes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary of  attribute_name: attribute_value pairs of strings.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.boost">
+<code class="descname">boost</code><span class="sig-paren">(</span><em>dtrain</em>, <em>grad</em>, <em>hess</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.boost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boost the booster for one iteration, with customized gradient statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dtrain</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The training DMatrix.</li>
+<li><strong>grad</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – The first order of gradient.</li>
+<li><strong>hess</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a>) – The second order of gradient.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the booster object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>booster</strong> – a copied booster model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><cite>Booster</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.dump_model">
+<code class="descname">dump_model</code><span class="sig-paren">(</span><em>fout</em>, <em>fmap=''</em>, <em>with_stats=False</em>, <em>dump_format='text'</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.dump_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump model into a text or JSON file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fout</strong> (<em>string</em>) – Output file name.</li>
+<li><strong>fmap</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the file containing feature map names.</li>
+<li><strong>with_stats</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Controls whether the split statistics are output.</li>
+<li><strong>dump_format</strong> (<em>string</em><em>, </em><em>optional</em>) – Format of model dump file. Can be ‘text’ or ‘json’.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>data</em>, <em>name='eval'</em>, <em>iteration=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model on mat.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the dataset.</li>
+<li><strong>iteration</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – The current iteration number.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> – Evaluation result string.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.eval_set">
+<code class="descname">eval_set</code><span class="sig-paren">(</span><em>evals</em>, <em>iteration=0</em>, <em>feval=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.eval_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a set of data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>evals</strong> (<em>list of tuples</em><em> (</em><a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a><em>, </em><em>string</em><em>)</em>) – List of items to be evaluated.</li>
+<li><strong>iteration</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Current iteration.</li>
+<li><strong>feval</strong> (<em>function</em>) – Custom evaluation function.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> – Evaluation result string.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.get_dump">
+<code class="descname">get_dump</code><span class="sig-paren">(</span><em>fmap=''</em>, <em>with_stats=False</em>, <em>dump_format='text'</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.get_dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the model dump as a list of strings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fmap</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the file containing feature map names.</li>
+<li><strong>with_stats</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>optional</em>) – Controls whether the split statistics are output.</li>
+<li><strong>dump_format</strong> (<em>string</em><em>, </em><em>optional</em>) – Format of model dump. Can be ‘text’ or ‘json’.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.get_fscore">
+<code class="descname">get_fscore</code><span class="sig-paren">(</span><em>fmap=''</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.get_fscore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature importance of each feature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – The name of feature map file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.get_score">
+<code class="descname">get_score</code><span class="sig-paren">(</span><em>fmap=''</em>, <em>importance_type='weight'</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.get_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get feature importance of each feature.
+Importance type can be defined as:</p>
+<ul class="simple">
+<li>‘weight’: the number of times a feature is used to split the data across all trees.</li>
+<li>‘gain’: the average gain across all splits the feature is used in.</li>
+<li>‘cover’: the average coverage across all splits the feature is used in.</li>
+<li>‘total_gain’: the total gain across all splits the feature is used in.</li>
+<li>‘total_cover’: the total coverage across all splits the feature is used in.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – The name of feature map file.</li>
+<li><strong>importance_type</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default 'weight'</em>) – One of the importance types defined above.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.get_split_value_histogram">
+<code class="descname">get_split_value_histogram</code><span class="sig-paren">(</span><em>feature</em>, <em>fmap=''</em>, <em>bins=None</em>, <em>as_pandas=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.get_split_value_histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get split value histogram of a feature</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>feature</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – The name of the feature.</li>
+<li><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – The name of feature map file.</li>
+<li><strong>bin</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>default None</em>) – The maximum number of bins.
+Number of bins equals number of unique split values n_unique,
+if bins == None or bins &gt; n_unique.</li>
+<li><strong>as_pandas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>default True</em>) – Return pd.DataFrame when pandas is installed.
+If False or pandas is not installed, return numpy ndarray.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>a histogram of used splitting values for the specified feature</em></li>
+<li><em>either as numpy array or pandas DataFrame.</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.load_model">
+<code class="descname">load_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the model from a file.</p>
+<p>The model is loaded from an XGBoost internal binary format which is
+universal among the various XGBoost interfaces. Auxiliary attributes of
+the Python Booster object (such as feature_names) will not be loaded.
+To preserve all attributes, pickle the Booster object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em><em> or </em><em>a memory buffer</em>) – Input file name or memory buffer(see also save_raw)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.load_rabit_checkpoint">
+<code class="descname">load_rabit_checkpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.load_rabit_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the model by load from rabit checkpoint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>version</strong> – The version number of the model.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">integer</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>data</em>, <em>output_margin=False</em>, <em>ntree_limit=0</em>, <em>pred_leaf=False</em>, <em>pred_contribs=False</em>, <em>approx_contribs=False</em>, <em>pred_interactions=False</em>, <em>validate_features=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict with data.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This function is not thread safe.</p>
+<p class="last">For each booster object, predict can only be called from one thread.
+If you want to run prediction using multiple thread, call <code class="docutils literal notranslate"><span class="pre">bst.copy()</span></code> to make copies
+of model object and then call <code class="docutils literal notranslate"><span class="pre">predict()</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> with DART booster</p>
+<p>If the booster object is DART type, <code class="docutils literal notranslate"><span class="pre">predict()</span></code> will perform dropouts, i.e. only
+some of the trees will be evaluated. This will produce incorrect results if <code class="docutils literal notranslate"><span class="pre">data</span></code> is
+not the training data. To obtain correct results on test sets, set <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> to
+a nonzero value, e.g.</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>output_margin</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to output the raw untransformed margin value.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to 0 (use all trees).</li>
+<li><strong>pred_leaf</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this option is on, the output will be a matrix of (nsample, ntrees)
+with each record indicating the predicted leaf index of each sample in each tree.
+Note that the leaf index of a tree is unique per tree, so you may find leaf 1
+in both tree 1 and tree 0.</li>
+<li><strong>pred_contribs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True the output will be a matrix of size (nsample, nfeats + 1)
+with each record indicating the feature contributions (SHAP values) for that
+prediction. The sum of all feature contributions is equal to the raw untransformed
+margin value of the prediction. Note the final column is the bias term.</li>
+<li><strong>approx_contribs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Approximate the contributions of each feature</li>
+<li><strong>pred_interactions</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True the output will be a matrix of size (nsample, nfeats + 1, nfeats + 1)
+indicating the SHAP interaction values for each pair of features. The sum of each
+row (or column) of the interaction values equals the corresponding SHAP value (from
+pred_contribs), and the sum of the entire matrix equals the raw untransformed margin
+value of the prediction. Note the last row and column correspond to the bias term.</li>
+<li><strong>validate_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True, validate that the Booster’s and data’s feature_names are identical.
+Otherwise, it is assumed that the feature_names are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>prediction</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.save_model">
+<code class="descname">save_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model to a file.</p>
+<p>The model is saved in an XGBoost internal binary format which is
+universal among the various XGBoost interfaces. Auxiliary attributes of
+the Python Booster object (such as feature_names) will not be saved.
+To preserve all attributes, pickle the Booster object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em>) – Output file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.save_rabit_checkpoint">
+<code class="descname">save_rabit_checkpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.save_rabit_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current booster to rabit checkpoint.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.save_raw">
+<code class="descname">save_raw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.save_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model to a in memory buffer representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a in memory buffer representation of the model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.set_attr">
+<code class="descname">set_attr</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.set_attr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the attribute of the Booster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>**kwargs</strong> – The attributes to set. Setting a value to None deletes an attribute.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.set_param">
+<code class="descname">set_param</code><span class="sig-paren">(</span><em>params</em>, <em>value=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.set_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parameters into the Booster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>params</strong> (<em>dict/list/str</em>) – list of key,value pairs, dict of key to value or simply str key</li>
+<li><strong>value</strong> (<em>optional</em>) – value of the specified parameter, when params is str key</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.Booster.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>dtrain</em>, <em>iteration</em>, <em>fobj=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.Booster.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update for one iteration, with objective function calculated internally.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dtrain</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – Training data.</li>
+<li><strong>iteration</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Current iteration number.</li>
+<li><strong>fobj</strong> (<em>function</em>) – Customized objective function.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xgboost.training">
+<span id="learning-api"></span><h2>Learning API<a class="headerlink" href="#module-xgboost.training" title="Permalink to this headline">¶</a></h2>
+<p>Training Library containing training routines.</p>
+<dl class="function">
+<dt id="xgboost.train">
+<code class="descclassname">xgboost.</code><code class="descname">train</code><span class="sig-paren">(</span><em>params</em>, <em>dtrain</em>, <em>num_boost_round=10</em>, <em>evals=()</em>, <em>obj=None</em>, <em>feval=None</em>, <em>maximize=False</em>, <em>early_stopping_rounds=None</em>, <em>evals_result=None</em>, <em>verbose_eval=True</em>, <em>xgb_model=None</em>, <em>callbacks=None</em>, <em>learning_rates=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train a booster with given parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – Booster params.</li>
+<li><strong>dtrain</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – Data to be trained.</li>
+<li><strong>num_boost_round</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of boosting iterations.</li>
+<li><strong>evals</strong> (<em>list of pairs</em><em> (</em><a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a><em>, </em><em>string</em><em>)</em>) – List of items to be evaluated during training, this allows user to watch
+performance on the validation set.</li>
+<li><strong>obj</strong> (<em>function</em>) – Customized objective function.</li>
+<li><strong>feval</strong> (<em>function</em>) – Customized evaluation function.</li>
+<li><strong>maximize</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to maximize feval.</li>
+<li><strong>early_stopping_rounds</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Activates early stopping. Validation error needs to decrease at least
+every &lt;early_stopping_rounds&gt; round(s) to continue training.
+Requires at least one item in evals.
+If there’s more than one, will use the last.
+Returns the model from the last iteration (not the best one).
+If early stopping occurs, the model will have three additional fields:
+bst.best_score, bst.best_iteration and bst.best_ntree_limit.
+(Use bst.best_ntree_limit to get the correct value if num_parallel_tree
+and/or num_class appears in the parameters)</li>
+<li><strong>evals_result</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – <p>This dictionary stores the evaluation results of all the items in watchlist.</p>
+<p>Example: with a watchlist containing [(dtest,’eval’), (dtrain,’train’)] and
+a parameter containing (‘eval_metric’: ‘logloss’), the <strong>evals_result</strong>
+returns</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;train&#39;: {&#39;logloss&#39;: [&#39;0.48253&#39;, &#39;0.35953&#39;]},
+ &#39;eval&#39;: {&#39;logloss&#39;: [&#39;0.480385&#39;, &#39;0.357756&#39;]}}
+</pre></div>
+</div>
+</li>
+<li><strong>verbose_eval</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Requires at least one item in evals.
+If <strong>verbose_eval</strong> is True then the evaluation metric on the validation set is
+printed at each boosting stage.
+If <strong>verbose_eval</strong> is an integer then the evaluation metric on the validation set
+is printed at every given <strong>verbose_eval</strong> boosting stage. The last boosting stage
+/ the boosting stage found by using <strong>early_stopping_rounds</strong> is also printed.
+Example: with <code class="docutils literal notranslate"><span class="pre">verbose_eval=4</span></code> and at least one item in evals, an evaluation metric
+is printed every 4 boosting stages, instead of every boosting stage.</li>
+<li><strong>learning_rates</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em> or </em><em>function</em><em> (</em><em>deprecated - use callback API instead</em><em>)</em>) – List of learning rate for each boosting round
+or a customized function that calculates eta in terms of
+current number of round and the total number of boosting round (e.g. yields
+learning rate decay)</li>
+<li><strong>xgb_model</strong> (<em>file name of stored xgb model</em><em> or </em><em>'Booster' instance</em>) – Xgb model to be loaded before training (allows training continuation).</li>
+<li><strong>callbacks</strong> (<em>list of callback functions</em>) – List of callback functions that are applied at end of each iteration.
+It is possible to use predefined callbacks by using xgb.callback module.
+Example: [xgb.callback.reset_learning_rate(custom_rates)]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>booster</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">a trained booster model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xgboost.cv">
+<code class="descclassname">xgboost.</code><code class="descname">cv</code><span class="sig-paren">(</span><em>params</em>, <em>dtrain</em>, <em>num_boost_round=10</em>, <em>nfold=3</em>, <em>stratified=False</em>, <em>folds=None</em>, <em>metrics=()</em>, <em>obj=None</em>, <em>feval=None</em>, <em>maximize=False</em>, <em>early_stopping_rounds=None</em>, <em>fpreproc=None</em>, <em>as_pandas=True</em>, <em>verbose_eval=None</em>, <em>show_stdv=True</em>, <em>seed=0</em>, <em>callbacks=None</em>, <em>shuffle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.cv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cross-validation with given parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – Booster params.</li>
+<li><strong>dtrain</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – Data to be trained.</li>
+<li><strong>num_boost_round</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of boosting iterations.</li>
+<li><strong>nfold</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of folds in CV.</li>
+<li><strong>stratified</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Perform stratified sampling.</li>
+<li><strong>folds</strong> (<em>a KFold</em><em> or </em><em>StratifiedKFold instance</em><em> or </em><em>list of fold indices</em>) – Sklearn KFolds or StratifiedKFolds object.
+Alternatively may explicitly pass sample indices for each fold.
+For <code class="docutils literal notranslate"><span class="pre">n</span></code> folds, <code class="docutils literal notranslate"><span class="pre">folds</span></code> should be a length <code class="docutils literal notranslate"><span class="pre">n</span></code> list of tuples.
+Each tuple is <code class="docutils literal notranslate"><span class="pre">(in,out)</span></code> where <code class="docutils literal notranslate"><span class="pre">in</span></code> is a list of indices to be used
+as the training samples for the <code class="docutils literal notranslate"><span class="pre">n</span></code> th fold and <code class="docutils literal notranslate"><span class="pre">out</span></code> is a list of
+indices to be used as the testing samples for the <code class="docutils literal notranslate"><span class="pre">n</span></code> th fold.</li>
+<li><strong>metrics</strong> (<em>string</em><em> or </em><em>list of strings</em>) – Evaluation metrics to be watched in CV.</li>
+<li><strong>obj</strong> (<em>function</em>) – Custom objective function.</li>
+<li><strong>feval</strong> (<em>function</em>) – Custom evaluation function.</li>
+<li><strong>maximize</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to maximize feval.</li>
+<li><strong>early_stopping_rounds</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Activates early stopping. CV error needs to decrease at least
+every &lt;early_stopping_rounds&gt; round(s) to continue.
+Last entry in evaluation history is the one from best iteration.</li>
+<li><strong>fpreproc</strong> (<em>function</em>) – Preprocessing function that takes (dtrain, dtest, param) and returns
+transformed versions of those.</li>
+<li><strong>as_pandas</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>default True</em>) – Return pd.DataFrame when pandas is installed.
+If False or pandas is not installed, return np.ndarray</li>
+<li><strong>verbose_eval</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, or </em><em>None</em><em>, </em><em>default None</em>) – Whether to display the progress. If None, progress will be displayed
+when np.ndarray is returned. If True, progress will be displayed at
+boosting stage. If an integer is given, progress will be displayed
+at every given <cite>verbose_eval</cite> boosting stage.</li>
+<li><strong>show_stdv</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to display the standard deviation in progress.
+Results are not affected, and always contains std.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Seed used to generate the folds (passed to numpy.random.seed).</li>
+<li><strong>callbacks</strong> (<em>list of callback functions</em>) – <p>List of callback functions that are applied at end of each iteration.
+It is possible to use predefined callbacks by using xgb.callback module.
+Example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[xgb.callback.reset_learning_rate(custom_rates)]
+</pre></div>
+</div>
+</li>
+<li><strong>shuffle</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Shuffle data before creating folds.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>evaluation history</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)">list</a>(string)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-xgboost.sklearn">
+<span id="scikit-learn-api"></span><h2>Scikit-Learn API<a class="headerlink" href="#module-xgboost.sklearn" title="Permalink to this headline">¶</a></h2>
+<p>Scikit-Learn Wrapper interface for XGBoost.</p>
+<dl class="class">
+<dt id="xgboost.XGBRegressor">
+<em class="property">class </em><code class="descclassname">xgboost.</code><code class="descname">XGBRegressor</code><span class="sig-paren">(</span><em>max_depth=3</em>, <em>learning_rate=0.1</em>, <em>n_estimators=100</em>, <em>silent=True</em>, <em>objective='reg:linear'</em>, <em>booster='gbtree'</em>, <em>n_jobs=1</em>, <em>nthread=None</em>, <em>gamma=0</em>, <em>min_child_weight=1</em>, <em>max_delta_step=0</em>, <em>subsample=1</em>, <em>colsample_bytree=1</em>, <em>colsample_bylevel=1</em>, <em>reg_alpha=0</em>, <em>reg_lambda=1</em>, <em>scale_pos_weight=1</em>, <em>base_score=0.5</em>, <em>random_state=0</em>, <em>seed=None</em>, <em>missing=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xgboost.sklearn.XGBModel</span></code>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Implementation of the scikit-learn API for XGBoost regression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_depth</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum tree depth for base learners.</li>
+<li><strong>learning_rate</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Boosting learning rate (xgb’s “eta”)</li>
+<li><strong>n_estimators</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of boosted trees to fit.</li>
+<li><strong>silent</strong> (<em>boolean</em>) – Whether to print messages while running boosting.</li>
+<li><strong>objective</strong> (<em>string</em><em> or </em><em>callable</em>) – Specify the learning task and the corresponding learning objective or
+a custom objective function to be used (see note below).</li>
+<li><strong>booster</strong> (<em>string</em>) – Specify which booster to use: gbtree, gblinear or dart.</li>
+<li><strong>nthread</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (Deprecated, please use n_jobs)</li>
+<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (replaces nthread)</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Minimum loss reduction required to make a further partition on a leaf node of the tree.</li>
+<li><strong>min_child_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Minimum sum of instance weight(hessian) needed in a child.</li>
+<li><strong>max_delta_step</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum delta step we allow each tree’s weight estimation to be.</li>
+<li><strong>subsample</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of the training instance.</li>
+<li><strong>colsample_bytree</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns when constructing each tree.</li>
+<li><strong>colsample_bylevel</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns for each split, in each level.</li>
+<li><strong>reg_alpha</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's alpha</em><em>)</em>) – L1 regularization term on weights</li>
+<li><strong>reg_lambda</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's lambda</em><em>)</em>) – L2 regularization term on weights</li>
+<li><strong>scale_pos_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Balancing of positive and negative weights.</li>
+<li><strong>base_score</strong> – The initial prediction score of all instances, global bias.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (Deprecated, please use random_state)</li>
+<li><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (replaces seed)</li>
+<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – Value in the data which needs to be present as a missing value. If
+None, defaults to np.nan.</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – <p>Keyword arguments for XGBoost Booster object.  Full documentation of parameters can
+be found here: <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst">https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst</a>.
+Attempting to set a parameter via the constructor args and **kwargs dict simultaneously
+will result in a TypeError.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>**kwargs unsupported by scikit-learn</p>
+<p class="last">**kwargs is unsupported by scikit-learn.  We do not guarantee that parameters
+passed via this argument will interact properly with scikit-learn.</p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>A custom objective function can be provided for the <code class="docutils literal notranslate"><span class="pre">objective</span></code>
+parameter. In this case, it should have the signature
+<code class="docutils literal notranslate"><span class="pre">objective(y_true,</span> <span class="pre">y_pred)</span> <span class="pre">-&gt;</span> <span class="pre">grad,</span> <span class="pre">hess</span></code>:</p>
+<dl class="last docutils">
+<dt>y_true: array_like of shape [n_samples]</dt>
+<dd>The target values</dd>
+<dt>y_pred: array_like of shape [n_samples]</dt>
+<dd>The predicted values</dd>
+<dt>grad: array_like of shape [n_samples]</dt>
+<dd>The value of the gradient for each sample point.</dd>
+<dt>hess: array_like of shape [n_samples]</dt>
+<dd>The value of the second derivative for each sample point</dd>
+</dl>
+</div>
+<dl class="method">
+<dt id="xgboost.XGBRegressor.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>X</em>, <em>ntree_limit=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the predicted leaf every tree for each sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>[</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Input features matrix.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to 0 (use all trees).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>X_leaves</strong> – For each datapoint x in X and for each tree, return the index of the
+leaf x ends up in. Leaves are numbered within
+<code class="docutils literal notranslate"><span class="pre">[0;</span> <span class="pre">2**(self.max_depth+1))</span></code>, possibly with gaps in the numbering.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like, shape=[n_samples, n_trees]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.evals_result">
+<code class="descname">evals_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.evals_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the evaluation results.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is passed to the <cite>fit</cite> function, you can call <code class="docutils literal notranslate"><span class="pre">evals_result()</span></code> to
+get evaluation results for all passed eval_sets. When <code class="docutils literal notranslate"><span class="pre">eval_metric</span></code> is also
+passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function, the <code class="docutils literal notranslate"><span class="pre">evals_result</span></code> will contain the <code class="docutils literal notranslate"><span class="pre">eval_metrics</span></code>
+passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>evals_result</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">param_dist</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;objective&#39;</span><span class="p">:</span><span class="s1">&#39;binary:logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">}</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBModel</span><span class="p">(</span><span class="o">**</span><span class="n">param_dist</span><span class="p">)</span>
+
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+        <span class="n">eval_set</span><span class="o">=</span><span class="p">[(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)],</span>
+        <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">evals_result</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">evals_result</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The variable evals_result will contain:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;validation_0&#39;: {&#39;logloss&#39;: [&#39;0.604835&#39;, &#39;0.531479&#39;]},
+&#39;validation_1&#39;: {&#39;logloss&#39;: [&#39;0.41965&#39;, &#39;0.17686&#39;]}}
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xgboost.XGBRegressor.feature_importances_">
+<code class="descname">feature_importances_</code><a class="headerlink" href="#xgboost.XGBRegressor.feature_importances_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feature importances property</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>feature_importances_</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of shape <code class="docutils literal notranslate"><span class="pre">[n_features]</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>sample_weight=None</em>, <em>eval_set=None</em>, <em>eval_metric=None</em>, <em>early_stopping_rounds=None</em>, <em>verbose=True</em>, <em>xgb_model=None</em>, <em>sample_weight_eval_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the gradient boosting model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array_like</em>) – Feature matrix</li>
+<li><strong>y</strong> (<em>array_like</em>) – Labels</li>
+<li><strong>sample_weight</strong> (<em>array_like</em>) – instance weights</li>
+<li><strong>eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of (X, y) tuple pairs to use as a validation set for
+early-stopping</li>
+<li><strong>sample_weight_eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of the form [L_1, L_2, …, L_n], where each L_i is a list of
+instance weights on the i-th validation set.</li>
+<li><strong>eval_metric</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>callable</em><em>, </em><em>optional</em>) – If a str, should be a built-in evaluation metric to use. See
+doc/parameter.rst. If callable, a custom evaluation metric. The call
+signature is func(y_predicted, y_true) where y_true will be a
+DMatrix object such that you may need to call the get_label
+method. It must return a str, value pair where the str is a name
+for the evaluation and value is the value of the evaluation
+function. This objective is always minimized.</li>
+<li><strong>early_stopping_rounds</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Activates early stopping. Validation error needs to decrease at
+least every &lt;early_stopping_rounds&gt; round(s) to continue training.
+Requires at least one item in evals.  If there’s more than one,
+will use the last. Returns the model from the last iteration
+(not the best one). If early stopping occurs, the model will
+have three additional fields: bst.best_score, bst.best_iteration
+and bst.best_ntree_limit.
+(Use bst.best_ntree_limit to get the correct value if num_parallel_tree
+and/or num_class appears in the parameters)</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – If <cite>verbose</cite> and an evaluation set is used, writes the evaluation
+metric measured on the validation set to stderr.</li>
+<li><strong>xgb_model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – file name of stored xgb model or ‘Booster’ instance Xgb model to be
+loaded before training (allows training continuation).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.get_booster">
+<code class="descname">get_booster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.get_booster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the underlying xgboost Booster of this model.</p>
+<p>This will raise an exception when fit was not called</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>booster</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a xgboost booster of underlying model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.get_xgb_params">
+<code class="descname">get_xgb_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.get_xgb_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get xgboost type parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.load_model">
+<code class="descname">load_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the model from a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em><em> or </em><em>a memory buffer</em>) – Input file name or memory buffer(see also save_raw)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>data</em>, <em>output_margin=False</em>, <em>ntree_limit=None</em>, <em>validate_features=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict with <cite>data</cite>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This function is not thread safe.</p>
+<p class="last">For each booster object, predict can only be called from one thread.
+If you want to run prediction using multiple thread, call <code class="docutils literal notranslate"><span class="pre">xgb.copy()</span></code> to make copies
+of model object and then call <code class="docutils literal notranslate"><span class="pre">predict()</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> with DART booster</p>
+<p>If the booster object is DART type, <code class="docutils literal notranslate"><span class="pre">predict()</span></code> will perform dropouts, i.e. only
+some of the trees will be evaluated. This will produce incorrect results if <code class="docutils literal notranslate"><span class="pre">data</span></code> is
+not the training data. To obtain correct results on test sets, set <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> to
+a nonzero value, e.g.</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>output_margin</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to output the raw untransformed margin value.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to best_ntree_limit if defined
+(i.e. it has been trained with early stopping), otherwise 0 (use all trees).</li>
+<li><strong>validate_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True, validate that the Booster’s and data’s feature_names are identical.
+Otherwise, it is assumed that the feature_names are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>prediction</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRegressor.save_model">
+<code class="descname">save_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRegressor.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em>) – Output file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xgboost.XGBClassifier">
+<em class="property">class </em><code class="descclassname">xgboost.</code><code class="descname">XGBClassifier</code><span class="sig-paren">(</span><em>max_depth=3</em>, <em>learning_rate=0.1</em>, <em>n_estimators=100</em>, <em>silent=True</em>, <em>objective='binary:logistic'</em>, <em>booster='gbtree'</em>, <em>n_jobs=1</em>, <em>nthread=None</em>, <em>gamma=0</em>, <em>min_child_weight=1</em>, <em>max_delta_step=0</em>, <em>subsample=1</em>, <em>colsample_bytree=1</em>, <em>colsample_bylevel=1</em>, <em>reg_alpha=0</em>, <em>reg_lambda=1</em>, <em>scale_pos_weight=1</em>, <em>base_score=0.5</em>, <em>random_state=0</em>, <em>seed=None</em>, <em>missing=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xgboost.sklearn.XGBModel</span></code>, <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Implementation of the scikit-learn API for XGBoost classification.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_depth</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum tree depth for base learners.</li>
+<li><strong>learning_rate</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Boosting learning rate (xgb’s “eta”)</li>
+<li><strong>n_estimators</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of boosted trees to fit.</li>
+<li><strong>silent</strong> (<em>boolean</em>) – Whether to print messages while running boosting.</li>
+<li><strong>objective</strong> (<em>string</em><em> or </em><em>callable</em>) – Specify the learning task and the corresponding learning objective or
+a custom objective function to be used (see note below).</li>
+<li><strong>booster</strong> (<em>string</em>) – Specify which booster to use: gbtree, gblinear or dart.</li>
+<li><strong>nthread</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (Deprecated, please use n_jobs)</li>
+<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (replaces nthread)</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Minimum loss reduction required to make a further partition on a leaf node of the tree.</li>
+<li><strong>min_child_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Minimum sum of instance weight(hessian) needed in a child.</li>
+<li><strong>max_delta_step</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum delta step we allow each tree’s weight estimation to be.</li>
+<li><strong>subsample</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of the training instance.</li>
+<li><strong>colsample_bytree</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns when constructing each tree.</li>
+<li><strong>colsample_bylevel</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns for each split, in each level.</li>
+<li><strong>reg_alpha</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's alpha</em><em>)</em>) – L1 regularization term on weights</li>
+<li><strong>reg_lambda</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's lambda</em><em>)</em>) – L2 regularization term on weights</li>
+<li><strong>scale_pos_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Balancing of positive and negative weights.</li>
+<li><strong>base_score</strong> – The initial prediction score of all instances, global bias.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (Deprecated, please use random_state)</li>
+<li><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (replaces seed)</li>
+<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – Value in the data which needs to be present as a missing value. If
+None, defaults to np.nan.</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – <p>Keyword arguments for XGBoost Booster object.  Full documentation of parameters can
+be found here: <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst">https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst</a>.
+Attempting to set a parameter via the constructor args and **kwargs dict simultaneously
+will result in a TypeError.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>**kwargs unsupported by scikit-learn</p>
+<p class="last">**kwargs is unsupported by scikit-learn.  We do not guarantee that parameters
+passed via this argument will interact properly with scikit-learn.</p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>A custom objective function can be provided for the <code class="docutils literal notranslate"><span class="pre">objective</span></code>
+parameter. In this case, it should have the signature
+<code class="docutils literal notranslate"><span class="pre">objective(y_true,</span> <span class="pre">y_pred)</span> <span class="pre">-&gt;</span> <span class="pre">grad,</span> <span class="pre">hess</span></code>:</p>
+<dl class="last docutils">
+<dt>y_true: array_like of shape [n_samples]</dt>
+<dd>The target values</dd>
+<dt>y_pred: array_like of shape [n_samples]</dt>
+<dd>The predicted values</dd>
+<dt>grad: array_like of shape [n_samples]</dt>
+<dd>The value of the gradient for each sample point.</dd>
+<dt>hess: array_like of shape [n_samples]</dt>
+<dd>The value of the second derivative for each sample point</dd>
+</dl>
+</div>
+<dl class="method">
+<dt id="xgboost.XGBClassifier.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>X</em>, <em>ntree_limit=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the predicted leaf every tree for each sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>[</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Input features matrix.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to 0 (use all trees).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>X_leaves</strong> – For each datapoint x in X and for each tree, return the index of the
+leaf x ends up in. Leaves are numbered within
+<code class="docutils literal notranslate"><span class="pre">[0;</span> <span class="pre">2**(self.max_depth+1))</span></code>, possibly with gaps in the numbering.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like, shape=[n_samples, n_trees]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.evals_result">
+<code class="descname">evals_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.evals_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the evaluation results.</p>
+<p>If eval_set is passed to the <cite>fit</cite> function, you can call evals_result() to
+get evaluation results for all passed eval_sets. When eval_metric is also
+passed to the <cite>fit</cite> function, the evals_result will contain the eval_metrics
+passed to the <cite>fit</cite> function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>evals_result</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">param_dist</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;objective&#39;</span><span class="p">:</span><span class="s1">&#39;binary:logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">}</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">param_dist</span><span class="p">)</span>
+
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+        <span class="n">eval_set</span><span class="o">=</span><span class="p">[(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)],</span>
+        <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">evals_result</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">evals_result</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The variable <code class="docutils literal notranslate"><span class="pre">evals_result</span></code> will contain</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;validation_0&#39;: {&#39;logloss&#39;: [&#39;0.604835&#39;, &#39;0.531479&#39;]},
+&#39;validation_1&#39;: {&#39;logloss&#39;: [&#39;0.41965&#39;, &#39;0.17686&#39;]}}
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xgboost.XGBClassifier.feature_importances_">
+<code class="descname">feature_importances_</code><a class="headerlink" href="#xgboost.XGBClassifier.feature_importances_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feature importances property</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>feature_importances_</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of shape <code class="docutils literal notranslate"><span class="pre">[n_features]</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>sample_weight=None</em>, <em>eval_set=None</em>, <em>eval_metric=None</em>, <em>early_stopping_rounds=None</em>, <em>verbose=True</em>, <em>xgb_model=None</em>, <em>sample_weight_eval_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit gradient boosting classifier</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array_like</em>) – Feature matrix</li>
+<li><strong>y</strong> (<em>array_like</em>) – Labels</li>
+<li><strong>sample_weight</strong> (<em>array_like</em>) – Weight for each instance</li>
+<li><strong>eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of (X, y) pairs to use as a validation set for
+early-stopping</li>
+<li><strong>sample_weight_eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of the form [L_1, L_2, …, L_n], where each L_i is a list of
+instance weights on the i-th validation set.</li>
+<li><strong>eval_metric</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>callable</em><em>, </em><em>optional</em>) – If a str, should be a built-in evaluation metric to use. See
+doc/parameter.rst. If callable, a custom evaluation metric. The call
+signature is func(y_predicted, y_true) where y_true will be a
+DMatrix object such that you may need to call the get_label
+method. It must return a str, value pair where the str is a name
+for the evaluation and value is the value of the evaluation
+function. This objective is always minimized.</li>
+<li><strong>early_stopping_rounds</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>optional</em>) – Activates early stopping. Validation error needs to decrease at
+least every &lt;early_stopping_rounds&gt; round(s) to continue training.
+Requires at least one item in evals.  If there’s more than one,
+will use the last. Returns the model from the last iteration
+(not the best one). If early stopping occurs, the model will
+have three additional fields: bst.best_score, bst.best_iteration
+and bst.best_ntree_limit.
+(Use bst.best_ntree_limit to get the correct value if num_parallel_tree
+and/or num_class appears in the parameters)</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – If <cite>verbose</cite> and an evaluation set is used, writes the evaluation
+metric measured on the validation set to stderr.</li>
+<li><strong>xgb_model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – file name of stored xgb model or ‘Booster’ instance Xgb model to be
+loaded before training (allows training continuation).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.get_booster">
+<code class="descname">get_booster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.get_booster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the underlying xgboost Booster of this model.</p>
+<p>This will raise an exception when fit was not called</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>booster</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a xgboost booster of underlying model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.get_xgb_params">
+<code class="descname">get_xgb_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.get_xgb_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get xgboost type parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.load_model">
+<code class="descname">load_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the model from a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em><em> or </em><em>a memory buffer</em>) – Input file name or memory buffer(see also save_raw)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>data</em>, <em>output_margin=False</em>, <em>ntree_limit=None</em>, <em>validate_features=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict with <cite>data</cite>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This function is not thread safe.</p>
+<p class="last">For each booster object, predict can only be called from one thread.
+If you want to run prediction using multiple thread, call <code class="docutils literal notranslate"><span class="pre">xgb.copy()</span></code> to make copies
+of model object and then call <code class="docutils literal notranslate"><span class="pre">predict()</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> with DART booster</p>
+<p>If the booster object is DART type, <code class="docutils literal notranslate"><span class="pre">predict()</span></code> will perform dropouts, i.e. only
+some of the trees will be evaluated. This will produce incorrect results if <code class="docutils literal notranslate"><span class="pre">data</span></code> is
+not the training data. To obtain correct results on test sets, set <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> to
+a nonzero value, e.g.</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>output_margin</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to output the raw untransformed margin value.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to best_ntree_limit if defined
+(i.e. it has been trained with early stopping), otherwise 0 (use all trees).</li>
+<li><strong>validate_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True, validate that the Booster’s and data’s feature_names are identical.
+Otherwise, it is assumed that the feature_names are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>prediction</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.predict_proba">
+<code class="descname">predict_proba</code><span class="sig-paren">(</span><em>data</em>, <em>ntree_limit=None</em>, <em>validate_features=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.predict_proba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict the probability of each <cite>data</cite> example being of a given class.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This function is not thread safe</p>
+<p class="last">For each booster object, predict can only be called from one thread.
+If you want to run prediction using multiple thread, call <code class="docutils literal notranslate"><span class="pre">xgb.copy()</span></code> to make copies
+of model object and then call predict</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to best_ntree_limit if defined
+(i.e. it has been trained with early stopping), otherwise 0 (use all trees).</li>
+<li><strong>validate_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True, validate that the Booster’s and data’s feature_names are identical.
+Otherwise, it is assumed that the feature_names are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>prediction</strong> – a numpy array with the probability of each data example being of a given class.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBClassifier.save_model">
+<code class="descname">save_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBClassifier.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em>) – Output file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="xgboost.XGBRanker">
+<em class="property">class </em><code class="descclassname">xgboost.</code><code class="descname">XGBRanker</code><span class="sig-paren">(</span><em>max_depth=3</em>, <em>learning_rate=0.1</em>, <em>n_estimators=100</em>, <em>silent=True</em>, <em>objective='rank:pairwise'</em>, <em>booster='gbtree'</em>, <em>n_jobs=-1</em>, <em>nthread=None</em>, <em>gamma=0</em>, <em>min_child_weight=1</em>, <em>max_delta_step=0</em>, <em>subsample=1</em>, <em>colsample_bytree=1</em>, <em>colsample_bylevel=1</em>, <em>reg_alpha=0</em>, <em>reg_lambda=1</em>, <em>scale_pos_weight=1</em>, <em>base_score=0.5</em>, <em>random_state=0</em>, <em>seed=None</em>, <em>missing=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">xgboost.sklearn.XGBModel</span></code></p>
+<p>Implementation of the Scikit-Learn API for XGBoost Ranking.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_depth</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum tree depth for base learners.</li>
+<li><strong>learning_rate</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Boosting learning rate (xgb’s “eta”)</li>
+<li><strong>n_estimators</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of boosted trees to fit.</li>
+<li><strong>silent</strong> (<em>boolean</em>) – Whether to print messages while running boosting.</li>
+<li><strong>objective</strong> (<em>string</em>) – Specify the learning task and the corresponding learning objective.
+Only “rank:pairwise” is supported currently.</li>
+<li><strong>booster</strong> (<em>string</em>) – Specify which booster to use: gbtree, gblinear or dart.</li>
+<li><strong>nthread</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (Deprecated, please use n_jobs)</li>
+<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Number of parallel threads used to run xgboost.  (replaces nthread)</li>
+<li><strong>gamma</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Minimum loss reduction required to make a further partition on a leaf node of the tree.</li>
+<li><strong>min_child_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Minimum sum of instance weight(hessian) needed in a child.</li>
+<li><strong>max_delta_step</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Maximum delta step we allow each tree’s weight estimation to be.</li>
+<li><strong>subsample</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of the training instance.</li>
+<li><strong>colsample_bytree</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns when constructing each tree.</li>
+<li><strong>colsample_bylevel</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Subsample ratio of columns for each split, in each level.</li>
+<li><strong>reg_alpha</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's alpha</em><em>)</em>) – L1 regularization term on weights</li>
+<li><strong>reg_lambda</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em> (</em><em>xgb's lambda</em><em>)</em>) – L2 regularization term on weights</li>
+<li><strong>scale_pos_weight</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) – Balancing of positive and negative weights.</li>
+<li><strong>base_score</strong> – The initial prediction score of all instances, global bias.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (Deprecated, please use random_state)</li>
+<li><strong>random_state</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Random number seed.  (replaces seed)</li>
+<li><strong>missing</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>optional</em>) – Value in the data which needs to be present as a missing value. If
+None, defaults to np.nan.</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a><em>, </em><em>optional</em>) – <p>Keyword arguments for XGBoost Booster object.  Full documentation of parameters can
+be found here: <a class="reference external" href="https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst">https://github.com/dmlc/xgboost/blob/master/doc/parameter.rst</a>.
+Attempting to set a parameter via the constructor args and **kwargs dict
+simultaneously will result in a TypeError.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>**kwargs unsupported by scikit-learn</p>
+<p class="last">**kwargs is unsupported by scikit-learn.  We do not guarantee that parameters
+passed via this argument will interact properly with scikit-learn.</p>
+</div>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>A custom objective function is currently not supported by XGBRanker.</p>
+<p>Group information is required for ranking tasks. Before fitting the model, your data need to
+be sorted by group. When fitting the model, you need to provide an additional array that
+contains the size of each group.</p>
+<p>For example, if your original data look like:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="33%" />
+<col width="45%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>qid</td>
+<td>label</td>
+<td>features</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>0</td>
+<td>x_1</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>1</td>
+<td>x_2</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>0</td>
+<td>x_3</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>0</td>
+<td>x_4</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>1</td>
+<td>x_5</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>1</td>
+<td>x_6</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>1</td>
+<td>x_7</td>
+</tr>
+</tbody>
+</table>
+<p class="last">then your group array should be <code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">4]</span></code>.</p>
+</div>
+<dl class="method">
+<dt id="xgboost.XGBRanker.apply">
+<code class="descname">apply</code><span class="sig-paren">(</span><em>X</em>, <em>ntree_limit=0</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the predicted leaf every tree for each sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>[</em><em>n_samples</em><em>, </em><em>n_features</em><em>]</em>) – Input features matrix.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to 0 (use all trees).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>X_leaves</strong> – For each datapoint x in X and for each tree, return the index of the
+leaf x ends up in. Leaves are numbered within
+<code class="docutils literal notranslate"><span class="pre">[0;</span> <span class="pre">2**(self.max_depth+1))</span></code>, possibly with gaps in the numbering.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array_like, shape=[n_samples, n_trees]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.evals_result">
+<code class="descname">evals_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.evals_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the evaluation results.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">eval_set</span></code> is passed to the <cite>fit</cite> function, you can call <code class="docutils literal notranslate"><span class="pre">evals_result()</span></code> to
+get evaluation results for all passed eval_sets. When <code class="docutils literal notranslate"><span class="pre">eval_metric</span></code> is also
+passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function, the <code class="docutils literal notranslate"><span class="pre">evals_result</span></code> will contain the <code class="docutils literal notranslate"><span class="pre">eval_metrics</span></code>
+passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>evals_result</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">param_dist</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;objective&#39;</span><span class="p">:</span><span class="s1">&#39;binary:logistic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">}</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBModel</span><span class="p">(</span><span class="o">**</span><span class="n">param_dist</span><span class="p">)</span>
+
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span>
+        <span class="n">eval_set</span><span class="o">=</span><span class="p">[(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)],</span>
+        <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">evals_result</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">evals_result</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The variable evals_result will contain:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{&#39;validation_0&#39;: {&#39;logloss&#39;: [&#39;0.604835&#39;, &#39;0.531479&#39;]},
+&#39;validation_1&#39;: {&#39;logloss&#39;: [&#39;0.41965&#39;, &#39;0.17686&#39;]}}
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="xgboost.XGBRanker.feature_importances_">
+<code class="descname">feature_importances_</code><a class="headerlink" href="#xgboost.XGBRanker.feature_importances_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feature importances property</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>feature_importances_</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of shape <code class="docutils literal notranslate"><span class="pre">[n_features]</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>X</em>, <em>y</em>, <em>group</em>, <em>sample_weight=None</em>, <em>eval_set=None</em>, <em>sample_weight_eval_set=None</em>, <em>eval_group=None</em>, <em>eval_metric=None</em>, <em>early_stopping_rounds=None</em>, <em>verbose=False</em>, <em>xgb_model=None</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the gradient boosting model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>array_like</em>) – Feature matrix</li>
+<li><strong>y</strong> (<em>array_like</em>) – Labels</li>
+<li><strong>group</strong> (<em>array_like</em>) – group size of training data</li>
+<li><strong>sample_weight</strong> (<em>array_like</em>) – instance weights</li>
+<li><strong>eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of (X, y) tuple pairs to use as a validation set for
+early-stopping</li>
+<li><strong>sample_weight_eval_set</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#list" title="(in Python v3.6)"><em>list</em></a><em>, </em><em>optional</em>) – A list of the form [L_1, L_2, …, L_n], where each L_i is a list of
+instance weights on the i-th validation set.</li>
+<li><strong>eval_group</strong> (<em>list of arrays</em><em>, </em><em>optional</em>) – A list that contains the group size corresponds to each
+(X, y) pair in eval_set</li>
+<li><strong>eval_metric</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>callable</em><em>, </em><em>optional</em>) – If a str, should be a built-in evaluation metric to use. See
+doc/parameter.rst. If callable, a custom evaluation metric. The call
+signature is func(y_predicted, y_true) where y_true will be a
+DMatrix object such that you may need to call the get_label
+method. It must return a str, value pair where the str is a name
+for the evaluation and value is the value of the evaluation
+function. This objective is always minimized.</li>
+<li><strong>early_stopping_rounds</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Activates early stopping. Validation error needs to decrease at
+least every &lt;early_stopping_rounds&gt; round(s) to continue training.
+Requires at least one item in evals.  If there’s more than one,
+will use the last. Returns the model from the last iteration
+(not the best one). If early stopping occurs, the model will
+have three additional fields: bst.best_score, bst.best_iteration
+and bst.best_ntree_limit.
+(Use bst.best_ntree_limit to get the correct value if num_parallel_tree
+and/or num_class appears in the parameters)</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – If <cite>verbose</cite> and an evaluation set is used, writes the evaluation
+metric measured on the validation set to stderr.</li>
+<li><strong>xgb_model</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a>) – file name of stored xgb model or ‘Booster’ instance Xgb model to be
+loaded before training (allows training continuation).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.get_booster">
+<code class="descname">get_booster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.get_booster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the underlying xgboost Booster of this model.</p>
+<p>This will raise an exception when fit was not called</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>booster</strong></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">a xgboost booster of underlying model</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>deep=False</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.get_xgb_params">
+<code class="descname">get_xgb_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.get_xgb_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get xgboost type parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.load_model">
+<code class="descname">load_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the model from a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em><em> or </em><em>a memory buffer</em>) – Input file name or memory buffer(see also save_raw)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>data</em>, <em>output_margin=False</em>, <em>ntree_limit=0</em>, <em>validate_features=True</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict with <cite>data</cite>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This function is not thread safe.</p>
+<p class="last">For each booster object, predict can only be called from one thread.
+If you want to run prediction using multiple thread, call <code class="docutils literal notranslate"><span class="pre">xgb.copy()</span></code> to make copies
+of model object and then call <code class="docutils literal notranslate"><span class="pre">predict()</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> with DART booster</p>
+<p>If the booster object is DART type, <code class="docutils literal notranslate"><span class="pre">predict()</span></code> will perform dropouts, i.e. only
+some of the trees will be evaluated. This will produce incorrect results if <code class="docutils literal notranslate"><span class="pre">data</span></code> is
+not the training data. To obtain correct results on test sets, set <code class="docutils literal notranslate"><span class="pre">ntree_limit</span></code> to
+a nonzero value, e.g.</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">,</span> <span class="n">ntree_limit</span><span class="o">=</span><span class="n">num_round</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="#xgboost.DMatrix" title="xgboost.DMatrix"><em>DMatrix</em></a>) – The dmatrix storing the input.</li>
+<li><strong>output_margin</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – Whether to output the raw untransformed margin value.</li>
+<li><strong>ntree_limit</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) – Limit number of trees in the prediction; defaults to best_ntree_limit if defined
+(i.e. it has been trained with early stopping), otherwise 0 (use all trees).</li>
+<li><strong>validate_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) – When this is True, validate that the Booster’s and data’s feature_names are identical.
+Otherwise, it is assumed that the feature_names are the same.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>prediction</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="xgboost.XGBRanker.save_model">
+<code class="descname">save_model</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.XGBRanker.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the model to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>string</em>) – Output file name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-xgboost.plotting">
+<span id="plotting-api"></span><h2>Plotting API<a class="headerlink" href="#module-xgboost.plotting" title="Permalink to this headline">¶</a></h2>
+<p>Plotting Library.</p>
+<dl class="function">
+<dt id="xgboost.plot_importance">
+<code class="descclassname">xgboost.</code><code class="descname">plot_importance</code><span class="sig-paren">(</span><em>booster</em>, <em>ax=None</em>, <em>height=0.2</em>, <em>xlim=None</em>, <em>ylim=None</em>, <em>title='Feature importance'</em>, <em>xlabel='F score'</em>, <em>ylabel='Features'</em>, <em>importance_type='weight'</em>, <em>max_num_features=None</em>, <em>grid=True</em>, <em>show_values=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.plot_importance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot importance based on fitted trees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>booster</strong> (<a class="reference internal" href="#xgboost.Booster" title="xgboost.Booster"><em>Booster</em></a><em>, </em><em>XGBModel</em><em> or </em><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) – Booster or XGBModel instance, or dict taken by Booster.get_fscore()</li>
+<li><strong>ax</strong> (<em>matplotlib Axes</em><em>, </em><em>default None</em>) – Target axes instance. If None, new figure and axes will be created.</li>
+<li><strong>grid</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>Turn the axes grids on</em><em> or </em><em>off.  Default is True</em><em> (</em><em>On</em><em>)</em><em></em>) – </li>
+<li><strong>importance_type</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;weight&quot;</em>) – <p>How the importance is calculated: either “weight”, “gain”, or “cover”</p>
+<ul>
+<li>”weight” is the number of times a feature appears in a tree</li>
+<li>”gain” is the average gain of splits which use the feature</li>
+<li>”cover” is the average coverage of splits which use the feature
+where coverage is defined as the number of samples affected by the split</li>
+</ul>
+</li>
+<li><strong>max_num_features</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>default None</em>) – Maximum number of top features displayed on plot. If None, all features will be displayed.</li>
+<li><strong>height</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a><em>, </em><em>default 0.2</em>) – Bar height, passed to ax.barh()</li>
+<li><strong>xlim</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)"><em>tuple</em></a><em>, </em><em>default None</em>) – Tuple passed to axes.xlim()</li>
+<li><strong>ylim</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#tuple" title="(in Python v3.6)"><em>tuple</em></a><em>, </em><em>default None</em>) – Tuple passed to axes.ylim()</li>
+<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;Feature importance&quot;</em>) – Axes title. To disable, pass None.</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;F score&quot;</em>) – X axis title label. To disable, pass None.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;Features&quot;</em>) – Y axis title label. To disable, pass None.</li>
+<li><strong>show_values</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a><em>, </em><em>default True</em>) – Show values on plot. To disable, pass False.</li>
+<li><strong>kwargs</strong> – Other keywords passed to ax.barh()</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xgboost.plot_tree">
+<code class="descclassname">xgboost.</code><code class="descname">plot_tree</code><span class="sig-paren">(</span><em>booster</em>, <em>fmap=''</em>, <em>num_trees=0</em>, <em>rankdir='UT'</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.plot_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot specified tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>booster</strong> (<a class="reference internal" href="#xgboost.Booster" title="xgboost.Booster"><em>Booster</em></a><em>, </em><em>XGBModel</em>) – Booster or XGBModel instance</li>
+<li><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – The name of feature map file</li>
+<li><strong>num_trees</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>default 0</em>) – Specify the ordinal number of target tree</li>
+<li><strong>rankdir</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;UT&quot;</em>) – Passed to graphiz via graph_attr</li>
+<li><strong>ax</strong> (<em>matplotlib Axes</em><em>, </em><em>default None</em>) – Target axes instance. If None, new figure and axes will be created.</li>
+<li><strong>kwargs</strong> – Other keywords passed to to_graphviz</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="xgboost.to_graphviz">
+<code class="descclassname">xgboost.</code><code class="descname">to_graphviz</code><span class="sig-paren">(</span><em>booster</em>, <em>fmap=''</em>, <em>num_trees=0</em>, <em>rankdir='UT'</em>, <em>yes_color='#0000FF'</em>, <em>no_color='#FF0000'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#xgboost.to_graphviz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert specified tree to graphviz instance. IPython can automatically plot the
+returned graphiz instance. Otherwise, you should call .render() method
+of the returned graphiz instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>booster</strong> (<a class="reference internal" href="#xgboost.Booster" title="xgboost.Booster"><em>Booster</em></a><em>, </em><em>XGBModel</em>) – Booster or XGBModel instance</li>
+<li><strong>fmap</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – The name of feature map file</li>
+<li><strong>num_trees</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a><em>, </em><em>default 0</em>) – Specify the ordinal number of target tree</li>
+<li><strong>rankdir</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default &quot;UT&quot;</em>) – Passed to graphiz via graph_attr</li>
+<li><strong>yes_color</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default '#0000FF'</em>) – Edge color when meets the node condition.</li>
+<li><strong>no_color</strong> (<a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#str" title="(in Python v3.6)"><em>str</em></a><em>, </em><em>default '#FF0000'</em>) – Edge color when doesn’t meet the node condition.</li>
+<li><strong>kwargs</strong> – Other keywords passed to graphviz graph_attr</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="python_intro.html" title="previous chapter (use the left arrow)">Python Package Introduction</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="../R-package/index.html" title="next chapter (use the right arrow)">XGBoost R Package</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../R-package/index.html" title="XGBoost R Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="python_intro.html" title="Python Package Introduction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >XGBoost Python Package</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

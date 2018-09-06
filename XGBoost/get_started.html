@@ -1,0 +1,248 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Get Started with XGBoost &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="XGBoost Tutorials" href="tutorials/index.html" />
+    <link rel="prev" title="Installation Guide" href="build.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorials/index.html" title="XGBoost Tutorials"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="build.html" title="Installation Guide"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Get Started with XGBoost</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="get-started-with-xgboost">
+<h1>Get Started with XGBoost<a class="headerlink" href="#get-started-with-xgboost" title="Permalink to this headline">¶</a></h1>
+<p>This is a quick start tutorial showing snippets for you to quickly try out XGBoost
+on the demo dataset on a binary classification task.</p>
+<div class="section" id="links-to-other-helpful-resources">
+<h2>Links to Other Helpful Resources<a class="headerlink" href="#links-to-other-helpful-resources" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>See <a class="reference internal" href="build.html"><span class="doc">Installation Guide</span></a> on how to install XGBoost.</li>
+<li>See <a class="reference internal" href="tutorials/input_format.html"><span class="doc">Text Input Format</span></a> on using text format for specifying training/testing data.</li>
+<li>See <a class="reference internal" href="tutorials/index.html"><span class="doc">Tutorials</span></a> for tips and tutorials.</li>
+<li>See <a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/demo">Learning to use XGBoost by Examples</a> for more code examples.</li>
+</ul>
+</div>
+<div class="section" id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xgboost</span> <span class="kn">as</span> <span class="nn">xgb</span>
+<span class="c1"># read in data</span>
+<span class="n">dtrain</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="s1">&#39;demo/data/agaricus.txt.train&#39;</span><span class="p">)</span>
+<span class="n">dtest</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="s1">&#39;demo/data/agaricus.txt.test&#39;</span><span class="p">)</span>
+<span class="c1"># specify parameters via map</span>
+<span class="n">param</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;max_depth&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;eta&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;silent&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">:</span><span class="s1">&#39;binary:logistic&#39;</span> <span class="p">}</span>
+<span class="n">num_round</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">bst</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">dtrain</span><span class="p">,</span> <span class="n">num_round</span><span class="p">)</span>
+<span class="c1"># make prediction</span>
+<span class="n">preds</span> <span class="o">=</span> <span class="n">bst</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dtest</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="r">
+<h2>R<a class="headerlink" href="#r" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="c1"># load data</span>
+data<span class="p">(</span>agaricus.train<span class="p">,</span> package<span class="o">=</span><span class="s">&#39;xgboost&#39;</span><span class="p">)</span>
+data<span class="p">(</span>agaricus.test<span class="p">,</span> package<span class="o">=</span><span class="s">&#39;xgboost&#39;</span><span class="p">)</span>
+train <span class="o">&lt;-</span> agaricus.train
+test <span class="o">&lt;-</span> agaricus.test
+<span class="c1"># fit model</span>
+bst <span class="o">&lt;-</span> xgboost<span class="p">(</span>data <span class="o">=</span> train<span class="o">$</span>data<span class="p">,</span> label <span class="o">=</span> train<span class="o">$</span>label<span class="p">,</span> max.depth <span class="o">=</span> <span class="m">2</span><span class="p">,</span> eta <span class="o">=</span> <span class="m">1</span><span class="p">,</span> nrounds <span class="o">=</span> <span class="m">2</span><span class="p">,</span>
+               nthread <span class="o">=</span> <span class="m">2</span><span class="p">,</span> objective <span class="o">=</span> <span class="s">&quot;binary:logistic&quot;</span><span class="p">)</span>
+<span class="c1"># predict</span>
+pred <span class="o">&lt;-</span> predict<span class="p">(</span>bst<span class="p">,</span> test<span class="o">$</span>data<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="julia">
+<h2>Julia<a class="headerlink" href="#julia" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">XGBoost</span>
+<span class="c"># read data</span>
+<span class="n">train_X</span><span class="p">,</span> <span class="n">train_Y</span> <span class="o">=</span> <span class="n">readlibsvm</span><span class="p">(</span><span class="s">&quot;demo/data/agaricus.txt.train&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6513</span><span class="p">,</span> <span class="mi">126</span><span class="p">))</span>
+<span class="n">test_X</span><span class="p">,</span> <span class="n">test_Y</span> <span class="o">=</span> <span class="n">readlibsvm</span><span class="p">(</span><span class="s">&quot;demo/data/agaricus.txt.test&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1611</span><span class="p">,</span> <span class="mi">126</span><span class="p">))</span>
+<span class="c"># fit model</span>
+<span class="n">num_round</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">bst</span> <span class="o">=</span> <span class="n">xgboost</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">num_round</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">train_Y</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="c"># predict</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">predict</span><span class="p">(</span><span class="n">bst</span><span class="p">,</span> <span class="n">test_X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scala">
+<h2>Scala<a class="headerlink" href="#scala" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">ml.dmlc.xgboost4j.scala.DMatrix</span>
+<span class="k">import</span> <span class="nn">ml.dmlc.xgboost4j.scala.XGBoost</span>
+
+<span class="k">object</span> <span class="nc">XGBoostScalaExample</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="c1">// read trainining data, available at xgboost/demo/data</span>
+    <span class="k">val</span> <span class="n">trainData</span> <span class="k">=</span>
+      <span class="k">new</span> <span class="nc">DMatrix</span><span class="o">(</span><span class="s">&quot;/path/to/agaricus.txt.train&quot;</span><span class="o">)</span>
+    <span class="c1">// define parameters</span>
+    <span class="k">val</span> <span class="n">paramMap</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span>
+      <span class="s">&quot;eta&quot;</span> <span class="o">-&gt;</span> <span class="mf">0.1</span><span class="o">,</span>
+      <span class="s">&quot;max_depth&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+      <span class="s">&quot;objective&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;binary:logistic&quot;</span><span class="o">).</span><span class="n">toMap</span>
+    <span class="c1">// number of iterations</span>
+    <span class="k">val</span> <span class="n">round</span> <span class="k">=</span> <span class="mi">2</span>
+    <span class="c1">// train the model</span>
+    <span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="nc">XGBoost</span><span class="o">.</span><span class="n">train</span><span class="o">(</span><span class="n">trainData</span><span class="o">,</span> <span class="n">paramMap</span><span class="o">,</span> <span class="n">round</span><span class="o">)</span>
+    <span class="c1">// run prediction</span>
+    <span class="k">val</span> <span class="n">predTrain</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">trainData</span><span class="o">)</span>
+    <span class="c1">// save model to the file.</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">saveModel</span><span class="o">(</span><span class="s">&quot;/local/path/to/model&quot;</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="build.html" title="previous chapter (use the left arrow)">Installation Guide</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="tutorials/index.html" title="next chapter (use the right arrow)">XGBoost Tutorials</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorials/index.html" title="XGBoost Tutorials"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="build.html" title="Installation Guide"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

@@ -1,0 +1,643 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>XGBoost4J-Spark Tutorial (version 0.8+) &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="XGBoost4J Java API" href="javadocs/index.html" />
+    <link rel="prev" title="Getting Started with XGBoost4J" href="java_intro.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="javadocs/index.html" title="XGBoost4J Java API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="java_intro.html" title="Getting Started with XGBoost4J"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">XGBoost JVM Package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    ../index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../R-package/index.html">R package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JVM package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="java_intro.html">Getting Started with XGBoost4J</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">XGBoost4J-Spark Tutorial</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://github.com/dmlc/xgboost/tree/master/jvm-packages/xgboost4j-example">Code Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="javadocs/index.html">XGBoost4J Java API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j/index.html">XGBoost4J Scala API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j-spark/index.html">XGBoost4J-Spark Scala API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaladocs/xgboost4j-flink/index.html">XGBoost4J-Flink Scala API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../index.html">Docs</a></li>
+              
+                <li><a href="index.html">XGBoost JVM Package</a></li>
+              
+              <li>XGBoost4J-Spark Tutorial (version 0.8+)</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="xgboost4j-spark-tutorial-version-0-8">
+<h1>XGBoost4J-Spark Tutorial (version 0.8+)<a class="headerlink" href="#xgboost4j-spark-tutorial-version-0-8" title="Permalink to this headline">¶</a></h1>
+<p><strong>XGBoost4J-Spark</strong> is a project aiming to seamlessly integrate XGBoost and Apache Spark by fitting XGBoost to Apache Spark’s MLLIB framework. With the integration, user can not only uses the high-performant algorithm implementation of XGBoost, but also leverages the powerful  data processing engine of Spark for:</p>
+<ul class="simple">
+<li>Feature Engineering: feature extraction, transformation, dimensionality reduction, and selection, etc.</li>
+<li>Pipelines: constructing, evaluating, and tuning ML Pipelines</li>
+<li>Persistence: persist and load machine learning models and even whole Pipelines</li>
+</ul>
+<p>This tutorial is to cover the end-to-end process to build a machine learning pipeline with XGBoost4J-Spark. We will discuss</p>
+<ul class="simple">
+<li>Using Spark to preprocess data to fit to XGBoost/XGBoost4J-Spark’s data interface</li>
+<li>Training a XGBoost model with XGBoost4J-Spark</li>
+<li>Serving XGBoost model (prediction) with Spark</li>
+<li>Building a Machine Learning Pipeline with XGBoost4J-Spark</li>
+<li>Running XGBoost4J-Spark in Production</li>
+</ul>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#build-an-ml-application-with-xgboost4j-spark" id="id4">Build an ML Application with XGBoost4J-Spark</a><ul>
+<li><a class="reference internal" href="#refer-to-xgboost4j-spark-dependency" id="id5">Refer to XGBoost4J-Spark Dependency</a></li>
+<li><a class="reference internal" href="#data-preparation" id="id6">Data Preparation</a><ul>
+<li><a class="reference internal" href="#read-dataset-with-spark-s-built-in-reader" id="id7">Read Dataset with Spark’s Built-In Reader</a></li>
+<li><a class="reference internal" href="#transform-raw-iris-dataset" id="id8">Transform Raw Iris Dataset</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#training" id="id9">Training</a></li>
+<li><a class="reference internal" href="#prediction" id="id10">Prediction</a><ul>
+<li><a class="reference internal" href="#batch-prediction" id="id11">Batch Prediction</a></li>
+<li><a class="reference internal" href="#single-instance-prediction" id="id12">Single instance prediction</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#model-persistence" id="id13">Model Persistence</a><ul>
+<li><a class="reference internal" href="#model-and-pipeline-persistence" id="id14">Model and pipeline persistence</a></li>
+<li><a class="reference internal" href="#interact-with-other-bindings-of-xgboost" id="id15">Interact with Other Bindings of XGBoost</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#building-a-ml-pipeline-with-xgboost4j-spark" id="id16">Building a ML Pipeline with XGBoost4J-Spark</a><ul>
+<li><a class="reference internal" href="#basic-ml-pipeline" id="id17">Basic ML Pipeline</a></li>
+<li><a class="reference internal" href="#pipeline-with-hyper-parameter-tunning" id="id18">Pipeline with Hyper-parameter Tunning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#run-xgboost4j-spark-in-production" id="id19">Run XGBoost4J-Spark in Production</a><ul>
+<li><a class="reference internal" href="#parallel-distributed-training" id="id20">Parallel/Distributed Training</a></li>
+<li><a class="reference internal" href="#gang-scheduling" id="id21">Gang Scheduling</a></li>
+<li><a class="reference internal" href="#checkpoint-during-training" id="id22">Checkpoint During Training</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="build-an-ml-application-with-xgboost4j-spark">
+<h2>Build an ML Application with XGBoost4J-Spark<a class="headerlink" href="#build-an-ml-application-with-xgboost4j-spark" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="refer-to-xgboost4j-spark-dependency">
+<h3>Refer to XGBoost4J-Spark Dependency<a class="headerlink" href="#refer-to-xgboost4j-spark-dependency" title="Permalink to this headline">¶</a></h3>
+<p>Before we go into the tour of how to use XGBoost4J-Spark, we would bring a brief introduction about how to build a machine learning application with XGBoost4J-Spark. The first thing you need to do is to refer to the dependency in Maven Central.</p>
+<p>You can add the following dependency in your <code class="docutils literal notranslate"><span class="pre">pom.xml</span></code>.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>ml.dmlc<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>xgboost4j-spark<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>latest_version_num<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+<p>For the latest release version number, please check <a class="reference external" href="https://github.com/dmlc/xgboost/releases">here</a>.</p>
+<p>We also publish some functionalities which would be included in the coming release in the form of snapshot version. To access these functionalities, you can add dependency to the snapshot artifacts. We publish snapshot version in github-based repo, so you can add the following repo in <code class="docutils literal notranslate"><span class="pre">pom.xml</span></code>:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;repository&gt;</span>
+  <span class="nt">&lt;id&gt;</span>XGBoost4J-Spark Snapshot Repo<span class="nt">&lt;/id&gt;</span>
+  <span class="nt">&lt;name&gt;</span>XGBoost4J-Spark Snapshot Repo<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;url&gt;</span>https://raw.githubusercontent.com/CodingCat/xgboost/maven-repo/<span class="nt">&lt;/url&gt;</span>
+<span class="nt">&lt;/repository&gt;</span>
+</pre></div>
+</div>
+<p>and then refer to the snapshot dependency by adding:</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>ml.dmlc<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>xgboost4j<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>next_version_num-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>XGBoost4J-Spark requires Spark 2.3+</p>
+<p class="last">XGBoost4J-Spark now requires Spark 2.3+. Latest versions of XGBoost4J-Spark uses facilities of <cite>org.apache.spark.ml.param.shared</cite> extensively to provide for a tight integration with Spark MLLIB framework, and these facilities are not fully available on earlier versions of Spark.</p>
+</div>
+</div>
+<div class="section" id="data-preparation">
+<h3>Data Preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h3>
+<p>As aforementioned, XGBoost4J-Spark seamlessly integrates Spark and XGBoost. The integration enables
+users to apply various types of transformation over the training/test datasets with the convenient
+and powerful data processing framework, Spark.</p>
+<p>In this section, we use <a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/iris">Iris</a> dataset as an example to
+showcase how we use Spark to transform raw dataset and make it fit to the data interface of XGBoost.</p>
+<p>Iris dataset is shipped in CSV format. Each instance contains 4 features, “sepal length”, “sepal width”,
+“petal length” and “petal width”. In addition, it contains the “class” columnm, which is essentially the label with three possible values: “Iris Setosa”, “Iris Versicolour” and “Iris Virginica”.</p>
+<div class="section" id="read-dataset-with-spark-s-built-in-reader">
+<h4>Read Dataset with Spark’s Built-In Reader<a class="headerlink" href="#read-dataset-with-spark-s-built-in-reader" title="Permalink to this headline">¶</a></h4>
+<p>The first thing in data transformation is to load the dataset as Spark’s structured data abstraction, DataFrame.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.types.</span><span class="o">{</span><span class="nc">DoubleType</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">,</span> <span class="nc">StructField</span><span class="o">,</span> <span class="nc">StructType</span><span class="o">}</span>
+
+<span class="k">val</span> <span class="n">spark</span> <span class="k">=</span> <span class="nc">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">().</span><span class="n">getOrCreate</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">schema</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StructType</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;sepal length&quot;</span><span class="o">,</span> <span class="nc">DoubleType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;sepal width&quot;</span><span class="o">,</span> <span class="nc">DoubleType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;petal length&quot;</span><span class="o">,</span> <span class="nc">DoubleType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;petal width&quot;</span><span class="o">,</span> <span class="nc">DoubleType</span><span class="o">,</span> <span class="kc">true</span><span class="o">),</span>
+  <span class="nc">StructField</span><span class="o">(</span><span class="s">&quot;class&quot;</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">,</span> <span class="kc">true</span><span class="o">)))</span>
+<span class="k">val</span> <span class="n">rawInput</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">schema</span><span class="o">(</span><span class="n">schema</span><span class="o">).</span><span class="n">csv</span><span class="o">(</span><span class="s">&quot;input_path&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>At the first line, we create a instance of <a class="reference external" href="http://spark.apache.org/docs/latest/sql-programming-guide.html#starting-point-sparksession">SparkSession</a> which is the entry of any Spark program working with DataFrame. The <code class="docutils literal notranslate"><span class="pre">schema</span></code> variable defines the schema of DataFrame wrapping Iris data. With this explicitly set schema, we can define the columns’ name as well as their types; otherwise the column name would be the default ones derived by Spark, such as <code class="docutils literal notranslate"><span class="pre">_col0</span></code>, etc. Finally, we can use Spark’s built-in csv reader to load Iris csv file as a DataFrame named <code class="docutils literal notranslate"><span class="pre">rawInput</span></code>.</p>
+<p>Spark also contains many built-in readers for other format. The latest version of Spark supports CSV, JSON, Parquet, and LIBSVM.</p>
+</div>
+<div class="section" id="transform-raw-iris-dataset">
+<h4>Transform Raw Iris Dataset<a class="headerlink" href="#transform-raw-iris-dataset" title="Permalink to this headline">¶</a></h4>
+<p>To make Iris dataset be recognizable to XGBoost, we need to</p>
+<ol class="arabic simple">
+<li>Transform String-typed label, i.e. “class”, to Double-typed label.</li>
+<li>Assemble the feature columns as a vector to fit to the data interface of Spark ML framework.</li>
+</ol>
+<p>To convert String-typed label to Double, we can use Spark’s built-in feature transformer <a class="reference external" href="https://spark.apache.org/docs/2.3.1/api/scala/index.html#org.apache.spark.ml.feature.StringIndexer">StringIndexer</a>.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.StringIndexer</span>
+<span class="k">val</span> <span class="n">stringIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span>
+  <span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;class&quot;</span><span class="o">).</span>
+  <span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;classIndex&quot;</span><span class="o">).</span>
+  <span class="n">fit</span><span class="o">(</span><span class="n">rawInput</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">labelTransformed</span> <span class="k">=</span> <span class="n">stringIndexer</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">rawInput</span><span class="o">).</span><span class="n">drop</span><span class="o">(</span><span class="s">&quot;class&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>With a newly created StringIndexer instance:</p>
+<ol class="arabic simple">
+<li>we set input column, i.e. the column containing String-typed label</li>
+<li>we set output column, i.e. the column to contain the Double-typed label.</li>
+<li>Then we <code class="docutils literal notranslate"><span class="pre">fit</span></code> StringIndex with our input DataFrame <code class="docutils literal notranslate"><span class="pre">rawInput</span></code>, so that Spark internals can get information like total number of distinct values, etc.</li>
+</ol>
+<p>Now we have a StringIndexer which is ready to be applied to our input DataFrame. To execute the transformation logic of StringIndexer, we <code class="docutils literal notranslate"><span class="pre">transform</span></code> the input DataFrame <code class="docutils literal notranslate"><span class="pre">rawInput</span></code> and to keep a concise DataFrame,
+we drop the column “class” and only keeps the feature columns and the transformed Double-typed label column (in the last line of the above code snippet).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">transform</span></code> are two key operations in MLLIB. Basically, <code class="docutils literal notranslate"><span class="pre">fit</span></code> produces a “transformer”, e.g. StringIndexer, and each transformer applies <code class="docutils literal notranslate"><span class="pre">transform</span></code> method on DataFrame to add new column(s) containing transformed features/labels or prediction results, etc. To understand more about <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">transform</span></code>, You can find more details in <a class="reference external" href="http://spark.apache.org/docs/latest/ml-pipeline.html#pipeline-components">here</a>.</p>
+<p>Similarly, we can use another transformer, <a class="reference external" href="https://spark.apache.org/docs/2.3.1/api/scala/index.html#org.apache.spark.ml.feature.VectorAssembler">VectorAssembler</a>, to assemble feature columns “sepal length”, “sepal width”, “petal length” and “petal width” as a vector.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.VectorAssembler</span>
+<span class="k">val</span> <span class="n">vectorAssembler</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">VectorAssembler</span><span class="o">().</span>
+  <span class="n">setInputCols</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="s">&quot;sepal length&quot;</span><span class="o">,</span> <span class="s">&quot;sepal width&quot;</span><span class="o">,</span> <span class="s">&quot;petal length&quot;</span><span class="o">,</span> <span class="s">&quot;petal width&quot;</span><span class="o">)).</span>
+  <span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">xgbInput</span> <span class="k">=</span> <span class="n">vectorAssembler</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">labelTransformed</span><span class="o">).</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">,</span> <span class="s">&quot;classIndex&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Now, we have a DataFrame containing only two columns, “features” which contains vector-represented
+“sepal length”, “sepal width”, “petal length” and “petal width” and “classIndex” which has Double-typed
+labels. A DataFrame like this (containing vector-represented features and numeric labels) can be fed to XGBoost4J-Spark’s training engine directly.</p>
+</div>
+</div>
+<div class="section" id="training">
+<h3>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
+<p>XGBoost supports both regression and classification. While we use Iris dataset in this tutorial to show how we use XGBoost/XGBoost4J-Spark to resolve a multi-classes classification problem, the usage in Regression is very similar to classification.</p>
+<p>To train a XGBoost model for classification, we need to claim a XGBoostClassifier first:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">ml.dmlc.xgboost4j.scala.spark.XGBoostClassifier</span>
+<span class="k">val</span> <span class="n">xgbParam</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;eta&quot;</span> <span class="o">-&gt;</span> <span class="mf">0.1f</span><span class="o">,</span>
+      <span class="s">&quot;max_depth&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+      <span class="s">&quot;objective&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;multi:softprob&quot;</span><span class="o">,</span>
+      <span class="s">&quot;num_class&quot;</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">,</span>
+      <span class="s">&quot;num_round&quot;</span> <span class="o">-&gt;</span> <span class="mi">100</span><span class="o">,</span>
+      <span class="s">&quot;num_workers&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">xgbClassifier</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">XGBoostClassifier</span><span class="o">(</span><span class="n">xgbParam</span><span class="o">).</span>
+      <span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span>
+      <span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;classIndex&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>The available parameters for training a XGBoost model can be found in <a class="reference internal" href="../parameter.html"><span class="doc">here</span></a>. In XGBoost4J-Spark, we support not only the default set of parameters but also the camel-case variant of these parameters to keep consistent with Spark’s MLLIB parameters.</p>
+<p>Specifically, each parameter in <a class="reference internal" href="../parameter.html"><span class="doc">this page</span></a> has its
+equivalent form in XGBoost4J-Spark with camel case. For example, to set <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> for each tree, you can pass parameter just like what we did in the above code snippet (as <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> wrapped in a Map), or you can do it through setters in XGBoostClassifer:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbClassifier</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">XGBoostClassifier</span><span class="o">().</span>
+  <span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span>
+  <span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;classIndex&quot;</span><span class="o">)</span>
+<span class="n">xgbClassifier</span><span class="o">.</span><span class="n">setMaxDepth</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>After we set XGBoostClassifier parameters and feature/label column, we can build a transformer, XGBoostClassificationModel by fitting XGBoostClassifier with the input DataFrame. This <code class="docutils literal notranslate"><span class="pre">fit</span></code> operation is essentially the training process and the generated model can then be used in prediction.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbClassificationModel</span> <span class="k">=</span> <span class="n">xgbClassifier</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">xgbInput</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="prediction">
+<h3>Prediction<a class="headerlink" href="#prediction" title="Permalink to this headline">¶</a></h3>
+<p>XGBoost4j-Spark supports two ways for model serving: batch prediction and single instance prediction.</p>
+<div class="section" id="batch-prediction">
+<h4>Batch Prediction<a class="headerlink" href="#batch-prediction" title="Permalink to this headline">¶</a></h4>
+<p>When we get a model, either XGBoostClassificationModel or XGBoostRegressionModel, it takes a DataFrame, read the column containing feature vectors, predict for each feature vector, and output a new DataFrame with the following columns by default:</p>
+<ul class="simple">
+<li>XGBoostClassificationModel will output margins (<code class="docutils literal notranslate"><span class="pre">rawPredictionCol</span></code>), probabilities(<code class="docutils literal notranslate"><span class="pre">probabilityCol</span></code>) and the eventual prediction labels (<code class="docutils literal notranslate"><span class="pre">predictionCol</span></code>) for each possible label.</li>
+<li>XGBoostRegressionModel will output prediction label(<code class="docutils literal notranslate"><span class="pre">predictionCol</span></code>).</li>
+</ul>
+<p>Batch prediction expects the user to pass the testset in the form of a DataFrame. XGBoost4J-Spark starts a XGBoost worker for each partition of DataFrame for parallel prediction and generates prediction results for the whole DataFrame in a batch.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbClassificationModel</span> <span class="k">=</span> <span class="n">xgbClassifier</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">xgbInput</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">results</span> <span class="k">=</span> <span class="n">xgbClassificationModel</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">testSet</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>With the above code snippet, we get a result DataFrame, result containing margin, probability for each class and the prediction for each instance</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>+-----------------+----------+--------------------+--------------------+----------+
+|         features|classIndex|       rawPrediction|         probability|prediction|
++-----------------+----------+--------------------+--------------------+----------+
+|[5.1,3.5,1.4,0.2]|       0.0|[3.45569849014282...|[0.99579632282257...|       0.0|
+|[4.9,3.0,1.4,0.2]|       0.0|[3.45569849014282...|[0.99618089199066...|       0.0|
+|[4.7,3.2,1.3,0.2]|       0.0|[3.45569849014282...|[0.99643349647521...|       0.0|
+|[4.6,3.1,1.5,0.2]|       0.0|[3.45569849014282...|[0.99636095762252...|       0.0|
+|[5.0,3.6,1.4,0.2]|       0.0|[3.45569849014282...|[0.99579632282257...|       0.0|
+|[5.4,3.9,1.7,0.4]|       0.0|[3.45569849014282...|[0.99428516626358...|       0.0|
+|[4.6,3.4,1.4,0.3]|       0.0|[3.45569849014282...|[0.99643349647521...|       0.0|
+|[5.0,3.4,1.5,0.2]|       0.0|[3.45569849014282...|[0.99579632282257...|       0.0|
+|[4.4,2.9,1.4,0.2]|       0.0|[3.45569849014282...|[0.99618089199066...|       0.0|
+|[4.9,3.1,1.5,0.1]|       0.0|[3.45569849014282...|[0.99636095762252...|       0.0|
+|[5.4,3.7,1.5,0.2]|       0.0|[3.45569849014282...|[0.99428516626358...|       0.0|
+|[4.8,3.4,1.6,0.2]|       0.0|[3.45569849014282...|[0.99643349647521...|       0.0|
+|[4.8,3.0,1.4,0.1]|       0.0|[3.45569849014282...|[0.99618089199066...|       0.0|
+|[4.3,3.0,1.1,0.1]|       0.0|[3.45569849014282...|[0.99618089199066...|       0.0|
+|[5.8,4.0,1.2,0.2]|       0.0|[3.45569849014282...|[0.97809928655624...|       0.0|
+|[5.7,4.4,1.5,0.4]|       0.0|[3.45569849014282...|[0.97809928655624...|       0.0|
+|[5.4,3.9,1.3,0.4]|       0.0|[3.45569849014282...|[0.99428516626358...|       0.0|
+|[5.1,3.5,1.4,0.3]|       0.0|[3.45569849014282...|[0.99579632282257...|       0.0|
+|[5.7,3.8,1.7,0.3]|       0.0|[3.45569849014282...|[0.97809928655624...|       0.0|
+|[5.1,3.8,1.5,0.3]|       0.0|[3.45569849014282...|[0.99579632282257...|       0.0|
++-----------------+----------+--------------------+--------------------+----------+
+</pre></div>
+</div>
+</div>
+<div class="section" id="single-instance-prediction">
+<h4>Single instance prediction<a class="headerlink" href="#single-instance-prediction" title="Permalink to this headline">¶</a></h4>
+<p>XGBoostClassificationModel or XGBoostRegressionModel support make prediction on single instance as well.
+It accepts a single Vector as feature, and output the prediction label.</p>
+<p>However, the overhead of single-instance prediction is high due to the internal overhead of XGBoost, use it carefully!</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">features</span> <span class="k">=</span> <span class="n">xgbInput</span><span class="o">.</span><span class="n">head</span><span class="o">().</span><span class="n">getAs</span><span class="o">[</span><span class="kt">Vector</span><span class="o">](</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">result</span> <span class="k">=</span> <span class="n">xgbClassificationModel</span><span class="o">.</span><span class="n">predict</span><span class="o">(</span><span class="n">features</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="model-persistence">
+<h3>Model Persistence<a class="headerlink" href="#model-persistence" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="model-and-pipeline-persistence">
+<h4>Model and pipeline persistence<a class="headerlink" href="#model-and-pipeline-persistence" title="Permalink to this headline">¶</a></h4>
+<p>A data scientist produces an ML model and hands it over to an engineering team for deployment in a production environment. Reversely, a trained model may be used by data scientists, for example as a baseline, across the process of data exploration. So it’s important to support model persistence to make the models available across usage scenarios and programming languages.</p>
+<p>XGBoost4j-Spark supports saving and loading XGBoostClassifier/XGBoostClassificationModel and XGBoostRegressor/XGBoostRegressionModel. It also supports saving and loading a ML pipeline which includes these estimators and models.</p>
+<p>We can save the XGBoostClassificationModel to file system:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbClassificationModelPath</span> <span class="k">=</span> <span class="s">&quot;/tmp/xgbClassificationModel&quot;</span>
+<span class="n">xgbClassificationModel</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">overwrite</span><span class="o">().</span><span class="n">save</span><span class="o">(</span><span class="n">xgbClassificationModelPath</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>and then loading the model in another session:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">ml.dmlc.xgboost4j.scala.spark.XGBoostClassificationModel</span>
+
+<span class="k">val</span> <span class="n">xgbClassificationModel2</span> <span class="k">=</span> <span class="nc">XGBoostClassificationModel</span><span class="o">.</span><span class="n">load</span><span class="o">(</span><span class="n">xgbClassificationModelPath</span><span class="o">)</span>
+<span class="n">xgbClassificationModel2</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">xgbInput</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>With regards to ML pipeline save and load, please refer the next section.</p>
+</div>
+<div class="section" id="interact-with-other-bindings-of-xgboost">
+<h4>Interact with Other Bindings of XGBoost<a class="headerlink" href="#interact-with-other-bindings-of-xgboost" title="Permalink to this headline">¶</a></h4>
+<p>After we train a model with XGBoost4j-Spark on massive dataset, sometimes we want to do model serving in single machine or integrate it with other single node libraries for further processing. XGBoost4j-Spark supports export model to local by:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">nativeModelPath</span> <span class="k">=</span> <span class="s">&quot;/tmp/nativeModel&quot;</span>
+<span class="n">xgbClassificationModel</span><span class="o">.</span><span class="n">nativeBooster</span><span class="o">.</span><span class="n">saveModel</span><span class="o">(</span><span class="n">nativeModelPath</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Then we can load this model with single node Python XGBoost:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xgboost</span> <span class="kn">as</span> <span class="nn">xgb</span>
+<span class="n">bst</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">Booster</span><span class="p">({</span><span class="s1">&#39;nthread&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
+<span class="n">bst</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">nativeModelPath</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Using HDFS and S3 for exporting the models with nativeBooster.saveModel()</p>
+<p>When interacting with other language bindings, XGBoost also supports saving-models-to and loading-models-from file systems other than the local one. You can use HDFS and S3 by prefixing the path with <code class="docutils literal notranslate"><span class="pre">hdfs://</span></code> and <code class="docutils literal notranslate"><span class="pre">s3://</span></code> respectively. However, for this capability, you must do <strong>one</strong> of the following:</p>
+<ol class="last arabic">
+<li><p class="first">Build XGBoost4J-Spark with the steps described in <a class="reference external" href="https://xgboost.readthedocs.io/en/latest/jvm/index.html#installation-from-source">here</a>, but turning <a class="reference external" href="https://github.com/dmlc/xgboost/blob/e939192978a0c152ad7b49b744630e99d54cffa8/jvm-packages/create_jni.py#L18">USE_HDFS</a> (or USE_S3, etc. in the same place) switch on. With this approach, you can reuse the above code example by replacing “nativeModelPath” with a HDFS path.</p>
+<ul class="simple">
+<li>However, if you build with USE_HDFS, etc. you have to ensure that the involved shared object file, e.g. libhdfs.so, is put in the LIBRARY_PATH of your cluster. To avoid the complicated cluster environment configuration, choose the other option.</li>
+</ul>
+</li>
+<li><p class="first">Use bindings of HDFS, S3, etc. to pass model files around. Here are the steps (taking HDFS as an example):</p>
+<ul>
+<li><p class="first">Create a new file with</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">outputStream</span> <span class="k">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">create</span><span class="o">(</span><span class="s">&quot;hdfs_path&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>where “fs” is an instance of <a class="reference external" href="https://hadoop.apache.org/docs/stable/api/org/apache/hadoop/fs/FileSystem.html">org.apache.hadoop.fs.FileSystem</a> class in Hadoop.</p>
+</li>
+<li><p class="first">Pass the returned OutputStream in the first step to nativeBooster.saveModel():</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">xgbClassificationModel</span><span class="o">.</span><span class="n">nativeBooster</span><span class="o">.</span><span class="n">saveModel</span><span class="o">(</span><span class="n">outputStream</span><span class="o">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Download file in other languages from HDFS and load with the pre-built (without the requirement of libhdfs.so) version of XGBoost. (The function “download_from_hdfs” is a helper function to be implemented by the user)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xgboost</span> <span class="kn">as</span> <span class="nn">xgb</span>
+<span class="n">bst</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">Booster</span><span class="p">({</span><span class="s1">&#39;nthread&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
+<span class="n">local_path</span> <span class="o">=</span> <span class="n">download_from_hdfs</span><span class="p">(</span><span class="s2">&quot;hdfs_path&quot;</span><span class="p">)</span>
+<span class="n">bst</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Consistency issue between XGBoost4J-Spark and other bindings</p>
+<p>There is a consistency issue between XGBoost4J-Spark and other language bindings of XGBoost.</p>
+<p>When users use Spark to load training/test data in LIBSVM format with the following code snippet:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;libsvm&quot;</span><span class="o">).</span><span class="n">load</span><span class="o">(</span><span class="s">&quot;trainingset_libsvm&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>Spark assumes that the dataset is using 1-based indexing (feature indices staring with 1). However, when you do prediction with other bindings of XGBoost (e.g. Python API of XGBoost), XGBoost assumes that the dataset is using 0-based indexing (feature indices starting with 0) by default. It creates a pitfall for the users who train model with Spark but predict with the dataset in the same format in other bindings of XGBoost. The solution is to transform the dataset to 0-based indexing before you predict with, for example, Python API, or you append <code class="docutils literal notranslate"><span class="pre">?indexing_mode=1</span></code> to your file path when loading with DMatirx. For example in Python:</p>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="s1">&#39;test.libsvm?indexing_mode=1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="building-a-ml-pipeline-with-xgboost4j-spark">
+<h2>Building a ML Pipeline with XGBoost4J-Spark<a class="headerlink" href="#building-a-ml-pipeline-with-xgboost4j-spark" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-ml-pipeline">
+<h3>Basic ML Pipeline<a class="headerlink" href="#basic-ml-pipeline" title="Permalink to this headline">¶</a></h3>
+<p>Spark ML pipeline can combine multiple algorithms or functions into a single pipeline.
+It covers from feature extraction, transformation, selection to model training and prediction.
+XGBoost4j-Spark makes it feasible to embed XGBoost into such a pipeline seamlessly.
+The following example shows how to build such a pipeline consisting of Spark MLlib feature transformer
+and XGBoostClassifier estimator.</p>
+<p>We still use <a class="reference external" href="https://archive.ics.uci.edu/ml/datasets/iris">Iris</a> dataset and the <code class="docutils literal notranslate"><span class="pre">rawInput</span></code> DataFrame.
+First we need to split the dataset into training and test dataset.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="nc">Array</span><span class="o">(</span><span class="n">training</span><span class="o">,</span> <span class="n">test</span><span class="o">)</span> <span class="k">=</span> <span class="n">rawInput</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.8</span><span class="o">,</span> <span class="mf">0.2</span><span class="o">),</span> <span class="mi">123</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>The we build the ML pipeline which includes 4 stages:</p>
+<ul class="simple">
+<li>Assemble all features into a single vector column.</li>
+<li>From string label to indexed double label.</li>
+<li>Use XGBoostClassifier to train classification model.</li>
+<li>Convert indexed double label back to original string label.</li>
+</ul>
+<p>We have shown the first three steps in the earlier sections, and the last step is finished with a new transformer <a class="reference external" href="https://spark.apache.org/docs/2.3.1/api/scala/index.html#org.apache.spark.ml.feature.IndexToString">IndexToString</a>:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">labelConverter</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IndexToString</span><span class="o">()</span>
+<span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+<span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;realLabel&quot;</span><span class="o">)</span>
+<span class="o">.</span><span class="n">setLabels</span><span class="o">(</span><span class="n">stringIndexer</span><span class="o">.</span><span class="n">labels</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>We need to organize these steps as a Pipeline in Spark ML framework and evaluate the whole pipeline to get a PipelineModel:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.Pipeline</span>
+
+<span class="k">val</span> <span class="n">pipeline</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">assembler</span><span class="o">,</span> <span class="n">stringIndexer</span><span class="o">,</span> <span class="n">booster</span><span class="o">,</span> <span class="n">labelConverter</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>After we get the PipelineModel, we can make prediction on the test dataset and evaluate the model accuracy.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator</span>
+
+<span class="k">val</span> <span class="n">prediction</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">evaluator</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">MulticlassClassificationEvaluator</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">accuracy</span> <span class="k">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="o">(</span><span class="n">prediction</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pipeline-with-hyper-parameter-tunning">
+<h3>Pipeline with Hyper-parameter Tunning<a class="headerlink" href="#pipeline-with-hyper-parameter-tunning" title="Permalink to this headline">¶</a></h3>
+<p>The most critical operation to maximize the power of XGBoost is to select the optimal parameters for the model. Tuning parameters manually is a tedious and labor-consuming process. With the latest version of XGBoost4J-Spark, we can utilize the Spark model selecting tool to automate this process.</p>
+<p>The following example shows the code snippet utilizing CrossValidation and MulticlassClassificationEvaluator
+to search the optimal combination of two XGBoost parameters, <code class="docutils literal notranslate"><span class="pre">max_depth</span></code> and <code class="docutils literal notranslate"><span class="pre">eta</span></code>. (See <a class="reference internal" href="../parameter.html"><span class="doc">XGBoost Parameters</span></a>.)
+The model producing the maximum accuracy defined by MulticlassClassificationEvaluator is selected and used to generate the prediction for the test set.</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.tuning._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.PipelineModel</span>
+<span class="k">import</span> <span class="nn">ml.dmlc.xgboost4j.scala.spark.XGBoostClassificationModel</span>
+
+<span class="k">val</span> <span class="n">paramGrid</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ParamGridBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">addGrid</span><span class="o">(</span><span class="n">booster</span><span class="o">.</span><span class="n">maxDepth</span><span class="o">,</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">8</span><span class="o">))</span>
+    <span class="o">.</span><span class="n">addGrid</span><span class="o">(</span><span class="n">booster</span><span class="o">.</span><span class="n">eta</span><span class="o">,</span> <span class="nc">Array</span><span class="o">(</span><span class="mf">0.2</span><span class="o">,</span> <span class="mf">0.6</span><span class="o">))</span>
+    <span class="o">.</span><span class="n">build</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">cv</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">CrossValidator</span><span class="o">()</span>
+    <span class="o">.</span><span class="n">setEstimator</span><span class="o">(</span><span class="n">pipeline</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setEvaluator</span><span class="o">(</span><span class="n">evaluator</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setEstimatorParamMaps</span><span class="o">(</span><span class="n">paramGrid</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">setNumFolds</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">cvModel</span> <span class="k">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">bestModel</span> <span class="k">=</span> <span class="n">cvModel</span><span class="o">.</span><span class="n">bestModel</span><span class="o">.</span><span class="n">asInstanceOf</span><span class="o">[</span><span class="kt">PipelineModel</span><span class="o">].</span><span class="n">stages</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">.</span><span class="n">asInstanceOf</span><span class="o">[</span><span class="kt">XGBoostClassificationModel</span><span class="o">]</span>
+<span class="n">bestModel</span><span class="o">.</span><span class="n">extractParamMap</span><span class="o">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="run-xgboost4j-spark-in-production">
+<h2>Run XGBoost4J-Spark in Production<a class="headerlink" href="#run-xgboost4j-spark-in-production" title="Permalink to this headline">¶</a></h2>
+<p>XGBoost4J-Spark is one of the most important steps to bring XGBoost to production environment easier. In this section, we introduce three key features to run XGBoost4J-Spark in production.</p>
+<div class="section" id="parallel-distributed-training">
+<h3>Parallel/Distributed Training<a class="headerlink" href="#parallel-distributed-training" title="Permalink to this headline">¶</a></h3>
+<p>The massive size of training dataset is one of the most significant characteristics in production environment. To ensure that training in XGBoost scales with the data size, XGBoost4J-Spark bridges the distributed/parallel processing framework of Spark and the parallel/distributed training mechanism of XGBoost.</p>
+<p>In XGBoost4J-Spark, each XGBoost worker is wrapped by a Spark task and the training dataset in Spark’s memory space is fed to XGBoost workers in a transparent approach to the user.</p>
+<p>In the code snippet where we build XGBoostClassifier, we set parameter <code class="docutils literal notranslate"><span class="pre">num_workers</span></code> (or <code class="docutils literal notranslate"><span class="pre">numWorkers</span></code>).
+This parameter controls how many parallel workers we want to have when training a XGBoostClassificationModel.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Regarding OpenMP optimization</p>
+<p>By default, we allocate a core per each XGBoost worker. Therefore, the OpenMP optimization within each XGBoost worker does not take effect and the parallelization of training is achieved
+by running multiple workers (i.e. Spark tasks) at the same time.</p>
+<p>If you do want OpenMP optimization, you have to</p>
+<ol class="last arabic simple">
+<li>set <code class="docutils literal notranslate"><span class="pre">nthread</span></code> to a value larger than 1 when creating XGBoostClassifier/XGBoostRegressor</li>
+<li>set <code class="docutils literal notranslate"><span class="pre">spark.task.cpus</span></code> in Spark to the same value as <code class="docutils literal notranslate"><span class="pre">nthread</span></code></li>
+</ol>
+</div>
+</div>
+<div class="section" id="gang-scheduling">
+<h3>Gang Scheduling<a class="headerlink" href="#gang-scheduling" title="Permalink to this headline">¶</a></h3>
+<p>XGBoost uses <a class="reference external" href="http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/">AllReduce</a>.
+algorithm to synchronize the stats, e.g. histogram values, of each worker during training. Therefore XGBoost4J-Spark requires that all of <code class="docutils literal notranslate"><span class="pre">nthread</span> <span class="pre">*</span> <span class="pre">numWorkers</span></code> cores should be available before the training runs.</p>
+<p>In the production environment where many users share the same cluster, it’s hard to guarantee that your XGBoost4J-Spark application can get all requested resources for every run. By default, the communication layer in XGBoost will block the whole application when it requires more resources to be available. This process usually brings unnecessary resource waste as it keeps the ready resources and try to claim more. Additionally, this usually happens silently and does not bring the attention of users.</p>
+<p>XGBoost4J-Spark allows the user to setup a timeout threshold for claiming resources from the cluster. If the application cannot get enough resources within this time period, the application would fail instead of wasting resources for hanging long. To enable this feature, you can set with XGBoostClassifier/XGBoostRegressor:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">xgbClassifier</span><span class="o">.</span><span class="n">setTimeoutRequestWorkers</span><span class="o">(</span><span class="mi">60000L</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>or pass in <code class="docutils literal notranslate"><span class="pre">timeout_request_workers</span></code> in <code class="docutils literal notranslate"><span class="pre">xgbParamMap</span></code> when building XGBoostClassifier:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbParam</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;eta&quot;</span> <span class="o">-&gt;</span> <span class="mf">0.1f</span><span class="o">,</span>
+   <span class="s">&quot;max_depth&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+   <span class="s">&quot;objective&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;multi:softprob&quot;</span><span class="o">,</span>
+   <span class="s">&quot;num_class&quot;</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">,</span>
+   <span class="s">&quot;num_round&quot;</span> <span class="o">-&gt;</span> <span class="mi">100</span><span class="o">,</span>
+   <span class="s">&quot;num_workers&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+   <span class="s">&quot;timeout_request_workers&quot;</span> <span class="o">-&gt;</span> <span class="mi">60000L</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">xgbClassifier</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">XGBoostClassifier</span><span class="o">(</span><span class="n">xgbParam</span><span class="o">).</span>
+    <span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span>
+    <span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;classIndex&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>If XGBoost4J-Spark cannot get enough resources for running two XGBoost workers, the application would fail. Users can have external mechanism to monitor the status of application and get notified for such case.</p>
+</div>
+<div class="section" id="checkpoint-during-training">
+<h3>Checkpoint During Training<a class="headerlink" href="#checkpoint-during-training" title="Permalink to this headline">¶</a></h3>
+<p>Transient failures are also commonly seen in production environment. To simplify the design of XGBoost,
+we stop training if any of the distributed workers fail. However, if the training fails after having been through a long time, it would be a great waste of resources.</p>
+<p>We support creating checkpoint during training to facilitate more efficient recovery from failture. To enable this feature, you can set how many iterations we build each checkpoint with <code class="docutils literal notranslate"><span class="pre">setCheckpointInterval</span></code> and the location of checkpoints with <code class="docutils literal notranslate"><span class="pre">setCheckpointPath</span></code>:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="n">xgbClassifier</span><span class="o">.</span><span class="n">setCheckpointInterval</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+<span class="n">xgbClassifier</span><span class="o">.</span><span class="n">setCheckpointPath</span><span class="o">(</span><span class="s">&quot;/checkpoint_path&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>An equivalent way is to pass in parameters in XGBoostClassifier’s constructor:</p>
+<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">xgbParam</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="s">&quot;eta&quot;</span> <span class="o">-&gt;</span> <span class="mf">0.1f</span><span class="o">,</span>
+   <span class="s">&quot;max_depth&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+   <span class="s">&quot;objective&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;multi:softprob&quot;</span><span class="o">,</span>
+   <span class="s">&quot;num_class&quot;</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="o">,</span>
+   <span class="s">&quot;num_round&quot;</span> <span class="o">-&gt;</span> <span class="mi">100</span><span class="o">,</span>
+   <span class="s">&quot;num_workers&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">,</span>
+   <span class="s">&quot;checkpoint_path&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;/checkpoints_path&quot;</span><span class="o">,</span>
+   <span class="s">&quot;checkpoint_interval&quot;</span> <span class="o">-&gt;</span> <span class="mi">2</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">xgbClassifier</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">XGBoostClassifier</span><span class="o">(</span><span class="n">xgbParam</span><span class="o">).</span>
+    <span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span>
+    <span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;classIndex&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>If the training failed during these 100 rounds, the next run of training would start by reading the latest checkpoint file in <code class="docutils literal notranslate"><span class="pre">/checkpoints_path</span></code> and start from the iteration when the checkpoint was built until to next failure or the specified 100 rounds.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="java_intro.html" title="previous chapter (use the left arrow)">Getting Started with XGBoost4J</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="javadocs/index.html" title="next chapter (use the right arrow)">XGBoost4J Java API</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="javadocs/index.html" title="XGBoost4J Java API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="java_intro.html" title="Getting Started with XGBoost4J"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">xgboost 0.80 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >XGBoost JVM Package</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>

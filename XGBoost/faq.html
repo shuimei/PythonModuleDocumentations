@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Frequently Asked Questions &#8212; xgboost 0.80 documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="XGBoost GPU Support" href="gpu/index.html" />
+    <link rel="prev" title="Using XGBoost External Memory Version (beta)" href="tutorials/external_memory.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gpu/index.html" title="XGBoost GPU Support"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorials/external_memory.html" title="Using XGBoost External Memory Version (beta)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar"><a href="
+    index.html" class="text-logo">XGBoost</a>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <h2>Table Of Contents</h2>
+  </div>
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="build.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_started.html">Get Started with XGBoost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">XGBoost Tutorials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://discuss.xgboost.ai">XGBoost User Forum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpu/index.html">GPU support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameter.html">XGBoost Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/index.html">Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="R-package/index.html">R package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jvm/index.html">JVM package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Julia package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contribute to XGBoost</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Frequently Asked Questions</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<p>This document contains frequently asked questions about XGBoost.</p>
+<div class="section" id="how-to-tune-parameters">
+<h2>How to tune parameters<a class="headerlink" href="#how-to-tune-parameters" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="tutorials/param_tuning.html"><span class="doc">Parameter Tuning Guide</span></a>.</p>
+</div>
+<div class="section" id="description-on-the-model">
+<h2>Description on the model<a class="headerlink" href="#description-on-the-model" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="tutorials/model.html"><span class="doc">Introduction to Boosted Trees</span></a>.</p>
+</div>
+<div class="section" id="i-have-a-big-dataset">
+<h2>I have a big dataset<a class="headerlink" href="#i-have-a-big-dataset" title="Permalink to this headline">¶</a></h2>
+<p>XGBoost is designed to be memory efficient. Usually it can handle problems as long as the data fit into your memory.
+(This usually means millions of instances)
+If you are running out of memory, checkout <a class="reference internal" href="tutorials/external_memory.html"><span class="doc">external memory version</span></a> or
+<a class="reference internal" href="tutorials/aws_yarn.html"><span class="doc">distributed version</span></a> of XGBoost.</p>
+</div>
+<div class="section" id="running-xgboost-on-platform-x-hadoop-yarn-mesos">
+<h2>Running XGBoost on Platform X (Hadoop/Yarn, Mesos)<a class="headerlink" href="#running-xgboost-on-platform-x-hadoop-yarn-mesos" title="Permalink to this headline">¶</a></h2>
+<p>The distributed version of XGBoost is designed to be portable to various environment.
+Distributed XGBoost can be ported to any platform that supports <a class="reference external" href="https://github.com/dmlc/rabit">rabit</a>.
+You can directly run XGBoost on Yarn. In theory Mesos and other resource allocation engines can be easily supported as well.</p>
+</div>
+<div class="section" id="why-not-implement-distributed-xgboost-on-top-of-x-spark-hadoop">
+<h2>Why not implement distributed XGBoost on top of X (Spark, Hadoop)<a class="headerlink" href="#why-not-implement-distributed-xgboost-on-top-of-x-spark-hadoop" title="Permalink to this headline">¶</a></h2>
+<p>The first fact we need to know is going distributed does not necessarily solve all the problems.
+Instead, it creates more problems such as more communication overhead and fault tolerance.
+The ultimate question will still come back to how to push the limit of each computation node
+and use less resources to complete the task (thus with less communication and chance of failure).</p>
+<p>To achieve these, we decide to reuse the optimizations in the single node XGBoost and build distributed version on top of it.
+The demand of communication in machine learning is rather simple, in the sense that we can depend on a limited set of API (in our case rabit).
+Such design allows us to reuse most of the code, while being portable to major platforms such as Hadoop/Yarn, MPI, SGE.
+Most importantly, it pushes the limit of the computation resources we can use.</p>
+</div>
+<div class="section" id="how-can-i-port-the-model-to-my-own-system">
+<h2>How can I port the model to my own system<a class="headerlink" href="#how-can-i-port-the-model-to-my-own-system" title="Permalink to this headline">¶</a></h2>
+<p>The model and data format of XGBoost is exchangeable,
+which means the model trained by one language can be loaded in another.
+This means you can train the model using R, while running prediction using
+Java or C++, which are more common in production systems.
+You can also train the model using distributed versions,
+and load them in from Python to do some interactive analysis.</p>
+</div>
+<div class="section" id="do-you-support-lambdamart">
+<h2>Do you support LambdaMART<a class="headerlink" href="#do-you-support-lambdamart" title="Permalink to this headline">¶</a></h2>
+<p>Yes, XGBoost implements LambdaMART. Checkout the objective section in <a class="reference internal" href="parameter.html"><span class="doc">parameters</span></a>.</p>
+</div>
+<div class="section" id="how-to-deal-with-missing-value">
+<h2>How to deal with Missing Value<a class="headerlink" href="#how-to-deal-with-missing-value" title="Permalink to this headline">¶</a></h2>
+<p>XGBoost supports missing value by default.
+In tree algorithms, branch directions for missing values are learned during training.
+Note that the gblinear booster treats missing values as zeros.</p>
+</div>
+<div class="section" id="slightly-different-result-between-runs">
+<h2>Slightly different result between runs<a class="headerlink" href="#slightly-different-result-between-runs" title="Permalink to this headline">¶</a></h2>
+<p>This could happen, due to non-determinism in floating point summation order and multi-threading.
+Though the general accuracy will usually remain the same.</p>
+</div>
+<div class="section" id="why-do-i-see-different-results-with-sparse-and-dense-data">
+<h2>Why do I see different results with sparse and dense data?<a class="headerlink" href="#why-do-i-see-different-results-with-sparse-and-dense-data" title="Permalink to this headline">¶</a></h2>
+<p>“Sparse” elements are treated as if they were “missing” by the tree booster, and as zeros by the linear booster.
+For tree models, it is important to use consistent data formats during training and scoring.</p>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="tutorials/external_memory.html" title="previous chapter (use the left arrow)">Using XGBoost External Memory Version (beta)</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="gpu/index.html" title="next chapter (use the right arrow)">XGBoost GPU Support</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gpu/index.html" title="XGBoost GPU Support"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorials/external_memory.html" title="Using XGBoost External Memory Version (beta)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">xgboost 0.80 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2016, xgboost developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+  </div>
+  </body>
+</html>
