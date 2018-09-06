@@ -10,6 +10,7 @@ collection of Python Model Documentations for data scientists.
 + LightGBM
 + statsmodel
 + Pillow
++ XGBoost
 + ...
 
 ## usage
