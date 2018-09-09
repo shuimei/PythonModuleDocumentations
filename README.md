@@ -11,6 +11,7 @@ collection of Python Model Documentations for data scientists.
 + statsmodel
 + Pillow
 + XGBoost
++ PyTorch
 + ...
 
 ## usage
