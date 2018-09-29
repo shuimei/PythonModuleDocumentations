@@ -1,7 +1,7 @@
 # PythonModuleDocumentations
-collection of Python Model Documentations for data scientists.
+collection of Python Module Documentations for data scientists.
 
-## module lists
+## Module list
 + numpy
 + pandas
 + Pyod
@@ -14,7 +14,7 @@ collection of Python Model Documentations for data scientists.
 + PyTorch
 + ...
 
-## usage
+## Usage
 ```
 git clone https://github.com/shuimei/PythonModuleDocumentations.git
 cd PythonModuleDocumentations-master
@@ -22,5 +22,5 @@ python -m "http.server"
 ```
 默认8000端口，局域网内访问本机IP即可
 
-## contact
+## Contact
 [dengshunqiang@outlook.com](dengshunqiang@outlook.com)
