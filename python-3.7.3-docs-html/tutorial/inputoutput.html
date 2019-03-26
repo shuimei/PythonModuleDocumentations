@@ -1,0 +1,497 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>7. 输入输出 &#8212; Python 3.7.3 文档</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="在 Python 3.7.3 文档 中搜索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="关于这些文档" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="copyright" title="版权所有" href="../copyright.html" />
+    <link rel="next" title="8. 错误和异常" href="errors.html" />
+    <link rel="prev" title="6. 模块" href="modules.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/tutorial/inputoutput.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="errors.html" title="8. 错误和异常"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="6. 模块"
+             accesskey="P">上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Python 教程</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="input-and-output">
+<span id="tut-io"></span><h1>7. 输入输出<a class="headerlink" href="#input-and-output" title="永久链接至标题">¶</a></h1>
+<p>有几种方法可以显示程序的输出；数据可以以人类可读的形式打印出来，或者写入文件以供将来使用。本章将讨论一些可能性。</p>
+<div class="section" id="fancier-output-formatting">
+<span id="tut-formatting"></span><h2>7.1. 更漂亮的输出格式<a class="headerlink" href="#fancier-output-formatting" title="永久链接至标题">¶</a></h2>
+<p>到目前为止，我们遇到了两种写入值的方法：<em>表达式语句</em> 和 <a class="reference internal" href="../library/functions.html#print" title="print"><code class="xref py py-func docutils literal notranslate"><span class="pre">print()</span></code></a> 函数。（第三种是使用文件对象的 <code class="xref py py-meth docutils literal notranslate"><span class="pre">write()</span></code> 方法；标准输出文件可以作为 <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> 引用。更多相关信息可参考标准库指南。）</p>
+<p>通常，你需要更多地控制输出的格式，而不仅仅是打印空格分隔的值。有几种格式化输出的方法。</p>
+<ul>
+<li><p class="first">要使用 <a class="reference internal" href="#tut-f-strings"><span class="std std-ref">格式字字符串字面值</span></a> ，请在字符串的开始引号或三引号之前加上一个 <code class="docutils literal notranslate"><span class="pre">f</span></code> 或 <code class="docutils literal notranslate"><span class="pre">F</span></code> 。在此字符串中，你可以在 <code class="docutils literal notranslate"><span class="pre">{</span></code> 和 <code class="docutils literal notranslate"><span class="pre">}</span></code> 字符之间写可以引用的变量或字面值的 Python 表达式。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">year</span> <span class="o">=</span> <span class="mi">2016</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">event</span> <span class="o">=</span> <span class="s1">&#39;Referendum&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="s1">&#39;Results of the </span><span class="si">{year}</span><span class="s1"> </span><span class="si">{event}</span><span class="s1">&#39;</span>
+<span class="go">&#39;Results of the 2016 Referendum&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">字符串的 <a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 方法需要更多的手动操作。你仍将使用 <code class="docutils literal notranslate"><span class="pre">{</span></code> 和 <code class="docutils literal notranslate"><span class="pre">}</span></code> 来标记变量将被替换的位置，并且可以提供详细的格式化指令，但你还需要提供要格式化的信息。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">yes_votes</span> <span class="o">=</span> <span class="mi">42_572_654</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">no_votes</span> <span class="o">=</span> <span class="mi">43_132_495</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">percentage</span> <span class="o">=</span> <span class="n">yes_votes</span> <span class="o">/</span> <span class="p">(</span><span class="n">yes_votes</span> <span class="o">+</span> <span class="n">no_votes</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;</span><span class="si">{:-9}</span><span class="s1"> YES votes  </span><span class="si">{:2.2%}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">yes_votes</span><span class="p">,</span> <span class="n">percentage</span><span class="p">)</span>
+<span class="go">&#39; 42572654 YES votes  49.67%&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">最后，你可以使用字符串切片和连接操作自己完成所有的字符串处理，以创建你可以想象的任何布局。字符串类型有一些方法可以执行将字符串填充到给定列宽的有用操作。</p>
+</li>
+</ul>
+<p>当你不需要花哨的输出而只是想快速显示某些变量以进行调试时，可以使用 <a class="reference internal" href="../library/functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a> or <a class="reference internal" href="../library/stdtypes.html#str" title="str"><code class="xref py py-func docutils literal notranslate"><span class="pre">str()</span></code></a>&nbsp;函数将任何值转化为字符串。</p>
+<p><a class="reference internal" href="../library/stdtypes.html#str" title="str"><code class="xref py py-func docutils literal notranslate"><span class="pre">str()</span></code></a> 函数是用于返回人类可读的值的表示，而 <a class="reference internal" href="../library/functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a> 是用于生成解释器可读的表示（如果没有等效的语法，则会强制执行 <a class="reference internal" href="../library/exceptions.html#SyntaxError" title="SyntaxError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SyntaxError</span></code></a>）对于没有人类可读性的表示的对象， <a class="reference internal" href="../library/stdtypes.html#str" title="str"><code class="xref py py-func docutils literal notranslate"><span class="pre">str()</span></code></a> 将返回和 <a class="reference internal" href="../library/functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a> 一样的值。很多值使用任一函数都具有相同的表示，比如数字或类似列表和字典的结构。特殊的是字符串有两个不同的表示。</p>
+<p>几个例子:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Hello, world.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">&#39;Hello, world.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">repr</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">&quot;&#39;Hello, world.&#39;&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span>
+<span class="go">&#39;0.14285714285714285&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mf">3.25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="mi">200</span> <span class="o">*</span> <span class="mi">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;The value of x is &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, and y is &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">The value of x is 32.5, and y is 40000...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The repr() of a string adds string quotes and backslashes:</span>
+<span class="gp">... </span><span class="n">hello</span> <span class="o">=</span> <span class="s1">&#39;hello, world</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hellos</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">hellos</span><span class="p">)</span>
+<span class="go">&#39;hello, world\n&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The argument to repr() may be any Python object:</span>
+<span class="gp">... </span><span class="nb">repr</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spam&#39;</span><span class="p">,</span> <span class="s1">&#39;eggs&#39;</span><span class="p">)))</span>
+<span class="go">&quot;(32.5, 40000, (&#39;spam&#39;, &#39;eggs&#39;))&quot;</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../library/string.html#module-string" title="string: Common string operations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">string</span></code></a> 模块包含一个 <a class="reference internal" href="../library/string.html#string.Template" title="string.Template"><code class="xref py py-class docutils literal notranslate"><span class="pre">Template</span></code></a> 类，它提供了另一种将值替换为字符串的方法，使用类似 <code class="docutils literal notranslate"><span class="pre">$x</span></code> 的占位符并用字典中的值替换它们，但对格式的控制要少的多。</p>
+<div class="section" id="formatted-string-literals">
+<span id="tut-f-strings"></span><h3>7.1.1. 格式化字符串文字<a class="headerlink" href="#formatted-string-literals" title="永久链接至标题">¶</a></h3>
+<p><a class="reference internal" href="../reference/lexical_analysis.html#f-strings"><span class="std std-ref">格式化字符串字面值</span></a> （常简称为 f-字符串）能让你在字符串前加上 <code class="docutils literal notranslate"><span class="pre">f</span></code> 和 <code class="docutils literal notranslate"><span class="pre">F</span></code> 并将表达式写成 <code class="docutils literal notranslate"><span class="pre">{expression}</span></code> 来在字符串中包含 Python 表达式的值。</p>
+<p>可选的格式说明符可以跟在表达式后面。这样可以更好地控制值的格式化方式。以下示例将pi舍入到小数点后三位:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">math</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;The value of pi is approximately </span><span class="si">{math.pi:.3f}</span><span class="s1">.&#39;</span><span class="p">)</span>
+<span class="go">The value of pi is approximately 3.142.</span>
+</pre></div>
+</div>
+<p>在 <code class="docutils literal notranslate"><span class="pre">':'</span></code> 后传递一个整数可以让该字段成为最小字符宽度。这在使列对齐时很有用。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sjoerd&#39;</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s1">&#39;Jack&#39;</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s1">&#39;Dcab&#39;</span><span class="p">:</span> <span class="mi">7678</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">phone</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{name:10}</span><span class="s1"> ==&gt; </span><span class="si">{phone:10d}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">Sjoerd     ==&gt;       4127</span>
+<span class="go">Jack       ==&gt;       4098</span>
+<span class="go">Dcab       ==&gt;       7678</span>
+</pre></div>
+</div>
+<p>其他的修饰符可用于在格式化之前转化值。 <code class="docutils literal notranslate"><span class="pre">'!a'</span></code> 应用 <a class="reference internal" href="../library/functions.html#ascii" title="ascii"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascii()</span></code></a> ，<code class="docutils literal notranslate"><span class="pre">'!s'</span></code> 应用 <a class="reference internal" href="../library/stdtypes.html#str" title="str"><code class="xref py py-func docutils literal notranslate"><span class="pre">str()</span></code></a>，还有 <code class="docutils literal notranslate"><span class="pre">'!r'</span></code> 应用 <a class="reference internal" href="../library/functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">animals</span> <span class="o">=</span> <span class="s1">&#39;eels&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;My hovercraft is full of </span><span class="si">{animals}</span><span class="s1">.&#39;</span><span class="p">)</span>
+<span class="go">My hovercraft is full of eels.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;My hovercraft is full of </span><span class="si">{animals!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+<span class="go">My hovercraft is full of &#39;eels&#39;.</span>
+</pre></div>
+</div>
+<p>有关这些格式规范的参考，请参阅参考指南 <a class="reference internal" href="../library/string.html#formatspec"><span class="std std-ref">Format Specification Mini-Language</span></a>。</p>
+</div>
+<div class="section" id="the-string-format-method">
+<span id="tut-string-format"></span><h3>7.1.2. 字符串的 format() 方法<a class="headerlink" href="#the-string-format-method" title="永久链接至标题">¶</a></h3>
+<p><a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 方法的基本用法如下所示:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;We are the </span><span class="si">{}</span><span class="s1"> who say &quot;</span><span class="si">{}</span><span class="s1">!&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;knights&#39;</span><span class="p">,</span> <span class="s1">&#39;Ni&#39;</span><span class="p">))</span>
+<span class="go">We are the knights who say &quot;Ni!&quot;</span>
+</pre></div>
+</div>
+<p>花括号和其中的字符（称为格式字段）将替换为传递给 <a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 方法的对象。花括号中的数字可用来表示传递给 <a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 方法的对象的位置。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> and </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;spam&#39;</span><span class="p">,</span> <span class="s1">&#39;eggs&#39;</span><span class="p">))</span>
+<span class="go">spam and eggs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{1}</span><span class="s1"> and </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;spam&#39;</span><span class="p">,</span> <span class="s1">&#39;eggs&#39;</span><span class="p">))</span>
+<span class="go">eggs and spam</span>
+</pre></div>
+</div>
+<p>如果在 <a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 方法中使用关键字参数，则使用参数的名称引用它们的值。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This </span><span class="si">{food}</span><span class="s1"> is </span><span class="si">{adjective}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+<span class="gp">... </span>      <span class="n">food</span><span class="o">=</span><span class="s1">&#39;spam&#39;</span><span class="p">,</span> <span class="n">adjective</span><span class="o">=</span><span class="s1">&#39;absolutely horrible&#39;</span><span class="p">))</span>
+<span class="go">This spam is absolutely horrible.</span>
+</pre></div>
+</div>
+<p>位置和关键字参数可以任意组合:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The story of </span><span class="si">{0}</span><span class="s1">, </span><span class="si">{1}</span><span class="s1">, and </span><span class="si">{other}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Bill&#39;</span><span class="p">,</span> <span class="s1">&#39;Manfred&#39;</span><span class="p">,</span>
+<span class="go">                                                       other=&#39;Georg&#39;))</span>
+<span class="go">The story of Bill, Manfred, and Georg.</span>
+</pre></div>
+</div>
+<p>如果你有一个非常长的格式字符串，你不想把它拆开，那么你最好按名称而不是位置引用变量来进行格式化。这可以通过简单地传递字典和使用方括号 <code class="docutils literal notranslate"><span class="pre">'[]'</span></code> 访问键来完成:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sjoerd&#39;</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s1">&#39;Jack&#39;</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s1">&#39;Dcab&#39;</span><span class="p">:</span> <span class="mi">8637678</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Jack: </span><span class="si">{0[Jack]:d}</span><span class="s1">; Sjoerd: </span><span class="si">{0[Sjoerd]:d}</span><span class="s1">; &#39;</span>
+<span class="gp">... </span>      <span class="s1">&#39;Dcab: </span><span class="si">{0[Dcab]:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+<span class="go">Jack: 4098; Sjoerd: 4127; Dcab: 8637678</span>
+</pre></div>
+</div>
+<p>这也可以通过使用 '**' 符号将表作为关键字参数传递。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Sjoerd&#39;</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s1">&#39;Jack&#39;</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s1">&#39;Dcab&#39;</span><span class="p">:</span> <span class="mi">8637678</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Jack: </span><span class="si">{Jack:d}</span><span class="s1">; Sjoerd: </span><span class="si">{Sjoerd:d}</span><span class="s1">; Dcab: </span><span class="si">{Dcab:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">table</span><span class="p">))</span>
+<span class="go">Jack: 4098; Sjoerd: 4127; Dcab: 8637678</span>
+</pre></div>
+</div>
+<p>这在与内置函数 <a class="reference internal" href="../library/functions.html#vars" title="vars"><code class="xref py py-func docutils literal notranslate"><span class="pre">vars()</span></code></a> 结合使用时非常有用，它会返回包含所有局部变量的字典。</p>
+<p>例如，下面几行代码生成一组整齐的列，其中包含给定的整数和它的平方以及立方:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:2d}</span><span class="s1"> </span><span class="si">{1:3d}</span><span class="s1"> </span><span class="si">{2:4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go"> 1   1    1</span>
+<span class="go"> 2   4    8</span>
+<span class="go"> 3   9   27</span>
+<span class="go"> 4  16   64</span>
+<span class="go"> 5  25  125</span>
+<span class="go"> 6  36  216</span>
+<span class="go"> 7  49  343</span>
+<span class="go"> 8  64  512</span>
+<span class="go"> 9  81  729</span>
+<span class="go">10 100 1000</span>
+</pre></div>
+</div>
+<p>关于使用 <a class="reference internal" href="../library/stdtypes.html#str.format" title="str.format"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.format()</span></code></a> 进行字符串格式化的完整概述，请参阅 <a class="reference internal" href="../library/string.html#formatstrings"><span class="std std-ref">Format String Syntax</span></a> 。</p>
+</div>
+<div class="section" id="manual-string-formatting">
+<h3>7.1.3. 手动格式化字符串<a class="headerlink" href="#manual-string-formatting" title="永久链接至标题">¶</a></h3>
+<p>这是同一个平方和立方的表，手动格式化的:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="c1"># Note use of &#39;end&#39; on previous line</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go"> 1   1    1</span>
+<span class="go"> 2   4    8</span>
+<span class="go"> 3   9   27</span>
+<span class="go"> 4  16   64</span>
+<span class="go"> 5  25  125</span>
+<span class="go"> 6  36  216</span>
+<span class="go"> 7  49  343</span>
+<span class="go"> 8  64  512</span>
+<span class="go"> 9  81  729</span>
+<span class="go">10 100 1000</span>
+</pre></div>
+</div>
+<p>（注意每列之间的一个空格是通过使用 <a class="reference internal" href="../library/functions.html#print" title="print"><code class="xref py py-func docutils literal notranslate"><span class="pre">print()</span></code></a> 的方式添加的：它总是在其参数间添加空格。）</p>
+<p>字符串对象的 <a class="reference internal" href="../library/stdtypes.html#str.rjust" title="str.rjust"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.rjust()</span></code></a> 方法通过在左侧填充空格来对给定宽度的字段中的字符串进行右对齐。类似的方法还有 <a class="reference internal" href="../library/stdtypes.html#str.ljust" title="str.ljust"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.ljust()</span></code></a> 和 <a class="reference internal" href="../library/stdtypes.html#str.center" title="str.center"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.center()</span></code></a> 。这些方法不会写入任何东西，它们只是返回一个新的字符串，如果输入的字符串太长，它们不会截断字符串，而是原样返回；这虽然会弄乱你的列布局，但这通常比另一种方法好，后者会在显示值时可能不准确（如果你真的想截断，你可以添加一个切片操作，例如 <code class="docutils literal notranslate"><span class="pre">x.ljust(n)[:n]</span></code> 。）</p>
+<p>还有另外一个方法，<a class="reference internal" href="../library/stdtypes.html#str.zfill" title="str.zfill"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.zfill()</span></code></a> ，它会在数字字符串的左边填充零。它能识别正负号:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;12&#39;</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">&#39;00012&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;-3.14&#39;</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="go">&#39;-003.14&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;3.14159265359&#39;</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">&#39;3.14159265359&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="old-string-formatting">
+<h3>7.1.4. 旧的字符串格式化方法<a class="headerlink" href="#old-string-formatting" title="永久链接至标题">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">%</span></code> 操作符也可以用作字符串格式化。它将左边的参数解释为一个很像 <code class="xref c c-func docutils literal notranslate"><span class="pre">sprintf()</span></code> 风格 的格式字符串，应用到右边的参数，并返回一个由此格式化操作产生的字符串。例如:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">math</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The value of pi is approximately </span><span class="si">%5.3f</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="go">The value of pi is approximately 3.142.</span>
+</pre></div>
+</div>
+<p>可在 <a class="reference internal" href="../library/stdtypes.html#old-string-formatting"><span class="std std-ref">printf-style String Formatting</span></a> 部分找到更多信息。</p>
+</div>
+</div>
+<div class="section" id="reading-and-writing-files">
+<span id="tut-files"></span><h2>7.2. 读写文件<a class="headerlink" href="#reading-and-writing-files" title="永久链接至标题">¶</a></h2>
+<p id="index-0"><a class="reference internal" href="../library/functions.html#open" title="open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> 返回一个 <a class="reference internal" href="../glossary.html#term-file-object"><span class="xref std std-term">file object</span></a>，最常用的有两个参数： <code class="docutils literal notranslate"><span class="pre">open(filename,</span> <span class="pre">mode)</span></code>。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;workfile&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>第一个参数是包含文件名的字符串。第二个参数是另一个字符串，其中包含一些描述文件使用方式的字符。<em>mode</em> 可以是 <code class="docutils literal notranslate"><span class="pre">'r'</span></code> ，表示文件只能读取，<code class="docutils literal notranslate"><span class="pre">'w'</span></code> 表示只能写入（已存在的同名文件会被删除），还有 <code class="docutils literal notranslate"><span class="pre">'a'</span></code> 表示打开文件以追加内容；任何写入的数据会自动添加到文件的末尾。<code class="docutils literal notranslate"><span class="pre">'r+'</span></code> 表示打开文件进行读写。<em>mode</em> 参数是可选的；省略时默认为 <code class="docutils literal notranslate"><span class="pre">'r'</span></code>。</p>
+<p>通常文件是以 <em class="dfn">text mode</em> 打开的，这意味着从文件中读取或写入字符串时，都会以指定的编码方式进行编码。如果未指定编码格式，默认值与平台相关 (参见 <a class="reference internal" href="../library/functions.html#open" title="open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>)。在mode 中追加的 <code class="docutils literal notranslate"><span class="pre">'b'</span></code> 则以 <em class="dfn">binary mode</em> 打开文件：现在数据是以字节对象的形式进行读写的。这个模式应该用于所有不包含文本的文件。</p>
+<p>在文本模式下读取时，默认会把平台特定的行结束符 (Unix 上的 <code class="docutils literal notranslate"><span class="pre">\n</span></code>, Windows 上的 <code class="docutils literal notranslate"><span class="pre">\r\n</span></code>) 转换为 <code class="docutils literal notranslate"><span class="pre">\n</span></code>。在文本模式下写入时，默认会把出现的 <code class="docutils literal notranslate"><span class="pre">\n</span></code> 转换回平台特定的结束符。这样在幕后修改文件数据对文本文件来说没有问题，但是会破坏二进制数据例如 <code class="file docutils literal notranslate"><span class="pre">JPEG</span></code> 或 <code class="file docutils literal notranslate"><span class="pre">EXE</span></code> 文件中的数据。请一定要注意在读写此类文件时应使用二进制模式。</p>
+<p>在处理文件对象时，最好使用 <a class="reference internal" href="../reference/compound_stmts.html#with"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> 关键字。 优点是当子句体结束后文件会正确关闭，即使在某个时刻引发了异常。 而且使用 <code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code> 相比等效的 <a class="reference internal" href="../reference/compound_stmts.html#try"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">try</span></code></a>-<a class="reference internal" href="../reference/compound_stmts.html#finally"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">finally</span></code></a> 代码块要简短得多:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;workfile&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">read_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">closed</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>如果你没有使用 <a class="reference internal" href="../reference/compound_stmts.html#with"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> 关键字，那么你应该调用 <code class="docutils literal notranslate"><span class="pre">f.close()</span></code> 来关闭文件并立即释放它使用的所有系统资源。如果你没有显式地关闭文件，Python的垃圾回收器最终将销毁该对象并为你关闭打开的文件，但这个文件可能会保持打开状态一段时间。另外一个风险是不同的Python实现会在不同的时间进行清理。</p>
+<p>通过 <a class="reference internal" href="../reference/compound_stmts.html#with"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> 语句或者调用 <code class="docutils literal notranslate"><span class="pre">f.close()</span></code> 关闭文件对象后，尝试使用该文件对象将自动失败。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">ValueError</span>: <span class="n">I/O operation on closed file.</span>
+</pre></div>
+</div>
+<div class="section" id="methods-of-file-objects">
+<span id="tut-filemethods"></span><h3>7.2.1. 文件对象的方法<a class="headerlink" href="#methods-of-file-objects" title="永久链接至标题">¶</a></h3>
+<p>本节中剩下的例子将假定你已创建名为 <code class="docutils literal notranslate"><span class="pre">f</span></code> 的文件对象。</p>
+<p>要读取文件内容，请调用 <code class="docutils literal notranslate"><span class="pre">f.read(size)</span></code> ，它会读取一些数据并将其作为字符串（在文本模式下）或字节对象（在二进制模式下）返回。 <em>size</em> 是一个可选的数字参数。当 <em>size</em> 被省略或者为负的时候，将读取并返回文件的整个内容；如果文件的大小是机器内存的两倍，那么就可能出现问题。否则，最多读取并返回 <em>size</em> 字节的内容，如果已到达文件末尾，<code class="docutils literal notranslate"><span class="pre">f.read()</span></code> 将返回一个空字符串 (<code class="docutils literal notranslate"><span class="pre">''</span></code>)。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">&#39;This is the entire file.\n&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">f.readline()</span></code> 从文件中读取一行；换行符（<code class="docutils literal notranslate"><span class="pre">\n</span></code>）留在字符串的末尾，如果文件不以换行符结尾，则在文件的最后一行省略。这使得返回值明确无误；如果 <code class="docutils literal notranslate"><span class="pre">f.readline()</span></code> 返回一个空的字符串，则表示已经到达了文件末尾，而空行使用 <code class="docutils literal notranslate"><span class="pre">'\n'</span></code> 表示，该字符串只包含一个换行符。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="go">&#39;This is the first line of the file.\n&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="go">&#39;Second line of the file\n&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+<span class="go">&#39;&#39;</span>
+</pre></div>
+</div>
+<p>要从文件中读取行，你可以循环遍历文件对象。这是内存高效，快速的，并简化代码:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">This is the first line of the file.</span>
+<span class="go">Second line of the file</span>
+</pre></div>
+</div>
+<p>如果你想以列表的形式读取文件中的所有行，你也可以使用 <code class="docutils literal notranslate"><span class="pre">list(f)</span></code> 或 <code class="docutils literal notranslate"><span class="pre">f.readlines()</span></code>。</p>
+<p><code class="docutils literal notranslate"><span class="pre">f.write(string)</span></code> 会把 <em>string</em> 的内容写入到文件中，并返回写入的字符数。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;This is a test</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="go">15</span>
+</pre></div>
+</div>
+<p>在写入其他类型的对象之前，需要先把它们转化为字符串（在文本模式下）或者字节对象（在二进制模式下）:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;the answer&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># convert the tuple to string</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">18</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">f.tell()</span></code> 返回一个整数，给出文件对象在文件中的当前位置，表示为二进制模式下时从文件开始的字节数，以及文本模式下的不透明数字。</p>
+<p>要改变文件对象的位置，请使用 <code class="docutils literal notranslate"><span class="pre">f.seek(offset,</span> <span class="pre">from_what)</span></code> 。通过向参考点添加 <em>offset</em> 来计算位置；参考点由 <em>from_what</em> 参数指定。<em>from_what*值为0时，表示从文件开头开始，1 表示从当前位置，2 表示把文件末尾作为参考点。*from_what</em> 可以省略，默认为0，即使用文件开头作为参考点。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;workfile&#39;</span><span class="p">,</span> <span class="s1">&#39;rb+&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;0123456789abcdef&#39;</span><span class="p">)</span>
+<span class="go">16</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>      <span class="c1"># Go to the 6th byte in the file</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">b&#39;5&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Go to the 3rd byte before the end</span>
+<span class="go">13</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">b&#39;d&#39;</span>
+</pre></div>
+</div>
+<p>在文本文件（那些在模式字符串中没有 <code class="docutils literal notranslate"><span class="pre">b</span></code> 的打开的文件）中，只允许相对于文件开头搜索（使用 <code class="docutils literal notranslate"><span class="pre">seek(0,</span> <span class="pre">2)</span></code> 搜索到文件末尾是个例外）并且唯一有效的 <em>offset</em> 值是那些能从 <code class="docutils literal notranslate"><span class="pre">f.tell()</span></code> 中返回的或者是零。其他 <em>offset</em> 值都会产生未定义的行为。</p>
+<p>文件对象有一些额外的方法，例如 <code class="xref py py-meth docutils literal notranslate"><span class="pre">isatty()</span></code> 和 <code class="xref py py-meth docutils literal notranslate"><span class="pre">truncate()</span></code> ，它们使用频率较低；有关文件对象的完整指南请参阅库参考。</p>
+</div>
+<div class="section" id="saving-structured-data-with-json">
+<span id="tut-json"></span><h3>7.2.2. 使用 <a class="reference internal" href="../library/json.html#module-json" title="json: Encode and decode the JSON format."><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a> 保存结构化数据<a class="headerlink" href="#saving-structured-data-with-json" title="永久链接至标题">¶</a></h3>
+<p id="index-1">字符串可以很轻松地写入文件并从文件中读取出来。数字可能会费点劲，因为 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> 方法只能返回字符串，这些字符串必须传递给类似 <a class="reference internal" href="../library/functions.html#int" title="int"><code class="xref py py-func docutils literal notranslate"><span class="pre">int()</span></code></a> 的函数，它会接受类似 <code class="docutils literal notranslate"><span class="pre">'123'</span></code> 这样的字符串并返回其数字值 123。当你想保存诸如嵌套列表和字典这样更复杂的数据类型时，手动解析和序列化会变得复杂。</p>
+<p>Python 允许你使用称为  <a class="reference external" href="http://json.org">JSON (JavaScript Object Notation)</a> 的流行数据交换格式，而不是让用户不断的编写和调试代码以将复杂的数据类型保存到文件中。名为 <a class="reference internal" href="../library/json.html#module-json" title="json: Encode and decode the JSON format."><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a> 的标准模块可以采用 Python 数据层次结构，并将它们转化为字符串表示形式；这个过程称为 <em class="dfn">serializing</em> 。从字符串表示中重建数据称为 <em class="dfn">deserializing</em> 。在序列化和反序列化之间，表示对象的字符串可能已存储在文件或数据中，或通过网络连接发送到某个远程机器。</p>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">JSON格式通常被现代应用程序用于允许数据交换。许多程序员已经熟悉它，这使其成为互操作性的良好选择。</p>
+</div>
+<p>如果你有一个对象 <code class="docutils literal notranslate"><span class="pre">x</span></code> ，你可以用一行简单的代码来查看它的 JSON 字符串表示:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">])</span>
+<span class="go">&#39;[1, &quot;simple&quot;, &quot;list&quot;]&#39;</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../library/json.html#json.dumps" title="json.dumps"><code class="xref py py-func docutils literal notranslate"><span class="pre">dumps()</span></code></a> 函数的另一个变体叫做 <a class="reference internal" href="../library/json.html#json.dump" title="json.dump"><code class="xref py py-func docutils literal notranslate"><span class="pre">dump()</span></code></a> ，它只是将对象序列化为 <a class="reference internal" href="../glossary.html#term-text-file"><span class="xref std std-term">text file</span></a> 。因此，如果 <code class="docutils literal notranslate"><span class="pre">f</span></code> 是一个 <a class="reference internal" href="../glossary.html#term-text-file"><span class="xref std std-term">text file</span></a> 对象，我们可以这样做:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>要再次解码对象，如果 <code class="docutils literal notranslate"><span class="pre">f</span></code> 是一个打开的以供阅读的 <a class="reference internal" href="../glossary.html#term-text-file"><span class="xref std std-term">text file</span></a> 对象:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这种简单的序列化技术可以处理列表和字典，但是在JSON中序列化任意类的实例需要额外的努力。 <a class="reference internal" href="../library/json.html#module-json" title="json: Encode and decode the JSON format."><code class="xref py py-mod docutils literal notranslate"><span class="pre">json</span></code></a> 模块的参考包含对此的解释。</p>
+<div class="admonition seealso">
+<p class="first admonition-title">参见</p>
+<p><a class="reference internal" href="../library/pickle.html#module-pickle" title="pickle: Convert Python objects to streams of bytes and back."><code class="xref py py-mod docutils literal notranslate"><span class="pre">pickle</span></code></a> - 封存模块</p>
+<p class="last">与 <a class="reference internal" href="#tut-json"><span class="std std-ref">JSON</span></a> 不同，<em>pickle</em> 是一种允许对任意复杂 Python 对象进行序列化的协议。因此，它为 Python 所特有，不能用于与其他语言编写的应用程序通信。默认情况下它也是不安全的：如果数据是由熟练的攻击者精心设计的，则反序列化来自不受信任来源的 pickle 数据可以执行任意代码。</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">7. 输入输出</a><ul>
+<li><a class="reference internal" href="#fancier-output-formatting">7.1. 更漂亮的输出格式</a><ul>
+<li><a class="reference internal" href="#formatted-string-literals">7.1.1. 格式化字符串文字</a></li>
+<li><a class="reference internal" href="#the-string-format-method">7.1.2. 字符串的 format() 方法</a></li>
+<li><a class="reference internal" href="#manual-string-formatting">7.1.3. 手动格式化字符串</a></li>
+<li><a class="reference internal" href="#old-string-formatting">7.1.4. 旧的字符串格式化方法</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reading-and-writing-files">7.2. 读写文件</a><ul>
+<li><a class="reference internal" href="#methods-of-file-objects">7.2.1. 文件对象的方法</a></li>
+<li><a class="reference internal" href="#saving-structured-data-with-json">7.2.2. 使用 <code class="docutils literal notranslate"><span class="pre">json</span></code> 保存结构化数据</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="modules.html"
+                        title="上一章">6. 模块</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="errors.html"
+                        title="下一章">8. 错误和异常</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">提交 Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.7/Doc/tutorial/inputoutput.rst"
+            rel="nofollow">显示源代码
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="errors.html" title="8. 错误和异常"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="6. 模块"
+             >上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 教程</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">版权所有</a> 2001-2019, Python Software Foundation.
+    <br />
+    Python 软件基金会是一个非盈利组织。
+    <a href="https://www.python.org/psf/donations/">请捐助。</a>
+    <br />
+    最后更新于 3月 26, 2019.
+    <a href="../bugs.html">发现了问题</a>？
+    <br />
+    使用<a href="http://sphinx.pocoo.org/">Sphinx</a>1.8.4 创建。
+    </div>
+
+  </body>
+</html>

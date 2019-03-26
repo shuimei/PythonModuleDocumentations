@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>数据类型 &#8212; Python 3.7.3 文档</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="在 Python 3.7.3 文档 中搜索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="关于这些文档" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="copyright" title="版权所有" href="../copyright.html" />
+    <link rel="next" title="datetime --- Basic date and time types" href="datetime.html" />
+    <link rel="prev" title="codecs --- Codec registry and base classes" href="codecs.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/datatypes.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="datetime.html" title="datetime --- Basic date and time types"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="codecs.html" title="codecs --- Codec registry and base classes"
+             accesskey="P">上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Python 标准库</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-types">
+<span id="datatypes"></span><h1>数据类型<a class="headerlink" href="#data-types" title="永久链接至标题">¶</a></h1>
+<p>本章节描述的模块提供了一系列专门的数据类型例如日期与实践，固定类型的数组，堆队列，同步队列与集合。</p>
+<p>Python 同样提供一些内置的数据类型，特别的， <a class="reference internal" href="stdtypes.html#dict" title="dict"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> ， <a class="reference internal" href="stdtypes.html#list" title="list"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> ， <a class="reference internal" href="stdtypes.html#set" title="set"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> 与 <code class="xref py py-class docutils literal notranslate"><span class="pre">fromzenset</span></code> 以及 <a class="reference internal" href="stdtypes.html#tuple" title="tuple"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> 。 <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> 类通常指 Unicode 字符串，并且 <a class="reference internal" href="stdtypes.html#bytes" title="bytes"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> 通常指二进制数据。</p>
+<p>本章记录以下模块：</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="datetime.html"><code class="docutils literal notranslate"><span class="pre">datetime</span></code> --- Basic date and time types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#available-types">Available Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#timedelta-objects"><code class="docutils literal notranslate"><span class="pre">timedelta</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#date-objects"><code class="docutils literal notranslate"><span class="pre">date</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#datetime-objects"><code class="docutils literal notranslate"><span class="pre">datetime</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#time-objects"><code class="docutils literal notranslate"><span class="pre">time</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#tzinfo-objects"><code class="docutils literal notranslate"><span class="pre">tzinfo</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#timezone-objects"><code class="docutils literal notranslate"><span class="pre">timezone</span></code> Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html#strftime-and-strptime-behavior"><code class="docutils literal notranslate"><span class="pre">strftime()</span></code> and <code class="docutils literal notranslate"><span class="pre">strptime()</span></code> Behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="calendar.html"><code class="docutils literal notranslate"><span class="pre">calendar</span></code> --- General calendar-related functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html"><code class="docutils literal notranslate"><span class="pre">collections</span></code> — 容器数据类型</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#chainmap-objects"><code class="docutils literal notranslate"><span class="pre">ChainMap</span></code> 对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="collections.html#chainmap-examples-and-recipes"><code class="docutils literal notranslate"><span class="pre">ChainMap</span></code> 例子和方法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#counter-objects"><code class="docutils literal notranslate"><span class="pre">Counter</span></code> 对象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#deque-objects"><code class="docutils literal notranslate"><span class="pre">deque</span></code> 对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="collections.html#deque-recipes"><code class="docutils literal notranslate"><span class="pre">deque</span></code> 用法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#defaultdict-objects"><code class="docutils literal notranslate"><span class="pre">defaultdict</span></code> 对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="collections.html#defaultdict-examples"><code class="docutils literal notranslate"><span class="pre">defaultdict</span></code> 例子</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#namedtuple-factory-function-for-tuples-with-named-fields"><code class="docutils literal notranslate"><span class="pre">namedtuple()</span></code> 命名元组的工厂函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#ordereddict-objects"><code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code> 对象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="collections.html#ordereddict-examples-and-recipes"><code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code> 例子和用法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#userdict-objects"><code class="docutils literal notranslate"><span class="pre">UserDict</span></code> 对象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#userlist-objects"><code class="docutils literal notranslate"><span class="pre">UserList</span></code> 对象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html#userstring-objects"><code class="docutils literal notranslate"><span class="pre">UserString</span></code> 对象</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="collections.abc.html"><code class="docutils literal notranslate"><span class="pre">collections.abc</span></code> --- 容器的抽象基类</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="collections.abc.html#collections-abstract-base-classes">Collections Abstract Base Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heapq.html"><code class="docutils literal notranslate"><span class="pre">heapq</span></code> --- Heap queue algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heapq.html#basic-examples">Basic Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heapq.html#priority-queue-implementation-notes">Priority Queue Implementation Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heapq.html#theory">Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bisect.html"><code class="docutils literal notranslate"><span class="pre">bisect</span></code> --- Array bisection algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bisect.html#searching-sorted-lists">Searching Sorted Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bisect.html#other-examples">Other Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> --- Efficient arrays of numeric values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="weakref.html"><code class="docutils literal notranslate"><span class="pre">weakref</span></code> --- 弱引用</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="weakref.html#weak-reference-objects">Weak Reference Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weakref.html#example">示例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weakref.html#finalizer-objects">Finalizer Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weakref.html#comparing-finalizers-with-del-methods">Comparing finalizers with <code class="docutils literal notranslate"><span class="pre">__del__()</span></code> methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="types.html"><code class="docutils literal notranslate"><span class="pre">types</span></code> --- Dynamic type creation and names for built-in types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="types.html#dynamic-type-creation">Dynamic Type Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#standard-interpreter-types">Standard Interpreter Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#additional-utility-classes-and-functions">Additional Utility Classes and Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#coroutine-utility-functions">Coroutine Utility Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="copy.html"><code class="docutils literal notranslate"><span class="pre">copy</span></code> --- Shallow and deep copy operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pprint.html"><code class="docutils literal notranslate"><span class="pre">pprint</span></code> --- 数据美化输出</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pprint.html#prettyprinter-objects">PrettyPrinter Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pprint.html#example">示例</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reprlib.html"><code class="docutils literal notranslate"><span class="pre">reprlib</span></code> --- Alternate <code class="docutils literal notranslate"><span class="pre">repr()</span></code> implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reprlib.html#repr-objects">Repr Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reprlib.html#subclassing-repr-objects">Subclassing Repr Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enum.html"><code class="docutils literal notranslate"><span class="pre">enum</span></code> --- Support for enumerations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#module-contents">模块内容</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#creating-an-enum">Creating an Enum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#programmatic-access-to-enumeration-members-and-their-attributes">Programmatic access to enumeration members and their attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#duplicating-enum-members-and-values">Duplicating enum members and values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#ensuring-unique-enumeration-values">Ensuring unique enumeration values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#using-automatic-values">Using automatic values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#iteration">Iteration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#comparisons">比较</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#allowed-members-and-attributes-of-enumerations">Allowed members and attributes of enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#restricted-enum-subclassing">Restricted Enum subclassing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#pickling">Pickling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#functional-api">Functional API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#derived-enumerations">Derived Enumerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#intenum">IntEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#intflag">IntFlag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#flag">标志</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#others">Others</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#interesting-examples">Interesting examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#omitting-values">Omitting values</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#using-auto">Using <code class="docutils literal notranslate"><span class="pre">auto</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#using-object">Using <code class="docutils literal notranslate"><span class="pre">object</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#using-a-descriptive-string">Using a descriptive string</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#using-a-custom-new">Using a custom <code class="docutils literal notranslate"><span class="pre">__new__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#orderedenum">OrderedEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#duplicatefreeenum">DuplicateFreeEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#planet">Planet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#timeperiod">TimePeriod</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html#how-are-enums-different">How are Enums different?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#enum-classes">Enum Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#enum-members-aka-instances">Enum Members (aka instances)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enum.html#finer-points">Finer Points</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#supported-dunder-names">Supported <code class="docutils literal notranslate"><span class="pre">__dunder__</span></code> names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#supported-sunder-names">Supported <code class="docutils literal notranslate"><span class="pre">_sunder_</span></code> names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#enum-member-type"><code class="docutils literal notranslate"><span class="pre">Enum</span></code> member type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#boolean-value-of-enum-classes-and-members">Boolean value of <code class="docutils literal notranslate"><span class="pre">Enum</span></code> classes and members</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#enum-classes-with-methods"><code class="docutils literal notranslate"><span class="pre">Enum</span></code> classes with methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="enum.html#combining-members-of-flag">Combining members of <code class="docutils literal notranslate"><span class="pre">Flag</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="codecs.html"
+                        title="上一章"><code class="docutils literal notranslate"><span class="pre">codecs</span></code> --- Codec registry and base classes</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="datetime.html"
+                        title="下一章"><code class="docutils literal notranslate"><span class="pre">datetime</span></code> --- Basic date and time types</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">提交 Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.7/Doc/library/datatypes.rst"
+            rel="nofollow">显示源代码
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="datetime.html" title="datetime --- Basic date and time types"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="codecs.html" title="codecs --- Codec registry and base classes"
+             >上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 标准库</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">版权所有</a> 2001-2019, Python Software Foundation.
+    <br />
+    Python 软件基金会是一个非盈利组织。
+    <a href="https://www.python.org/psf/donations/">请捐助。</a>
+    <br />
+    最后更新于 3月 26, 2019.
+    <a href="../bugs.html">发现了问题</a>？
+    <br />
+    使用<a href="http://sphinx.pocoo.org/">Sphinx</a>1.8.4 创建。
+    </div>
+
+  </body>
+</html>

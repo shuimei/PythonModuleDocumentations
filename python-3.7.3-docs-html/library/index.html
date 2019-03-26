@@ -1,0 +1,569 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Python 标准库 &#8212; Python 3.7.3 文档</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="在 Python 3.7.3 文档 中搜索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="关于这些文档" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="copyright" title="版权所有" href="../copyright.html" />
+    <link rel="next" title="概述" href="intro.html" />
+    <link rel="prev" title="10. 完整的语法规范" href="../reference/grammar.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/library/index.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="概述"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="../reference/grammar.html" title="10. 完整的语法规范"
+             accesskey="P">上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-python-standard-library">
+<span id="library-index"></span><h1>Python 标准库<a class="headerlink" href="#the-python-standard-library" title="永久链接至标题">¶</a></h1>
+<p><a class="reference internal" href="../reference/index.html#reference-index"><span class="std std-ref">Python 语言参考</span></a> 描述了 Python 语言的具体语法和语义，这份库参考则介绍了与 Python 一同发行的标准库。它还描述了通常包含在 Python 发行版中的一些可选组件。</p>
+<p>Python 标准库非常庞大，所提供的组件涉及范围十分广泛，正如以下内容目录所显示的。这个库包含了多个内置模块 (以 C 编写)，Python 程序员必须依靠它们来实现系统级功能，例如文件 I/O，此外还有大量以 Python 编写的模块，提供了日常编程中许多问题的标准解决方案。其中有些模块经过专门设计，通过将特定平台功能抽象化为平台中立的 API 来鼓励和加强 Python 程序的可移植性。</p>
+<p>Windows 版本的 Python 安装程序通常包含整个标准库，往往还包含许多额外组件。对于类 Unix 操作系统，Python 通常会分成一系列的软件包，因此可能能要使用操作系统所提供的包管理工具来获取部分或全部可选组件。</p>
+<p>在这个标准库以外还存在成千上万并且不断增加的其他组件 (从单独的程序、模块、软件包直到完整的应用开发框架)，访问 <a class="reference external" href="https://pypi.org">Python 包索引</a> 即可获取这些第三方包。</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">概述</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#notes-on-availability">可用性注释</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functions.html">内置函数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">内置常量</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants-added-by-the-site-module">由 <code class="docutils literal notranslate"><span class="pre">site</span></code> 模块添加的常量</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stdtypes.html">内置类型</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#truth-value-testing">逻辑值检测</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#boolean-operations-and-or-not">布尔运算 --- <code class="xref std std-keyword docutils literal notranslate"><span class="pre">and</span></code>, <code class="xref std std-keyword docutils literal notranslate"><span class="pre">or</span></code>, <code class="xref std std-keyword docutils literal notranslate"><span class="pre">not</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#comparisons">比较</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#numeric-types-int-float-complex">数字类型 --- <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">complex</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#iterator-types">迭代器类型</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#sequence-types-list-tuple-range">序列类型 --- <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="docutils literal notranslate"><span class="pre">range</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#text-sequence-type-str">Text Sequence Type --- <code class="docutils literal notranslate"><span class="pre">str</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#binary-sequence-types-bytes-bytearray-memoryview">Binary Sequence Types --- <code class="docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>, <code class="docutils literal notranslate"><span class="pre">memoryview</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#set-types-set-frozenset">Set Types --- <code class="docutils literal notranslate"><span class="pre">set</span></code>, <code class="docutils literal notranslate"><span class="pre">frozenset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#mapping-types-dict">Mapping Types --- <code class="docutils literal notranslate"><span class="pre">dict</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#context-manager-types">Context Manager Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#other-built-in-types">Other Built-in Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stdtypes.html#special-attributes">Special Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Built-in Exceptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#base-classes">Base classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#concrete-exceptions">Concrete exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#warnings">Warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exceptions.html#exception-hierarchy">Exception hierarchy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="text.html">文本处理服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="string.html"><code class="docutils literal notranslate"><span class="pre">string</span></code> --- 常见的字符串操作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="re.html"><code class="docutils literal notranslate"><span class="pre">re</span></code> — 正则表达式操作</a></li>
+<li class="toctree-l2"><a class="reference internal" href="difflib.html"><code class="docutils literal notranslate"><span class="pre">difflib</span></code> --- Helpers for computing deltas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="textwrap.html"><code class="docutils literal notranslate"><span class="pre">textwrap</span></code> --- Text wrapping and filling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unicodedata.html"><code class="docutils literal notranslate"><span class="pre">unicodedata</span></code> --- Unicode Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stringprep.html"><code class="docutils literal notranslate"><span class="pre">stringprep</span></code> --- Internet String Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readline.html"><code class="docutils literal notranslate"><span class="pre">readline</span></code> --- GNU readline interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rlcompleter.html"><code class="docutils literal notranslate"><span class="pre">rlcompleter</span></code> --- Completion function for GNU readline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="binary.html">二进制数据服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="struct.html"><code class="docutils literal notranslate"><span class="pre">struct</span></code> --- Interpret bytes as packed binary data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codecs.html"><code class="docutils literal notranslate"><span class="pre">codecs</span></code> --- Codec registry and base classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datatypes.html">数据类型</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="datetime.html"><code class="docutils literal notranslate"><span class="pre">datetime</span></code> --- Basic date and time types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calendar.html"><code class="docutils literal notranslate"><span class="pre">calendar</span></code> --- General calendar-related functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.html"><code class="docutils literal notranslate"><span class="pre">collections</span></code> — 容器数据类型</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collections.abc.html"><code class="docutils literal notranslate"><span class="pre">collections.abc</span></code> --- 容器的抽象基类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heapq.html"><code class="docutils literal notranslate"><span class="pre">heapq</span></code> --- Heap queue algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bisect.html"><code class="docutils literal notranslate"><span class="pre">bisect</span></code> --- Array bisection algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html"><code class="docutils literal notranslate"><span class="pre">array</span></code> --- Efficient arrays of numeric values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weakref.html"><code class="docutils literal notranslate"><span class="pre">weakref</span></code> --- 弱引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html"><code class="docutils literal notranslate"><span class="pre">types</span></code> --- Dynamic type creation and names for built-in types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copy.html"><code class="docutils literal notranslate"><span class="pre">copy</span></code> --- Shallow and deep copy operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pprint.html"><code class="docutils literal notranslate"><span class="pre">pprint</span></code> --- 数据美化输出</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reprlib.html"><code class="docutils literal notranslate"><span class="pre">reprlib</span></code> --- Alternate <code class="docutils literal notranslate"><span class="pre">repr()</span></code> implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enum.html"><code class="docutils literal notranslate"><span class="pre">enum</span></code> --- Support for enumerations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numeric.html">数字和数学模块</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numbers.html"><code class="docutils literal notranslate"><span class="pre">numbers</span></code> --- Numeric abstract base classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="math.html"><code class="docutils literal notranslate"><span class="pre">math</span></code> --- Mathematical functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmath.html"><code class="docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="decimal.html"><code class="docutils literal notranslate"><span class="pre">decimal</span></code> --- 十进制定点和浮点运算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fractions.html"><code class="docutils literal notranslate"><span class="pre">fractions</span></code> --- Rational numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html"><code class="docutils literal notranslate"><span class="pre">random</span></code> —— 生成伪随机数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html"><code class="docutils literal notranslate"><span class="pre">statistics</span></code> --- Mathematical statistics functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="functional.html">函数式编程模块</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="itertools.html"><code class="docutils literal notranslate"><span class="pre">itertools</span></code> --- 为高效循环而创建迭代器的函数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functools.html"><code class="docutils literal notranslate"><span class="pre">functools</span></code> --- Higher-order functions and operations on callable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operator.html"><code class="docutils literal notranslate"><span class="pre">operator</span></code> --- Standard operators as functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="filesys.html">文件和目录访问</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pathlib.html"><code class="docutils literal notranslate"><span class="pre">pathlib</span></code> --- Object-oriented filesystem paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="os.path.html"><code class="docutils literal notranslate"><span class="pre">os.path</span></code> --- Common pathname manipulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fileinput.html"><code class="docutils literal notranslate"><span class="pre">fileinput</span></code> --- Iterate over lines from multiple input streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stat.html"><code class="docutils literal notranslate"><span class="pre">stat</span></code> --- Interpreting <code class="docutils literal notranslate"><span class="pre">stat()</span></code> results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filecmp.html"><code class="docutils literal notranslate"><span class="pre">filecmp</span></code> --- File and Directory Comparisons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tempfile.html"><code class="docutils literal notranslate"><span class="pre">tempfile</span></code> --- Generate temporary files and directories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glob.html"><code class="docutils literal notranslate"><span class="pre">glob</span></code> --- Unix style pathname pattern expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fnmatch.html"><code class="docutils literal notranslate"><span class="pre">fnmatch</span></code> --- Unix filename pattern matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linecache.html"><code class="docutils literal notranslate"><span class="pre">linecache</span></code> --- Random access to text lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shutil.html"><code class="docutils literal notranslate"><span class="pre">shutil</span></code> --- High-level file operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macpath.html"><code class="docutils literal notranslate"><span class="pre">macpath</span></code> —— Mac OS 9 路径操作函数</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="persistence.html">数据持久化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pickle.html"><code class="docutils literal notranslate"><span class="pre">pickle</span></code> --- Python object serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copyreg.html"><code class="docutils literal notranslate"><span class="pre">copyreg</span></code> --- Register <code class="docutils literal notranslate"><span class="pre">pickle</span></code> support functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shelve.html"><code class="docutils literal notranslate"><span class="pre">shelve</span></code> --- Python object persistence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="marshal.html"><code class="docutils literal notranslate"><span class="pre">marshal</span></code> --- Internal Python object serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbm.html"><code class="docutils literal notranslate"><span class="pre">dbm</span></code> --- Interfaces to Unix &quot;databases&quot;</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite3.html"><code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> --- DB-API 2.0 interface for SQLite databases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="archiving.html">数据压缩和存档</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zlib.html"><code class="docutils literal notranslate"><span class="pre">zlib</span></code> --- Compression compatible with <strong class="program">gzip</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gzip.html"><code class="docutils literal notranslate"><span class="pre">gzip</span></code> --- Support for <strong class="program">gzip</strong> files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bz2.html"><code class="docutils literal notranslate"><span class="pre">bz2</span></code> --- Support for <strong class="program">bzip2</strong> compression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lzma.html"><code class="docutils literal notranslate"><span class="pre">lzma</span></code> --- Compression using the LZMA algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zipfile.html"><code class="docutils literal notranslate"><span class="pre">zipfile</span></code> --- Work with ZIP archives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tarfile.html"><code class="docutils literal notranslate"><span class="pre">tarfile</span></code> --- Read and write tar archive files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fileformats.html">文件格式</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="csv.html"><code class="docutils literal notranslate"><span class="pre">csv</span></code> --- CSV File Reading and Writing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configparser.html"><code class="docutils literal notranslate"><span class="pre">configparser</span></code> --- Configuration file parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="netrc.html"><code class="docutils literal notranslate"><span class="pre">netrc</span></code> --- netrc file processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xdrlib.html"><code class="docutils literal notranslate"><span class="pre">xdrlib</span></code> --- Encode and decode XDR data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plistlib.html"><code class="docutils literal notranslate"><span class="pre">plistlib</span></code> --- Generate and parse Mac OS X <code class="docutils literal notranslate"><span class="pre">.plist</span></code> files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="crypto.html">加密服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hashlib.html"><code class="docutils literal notranslate"><span class="pre">hashlib</span></code> --- 安全哈希与消息摘要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hmac.html"><code class="docutils literal notranslate"><span class="pre">hmac</span></code> --- 基于密钥的消息验证</a></li>
+<li class="toctree-l2"><a class="reference internal" href="secrets.html"><code class="docutils literal notranslate"><span class="pre">secrets</span></code> --- Generate secure random numbers for managing secrets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="allos.html">通用操作系统服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="os.html"><code class="docutils literal notranslate"><span class="pre">os</span></code> --- 操作系统接口模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html"><code class="docutils literal notranslate"><span class="pre">io</span></code> --- Core tools for working with streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="time.html"><code class="docutils literal notranslate"><span class="pre">time</span></code> --- 时间的访问和转换</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argparse.html"><code class="docutils literal notranslate"><span class="pre">argparse</span></code> --- 命令行选项、参数和子命令解析器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getopt.html"><code class="docutils literal notranslate"><span class="pre">getopt</span></code> --- C-style parser for command line options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html"><code class="docutils literal notranslate"><span class="pre">logging</span></code> --- Logging facility for Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.config.html"><code class="docutils literal notranslate"><span class="pre">logging.config</span></code> --- 日志记录配置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.handlers.html"><code class="docutils literal notranslate"><span class="pre">logging.handlers</span></code> --- Logging handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getpass.html"><code class="docutils literal notranslate"><span class="pre">getpass</span></code> --- 便携式密码输入工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curses.html"><code class="docutils literal notranslate"><span class="pre">curses</span></code> --- Terminal handling for character-cell displays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curses.html#module-curses.textpad"><code class="docutils literal notranslate"><span class="pre">curses.textpad</span></code> --- Text input widget for curses programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curses.ascii.html"><code class="docutils literal notranslate"><span class="pre">curses.ascii</span></code> --- Utilities for ASCII characters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curses.panel.html"><code class="docutils literal notranslate"><span class="pre">curses.panel</span></code> --- A panel stack extension for curses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="platform.html"><code class="docutils literal notranslate"><span class="pre">platform</span></code> ---  Access to underlying platform's identifying data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errno.html"><code class="docutils literal notranslate"><span class="pre">errno</span></code> --- Standard errno system symbols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ctypes.html"><code class="docutils literal notranslate"><span class="pre">ctypes</span></code> --- Python 的外部函数库</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concurrency.html">并发执行</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="threading.html"><code class="docutils literal notranslate"><span class="pre">threading</span></code> --- 基于线程的并发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html"><code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> --- Process-based parallelism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.html"><code class="docutils literal notranslate"><span class="pre">concurrent</span></code> 包</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html"><code class="docutils literal notranslate"><span class="pre">concurrent.futures</span></code> --- Launching parallel tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html"><code class="docutils literal notranslate"><span class="pre">subprocess</span></code> --- Subprocess management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sched.html"><code class="docutils literal notranslate"><span class="pre">sched</span></code> —— 事件调度器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html"><code class="docutils literal notranslate"><span class="pre">queue</span></code> --- A synchronized queue class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_thread.html"><code class="docutils literal notranslate"><span class="pre">_thread</span></code> —— 底层多线程 API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_dummy_thread.html"><code class="docutils literal notranslate"><span class="pre">_dummy_thread</span></code> —— <code class="docutils literal notranslate"><span class="pre">_thread</span></code> 的替代模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dummy_threading.html"><code class="docutils literal notranslate"><span class="pre">dummy_threading</span></code> --  可直接替代 <code class="docutils literal notranslate"><span class="pre">threading</span></code> 模块。</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contextvars.html"><code class="docutils literal notranslate"><span class="pre">contextvars</span></code> --- Context Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#context-variables">Context Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#manual-context-management">Manual Context Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#asyncio-support">asyncio support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ipc.html">网络和进程间通信</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="asyncio.html"><code class="docutils literal notranslate"><span class="pre">asyncio</span></code> --- 异步 I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="socket.html"><code class="docutils literal notranslate"><span class="pre">socket</span></code> --- Low-level networking interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ssl.html"><code class="docutils literal notranslate"><span class="pre">ssl</span></code> --- TLS/SSL wrapper for socket objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="select.html"><code class="docutils literal notranslate"><span class="pre">select</span></code> --- Waiting for I/O completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selectors.html"><code class="docutils literal notranslate"><span class="pre">selectors</span></code> --- 高级 I/O 复用库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asyncore.html"><code class="docutils literal notranslate"><span class="pre">asyncio</span></code> --- 异步套接字处理器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asynchat.html"><code class="docutils literal notranslate"><span class="pre">asynchat</span></code> --- Asynchronous socket command/response handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signal.html"><code class="docutils literal notranslate"><span class="pre">signal</span></code> --- Set handlers for asynchronous events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mmap.html"><code class="docutils literal notranslate"><span class="pre">mmap</span></code> --- Memory-mapped file support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="netdata.html">互联网数据处理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="email.html"><code class="docutils literal notranslate"><span class="pre">email</span></code> --- An email and MIME handling package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="json.html"><code class="docutils literal notranslate"><span class="pre">json</span></code> --- JSON 编码和解码器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailcap.html"><code class="docutils literal notranslate"><span class="pre">mailcap</span></code> --- Mailcap file handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mailbox.html"><code class="docutils literal notranslate"><span class="pre">mailbox</span></code> --- Manipulate mailboxes in various formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mimetypes.html"><code class="docutils literal notranslate"><span class="pre">mimetypes</span></code> --- Map filenames to MIME types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base64.html"><code class="docutils literal notranslate"><span class="pre">base64</span></code> --- Base16, Base32, Base64, Base85 数据编码</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binhex.html"><code class="docutils literal notranslate"><span class="pre">binhex</span></code> --- Encode and decode binhex4 files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binascii.html"><code class="docutils literal notranslate"><span class="pre">binascii</span></code> --- Convert between binary and ASCII</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quopri.html"><code class="docutils literal notranslate"><span class="pre">quopri</span></code> --- Encode and decode MIME quoted-printable data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uu.html"><code class="docutils literal notranslate"><span class="pre">uu</span></code> --- Encode and decode uuencode files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="markup.html">结构化标记处理工具</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="html.html"><code class="docutils literal notranslate"><span class="pre">html</span></code> —— 超文本标记语言支持</a></li>
+<li class="toctree-l2"><a class="reference internal" href="html.parser.html"><code class="docutils literal notranslate"><span class="pre">html.parser</span></code> --- Simple HTML and XHTML parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="html.entities.html"><code class="docutils literal notranslate"><span class="pre">html.entities</span></code> —— HTML 一般实体的定义</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.html">XML Processing Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.etree.elementtree.html"><code class="docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code> --- The ElementTree XML API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.dom.html"><code class="docutils literal notranslate"><span class="pre">xml.dom</span></code> --- The Document Object Model API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.dom.minidom.html"><code class="docutils literal notranslate"><span class="pre">xml.dom.minidom</span></code> --- Minimal DOM implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.dom.pulldom.html"><code class="docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- Support for building partial DOM trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.sax.html"><code class="docutils literal notranslate"><span class="pre">xml.sax</span></code> --- Support for SAX2 parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.sax.handler.html"><code class="docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.sax.utils.html"><code class="docutils literal notranslate"><span class="pre">xml.sax.saxutils</span></code> --- SAX Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml.sax.reader.html"><code class="docutils literal notranslate"><span class="pre">xml.sax.xmlreader</span></code> --- Interface for XML parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyexpat.html"><code class="docutils literal notranslate"><span class="pre">xml.parsers.expat</span></code> --- Fast XML parsing using Expat</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="internet.html">互联网协议和支持</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webbrowser.html"><code class="docutils literal notranslate"><span class="pre">webbrowser</span></code> --- Convenient Web-browser controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgi.html"><code class="docutils literal notranslate"><span class="pre">cgi</span></code> --- Common Gateway Interface support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cgitb.html"><code class="docutils literal notranslate"><span class="pre">cgitb</span></code> --- Traceback manager for CGI scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wsgiref.html"><code class="docutils literal notranslate"><span class="pre">wsgiref</span></code> --- WSGI Utilities and Reference Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.html"><code class="docutils literal notranslate"><span class="pre">urllib</span></code> --- URL 处理模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.request.html"><code class="docutils literal notranslate"><span class="pre">urllib.request</span></code> --- 用于打开 URL 的可扩展库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.request.html#module-urllib.response"><code class="docutils literal notranslate"><span class="pre">urllib.response</span></code> --- Response classes used by urllib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.parse.html"><code class="docutils literal notranslate"><span class="pre">urllib.parse</span></code> --- Parse URLs into components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.error.html"><code class="docutils literal notranslate"><span class="pre">urllib.error</span></code> --- Exception classes raised by urllib.request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="urllib.robotparser.html"><code class="docutils literal notranslate"><span class="pre">urllib.robotparser</span></code> ---  Parser for robots.txt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http.html"><code class="docutils literal notranslate"><span class="pre">http</span></code> --- HTTP 模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http.client.html"><cite>http.client</cite> --- HTTP协议客户端</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ftplib.html"><code class="docutils literal notranslate"><span class="pre">ftplib</span></code> --- FTP protocol client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poplib.html"><code class="docutils literal notranslate"><span class="pre">poplib</span></code> --- POP3 protocol client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imaplib.html"><code class="docutils literal notranslate"><span class="pre">imaplib</span></code> --- IMAP4 protocol client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nntplib.html"><code class="docutils literal notranslate"><span class="pre">nntplib</span></code> --- NNTP protocol client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smtplib.html"><code class="docutils literal notranslate"><span class="pre">smtplib</span></code> --- SMTP protocol client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smtpd.html"><code class="docutils literal notranslate"><span class="pre">smtpd</span></code> --- SMTP Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="telnetlib.html"><code class="docutils literal notranslate"><span class="pre">telnetlib</span></code> --- Telnet client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uuid.html"><code class="docutils literal notranslate"><span class="pre">uuid</span></code> --- UUID objects according to <strong>RFC 4122</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="socketserver.html"><code class="docutils literal notranslate"><span class="pre">socketserver</span></code> --- A framework for network servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http.server.html"><code class="docutils literal notranslate"><span class="pre">http.server</span></code> --- HTTP servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http.cookies.html"><code class="docutils literal notranslate"><span class="pre">http.cookies</span></code> --- HTTP state management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="http.cookiejar.html"><code class="docutils literal notranslate"><span class="pre">http.cookiejar</span></code> --- Cookie handling for HTTP clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xmlrpc.html"><code class="docutils literal notranslate"><span class="pre">xmlrpc</span></code> --- XMLRPC 服务端与客户端模块</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xmlrpc.client.html"><code class="docutils literal notranslate"><span class="pre">xmlrpc.client</span></code> --- XML-RPC client access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xmlrpc.server.html"><code class="docutils literal notranslate"><span class="pre">xmlrpc.server</span></code> --- Basic XML-RPC servers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipaddress.html"><code class="docutils literal notranslate"><span class="pre">ipaddress</span></code> --- IPv4/IPv6 manipulation library</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mm.html">多媒体服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="audioop.html"><code class="docutils literal notranslate"><span class="pre">audioop</span></code> --- Manipulate raw audio data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aifc.html"><code class="docutils literal notranslate"><span class="pre">aifc</span></code> --- Read and write AIFF and AIFC files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sunau.html"><code class="docutils literal notranslate"><span class="pre">sunau</span></code> --- 读写 Sun AU 文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wave.html"><code class="docutils literal notranslate"><span class="pre">wave</span></code> --- 读写WAV格式文件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chunk.html"><code class="docutils literal notranslate"><span class="pre">chunk</span></code> --- Read IFF chunked data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colorsys.html"><code class="docutils literal notranslate"><span class="pre">colorsys</span></code> --- Conversions between color systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imghdr.html"><code class="docutils literal notranslate"><span class="pre">imghdr</span></code> --- Determine the type of an image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sndhdr.html"><code class="docutils literal notranslate"><span class="pre">sndhdr</span></code> --- Determine type of sound file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ossaudiodev.html"><code class="docutils literal notranslate"><span class="pre">ossaudiodev</span></code> --- Access to OSS-compatible audio devices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="i18n.html">国际化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gettext.html"><code class="docutils literal notranslate"><span class="pre">gettext</span></code> --- Multilingual internationalization services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="locale.html"><code class="docutils literal notranslate"><span class="pre">locale</span></code> --- Internationalization services</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frameworks.html">程序框架</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turtle.html"><code class="docutils literal notranslate"><span class="pre">turtle</span></code> --- 海龟绘图</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cmd.html"><code class="docutils literal notranslate"><span class="pre">cmd</span></code> --- Support for line-oriented command interpreters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shlex.html"><code class="docutils literal notranslate"><span class="pre">shlex</span></code> --- Simple lexical analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tk.html">Tk图形用户界面(GUI)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tkinter.html"><code class="docutils literal notranslate"><span class="pre">tkinter</span></code> --- Tcl/Tk的Python接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tkinter.ttk.html"><code class="docutils literal notranslate"><span class="pre">tkinter.ttk</span></code> --- Tk themed widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tkinter.tix.html"><code class="docutils literal notranslate"><span class="pre">tkinter.tix</span></code> --- Extension widgets for Tk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tkinter.scrolledtext.html"><code class="docutils literal notranslate"><span class="pre">tkinter.scrolledtext</span></code> --- Scrolled Text Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="idle.html">IDLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="othergui.html">Other Graphical User Interface Packages</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">开发工具</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typing.html"><code class="docutils literal notranslate"><span class="pre">typing</span></code> --- 类型标注支持</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pydoc.html"><code class="docutils literal notranslate"><span class="pre">pydoc</span></code> --- Documentation generator and online help system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doctest.html"><code class="docutils literal notranslate"><span class="pre">doctest</span></code> --- Test interactive Python examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html"><code class="docutils literal notranslate"><span class="pre">unittest</span></code> --- 单元测试框架</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock.html"><code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code> --- mock object library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.mock-examples.html"><code class="docutils literal notranslate"><span class="pre">unittest.mock</span></code> --- getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2to3.html">2to3 - 自动将 Python 2 代码转为 Python 3 代码</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html"><code class="docutils literal notranslate"><span class="pre">test</span></code> --- Regression tests package for Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html#module-test.support"><code class="docutils literal notranslate"><span class="pre">test.support</span></code> --- Utilities for the Python test suite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test.html#module-test.support.script_helper"><code class="docutils literal notranslate"><span class="pre">test.support.script_helper</span></code> --- Utilities for the Python execution tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">调试和分析</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bdb.html"><code class="docutils literal notranslate"><span class="pre">bdb</span></code> --- Debugger framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faulthandler.html"><code class="docutils literal notranslate"><span class="pre">faulthandler</span></code> --- Dump the Python traceback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pdb.html"><code class="docutils literal notranslate"><span class="pre">pdb</span></code> --- The Python Debugger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="profile.html">The Python Profilers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeit.html"><code class="docutils literal notranslate"><span class="pre">timeit</span></code> --- Measure execution time of small code snippets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trace.html"><code class="docutils literal notranslate"><span class="pre">trace</span></code> --- Trace or track Python statement execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tracemalloc.html"><code class="docutils literal notranslate"><span class="pre">tracemalloc</span></code> --- Trace memory allocations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="distribution.html">软件打包和分发</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="distutils.html"><code class="docutils literal notranslate"><span class="pre">distutils</span></code> --- Building and installing Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ensurepip.html"><code class="docutils literal notranslate"><span class="pre">ensurepip</span></code> --- Bootstrapping the <code class="docutils literal notranslate"><span class="pre">pip</span></code> installer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="venv.html"><code class="docutils literal notranslate"><span class="pre">venv</span></code> --- Creation of virtual environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zipapp.html"><code class="docutils literal notranslate"><span class="pre">zipapp</span></code> --- Manage executable Python zip archives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python运行时服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sys.html"><code class="docutils literal notranslate"><span class="pre">sys</span></code> --- System-specific parameters and functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sysconfig.html"><code class="docutils literal notranslate"><span class="pre">sysconfig</span></code> --- Provide access to Python's configuration information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builtins.html"><code class="docutils literal notranslate"><span class="pre">builtins</span></code> --- 内建对象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__main__.html"><code class="docutils literal notranslate"><span class="pre">__main__</span></code> —— 顶层脚本环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="warnings.html"><code class="docutils literal notranslate"><span class="pre">warnings</span></code> --- Warning control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataclasses.html"><code class="docutils literal notranslate"><span class="pre">dataclasses</span></code> --- Data Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contextlib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">contextlib</span></code> --- Utilities for <code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code>-statement contexts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abc.html"><code class="docutils literal notranslate"><span class="pre">abc</span></code> —— 抽象基类</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atexit.html"><code class="docutils literal notranslate"><span class="pre">atexit</span></code> --- 退出处理器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traceback.html"><code class="docutils literal notranslate"><span class="pre">traceback</span></code> --- Print or retrieve a stack traceback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="__future__.html"><code class="docutils literal notranslate"><span class="pre">__future__</span></code> —— Future 语句定义</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gc.html"><code class="docutils literal notranslate"><span class="pre">gc</span></code> --- 垃圾回收器接口</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inspect.html"><code class="docutils literal notranslate"><span class="pre">inspect</span></code> --- Inspect live objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="site.html"><code class="docutils literal notranslate"><span class="pre">site</span></code> --- Site-specific configuration hook</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custominterp.html">自定义 Python 解释器</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code.html"><code class="docutils literal notranslate"><span class="pre">code</span></code> --- Interpreter base classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codeop.html"><code class="docutils literal notranslate"><span class="pre">codeop</span></code> --- Compile Python code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">导入模块</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="zipimport.html"><code class="docutils literal notranslate"><span class="pre">zipimport</span></code> --- Import modules from Zip archives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkgutil.html"><code class="docutils literal notranslate"><span class="pre">pkgutil</span></code> --- Package extension utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modulefinder.html"><code class="docutils literal notranslate"><span class="pre">modulefinder</span></code> --- Find modules used by a script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="runpy.html"><code class="docutils literal notranslate"><span class="pre">runpy</span></code> --- Locating and executing Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="importlib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code> --- The implementation of <code class="xref std std-keyword docutils literal notranslate"><span class="pre">import</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="language.html">Python 语言服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parser.html"><code class="docutils literal notranslate"><span class="pre">parser</span></code> --- Access Python parse trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ast.html"><code class="docutils literal notranslate"><span class="pre">ast</span></code> --- 抽象语法树</a></li>
+<li class="toctree-l2"><a class="reference internal" href="symtable.html"><code class="docutils literal notranslate"><span class="pre">symtable</span></code> --- Access to the compiler's symbol tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="symbol.html"><code class="docutils literal notranslate"><span class="pre">symbol</span></code> --- 与 Python 解析树一起使用的常量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="token.html"><code class="docutils literal notranslate"><span class="pre">token</span></code> —— 与Python解析树一起使用的常量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="keyword.html"><code class="docutils literal notranslate"><span class="pre">keyword</span></code> —— 检验Python关键字</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokenize.html"><code class="docutils literal notranslate"><span class="pre">tokenize</span></code> --- Tokenizer for Python source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tabnanny.html"><code class="docutils literal notranslate"><span class="pre">tabnanny</span></code> --- Detection of ambiguous indentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyclbr.html"><code class="docutils literal notranslate"><span class="pre">pyclbr</span></code> --- Python class browser support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="py_compile.html"><code class="docutils literal notranslate"><span class="pre">py_compile</span></code> --- Compile Python source files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compileall.html"><code class="docutils literal notranslate"><span class="pre">compileall</span></code> --- Byte-compile Python libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dis.html"><code class="docutils literal notranslate"><span class="pre">dis</span></code> --- Python 字节码反汇编器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickletools.html"><code class="docutils literal notranslate"><span class="pre">pickletools</span></code> --- Tools for pickle developers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">杂项服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="formatter.html"><code class="docutils literal notranslate"><span class="pre">formatter</span></code> --- Generic output formatting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windows.html">Windows系统相关模块</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="msilib.html"><code class="docutils literal notranslate"><span class="pre">msilib</span></code> --- Read and write Microsoft Installer files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msvcrt.html"><code class="docutils literal notranslate"><span class="pre">msvcrt</span></code> --- Useful routines from the MS VC++ runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="winreg.html"><code class="docutils literal notranslate"><span class="pre">winreg</span></code> --- Windows registry access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="winsound.html"><code class="docutils literal notranslate"><span class="pre">winsound</span></code> --- Sound-playing interface for Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unix.html">Unix 专有服务</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="posix.html"><code class="docutils literal notranslate"><span class="pre">posix</span></code> --- The most common POSIX system calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pwd.html"><code class="docutils literal notranslate"><span class="pre">pwd</span></code> --- The password database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spwd.html"><code class="docutils literal notranslate"><span class="pre">spwd</span></code> --- The shadow password database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="grp.html"><code class="docutils literal notranslate"><span class="pre">grp</span></code> --- The group database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crypt.html"><code class="docutils literal notranslate"><span class="pre">crypt</span></code> --- Function to check Unix passwords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="termios.html"><code class="docutils literal notranslate"><span class="pre">termios</span></code> --- POSIX style tty control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tty.html"><code class="docutils literal notranslate"><span class="pre">tty</span></code> --- Terminal control functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pty.html"><code class="docutils literal notranslate"><span class="pre">pty</span></code> --- Pseudo-terminal utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fcntl.html"><code class="docutils literal notranslate"><span class="pre">fcntl</span></code> --- The <code class="docutils literal notranslate"><span class="pre">fcntl</span></code> and <code class="docutils literal notranslate"><span class="pre">ioctl</span></code> system calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipes.html"><code class="docutils literal notranslate"><span class="pre">pipes</span></code> --- Interface to shell pipelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resource.html"><code class="docutils literal notranslate"><span class="pre">resource</span></code> --- Resource usage information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nis.html"><code class="docutils literal notranslate"><span class="pre">nis</span></code> --- Interface to Sun's NIS (Yellow Pages)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="syslog.html">Unix syslog 库例程</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="superseded.html">被取代的模块</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optparse.html"><code class="docutils literal notranslate"><span class="pre">optparse</span></code> --- Parser for command line options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="imp.html"><code class="docutils literal notranslate"><span class="pre">imp</span></code> --- Access the <code class="docutils literal notranslate"><span class="pre">import</span></code> internals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="undoc.html">Undocumented Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="undoc.html#platform-specific-modules">Platform specific modules</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="../reference/grammar.html"
+                        title="上一章">10. 完整的语法规范</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="intro.html"
+                        title="下一章">概述</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">提交 Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.7/Doc/library/index.rst"
+            rel="nofollow">显示源代码
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="概述"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="../reference/grammar.html" title="10. 完整的语法规范"
+             >上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">版权所有</a> 2001-2019, Python Software Foundation.
+    <br />
+    Python 软件基金会是一个非盈利组织。
+    <a href="https://www.python.org/psf/donations/">请捐助。</a>
+    <br />
+    最后更新于 3月 26, 2019.
+    <a href="../bugs.html">发现了问题</a>？
+    <br />
+    使用<a href="http://sphinx.pocoo.org/">Sphinx</a>1.8.4 创建。
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,275 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>4. 在苹果系统上使用 Python &#8212; Python 3.7.3 文档</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="在 Python 3.7.3 文档 中搜索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="关于这些文档" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="copyright" title="版权所有" href="../copyright.html" />
+    <link rel="next" title="Python 语言参考" href="../reference/index.html" />
+    <link rel="prev" title="3. 在Windows上使用 Python" href="windows.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/py.png" />
+    <link rel="canonical" href="https://docs.python.org/3/using/mac.html" />
+    
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+    
+    
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+ 
+
+  </head><body>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="../reference/index.html" title="Python 语言参考"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="3. 在Windows上使用 Python"
+             accesskey="P">上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">安装和使用 Python</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-python-on-a-macintosh">
+<span id="using-on-mac"></span><h1>4. 在苹果系统上使用 Python<a class="headerlink" href="#using-python-on-a-macintosh" title="永久链接至标题">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">作者:</th><td class="field-body">Bob Savage &lt;<a class="reference external" href="mailto:bobsavage&#37;&#52;&#48;mac&#46;com">bobsavage<span>&#64;</span>mac<span>&#46;</span>com</a>&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>运行 Mac OS X 的 Macintosh上 的 Python 原则上与任何其他 Unix 平台上的 Python 非常相似，但是还有一些额外的功能，例如 IDE 和包管理器，值得一提。</p>
+<div class="section" id="getting-and-installing-macpython">
+<span id="getting-osx"></span><h2>4.1. 获取和安装 MacPython<a class="headerlink" href="#getting-and-installing-macpython" title="永久链接至标题">¶</a></h2>
+<p>Mac OS X 10.8 附带 Apple 预安装的 Python 2.7 。 如果你愿意，可以从 Python 网站（ <a class="reference external" href="https://www.python.org">https://www.python.org</a> ）安装最新版本的 Python 3 。  Python 的当前“通用二进制”版本可以在 Mac 的新 Intel 和传统 PPC CPU 上本地运行。</p>
+<p>你安装后得到的东西有：</p>
+<ul class="simple">
+<li>一个 <code class="file docutils literal notranslate"><span class="pre">MacPython</span> <span class="pre">3.6</span></code> 文件夹在你的 <code class="file docutils literal notranslate"><span class="pre">Applications</span></code> 文件夹中。 在这里你可以找到 IDLE ，这是开发环境，是官方 Python 发行版的标准部分； PythonLauncher ，它处理从 Finder 双击运行的 Python 脚本; 以及“ Build Applet ”工具，它允许你将 Python 脚本打包为系统上的独立应用程序。</li>
+<li>框架 <code class="file docutils literal notranslate"><span class="pre">/Library/Frameworks/Python.framework</span></code> ，包括 Python 可执行文件和库。安装程序将此位置添加到 shell 路径。 要卸载 MacPython ，你可以简单地移除这三个项目。 Python 可执行文件的符号链接放在 /usr/local/bin/ 中。</li>
+</ul>
+<p>Apple 提供的 Python 版本分别安装在 <code class="file docutils literal notranslate"><span class="pre">/System/Library/Frameworks/Python.framework</span></code> 和 <code class="file docutils literal notranslate"><span class="pre">/usr/bin/python</span></code> 中。 你永远不应修改或删除这些内容，因为它们由 Apple 控制并由 Apple 或第三方软件使用。 请记住，如果你选择从 python.org 安装较新的 Python 版本，那么你的计算机上将安装两个不同但都有用的 Python ，因此你的路径和用法与你想要执行的操作一致非常重要。</p>
+<p>IDLE 包含一个帮助菜单，允许你访问 Python 文档。 如果您是 Python 的新手，你应该开始阅读该文档中的教程介绍。</p>
+<p>如果你熟悉其他 Unix 平台上的 Python ，那么你应该阅读有关从 Unix shell 运行 Python 脚本的部分。</p>
+<div class="section" id="how-to-run-a-python-script">
+<h3>4.1.1. 如何运行 Python 脚本<a class="headerlink" href="#how-to-run-a-python-script" title="永久链接至标题">¶</a></h3>
+<p>在 Mac OS X 上开始使用 Python 的最佳方法是通过 IDLE 集成开发环境，参见 <a class="reference internal" href="#ide"><span class="std std-ref">IDE</span></a> 部分，并在 IDE 运行时使用“帮助”菜单。</p>
+<p>如果要从终端窗口命令行或 Finder 运行 Python 脚本，首先需要一个编辑器来创建脚本。 Mac OS X 附带了许多标准的 Unix 命令行编辑器，如 <strong class="program">vim</strong> 和 <strong class="program">emacs</strong> 。 如果你想要一个更 Mac 化的编辑器，那么:program:<cite>BBEdit</cite> 或来自 Bare Bones Software 的 <strong class="program">TextWrangler</strong> （参见 <a class="reference external" href="http://www.barebones.com/products/bbedit/index.html">http://www.barebones.com/products/bbedit/index.html</a> ）是不错的选择 ，就如 <strong class="program">TextMate`（参见 https://macromates.com/ ）。 其他编辑器包括 :program:`Gvim</strong> （ <a class="reference external" href="http://macvim-dev.github.io/macvim/">http://macvim-dev.github.io/macvim/</a> ）和 <strong class="program">Aquamacs</strong> （ <a class="reference external" href="http://aquamacs.org/">http://aquamacs.org/</a> ）。</p>
+<p>要从终端窗口运行脚本，必须确保:file:<cite>/usr/local/bin</cite> 位于 shell 搜索路径中。</p>
+<p>要从 Finder 运行你的脚本，你有两个选择：</p>
+<ul class="simple">
+<li>把脚本拖拽到 <strong class="program">PythonLauncher</strong></li>
+<li>选择 <strong class="program">PythonLauncher</strong> 作为通过 finder Info 窗口打开脚本（或任何 .py 脚本）的默认应用程序，然后双击脚本。 <strong class="program">PythonLauncher</strong> 有各种首选项来控制脚本的启动方式。 拖拽方式允许你为一次调用更改这些选项，或使用其“首选项”菜单全局更改内容。</li>
+</ul>
+</div>
+<div class="section" id="running-scripts-with-a-gui">
+<span id="osx-gui-scripts"></span><h3>4.1.2. 运行有图形界面的脚本<a class="headerlink" href="#running-scripts-with-a-gui" title="永久链接至标题">¶</a></h3>
+<p>对于旧版本的 Python ，你需要注意一个 Mac OS X 的怪异之处：与 Aqua 窗口管理器通信的程序（换而言之，任何具有图形界面的程序）需要以特殊方式运行。 使用 <strong class="program">pythonw</strong> 而不是 <strong class="program">python</strong> 来启动这样的脚本。</p>
+<p>Python 3.6 中， 你可使用 <strong class="program">python</strong> 或 <strong class="program">pythonw</strong> 。</p>
+</div>
+<div class="section" id="configuration">
+<h3>4.1.3. 配置<a class="headerlink" href="#configuration" title="永久链接至标题">¶</a></h3>
+<p>OS X 上的 Python 遵循所有标准的 Unix 环境变量，例如 <span class="target" id="index-2"></span><a class="reference internal" href="cmdline.html#envvar-PYTHONPATH"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONPATH</span></code></a> ，但是为 Finder 启动的程序设置这些变量是非标准的，因为 Finder 在启动时不读取你的 <code class="file docutils literal notranslate"><span class="pre">.profile</span></code> 或 <code class="file docutils literal notranslate"><span class="pre">.cshrc</span></code> 。你需要创建一个文件 <code class="file docutils literal notranslate"><span class="pre">~/.MacOSX/environment.plist</span></code> 。 有关详细信息，请参阅 Apple 的技术文档 QA1067 。</p>
+<p>更多关于在 MacPython 中安装 Python 包的信息，参阅 <a class="reference internal" href="#mac-package-manager"><span class="std std-ref">安装额外的 Python 包</span></a> 部分。</p>
+</div>
+</div>
+<div class="section" id="the-ide">
+<span id="ide"></span><h2>4.2. IDE<a class="headerlink" href="#the-ide" title="永久链接至标题">¶</a></h2>
+<p>MacPython 附带标准的 IDLE 开发环境。 有关使用 IDLE 的详细介绍，请访问 <a class="reference external" href="http://www.hashcollision.org/hkn/python/idle_intro/index.html">http://www.hashcollision.org/hkn/python/idle_intro/index.html</a> 。</p>
+</div>
+<div class="section" id="installing-additional-python-packages">
+<span id="mac-package-manager"></span><h2>4.3. 安装额外的 Python 包<a class="headerlink" href="#installing-additional-python-packages" title="永久链接至标题">¶</a></h2>
+<p>有几个方法可以安装额外的 Python 包：</p>
+<ul class="simple">
+<li>可以通过标准的 Python distutils 模式（ <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></code> ）安装软件包。</li>
+<li>许多包也可以通过 <strong class="program">setuptools</strong> 扩展或 <strong class="program">pip</strong> 包装器安装，请参阅 <a class="reference external" href="https://pip.pypa.io/">https://pip.pypa.io/</a> 。</li>
+</ul>
+</div>
+<div class="section" id="gui-programming-on-the-mac">
+<h2>4.4. Mac 上的图形界面编程<a class="headerlink" href="#gui-programming-on-the-mac" title="永久链接至标题">¶</a></h2>
+<p>使用 Python 在 Mac 上构建 GUI 应用程序有多种选择。</p>
+<p><em>PyObjC</em> 是一个 Python 到 Apple 的 Objective-C/Cocoa 框架的绑定，这是大多数现代 Mac 开发的基础。 有关 PyObjC的 信息，请访问 <a class="reference external" href="https://pythonhosted.org/pyobjc/">https://pythonhosted.org/pyobjc/</a> 。</p>
+<p>标准的 Python GUI 工具包是 <a class="reference internal" href="../library/tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> ，基于跨平台的 Tk 工具包（ <a class="reference external" href="https://www.tcl.tk">https://www.tcl.tk</a> ）。 Apple 的 OS X 捆绑了 Aqua 原生版本的 Tk ，最新版本可以从 <a class="reference external" href="https://www.activestate.com">https://www.activestate.com</a> 下载和安装；它也可以从源代码构建。</p>
+<p><em>wxPython</em> 是另一种流行的跨平台 GUI 工具包，可在 Mac OS X 上本机运行。软件包和文档可从 <a class="reference external" href="https://www.wxpython.org">https://www.wxpython.org</a> 获得。</p>
+<p><em>PyQt</em> 是另一种流行的跨平台 GUI 工具包，可在 Mac OS X 上本机运行。更多信息可在 <a class="reference external" href="https://riverbankcomputing.com/software/pyqt/intro">https://riverbankcomputing.com/software/pyqt/intro</a> 上找到。</p>
+</div>
+<div class="section" id="distributing-python-applications-on-the-mac">
+<h2>4.5. 在 Mac 上分发 Python 应用程序<a class="headerlink" href="#distributing-python-applications-on-the-mac" title="永久链接至标题">¶</a></h2>
+<p>放置在 MacPython 3.6 文件夹中的“ Build Applet ”工具适用于在你自己的计算机上打包小型 Python 脚本以作为标准 Mac 应用程序运行。 但是，此工具不够强大，无法将 Python 应用程序分发给其他用户。</p>
+<p>在 Mac 上部署独立 Python 应用程序的标准工具是 <strong class="program">py2app</strong> 。有关安装和使用 py2app 的更多信息，请访问 <a class="reference external" href="http://undefined.org/python/#py2app">http://undefined.org/python/#py2app</a> 。</p>
+</div>
+<div class="section" id="other-resources">
+<h2>4.6. 其他资源<a class="headerlink" href="#other-resources" title="永久链接至标题">¶</a></h2>
+<p>MacPython 邮件列表是 Mac 上 Python 用户和开发人员的优秀支持资源：</p>
+<p><a class="reference external" href="https://www.python.org/community/sigs/current/pythonmac-sig/">https://www.python.org/community/sigs/current/pythonmac-sig/</a></p>
+<p>另一个有用的资源是 MacPython wiki ：</p>
+<p><a class="reference external" href="https://wiki.python.org/moin/MacPython">https://wiki.python.org/moin/MacPython</a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4. 在苹果系统上使用 Python</a><ul>
+<li><a class="reference internal" href="#getting-and-installing-macpython">4.1. 获取和安装 MacPython</a><ul>
+<li><a class="reference internal" href="#how-to-run-a-python-script">4.1.1. 如何运行 Python 脚本</a></li>
+<li><a class="reference internal" href="#running-scripts-with-a-gui">4.1.2. 运行有图形界面的脚本</a></li>
+<li><a class="reference internal" href="#configuration">4.1.3. 配置</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-ide">4.2. IDE</a></li>
+<li><a class="reference internal" href="#installing-additional-python-packages">4.3. 安装额外的 Python 包</a></li>
+<li><a class="reference internal" href="#gui-programming-on-the-mac">4.4. Mac 上的图形界面编程</a></li>
+<li><a class="reference internal" href="#distributing-python-applications-on-the-mac">4.5. 在 Mac 上分发 Python 应用程序</a></li>
+<li><a class="reference internal" href="#other-resources">4.6. 其他资源</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="windows.html"
+                        title="上一章">3. 在Windows上使用 Python</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="../reference/index.html"
+                        title="下一章">Python 语言参考</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">提交 Bug</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/3.7/Doc/using/mac.rst"
+            rel="nofollow">显示源代码
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 模块索引"
+             >模块</a> |</li>
+        <li class="right" >
+          <a href="../reference/index.html" title="Python 语言参考"
+             >下一页</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="3. 在Windows上使用 Python"
+             >上一页</a> |</li>
+        <li><img src="../_static/py.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="https://www.python.org/">Python</a> &#187;</li>
+        <li>
+          <span class="language_switcher_placeholder">zh_CN</span>
+          <span class="version_switcher_placeholder">3.7.3</span>
+          <a href="../index.html">文档</a> &#187;
+        </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >安装和使用 Python</a> &#187;</li>
+    <li class="right">
+        
+
+    <div class="inline-search" style="display: none" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="快速搜索" type="text" name="q" />
+          <input type="submit" value="转向" />
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+    <script type="text/javascript">$('.inline-search').show(0);</script>
+         |
+    </li>
+
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">版权所有</a> 2001-2019, Python Software Foundation.
+    <br />
+    Python 软件基金会是一个非盈利组织。
+    <a href="https://www.python.org/psf/donations/">请捐助。</a>
+    <br />
+    最后更新于 3月 26, 2019.
+    <a href="../bugs.html">发现了问题</a>？
+    <br />
+    使用<a href="http://sphinx.pocoo.org/">Sphinx</a>1.8.4 创建。
+    </div>
+
+  </body>
+</html>
